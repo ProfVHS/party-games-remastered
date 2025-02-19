@@ -1,4 +1,5 @@
 @import '../../../common/styles/_variables.scss';
+
 .switch {
   position: relative;
   display: inline-block;
@@ -42,6 +43,7 @@
     transform: translateX(24px);
     background-color: $primaryColor;
   }
+
   &__input:checked ~ &__track {
     background-color: $darkerPrimaryColor;
   }

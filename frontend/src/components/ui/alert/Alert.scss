@@ -34,6 +34,7 @@
   &__icon {
     width: 24px;
     height: 24px;
+
     & path {
       fill: rgba(#000000, 0.6);
     }
@@ -46,12 +47,15 @@
   &--success {
     background-color: #72d8ad;
   }
+
   &--error {
     background-color: #ff5656;
   }
+
   &--info {
     background-color: #8794f8;
   }
+
   &--warning {
     background-color: #ffcd5a;
   }

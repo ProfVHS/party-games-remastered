@@ -1,8 +1,8 @@
 import './Form.scss';
 
-import { useForm, SubmitHandler } from 'react-hook-form';
-import {Button} from "../../ui/button/Button.tsx";
-import {useNavigate} from "react-router-dom";
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Button } from '../../ui/button/Button.tsx';
+import { useNavigate } from 'react-router-dom';
 
 interface FormInputs {
   nickname: string;
@@ -11,18 +11,6 @@ interface FormInputs {
 
 type CreateFormProps = {
   onCancel: () => void;
-};
-
-export const randomRoomCode = () => {
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-
-  while (result.length < 5) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-
-  return result;
 };
 
 export const CreateForm = ({ onCancel }: CreateFormProps) => {

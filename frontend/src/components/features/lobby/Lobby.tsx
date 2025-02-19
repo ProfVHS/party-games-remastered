@@ -5,8 +5,8 @@ import { LobbySettings } from '../lobbySettings/LobbySettings';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import {SettingsButton} from "../../ui/settingsButton/SettingsButton.tsx";
-import {LobbySettingsType} from "../../../types";
+import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
+import { LobbySettingsType } from '../../../types';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -14,7 +14,7 @@ export const Lobby = () => {
   const [lobbySettings, setLobbySettings] = useState<LobbySettingsType>({
     isRandomMinigames: true,
     isTutorialsEnabled: true,
-    minigames: [],
+    minigames: []
   });
 
   const toggleLobbySettings = () => setIsSettingsOpen((prev) => !prev);
@@ -47,10 +47,10 @@ export const Lobby = () => {
               transition={{ delay: 0.2, duration: 0.2 }}
             >
               <LobbyContent />
-                <SettingsButton
-                    className="lobby__settingsbutton"
-                    onClick={() => toggleLobbySettings()}
-                />
+              <SettingsButton
+                className="lobby__settingsbutton"
+                onClick={() => toggleLobbySettings()}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -67,7 +67,7 @@ const LobbyContent = () => {
   };
 
   const CopyRoomCode = () => {
-    navigator.clipboard.writeText("ABCDE");
+    navigator.clipboard.writeText('ABCDE');
   };
 
   return (

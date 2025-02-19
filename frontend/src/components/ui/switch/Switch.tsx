@@ -1,8 +1,8 @@
 import './Switch.scss';
 
 type SwitchProps = {
-  defaultIsChecked?: boolean;
-  onChange?: (isChecked: boolean) => void;
+  defaultIsChecked: boolean;
+  onChange: (isChecked: boolean) => void;
 };
 
 export const Switch = ({ defaultIsChecked, onChange }: SwitchProps) => {

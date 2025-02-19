@@ -1,4 +1,5 @@
 import { SVGProps } from 'react';
+
 export const BombIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={57}

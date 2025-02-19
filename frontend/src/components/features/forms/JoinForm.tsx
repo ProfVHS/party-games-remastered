@@ -1,9 +1,9 @@
 import './Form.scss';
 
-import { useForm, SubmitHandler } from 'react-hook-form';
-import {Button} from "../../ui/button/Button.tsx";
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Button } from '../../ui/button/Button.tsx';
 
-interface FormInputs {
+type FormInputs = {
   nickname: string;
   room: string;
 }
@@ -32,17 +32,17 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
       />
 
       <div className="form__row">
-          <Button style={{ width: '50%' }} type="submit">
-              Join
-          </Button>
-          <input
-              className="form-input"
-              style={{ width: '50%' }}
-              type="text"
-              id="room"
-              placeholder="Room Code"
-              {...register('room', { required: true, maxLength: 5 })}
-          />
+        <Button style={{ width: '50%' }} type="submit">
+          Join
+        </Button>
+        <input
+          className="form-input"
+          style={{ width: '50%' }}
+          type="text"
+          id="room"
+          placeholder="Room Code"
+          {...register('room', { required: true, maxLength: 5 })}
+        />
       </div>
       <Button style={{ width: '100%' }} type="reset">
         Go Back

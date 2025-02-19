@@ -1,4 +1,5 @@
 @import '../../../common/styles/_variables.scss';
+
 .number-picker {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -28,6 +29,7 @@
       background-color: $darkerPrimaryColor;
     }
   }
+
   &__number {
     display: flex;
     justify-content: center;
@@ -41,10 +43,12 @@
     font-size: 1.2rem;
     width: 35%;
   }
+
   &--mediumSize {
     font-size: 1.4rem;
     width: 60%;
   }
+
   &--largeSize {
     font-size: 1.6rem;
     width: 100%;

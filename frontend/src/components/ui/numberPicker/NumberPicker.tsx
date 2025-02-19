@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import './NumberPicker.scss';
 
 type NumberPickerProps = {
-  min?: number;
-  max?: number;
-  defaultNumber?: number;
-  onchange?: (number: number) => void;
+  min: number;
+  max: number;
+  defaultNumber: number;
+  onchange: (number: number) => void;
   style?: React.CSSProperties;
 };
 
 export const NumberPicker = ({
-  min,
-  max,
-  defaultNumber,
-  onchange,
-  style,
-}: NumberPickerProps) => {
+                               min,
+                               max,
+                               defaultNumber,
+                               onchange,
+                               style
+                             }: NumberPickerProps) => {
   const [number, setNumber] = useState(defaultNumber || min || 0);
   const increment = () => {
     if (number >= max!) return;

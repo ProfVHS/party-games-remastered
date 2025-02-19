@@ -1,4 +1,5 @@
 @import "../../../common/styles/_variables";
+
 .home-page {
   width: 100vw;
   height: 100vh;
@@ -7,6 +8,7 @@
   justify-content: center;
   align-items: center;
   user-select: none;
+
   &__title {
     font-family: 'Spicy Rice', serif;
     font-weight: 400;
@@ -19,6 +21,7 @@
 
     margin-bottom: 32px;
   }
+
   &__content {
     display: flex;
     flex-direction: column;
@@ -34,6 +37,7 @@
     box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.2);
     transition: 0.2s ease;
   }
+
   &__forms {
     display: flex;
     justify-content: center;

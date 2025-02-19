@@ -1,10 +1,12 @@
 import './NotFound.scss';
 import { useNavigate } from 'react-router-dom';
-import {Button} from "../../ui/button/Button.tsx";
+import { Button } from '../../ui/button/Button.tsx';
 
 export const NotFound = () => {
   const navigator = useNavigate();
-  const goHome = () => navigator('/');
+
+  const handleGoHome = () => navigator('/');
+
   return (
     <div className="not-found">
       <div className="not-found__content">
@@ -13,7 +15,7 @@ export const NotFound = () => {
         <span className="not-found__description">
           The page you are looking for does not exist.
         </span>
-        <Button onClick={goHome}>Go to Homepage</Button>
+        <Button onClick={handleGoHome}>Go to Homepage</Button>
       </div>
     </div>
   );

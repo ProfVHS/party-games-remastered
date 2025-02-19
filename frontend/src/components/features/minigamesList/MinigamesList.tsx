@@ -2,38 +2,19 @@ import { useState } from 'react';
 import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
 import { BombIcon } from './SvgIcons';
-import {Button} from "../../ui/button/Button.tsx";
-import {Minigame} from "../../../types";
+import { Button } from '../../ui/button/Button.tsx';
+import { Minigame } from '../../../types';
 
 type MinigamesListProps = {
-  onCancel?: () => void;
-  onSave?: (Minigames: Minigame[]) => void;
+  onCancel: () => void;
+  onSave: (Minigames: Minigame[]) => void;
   minigames?: Minigame[];
 };
 
-export const MinigamesList = ({
-  onCancel,
-  onSave,
-  minigames,
-}: MinigamesListProps) => {
+export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProps) => {
   const [minigamesList, setMinigamesList] = useState<Minigame[]>(
     minigames! || []
   );
-
-  const addMinigame = (minigame: Minigame) => {
-    const id = minigamesList.length
-      ? minigamesList[minigamesList.length - 1].id! + 1
-      : 0;
-    const newMiniGame: Minigame = { id: id, ...minigame };
-    setMinigamesList([...minigamesList, newMiniGame]);
-  };
-
-  const removeMinigame = (minigame: Minigame) => {
-    const newMinigamesList = minigamesList.filter(
-      (item) => item.id !== minigame.id
-    );
-    setMinigamesList(newMinigamesList);
-  };
 
   const handleSave = () => {
     onSave && onSave(minigamesList);
@@ -47,7 +28,6 @@ export const MinigamesList = ({
         <MinigameItem
           minigame={{ minigame_id: 'CTB', name: 'Click The Bomb' }}
           type="add"
-          onClick={addMinigame}
         />
       </div>
       <div className="minigames-list__table">
@@ -63,19 +43,18 @@ export const MinigamesList = ({
             width: '100%',
             height: '100%',
             overflowY: 'auto',
-            scrollbarWidth: 'none',
+            scrollbarWidth: 'none'
           }}
         >
           {minigamesList.map((minigame) => (
             <Reorder.Item
-              key={minigame.id}
+              key={minigame.minigame_id}
               value={minigame}
               style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}
             >
               <MinigameItem
                 minigame={minigame}
                 type="remove"
-                onClick={removeMinigame}
               />
             </Reorder.Item>
           ))}

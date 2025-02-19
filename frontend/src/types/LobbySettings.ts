@@ -1,4 +1,4 @@
-import {Minigame} from "./Minigame.ts";
+import { Minigame } from './Minigame.ts';
 
 export type LobbySettingsType = {
   isRandomMinigames: boolean;

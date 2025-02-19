@@ -2,15 +2,15 @@ import { SVGProps } from 'react';
 import './SettingsButton.scss';
 
 type SettingsButtonProps = {
-  onClick?: () => void;
+  onClick: () => void;
   className?: string;
   props?: SVGProps<SVGSVGElement>;
 };
 export const SettingsButton = ({
-  onClick,
-  className,
-  props,
-}: SettingsButtonProps) => {
+                                 onClick,
+                                 className,
+                                 props
+                               }: SettingsButtonProps) => {
   return (
     <button className={`settings-button ${className}`} onClick={onClick}>
       <svg

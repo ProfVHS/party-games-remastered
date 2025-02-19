@@ -6,7 +6,7 @@
   gap: 16px;
   width: 100%;
 
-  &__row{
+  &__row {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,6 +30,7 @@
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     font-style: normal;
+
     &::placeholder {
       color: #b87de8;
     }

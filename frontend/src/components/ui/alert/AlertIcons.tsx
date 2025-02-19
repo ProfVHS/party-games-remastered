@@ -1,4 +1,5 @@
 import { SVGProps } from 'react';
+
 export const SuccessIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={50}
