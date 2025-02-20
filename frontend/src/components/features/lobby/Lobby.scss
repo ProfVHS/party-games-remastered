@@ -1,4 +1,4 @@
-@import '../../../common/styles/_variables.scss';
+@use '../../../common/styles/_variables.scss' as *;
 
 .lobby {
   gap: 15px;

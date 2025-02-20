@@ -8,14 +8,17 @@ type AlertType = {
   type: 'error' | 'info' | 'warning' | 'success';
   duration?: number;
   onClose?: () => void;
+  autoDismiss?: boolean;
 };
 
-export const Alert = ({ type, message, duration = 5, onClose }: AlertType) => {
+export const Alert = ({ type, message, duration = 5, onClose, autoDismiss = true }: AlertType) => {
   const [timer, setTimer] = useState<number>(duration);
   const [scope, animate] = useAnimate();
 
+  console.log(timer)
+
   useEffect(() => {
-    setTimer(duration - 1);
+    setTimer(duration);
     animate(
       scope.current,
       { opacity: [0, 1], scale: [0, 1] },
@@ -37,12 +40,14 @@ export const Alert = ({ type, message, duration = 5, onClose }: AlertType) => {
       return;
     }
 
-    const interval = setInterval(() => {
-      setTimer((prev) => prev - 1);
-    }, 1000);
+    if (autoDismiss) {
+      const interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
 
-    return () => clearInterval(interval);
-  }, [animate, onClose, scope, timer]);
+      return () => clearInterval(interval);
+    }
+  }, [animate, autoDismiss, onClose, scope, timer]);
 
   return (
     <motion.div
