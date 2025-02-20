@@ -1,0 +1,38 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+
+  &__row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+  }
+
+  &-input {
+    border: 2px solid #9d4edd;
+    border-radius: 4px;
+    box-shadow: 0 2px 0 0 #9d4edd;
+    background-color: rgba(#ac67e4, 0.08);
+    box-sizing: border-box;
+
+    outline: none;
+    padding: 4px;
+
+    color: #9d4edd;
+    font-size: 20px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    &::placeholder {
+      color: #b87de8;
+    }
+  }
+}
