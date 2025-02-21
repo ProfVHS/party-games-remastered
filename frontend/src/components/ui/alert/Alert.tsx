@@ -15,8 +15,6 @@ export const Alert = ({ type, message, duration = 5, onClose, autoDismiss = true
   const [timer, setTimer] = useState<number>(duration);
   const [scope, animate] = useAnimate();
 
-  console.log(timer)
-
   useEffect(() => {
     setTimer(duration);
     animate(
