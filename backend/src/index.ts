@@ -24,8 +24,21 @@ const io = new Server(socketServer, {
 const handleModulesOnConnection = async (socket: Socket) => {
   console.log(`New connection: ${socket.id}`);
 
-  socket.on('message', (msg) => {
-    console.log(msg);
+  socket.on('create_room', (roomCode, nickname) => {
+    socket.join(roomCode);
+
+    // create new room and user
+
+    socket.nsp.to(socket.id).emit('joined_room');
+  });
+
+  socket.on('join_room', (roomCode, nickname) => {
+    socket.join(roomCode);
+
+    // check if room is full, exist, in_game
+    // create new room and user
+
+    socket.nsp.to(socket.id).emit('joined_room');
   });
 
   socket.on('disconnect', (reason) => {
