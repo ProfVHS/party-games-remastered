@@ -1,4 +1,4 @@
-@import '../../../common/styles/_variables.scss';
+@use '../../../common/styles/_variables.scss' as *;
 
 .number-picker {
   display: grid;
@@ -6,6 +6,7 @@
   justify-content: space-evenly;
   user-select: none;
 
+  font-family: 'Poppins', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.8);
