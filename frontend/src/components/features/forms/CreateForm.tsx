@@ -2,7 +2,8 @@ import './Form.scss';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../ui/button/Button.tsx';
-import { useNavigate } from 'react-router-dom';
+import { socket } from '../../../socket.ts';
+import { useJoinRoom } from '../../../hooks/useJoinRoom.ts';
 
 interface FormInputs {
   nickname: string;
@@ -12,33 +13,32 @@ interface FormInputs {
 type CreateFormProps = {
   onCancel: () => void;
 };
+const randomRoomCode = (): string => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+
+  while (result.length < 5) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+
+  return result;
+};
 
 export const CreateForm = ({ onCancel }: CreateFormProps) => {
   const { register, handleSubmit } = useForm<FormInputs>();
 
-  const navigate = useNavigate();
+  const handleCreateRoom: SubmitHandler<FormInputs> = (data) => {
+    const randomCode = randomRoomCode();
+    const nickname = data.nickname || 'RandomNickname';
 
-  const onJoin: SubmitHandler<FormInputs> = (data) => {
-    const nickname = data.nickname;
-    console.log(nickname);
-    navigate('/room');
+    socket.emit('create_room', randomCode, nickname);
   };
 
+  useJoinRoom();
 
   return (
-    <form
-      className="form"
-      onSubmit={handleSubmit(onJoin)}
-      onReset={onCancel}
-    >
-      <input
-        className="form-input"
-        style={{ width: '100%' }}
-        type="text"
-        id="name"
-        placeholder="Nickname"
-        {...register('nickname')}
-      />
+    <form className="form" onSubmit={handleSubmit(handleCreateRoom)} onReset={onCancel}>
+      <input className="form-input" style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" {...register('nickname')} />
 
       <Button style={{ width: '100%' }} type="submit">
         Create
