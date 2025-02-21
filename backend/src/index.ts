@@ -4,6 +4,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
+import { roomSockets } from './Sockets/Room/roomSockets';
 
 const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
@@ -24,22 +25,7 @@ const io = new Server(socketServer, {
 const handleModulesOnConnection = async (socket: Socket) => {
   console.log(`New connection: ${socket.id}`);
 
-  socket.on('create_room', (roomCode, nickname) => {
-    socket.join(roomCode);
-
-    // create new room and user
-
-    socket.nsp.to(socket.id).emit('joined_room');
-  });
-
-  socket.on('join_room', (roomCode, nickname) => {
-    socket.join(roomCode);
-
-    // check if room is full, exist, in_game
-    // create new room and user
-
-    socket.nsp.to(socket.id).emit('joined_room');
-  });
+  roomSockets(socket);
 
   socket.on('disconnect', (reason) => {
     console.log(`Disconnected: ${socket.id} (Reason: ${reason})`);
