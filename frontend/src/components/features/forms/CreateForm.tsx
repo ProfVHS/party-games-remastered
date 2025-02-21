@@ -31,6 +31,8 @@ export const CreateForm = ({ onCancel }: CreateFormProps) => {
     const randomCode = randomRoomCode();
     const nickname = data.nickname || 'RandomNickname';
 
+    sessionStorage.setItem('roomCode', randomCode);
+
     socket.emit('create_room', randomCode, nickname);
   };
 

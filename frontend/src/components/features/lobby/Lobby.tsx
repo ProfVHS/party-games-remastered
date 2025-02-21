@@ -14,7 +14,7 @@ export const Lobby = () => {
   const [lobbySettings, setLobbySettings] = useState<LobbySettingsType>({
     isRandomMinigames: true,
     isTutorialsEnabled: true,
-    minigames: []
+    minigames: [],
   });
 
   const toggleLobbySettings = () => setIsSettingsOpen((prev) => !prev);
@@ -31,11 +31,7 @@ export const Lobby = () => {
               transition={{ delay: 0.2, duration: 0.2 }}
               style={{ height: '100%' }}
             >
-              <LobbySettings
-                onCancel={() => setIsSettingsOpen(false)}
-                lobbySettings={lobbySettings}
-                setLobbySettings={setLobbySettings}
-              />
+              <LobbySettings onCancel={() => setIsSettingsOpen(false)} lobbySettings={lobbySettings} setLobbySettings={setLobbySettings} />
             </motion.div>
           ) : (
             <motion.div
@@ -47,10 +43,7 @@ export const Lobby = () => {
               transition={{ delay: 0.2, duration: 0.2 }}
             >
               <LobbyContent />
-              <SettingsButton
-                className="lobby__settingsbutton"
-                onClick={() => toggleLobbySettings()}
-              />
+              <SettingsButton className="lobby__settingsbutton" onClick={() => toggleLobbySettings()} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -67,13 +60,14 @@ const LobbyContent = () => {
   };
 
   const CopyRoomCode = () => {
-    navigator.clipboard.writeText('ABCDE');
+    const roomCode = sessionStorage.getItem('roomCode');
+    if (roomCode) navigator.clipboard.writeText(roomCode);
   };
 
   return (
     <>
       <span className="lobby__title" onClick={CopyRoomCode}>
-        Room Code: ABCDE
+        Room Code: {sessionStorage.getItem('roomCode')}
       </span>
       <div className="lobby__info">
         <span className="lobby__players">0</span>

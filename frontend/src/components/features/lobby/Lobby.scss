@@ -1,4 +1,6 @@
+@use "sass:color";
 @import '../../../common/styles/_variables.scss';
+
 
 .lobby {
   gap: 15px;
@@ -22,6 +24,15 @@
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     color: $darkerPrimaryColor;
+
+    &:hover {
+      color: color.adjust($darkerPrimaryColor, $lightness: 10%);
+      cursor:pointer;
+    }
+
+    &:active {
+      color: $darkerPrimaryColor;
+    }
   }
 
   &__info {
