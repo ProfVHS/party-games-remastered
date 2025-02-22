@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../ui/button/Button.tsx';
 import { socket } from '../../../socket.ts';
 import { useJoinRoom } from '../../../hooks/useJoinRoom.ts';
+import { setSessionVariables } from '../../../utils.ts';
 
 interface FormInputs {
   nickname: string;
@@ -31,8 +32,7 @@ export const CreateForm = ({ onCancel }: CreateFormProps) => {
     const randomCode = randomRoomCode();
     const nickname = data.nickname || 'RandomNickname';
 
-    sessionStorage.setItem('roomCode', randomCode);
-    sessionStorage.setItem('nickname', nickname);
+    setSessionVariables(randomCode, nickname);
 
     socket.emit('create_room', randomCode, nickname);
   };

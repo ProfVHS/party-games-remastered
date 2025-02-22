@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../ui/button/Button.tsx';
 import { socket } from '../../../socket.ts';
 import { useJoinRoom } from '../../../hooks/useJoinRoom.ts';
+import { setSessionVariables } from '../../../utils.ts';
 
 type FormInputs = {
   nickname: string;
@@ -20,8 +21,7 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
   const handleJoin: SubmitHandler<FormInputs> = (data) => {
     const nickname = data.nickname || 'RandomNickname';
 
-    sessionStorage.setItem('roomCode', data.room);
-    sessionStorage.setItem('nickname', nickname);
+    setSessionVariables(data.room, nickname);
 
     socket.emit('join_room', data.room, nickname);
   };
