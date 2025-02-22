@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { socket } from '../socket';
 
-type useJoinRoomProps = {
+type useFetchPlayersReadyProps = {
   setPlayersReady: Dispatch<SetStateAction<number>>;
 };
 
-export const useFetchPlayersReady = ({ setPlayersReady }: useJoinRoomProps) => {
+export const useFetchPlayersReady = ({ setPlayersReady }: useFetchPlayersReadyProps) => {
   useEffect(() => {
     socket.on('fetch_players_ready', (readyCount: number) => {
       setPlayersReady(readyCount);

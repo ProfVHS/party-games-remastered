@@ -1,59 +1,53 @@
 import { client } from '../config/db';
 
 export async function createRoom(roomCode: string, nickname: string) {
-  await client.hSet(`room:${roomCode}:status`, {
-    minigame: 'null',
-    state: 'waiting',
-  });
+  const statusKey = `room:${roomCode}:status`;
+  const playersKey = `room:${roomCode}:players`;
+  const leaderboardKey = `room:${roomCode}:leaderboard`;
+  const readySetKey = `room:${roomCode}:readyPlayers`;
 
-  await client.hSet(`room:${roomCode}:players`, {
-    [nickname]: JSON.stringify({ points: 0, isAlive: true }),
-  });
-
-  await client.zAdd(`room:${roomCode}:leaderboard`, { score: 0, value: `${nickname}` });
-
-  const exists = await client.exists(`room:${roomCode}:readyPlayers`);
-  if (!exists) await client.sAdd(`room:${roomCode}:readyPlayers`, '__init__');
+  const multi = client.multi();
+  multi.hSet(statusKey, { minigame: 'null', state: 'waiting' });
+  multi.hSet(playersKey, { [nickname]: JSON.stringify({ points: 0, isAlive: true }) });
+  multi.zAdd(leaderboardKey, { score: 0, value: nickname });
+  multi.sAdd(readySetKey, '__init__');
+  await multi.exec();
 }
 
 export async function joinRoom(roomCode: string, nickname: string) {
   const playersKey = `room:${roomCode}:players`;
+  const leaderboardKey = `room:${roomCode}:leaderboard`;
   const readySetKey = `room:${roomCode}:readyPlayers`;
 
-  const exists = await client.exists(playersKey);
-  if (!exists) {
-    return -1;
-  }
+  const [exists, playerCount] = await Promise.all([client.exists(playersKey), client.hLen(playersKey)]);
 
-  const playerCount = await client.hLen(playersKey);
-  if (playerCount === 8) {
-    return await client.sCard(readySetKey);
-  }
+  if (!exists) return -1;
+  if (playerCount === 8) return client.sCard(readySetKey);
 
-  await client.hSet(playersKey, nickname, JSON.stringify({ points: 0, isAlive: true }));
-  await client.zAdd(`room:${roomCode}:leaderboard`, { score: 0, value: `${nickname}` });
+  const multi = client.multi();
+  multi.hSet(playersKey, nickname, JSON.stringify({ points: 0, isAlive: true }));
+  multi.zAdd(leaderboardKey, { score: 0, value: nickname });
+  await multi.exec();
 
-  return await client.sCard(readySetKey);
+  return client.sCard(readySetKey);
 }
 
 export async function toggleReady(roomCode: string, nickname: string) {
-  const playerKey = `room:${roomCode}:players`;
+  const playersKey = `room:${roomCode}:players`;
   const readySetKey = `room:${roomCode}:readyPlayers`;
 
-  const playerData = await client.hGet(playerKey, nickname);
+  const [playerData, isReady] = await Promise.all([client.hGet(playersKey, nickname), client.sIsMember(readySetKey, nickname)]);
+
   if (!playerData) return false;
 
-  const isReady = await client.sIsMember(readySetKey, nickname);
   const multi = client.multi();
-
   if (isReady) {
     multi.sRem(readySetKey, nickname);
   } else {
     multi.sAdd(readySetKey, nickname);
     multi.sRem(readySetKey, '__init__');
   }
-
   await multi.exec();
 
-  return await client.sCard(readySetKey);
+  return client.sCard(readySetKey);
 }
