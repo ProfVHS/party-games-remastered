@@ -1,4 +1,5 @@
-@import '../../../common/styles/_variables.scss';
+@use "sass:color";
+@use '../../../common/styles/_variables.scss' as *;
 
 .minigames-list {
   display: grid;
@@ -67,7 +68,7 @@
 
       width: 100%;
 
-      border: 2px solid darken($color, 10%);
+      border: 2px solid color.adjust($color, $lightness: -10%);
       border-radius: 4px;
 
       display: flex;
