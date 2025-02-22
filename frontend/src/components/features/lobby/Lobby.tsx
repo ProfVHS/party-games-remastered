@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
 import { LobbySettingsType } from '../../../types';
+import { useToast } from '../../../hooks/useToast.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -61,19 +62,21 @@ export const Lobby = () => {
 
 const LobbyContent = () => {
   const [ready, setReady] = useState(false);
+  const toast = useToast();
 
   const toggleReady = () => {
     setReady((prevReady) => !prevReady);
   };
 
-  const CopyRoomCode = () => {
+  const handleCopyRoomCode = () => {
     navigator.clipboard.writeText('ABCDE');
+    toast.info({ message: 'Room code copied!', duration: 5 });
   };
 
   return (
     <>
-      <span className="lobby__title" onClick={CopyRoomCode}>
-        Room Code: ABCDE
+      <span className="lobby__title">
+        Room Code: <span className="lobby__code" onClick={handleCopyRoomCode}>ABCDE</span>
       </span>
       <div className="lobby__info">
         <span className="lobby__players">0</span>
