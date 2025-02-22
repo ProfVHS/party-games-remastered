@@ -3,8 +3,7 @@ import { Button } from '../../ui/button/Button';
 import { useState } from 'react';
 import { LobbySettings } from '../lobbySettings/LobbySettings';
 import { socket } from '../../../socket.ts';
-import { useToggleReady } from '../../../hooks/useToggleReady.ts';
-import { useFetchPlayersReady } from '../../../hooks/useFetchPlayersReady.ts';
+import { useSyncReadyPlayers } from '../../../hooks/useSyncReadyPlayers.ts';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -59,8 +58,7 @@ const LobbyContent = () => {
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
 
-  useToggleReady({ setPlayersReady });
-  useFetchPlayersReady({ setPlayersReady });
+  useSyncReadyPlayers({ setPlayersReady });
 
   const toggleReady = () => {
     const nickname = sessionStorage.getItem('nickname');
@@ -69,7 +67,7 @@ const LobbyContent = () => {
     setReady((prevReady) => !prevReady);
 
     if (nickname && roomCode) {
-      socket.emit('toggle_ready_client', roomCode, nickname);
+      socket.emit('toggle_player_ready', roomCode, nickname);
     }
   };
 

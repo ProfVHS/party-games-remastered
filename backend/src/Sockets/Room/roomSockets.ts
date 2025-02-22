@@ -16,12 +16,12 @@ export const roomSockets = (socket: Socket) => {
     const readyCount = await joinRoom(roomCode, nickname);
 
     socket.nsp.to(socket.id).emit('joined_room');
-    socket.nsp.to(socket.id).emit('fetch_players_ready', readyCount);
+    socket.nsp.to(socket.id).emit('fetched_players_ready', readyCount);
   });
 
-  socket.on('toggle_ready_client', async (roomCode: string, nickname: string) => {
+  socket.on('toggle_player_ready', async (roomCode: string, nickname: string) => {
     const readyCount = await toggleReady(roomCode, nickname);
 
-    socket.nsp.in(roomCode).emit('toggle_ready_server', readyCount);
+    socket.nsp.in(roomCode).emit('toggled_player_ready', readyCount);
   });
 };

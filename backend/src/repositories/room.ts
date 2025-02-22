@@ -4,13 +4,11 @@ export async function createRoom(roomCode: string, nickname: string) {
   const statusKey = `room:${roomCode}:status`;
   const playersKey = `room:${roomCode}:players`;
   const leaderboardKey = `room:${roomCode}:leaderboard`;
-  const readySetKey = `room:${roomCode}:readyPlayers`;
 
   const multi = client.multi();
   multi.hSet(statusKey, { minigame: 'null', state: 'waiting' });
   multi.hSet(playersKey, { [nickname]: JSON.stringify({ points: 0, isAlive: true }) });
   multi.zAdd(leaderboardKey, { score: 0, value: nickname });
-  multi.sAdd(readySetKey, '__init__');
   await multi.exec();
 }
 
@@ -41,13 +39,14 @@ export async function toggleReady(roomCode: string, nickname: string) {
   if (!playerData) return false;
 
   const multi = client.multi();
+
   if (isReady) {
     multi.sRem(readySetKey, nickname);
   } else {
     multi.sAdd(readySetKey, nickname);
-    multi.sRem(readySetKey, '__init__');
   }
+
   await multi.exec();
 
-  return client.sCard(readySetKey);
+  return await client.sCard(readySetKey);
 }
