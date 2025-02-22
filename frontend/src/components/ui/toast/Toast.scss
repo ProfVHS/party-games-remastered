@@ -1,11 +1,7 @@
 .alert {
+  position: relative;
   display: flex;
   align-items: center;
-  position: fixed;
-
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
 
   padding: 8px 32px 8px 8px;
 

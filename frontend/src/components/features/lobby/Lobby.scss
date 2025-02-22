@@ -34,6 +34,10 @@
     }
   }
 
+  &__code{
+    cursor: pointer;
+  }
+
   &__info {
     display: flex;
     justify-content: center;

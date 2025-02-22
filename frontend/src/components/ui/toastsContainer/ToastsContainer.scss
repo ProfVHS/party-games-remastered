@@ -1,0 +1,17 @@
+.toasts-container{
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 30%;
+  min-width: 375px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column-reverse;
+  gap: 6px;
+
+  z-index: 100;
+}
