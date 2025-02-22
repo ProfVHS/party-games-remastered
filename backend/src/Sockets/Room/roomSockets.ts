@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { createRoom, joinRoom } from '../../repositories/room';
+import { createRoom, joinRoom, toggleReady } from '../../repositories/room';
 
 export const roomSockets = (socket: Socket) => {
   socket.on('create_room', async (roomCode: string, nickname: string) => {
@@ -13,8 +13,15 @@ export const roomSockets = (socket: Socket) => {
   socket.on('join_room', async (roomCode: string, nickname: string) => {
     socket.join(roomCode);
 
-    await joinRoom(roomCode, nickname);
+    const readyCount = await joinRoom(roomCode, nickname);
 
     socket.nsp.to(socket.id).emit('joined_room');
+    socket.nsp.to(socket.id).emit('fetch_players_ready', readyCount);
+  });
+
+  socket.on('toggle_ready_client', async (roomCode: string, nickname: string) => {
+    const readyCount = await toggleReady(roomCode, nickname);
+
+    socket.nsp.in(roomCode).emit('toggle_ready_server', readyCount);
   });
 };

@@ -20,6 +20,9 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
   const handleJoin: SubmitHandler<FormInputs> = (data) => {
     const nickname = data.nickname || 'RandomNickname';
 
+    sessionStorage.setItem('roomCode', data.room);
+    sessionStorage.setItem('nickname', nickname);
+
     socket.emit('join_room', data.room, nickname);
   };
 

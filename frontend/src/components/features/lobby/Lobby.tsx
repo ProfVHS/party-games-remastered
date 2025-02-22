@@ -2,6 +2,9 @@ import './Lobby.scss';
 import { Button } from '../../ui/button/Button';
 import { useState } from 'react';
 import { LobbySettings } from '../lobbySettings/LobbySettings';
+import { socket } from '../../../socket.ts';
+import { useToggleReady } from '../../../hooks/useToggleReady.ts';
+import { useFetchPlayersReady } from '../../../hooks/useFetchPlayersReady.ts';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -54,9 +57,20 @@ export const Lobby = () => {
 
 const LobbyContent = () => {
   const [ready, setReady] = useState(false);
+  const [playersReady, setPlayersReady] = useState(0);
+
+  useToggleReady({ setPlayersReady });
+  useFetchPlayersReady({ setPlayersReady });
 
   const toggleReady = () => {
+    const nickname = sessionStorage.getItem('nickname');
+    const roomCode = sessionStorage.getItem('roomCode');
+
     setReady((prevReady) => !prevReady);
+
+    if (nickname && roomCode) {
+      socket.emit('toggle_ready_client', roomCode, nickname);
+    }
   };
 
   const CopyRoomCode = () => {
@@ -70,7 +84,7 @@ const LobbyContent = () => {
         Room Code: {sessionStorage.getItem('roomCode')}
       </span>
       <div className="lobby__info">
-        <span className="lobby__players">0</span>
+        <span className="lobby__players">{playersReady}</span>
         <span className="lobby__text">Players ready</span>
       </div>
       <Button style={{ width: '75%' }} onClick={toggleReady}>
