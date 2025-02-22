@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Button } from '../../ui/button/Button';
 import './LobbySettings.scss';
 import { AnimatePresence } from 'framer-motion';
-import { AlertType, LobbySettingsType, Minigame } from '../../../types';
-import { Alert } from '../../ui/alert/Alert.tsx';
+import { LobbySettingsType, Minigame } from '../../../types';
 import { NumberPicker } from '../../ui/numberPicker/NumberPicker.tsx';
 import { Switch } from '../../ui/switch/Switch.tsx';
 import { Modal } from '../../ui/modal/Modal.tsx';
 import { MinigamesList } from '../minigamesList/MinigamesList.tsx';
+import { useToast } from '../../../hooks/useToast.ts';
 
 type LobbySettingsProps = {
   onCancel: () => void;
@@ -21,23 +21,19 @@ export const LobbySettings = ({
                                 setLobbySettings
                               }: LobbySettingsProps) => {
   const [minigamesModal, setMinigamesModal] = useState(false);
-  const [showAlert, setShowAlert] = useState<AlertType | null>(null);
 
   const [newSettings, setNewSettings] =
     useState<LobbySettingsType>(lobbySettings);
 
+  const toast = useToast();
+
   const handleSave = () => {
     if (!newSettings.isRandomMinigames) {
       if (newSettings.minigames === null || newSettings.minigames!.length < 2) {
-        setShowAlert({
-          message: 'Please select at least two minigame',
-          type: 'error',
-          duration: 5
-        });
+        toast.error({ message: 'Please select at least two minigame', duration: 5 });
         return;
       }
     }
-    setShowAlert(null);
     setLobbySettings(newSettings);
     onCancel();
   };
@@ -118,7 +114,6 @@ export const LobbySettings = ({
           </Modal>
         )}
       </AnimatePresence>
-      {showAlert && <Alert {...showAlert} onClose={() => setShowAlert(null)} />}
     </div>
   );
 };
