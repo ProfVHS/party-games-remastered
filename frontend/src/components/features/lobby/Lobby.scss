@@ -1,3 +1,4 @@
+@use "sass:color";
 @use '../../../common/styles/_variables.scss' as *;
 
 .lobby {
@@ -26,6 +27,14 @@
 
   &__code{
     cursor: pointer;
+
+    &:hover {
+      color: color.adjust($darkerPrimaryColor, $lightness: 10%);
+    }
+
+    &:active {
+      color: $darkerPrimaryColor;
+    }
   }
 
   &__info {
