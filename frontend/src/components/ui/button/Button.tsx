@@ -26,19 +26,11 @@ export const Button = ({
                        }: ButtonProps) => {
   return (
     <button
-      className={[
-        `button`,
-        `button--${variant}`,
-        `button--${color}Color`,
-        `button--${size}Size`,
-        `${className}`
-      ].join(' ')}
+      className={[`button`, `button--${variant}`, `button--${color}Color`, `button--${size}Size`, `${className}`].join(' ')}
       type={type}
       style={style}
       onClick={onClick}
-      disabled={isDisabled}
-    >
+      disabled={isDisabled}>
       {children}
-    </button>
-  );
+    </button>);
 };

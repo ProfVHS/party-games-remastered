@@ -13,11 +13,14 @@
   min-width: 375px;
 
   color: rgba(#000, 0.6);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
   font-weight: 600;
 
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 0 0 4px 2px rgba(#000, 0.1);
+  overflow: hidden;
 
   &__progress {
     position: absolute;
