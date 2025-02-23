@@ -1,11 +1,12 @@
 import './Form.scss';
 
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../ui/button/Button.tsx';
 import { socket } from '../../../socket.ts';
 import { useJoinRoom } from '../../../hooks/useJoinRoom.ts';
 import { generateRandomUserName, setSessionVariables } from '../../../utils.ts';
 import { useRoomNotFound } from '../../../hooks/useRoomNotFound.ts';
+import { useToast } from '../../../hooks/useToast.ts';
 
 type FormInputs = {
   nickname: string;
@@ -19,6 +20,8 @@ type JoinFormProps = {
 export const JoinForm = ({ onCancel }: JoinFormProps) => {
   const { register, handleSubmit, setValue } = useForm<FormInputs>();
 
+  const toast = useToast();
+
   const handleJoin: SubmitHandler<FormInputs> = (data) => {
     const nickname = data.nickname || generateRandomUserName();
 
@@ -29,18 +32,30 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
     setValue('room', '');
   };
 
+  const handleShowToast = (error: FieldErrors<FormInputs>) => {
+    if (error.room) {
+      toast.error({ message: error.room.message!, duration: 5 });
+    }
+  };
+
   useJoinRoom();
   useRoomNotFound();
 
   return (
-    <form className="form" onSubmit={handleSubmit(handleJoin)} onReset={onCancel}>
-      <input className="form-input" style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" {...register('nickname')} />
+    <form className="form" onSubmit={handleSubmit(handleJoin, handleShowToast)} onReset={onCancel}>
+      <input className="form-input" style={{ width: '100%' }} type="text" id="name"
+             placeholder="Nickname" {...register('nickname')} />
 
       <div className="form__row">
         <Button style={{ width: '50%' }} type="submit">
           Join
         </Button>
-        <input className="form-input" style={{ width: '50%' }} type="text" id="room" placeholder="Room Code" {...register('room', { required: true, maxLength: 5 })} />
+        <input className="form-input" style={{ width: '50%' }} type="text" id="room"
+               placeholder="Room Code" {...register('room', {
+          required: 'You have to enter a room code!',
+          minLength: { value: 5, message: 'The room code must have 5 characters' },
+          maxLength: { value: 5, message: 'The room code must have 5 characters' }
+        })} />
       </div>
       <Button style={{ width: '100%' }} type="reset">
         Go Back
