@@ -21,6 +21,6 @@ body {
     background-position: 0 0;
   }
   100% {
-    background-position: 500px 500px; /* Move background 500px to the right and down */
+    background-position: 500px 500px;
   }
 }
