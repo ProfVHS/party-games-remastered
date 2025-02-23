@@ -3,9 +3,10 @@ import { socket } from '../socket';
 
 type useFetchPlayersReadyProps = {
   setPlayersReady: Dispatch<SetStateAction<number>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
-export const useSyncReadyPlayers = ({ setPlayersReady }: useFetchPlayersReadyProps) => {
+export const useSyncReadyPlayers = ({ setPlayersReady, setIsLoading }: useFetchPlayersReadyProps) => {
   useEffect(() => {
     socket.on('fetched_players_ready', (readyCount: number) => {
       setPlayersReady(readyCount);
@@ -13,6 +14,7 @@ export const useSyncReadyPlayers = ({ setPlayersReady }: useFetchPlayersReadyPro
 
     socket.on('toggled_player_ready', (readyCount: number) => {
       setPlayersReady(readyCount);
+      setIsLoading(false);
     });
 
     return () => {
