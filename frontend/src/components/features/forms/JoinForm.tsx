@@ -5,6 +5,7 @@ import { Button } from '../../ui/button/Button.tsx';
 import { socket } from '../../../socket.ts';
 import { useJoinRoom } from '../../../hooks/useJoinRoom.ts';
 import { setSessionVariables } from '../../../utils.ts';
+import { useRoomNotFound } from '../../../hooks/useRoomNotFound.ts';
 
 type FormInputs = {
   nickname: string;
@@ -16,7 +17,7 @@ type JoinFormProps = {
 };
 
 export const JoinForm = ({ onCancel }: JoinFormProps) => {
-  const { register, handleSubmit } = useForm<FormInputs>();
+  const { register, handleSubmit, setValue } = useForm<FormInputs>();
 
   const handleJoin: SubmitHandler<FormInputs> = (data) => {
     const nickname = data.nickname || 'RandomNickname';
@@ -24,9 +25,12 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
     setSessionVariables(data.room, nickname);
 
     socket.emit('join_room', data.room, nickname);
+
+    setValue('room', '');
   };
 
   useJoinRoom();
+  useRoomNotFound();
 
   return (
     <form className="form" onSubmit={handleSubmit(handleJoin)} onReset={onCancel}>
