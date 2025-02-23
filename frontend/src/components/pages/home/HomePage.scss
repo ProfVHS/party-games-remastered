@@ -1,4 +1,4 @@
-@import "../../../common/styles/_variables";
+@use "../../../common/styles/_variables" as *;
 
 .home-page {
   width: 100vw;
