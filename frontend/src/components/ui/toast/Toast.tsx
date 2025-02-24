@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from './ToastIcons.tsx';
 import './Toast.scss';
 import { motion, useAnimate } from 'framer-motion';
 import { useToast } from '../../../hooks/useToast.ts';
+import { Icon } from '../../../assets/icon';
 
 type ToastType = {
   id: number;
@@ -30,17 +30,17 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
 
   useEffect(() => {
 
-    if(autoDismiss){
+    if (autoDismiss) {
       timer.current = setTimeout(() => {
-        exitAnimation().then(() => handleDismiss())
-      }, (duration*1000) + 1000);
+        exitAnimation().then(() => handleDismiss());
+      }, (duration * 1000) + 1000);
 
       return () => {
         clearTimeout(timer.current);
-      }
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   const exitAnimation = async () => {
     await animate(
@@ -48,9 +48,9 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
       { opacity: [1, 0], scale: [1, 0] },
       { duration: 0.5 }
     );
-  }
+  };
 
-  const handleDismiss = () => toast.remove(id)
+  const handleDismiss = () => toast.remove(id);
 
   return (
     <motion.div
@@ -59,15 +59,15 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
     >
       <motion.div
         className="alert__progress"
-        initial={{width: '100%'}}
-        animate={{width: '0%'}}
-        transition={{duration, ease: 'linear'}}
+        initial={{ width: '100%' }}
+        animate={{ width: '0%' }}
+        transition={{ duration, ease: 'linear' }}
       />
       <div className="alert__icon">
-        {type === 'success' && <SuccessIcon width={24} height={24} />}
-        {type === 'error' && <ErrorIcon width={24} height={24} />}
-        {type === 'warning' && <WarningIcon width={24} height={24} />}
-        {type === 'info' && <InfoIcon width={24} height={24} />}
+        {type === 'success' && <Icon icon="Success" />}
+        {type === 'error' && <Icon icon="Error" />}
+        {type === 'warning' && <Icon icon="Warning" />}
+        {type === 'info' && <Icon icon="Info" />}
       </div>
       <div className="alert__message">{message}</div>
     </motion.div>
