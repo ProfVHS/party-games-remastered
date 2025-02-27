@@ -1,8 +1,8 @@
 @use '../../../common/styles/variables' as *;
 
 .player-avatar {
-  width: 386px;
-  height: 280px;
+  width: 15vw;
+  aspect-ratio: 10/9;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,16 +17,19 @@
   }
 
   &__username {
+    font-size: 1.3vw;
     color: $darkerPrimaryColor;
   }
 
   &__image {
+    width: 13vw;
+    aspect-ratio: 10/6;
     background-color: #1e1e1e;
   }
 
   &__score {
     color: $secondaryColor;
-    font-size: 28px;
+    font-size: 1.4vw;
   }
 }
 

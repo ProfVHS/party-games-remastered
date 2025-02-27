@@ -8,6 +8,10 @@ const MockPlayersArr: Player[] = [
   { name: 'Player 2', score: 0 },
   { name: 'Player 3', score: 0 },
   { name: 'Player 4', score: 0 },
+  { name: 'Player 1', score: 0 },
+  { name: 'Player 2', score: 0 },
+  { name: 'Player 3', score: 0 },
+  { name: 'Player 4', score: 0 },
 ];
 
 export const RoomPage = () => {
