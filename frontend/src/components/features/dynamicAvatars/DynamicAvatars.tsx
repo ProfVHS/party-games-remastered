@@ -1,74 +1,67 @@
 import './DynamicAvatars.scss';
-
-const PlayerPositions = [
-  [{ top: '5%', left: '50%', transform: 'translateX(-50%)' }],
-  [
-    { top: '50%', left: '10%', transform: 'translateY(-50%)' },
-    { top: '50%', right: '10%', transform: 'translateY(-50%)' },
-  ],
-  [
-    { top: '10%', left: '50%', transform: 'translateX(-50%)' },
-    { bottom: '10%', left: '20%' },
-    { bottom: '10%', right: '20%' },
-  ],
-  [
-    { top: '10%', left: '50%', transform: 'translateX(-50%)' },
-    { top: '50%', left: '10%', transform: 'translateY(-50%)' },
-    { bottom: '10%', left: '50%', transform: 'translateX(-50%)' },
-    { top: '50%', right: '10%', transform: 'translateY(-50%)' },
-  ],
-  [
-    { top: '10%', left: '50%', transform: 'translateX(-50%)' },
-    { top: '30%', left: '15%' },
-    { bottom: '10%', left: '30%' },
-    { bottom: '10%', right: '30%' },
-    { top: '30%', right: '15%' },
-  ],
-  [
-    { top: '10%', left: '50%', transform: 'translateX(-50%)' },
-    { top: '30%', left: '15%' },
-    { bottom: '20%', left: '15%' },
-    { bottom: '10%', left: '50%', transform: 'translateX(-50%)' },
-    { bottom: '20%', right: '15%' },
-    { top: '30%', right: '15%' },
-  ],
-  [
-    { top: '10%', left: '50%', transform: 'translateX(-50%)' },
-    { top: '25%', left: '18%' },
-    { bottom: '5%', left: '18%' },
-    { bottom: '20%', left: '50%', transform: 'translateX(-50%)' },
-    { bottom: '5%', right: '18%' },
-    { top: '25%', right: '18%' },
-    { top: '50%', left: '50%', transform: 'translateX(-50%)' },
-  ],
-  [
-    { top: '10%', left: '50%', transform: 'translateX(-50%)' },
-    { top: '20%', left: '20%' },
-    { bottom: '10%', left: '20%' },
-    { bottom: '20%', left: '50%', transform: 'translateX(-50%)' },
-    { bottom: '10%', right: '20%' },
-    { top: '20%', right: '20%' },
-    { top: '50%', left: '30%' },
-    { top: '50%', right: '30%' },
-  ],
-];
+import { Player } from '../../../types/index';
 
 type DynamicAvatarProps = {
-  playersReady: number;
+  players: Player[];
   children: React.ReactNode;
 };
 
-const DynamicAvatars = ({ playersReady, children }: DynamicAvatarProps) => {
-  if (playersReady < 1 || playersReady > PlayerPositions.length) return null;
+const DynamicAvatars = ({ players, children }: DynamicAvatarProps) => {
+  if (players.length < 1) return null;
+
+  const renderPlayer = () => {
+    const avatarPositionsIndex = players.length - 1;
+    const avatarPositionsArray = avatarPositions[avatarPositionsIndex];
+    return players.map((player, index) => (
+      <div key={index} className={`player-avatar ${avatarPositionsArray[index].style}`}>
+        <h2 className="player-avatar__username">{player.name}</h2>
+        <img className="player-avatar__image" src="https://placehold.co/316x190" alt="Player Avatar" />
+        <h2 className="player-avatar__score">Score: {player.score}</h2>
+      </div>
+    ));
+  };
 
   return (
     <div className="lobby-container">
-      {children}
-      {PlayerPositions[playersReady - 1].map((position, index) => (
-        <div key={index} className="player-avatar" style={position}></div>
-      ))}
+      <div className="lobby-container__lobby-form">{children}</div>
+      {renderPlayer()}
     </div>
   );
 };
 
 export default DynamicAvatars;
+
+const avatarPositions = [
+  [{ style: 'pos-top' }],
+  [{ style: 'pos-left' }, { style: 'pos-right' }],
+  [{ style: 'pos-top-left' }, { style: 'pos-top' }, { style: 'pos-top-right' }],
+  [{ style: 'pos-top-left' }, { style: 'pos-top-right' }, { style: 'pos-bottom-left' }, { style: 'pos-bottom-right' }],
+  [{ style: 'pos-left' }, { style: 'pos-top-left' }, { style: 'pos-top' }, { style: 'pos-top-right' }, { style: 'pos-right' }],
+  [
+    { style: 'pos-top-left' },
+    { style: 'pos-top' },
+    { style: 'pos-top-right' },
+    { style: 'pos-bottom-left' },
+    { style: 'pos-bottom' },
+    { style: 'pos-bottom-right' },
+  ],
+  [
+    { style: 'pos-top-left' },
+    { style: 'pos-top' },
+    { style: 'pos-top-right' },
+    { style: 'pos-left' },
+    { style: 'pos-bottom-left' },
+    { style: 'pos-bottom' },
+    { style: 'pos-bottom-right' },
+  ],
+  [
+    { style: 'pos-top-left' },
+    { style: 'pos-top' },
+    { style: 'pos-top-right' },
+    { style: 'pos-left' },
+    { style: 'pos-right' },
+    { style: 'pos-bottom-left' },
+    { style: 'pos-bottom' },
+    { style: 'pos-bottom-right' },
+  ],
+];

@@ -1,34 +1,91 @@
+@use '../../../common/styles/variables' as *;
+
 .lobby-container {
   position: relative;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
-}
+  justify-items: center;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 
-.lobby-form {
-  width: 33%;
-  height: 33%;
-  background-color: #e2e8f0;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
+  &__lobby-form {
+    grid-row: 2;
+    grid-column: 2;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .player-avatar {
-  position: absolute;
-  width: 4rem;
-  height: 4rem;
-  background-color: #3b82f6;
-  border-radius: 50%;
+  width: 386px;
+  height: 280px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  color: white;
-  z-index: 0;
+  justify-content: space-evenly;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px #c3c1b7;
+
+  h2 {
+    padding: 0px;
+    margin: 0px;
+  }
+
+  &__username {
+    color: $darkerPrimaryColor;
+  }
+
+  &__image {
+    background-color: #1e1e1e;
+  }
+
+  &__score {
+    color: $secondaryColor;
+    font-size: 28px;
+  }
+}
+
+.pos-top-left {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.pos-top {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.pos-top-right {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.pos-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.pos-bottom-right {
+  grid-column: 3;
+  grid-row: 3;
+}
+
+.pos-bottom {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.pos-bottom-left {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.pos-left {
+  grid-column: 1;
+  grid-row: 2;
 }

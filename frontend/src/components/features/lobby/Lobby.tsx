@@ -60,7 +60,7 @@ const LobbyContent = () => {
   const [playersReady, setPlayersReady] = useState(0);
 
   useSyncReadyPlayers({ setPlayersReady });
-  
+
   const toast = useToast();
 
   const toggleReady = () => {
@@ -79,13 +79,16 @@ const LobbyContent = () => {
     if (roomCode) {
       navigator.clipboard.writeText(roomCode);
       toast.info({ message: 'Room code copied!', duration: 5 });
-    } 
+    }
   };
 
   return (
     <>
       <span className="lobby__title">
-        Room Code: <span className="lobby__code" onClick={handleCopyRoomCode}>{sessionStorage.getItem('roomCode')}</span>
+        Room Code:{' '}
+        <span className="lobby__code" onClick={handleCopyRoomCode}>
+          {sessionStorage.getItem('roomCode')}
+        </span>
       </span>
       <div className="lobby__info">
         <span className="lobby__players">{playersReady}</span>
