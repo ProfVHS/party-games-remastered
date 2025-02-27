@@ -8,25 +8,15 @@ import { Icon } from '../../../assets/icon';
 
 export const HomePage = () => {
   const [scope, animate] = useAnimate();
-  const [status, setStatus] = useState<'selecting' | 'join' | 'create'>(
-    'selecting'
-  );
+  const [status, setStatus] = useState<'selecting' | 'join' | 'create'>('selecting');
 
   const changeStatus = async (status: 'join' | 'create') => {
-    animate(
-      scope.current,
-      { scale: [1, 0.5], opacity: [1, 0] },
-      { duration: 0.5, type: 'spring' }
-    );
+    animate(scope.current, { scale: [1, 0.5], opacity: [1, 0] }, { duration: 0.5, type: 'spring' });
     setStatus(status);
   };
 
   useEffect(() => {
-    animate(
-      scope.current,
-      { scale: [0.5, 1], opacity: [0, 1] },
-      { duration: 0.5, type: 'spring' }
-    );
+    animate(scope.current, { scale: [0.5, 1], opacity: [0, 1] }, { duration: 0.5, type: 'spring' });
   }, [animate, scope, status]);
 
   return (
@@ -37,26 +27,16 @@ export const HomePage = () => {
         <div className="home-page__forms" ref={scope}>
           {status === 'selecting' && (
             <>
-              <Button
-                style={{ width: '50%' }}
-                onClick={() => changeStatus('create')}
-              >
+              <Button style={{ width: '50%' }} onClick={() => changeStatus('create')}>
                 Create Room
               </Button>
-              <Button
-                style={{ width: '50%' }}
-                onClick={() => changeStatus('join')}
-              >
+              <Button style={{ width: '50%' }} onClick={() => changeStatus('join')}>
                 Join Room
               </Button>
             </>
           )}
-          {status === 'join' && (
-            <JoinForm onCancel={() => setStatus('selecting')} />
-          )}
-          {status === 'create' && (
-            <CreateForm onCancel={() => setStatus('selecting')} />
-          )}
+          {status === 'join' && <JoinForm onCancel={() => setStatus('selecting')} />}
+          {status === 'create' && <CreateForm onCancel={() => setStatus('selecting')} />}
         </div>
       </div>
     </div>

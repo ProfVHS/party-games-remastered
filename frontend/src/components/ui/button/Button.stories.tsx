@@ -6,9 +6,9 @@ const meta = {
   component: Button,
   parameters: {
     controls: {
-      exclude: ['className', 'onClick', 'style']
-    }
-  }
+      exclude: ['className', 'onClick', 'style'],
+    },
+  },
 } satisfies Meta<typeof Button>;
 
 export default meta;
@@ -22,6 +22,6 @@ export const Default: Story = {
     color: 'primary',
     variant: 'square',
     isDisabled: false,
-    type: 'reset'
-  }
+    type: 'reset',
+  },
 };

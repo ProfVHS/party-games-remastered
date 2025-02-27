@@ -20,20 +20,18 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
   const toast = useToast();
 
   useEffect(() => {
-    animate(
-      scope.current,
-      { opacity: [0, 1], scale: [0, 1] },
-      { type: 'spring', duration: 0.5 }
-    );
+    animate(scope.current, { opacity: [0, 1], scale: [0, 1] }, { type: 'spring', duration: 0.5 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-
     if (autoDismiss) {
-      timer.current = setTimeout(() => {
-        exitAnimation().then(() => handleDismiss());
-      }, (duration * 1000) + 1000);
+      timer.current = setTimeout(
+        () => {
+          exitAnimation().then(() => handleDismiss());
+        },
+        duration * 1000 + 1000,
+      );
 
       return () => {
         clearTimeout(timer.current);
@@ -43,26 +41,14 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
   }, []);
 
   const exitAnimation = async () => {
-    await animate(
-      scope.current,
-      { opacity: [1, 0], scale: [1, 0] },
-      { duration: 0.5 }
-    );
+    await animate(scope.current, { opacity: [1, 0], scale: [1, 0] }, { duration: 0.5 });
   };
 
   const handleDismiss = () => toast.remove(id);
 
   return (
-    <motion.div
-      className={`alert alert--${type}`}
-      ref={scope}
-    >
-      <motion.div
-        className="alert__progress"
-        initial={{ width: '100%' }}
-        animate={{ width: '0%' }}
-        transition={{ duration, ease: 'linear' }}
-      />
+    <motion.div className={`alert alert--${type}`} ref={scope}>
+      <motion.div className="alert__progress" initial={{ width: '100%' }} animate={{ width: '0%' }} transition={{ duration, ease: 'linear' }} />
       <div className="alert__icon">
         {type === 'success' && <Icon icon="Success" />}
         {type === 'error' && <Icon icon="Error" />}
