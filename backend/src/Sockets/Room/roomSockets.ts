@@ -11,12 +11,15 @@ export const roomSockets = (socket: Socket) => {
   });
 
   socket.on('join_room', async (roomCode: string, nickname: string) => {
-    socket.join(roomCode);
-
     const readyCount = await joinRoom(roomCode, nickname);
 
-    socket.nsp.to(socket.id).emit('joined_room');
-    socket.nsp.to(socket.id).emit('fetched_players_ready', readyCount);
+    if (readyCount === -1) {
+      socket.nsp.to(socket.id).emit('room_not_found');
+    } else {
+      socket.join(roomCode);
+      socket.nsp.to(socket.id).emit('joined_room');
+      socket.nsp.to(socket.id).emit('fetched_players_ready', readyCount);
+    }
   });
 
   socket.on('toggle_player_ready', async (roomCode: string, nickname: string) => {

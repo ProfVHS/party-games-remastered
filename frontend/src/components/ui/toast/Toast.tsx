@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from './ToastIcons.tsx';
 import './Toast.scss';
 import { motion, useAnimate } from 'framer-motion';
 import { useToast } from '../../../hooks/useToast.ts';
+import { Icon } from '../../../assets/icon';
 
 type ToastType = {
   id: number;
@@ -50,10 +50,10 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
     <motion.div className={`alert alert--${type}`} ref={scope}>
       <motion.div className="alert__progress" initial={{ width: '100%' }} animate={{ width: '0%' }} transition={{ duration, ease: 'linear' }} />
       <div className="alert__icon">
-        {type === 'success' && <SuccessIcon width={24} height={24} />}
-        {type === 'error' && <ErrorIcon width={24} height={24} />}
-        {type === 'warning' && <WarningIcon width={24} height={24} />}
-        {type === 'info' && <InfoIcon width={24} height={24} />}
+        {type === 'success' && <Icon icon="Success" />}
+        {type === 'error' && <Icon icon="Error" />}
+        {type === 'warning' && <Icon icon="Warning" />}
+        {type === 'info' && <Icon icon="Info" />}
       </div>
       <div className="alert__message">{message}</div>
     </motion.div>

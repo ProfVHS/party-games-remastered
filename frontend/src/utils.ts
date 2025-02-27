@@ -3,6 +3,11 @@ export function setSessionVariables(roomCode: string, nickname: string) {
   sessionStorage.setItem('nickname', nickname);
 }
 
+export function clearSessionVariables() {
+  sessionStorage.removeItem('roomCode');
+  sessionStorage.removeItem('nickname');
+}
+
 export const generateRandomUserName = () => {
   const adjectives = [
     'Ultra',

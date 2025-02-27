@@ -4,7 +4,7 @@ import { JoinForm } from '../../features/forms/JoinForm.tsx';
 import { CreateForm } from '../../features/forms/CreateForm.tsx';
 import { useEffect, useState } from 'react';
 import { useAnimate } from 'framer-motion';
-import logo from '../../../assets/textures/logo.svg';
+import { Icon } from '../../../assets/icon';
 
 export const HomePage = () => {
   const [scope, animate] = useAnimate();
@@ -22,7 +22,7 @@ export const HomePage = () => {
   return (
     <div className="home-page">
       <div className="home-page__content">
-        <img src={logo} alt="logo" draggable={false} />
+        <Icon icon={'Logo'} />
         <span className="home-page__title">Party Games</span>
         <div className="home-page__forms" ref={scope}>
           {status === 'selecting' && (
