@@ -43,19 +43,24 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
 
   return (
     <form className="form" onSubmit={handleSubmit(handleJoin, handleShowToast)} onReset={onCancel}>
-      <input className="form-input" style={{ width: '100%' }} type="text" id="name"
-             placeholder="Nickname" {...register('nickname')} />
+      <input className="form-input" style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" {...register('nickname')} />
 
       <div className="form__row">
         <Button style={{ width: '50%' }} type="submit">
           Join
         </Button>
-        <input className="form-input" style={{ width: '50%' }} type="text" id="room"
-               placeholder="Room Code" {...register('room', {
-          required: 'You have to enter a room code!',
-          minLength: { value: 5, message: 'The room code must have 5 characters' },
-          maxLength: { value: 5, message: 'The room code must have 5 characters' }
-        })} />
+        <input
+          className="form-input"
+          style={{ width: '50%' }}
+          type="text"
+          id="room"
+          placeholder="Room Code"
+          {...register('room', {
+            required: 'You have to enter a room code!',
+            minLength: { value: 5, message: 'The room code must have 5 characters' },
+            maxLength: { value: 5, message: 'The room code must have 5 characters' },
+          })}
+        />
       </div>
       <Button style={{ width: '100%' }} type="reset">
         Go Back
