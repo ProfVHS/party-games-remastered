@@ -1,12 +1,12 @@
-.lobby-container {
+.room-layout {
   position: relative;
   width: 100vw;
   height: 100vh;
   display: grid;
   align-items: center;
   justify-items: center;
-  grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
 
   &__lobby-form {
     grid-row: 2;

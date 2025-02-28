@@ -50,12 +50,7 @@ export const LobbySettings = ({ onCancel, lobbySettings, setLobbySettings }: Lob
       {newSettings.isRandomMinigames ? (
         <div className="lobby-settings__option">
           <span>Number of Minigames</span>
-          <NumberPicker
-            defaultNumber={lobbySettings.numberOfMinigames || 2}
-            min={2}
-            max={25}
-            onchange={(value) => setNewSettings({ ...newSettings, numberOfMinigames: value })}
-          />
+          <NumberPicker defaultNumber={lobbySettings.numberOfMinigames || 2} min={2} max={25} onchange={(value) => setNewSettings({ ...newSettings, numberOfMinigames: value })} />
         </div>
       ) : (
         <div className="lobby-settings__option">
@@ -86,11 +81,7 @@ export const LobbySettings = ({ onCancel, lobbySettings, setLobbySettings }: Lob
       <AnimatePresence>
         {minigamesModal && (
           <Modal onClose={() => setMinigamesModal(false)}>
-            <MinigamesList
-              onCancel={() => setMinigamesModal(false)}
-              onSave={(minigames: Minigame[]) => setNewSettings({ ...newSettings, minigames })}
-              minigames={newSettings.minigames || []}
-            />
+            <MinigamesList onCancel={() => setMinigamesModal(false)} onSave={(minigames: Minigame[]) => setNewSettings({ ...newSettings, minigames })} minigames={newSettings.minigames || []} />
           </Modal>
         )}
       </AnimatePresence>
