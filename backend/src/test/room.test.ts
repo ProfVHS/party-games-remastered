@@ -1,25 +1,16 @@
-import { it, describe, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import { vi, describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
 import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 
 describe('Socket IO Tests', () => {
-  let io: Server;
-  let serverSocket: Socket;
+  const httpServer: ReturnType<typeof createServer> = createServer();
+  const io: Server = new Server(httpServer);
   let clientSocket: ClientSocket;
-  let httpServer: ReturnType<typeof createServer>;
-
-  const roomCode = '12345';
-  const nickname1 = 'User1';
 
   beforeAll(async () => {
     // Create an HTTP server and Socket.io server
-    httpServer = createServer();
-    io = new Server(httpServer);
-
-    io.on('connection', (socket: Socket) => {
-      serverSocket = socket;
-    });
+    io.on('connection', (socket: Socket) => {});
 
     // Start server and wait until it's listening
     await new Promise<void>((resolve) => {
