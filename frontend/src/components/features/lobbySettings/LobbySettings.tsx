@@ -25,7 +25,10 @@ export const LobbySettings = ({ onCancel, lobbySettings, setLobbySettings }: Lob
   const handleSave = () => {
     if (!newSettings.isRandomMinigames) {
       if (newSettings.minigames === null || newSettings.minigames!.length < 2) {
-        toast.error({ message: 'Please select at least two minigame', duration: 5 });
+        toast.error({
+          message: 'Please select at least two minigame',
+          duration: 5,
+        });
         return;
       }
     }
