@@ -3,6 +3,7 @@ import './Toast.scss';
 import { motion, useAnimate } from 'framer-motion';
 import { useToast } from '../../../hooks/useToast.ts';
 import { Icon } from '../../../assets/icon';
+import classNames from 'classnames';
 
 type ToastType = {
   id: number;
@@ -47,7 +48,7 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
   const handleDismiss = () => toast.remove(id);
 
   return (
-    <motion.div className={`alert alert--${type}`} ref={scope}>
+    <motion.div className={classNames('alert', { [`alert--${type}`]: type })} ref={scope}>
       <motion.div className="alert__progress" initial={{ width: '100%' }} animate={{ width: '0%' }} transition={{ duration, ease: 'linear' }} />
       <div className="alert__icon">
         {type === 'success' && <Icon icon="Success" />}

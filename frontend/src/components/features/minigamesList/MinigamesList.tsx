@@ -4,6 +4,7 @@ import { Reorder } from 'framer-motion';
 import { BombIcon } from './SvgIcons';
 import { Button } from '../../ui/button/Button.tsx';
 import { Minigame } from '../../../types';
+import classNames from 'classnames';
 
 type MinigamesListProps = {
   onCancel: () => void;
@@ -68,7 +69,7 @@ type MinigameItemProps = {
 
 const MinigameItem = ({ minigame, type, onClick }: MinigameItemProps) => {
   return (
-    <div className={`minigames-list__minigame ${type === 'remove' ? 'draggable' : ''}`}>
+    <div className={classNames('minigames-list_minigame', { draggable: type == 'remove' })}>
       <div className="minigames-list__minigame-icon">{minigame.minigame_id === 'CTB' && <BombIcon height={25} />}</div>
       <div className="minigames-list__minigame-content">
         <span>{minigame.name}</span>
