@@ -4,6 +4,7 @@ import { Reorder } from 'framer-motion';
 import { BombIcon } from './SvgIcons';
 import { Button } from '../../ui/button/Button.tsx';
 import { Minigame } from '../../../types';
+import classNames from 'classnames';
 
 type MinigamesListProps = {
   onCancel: () => void;
@@ -12,9 +13,7 @@ type MinigamesListProps = {
 };
 
 export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProps) => {
-  const [minigamesList, setMinigamesList] = useState<Minigame[]>(
-    minigames! || []
-  );
+  const [minigamesList, setMinigamesList] = useState<Minigame[]>(minigames! || []);
 
   const handleSave = () => {
     onSave && onSave(minigamesList);
@@ -25,10 +24,7 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
     <div className="minigames-list">
       <div className="minigames-list__table">
         <span className="minigames-list__title">Minigames</span>
-        <MinigameItem
-          minigame={{ minigame_id: 'CTB', name: 'Click The Bomb' }}
-          type="add"
-        />
+        <MinigameItem minigame={{ minigame_id: 'CTB', name: 'Click The Bomb' }} type="add" />
       </div>
       <div className="minigames-list__table">
         <span className="minigames-list__title">Your minigames queue</span>
@@ -43,19 +39,12 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
             width: '100%',
             height: '100%',
             overflowY: 'auto',
-            scrollbarWidth: 'none'
+            scrollbarWidth: 'none',
           }}
         >
           {minigamesList.map((minigame) => (
-            <Reorder.Item
-              key={minigame.minigame_id}
-              value={minigame}
-              style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}
-            >
-              <MinigameItem
-                minigame={minigame}
-                type="remove"
-              />
+            <Reorder.Item key={minigame.minigame_id} value={minigame} style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}>
+              <MinigameItem minigame={minigame} type="remove" />
             </Reorder.Item>
           ))}
         </Reorder.Group>
@@ -80,22 +69,11 @@ type MinigameItemProps = {
 
 const MinigameItem = ({ minigame, type, onClick }: MinigameItemProps) => {
   return (
-    <div
-      className={`minigames-list__minigame ${
-        type === 'remove' ? 'draggable' : ''
-      }`}
-    >
-      <div className="minigames-list__minigame-icon">
-        {minigame.minigame_id === 'CTB' && <BombIcon height={25} />}
-      </div>
+    <div className={classNames('minigames-list_minigame', { draggable: type == 'remove' })}>
+      <div className="minigames-list__minigame-icon">{minigame.minigame_id === 'CTB' && <BombIcon height={25} />}</div>
       <div className="minigames-list__minigame-content">
         <span>{minigame.name}</span>
-        <Button
-          onClick={() => onClick && onClick(minigame)}
-          variant="round"
-          color={`${type === 'remove' ? 'remove' : 'primary'}`}
-          size="small"
-        >
+        <Button onClick={() => onClick && onClick(minigame)} variant="round" color={`${type === 'remove' ? 'remove' : 'primary'}`} size="small">
           {type}
         </Button>
       </div>
