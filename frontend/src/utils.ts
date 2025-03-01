@@ -1,3 +1,5 @@
+import { Minigame } from "./types";
+
 export function setSessionVariables(roomCode: string, nickname: string) {
   sessionStorage.setItem('roomCode', roomCode);
   sessionStorage.setItem('nickname', nickname);
@@ -76,3 +78,12 @@ export const generateRandomUserName = () => {
                           ${nouns[Math.floor(Math.random() * nouns.length)]}`;
   return randomUsername;
 };
+
+export const shuffleGames = (minigames: Minigame[]) => {
+  const shuffledGames = minigames;
+  for (let i = shuffledGames.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledGames[i], shuffledGames[j]] = [shuffledGames[j], shuffledGames[i]];
+  }
+  return shuffledGames;
+}
