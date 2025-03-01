@@ -9,5 +9,5 @@ export const icons = {
   Warning,
   Info,
   Success,
-  Logo
+  Logo,
 };
