@@ -9,7 +9,7 @@ export const createRoomService = async (roomCode: string, nickname: string): Pro
 
   try {
     multi = client.multi();
-    await roomRepository.setPlayer(roomCode, nickname, multi);
+    await roomRepository.setPlayerInPlayers(roomCode, nickname, multi);
     await roomRepository.setRoomStatus(roomCode, multi);
     await roomRepository.setPlayerInLeaderboard(roomCode, nickname, multi);
     await multi.exec();
@@ -27,7 +27,7 @@ export const joinRoomService = async (roomCode: string, nickname: string): Promi
   let playerReadyCount: number;
 
   try {
-    players = await roomRepository.getAllPlayers(roomCode);
+    players = await roomRepository.getAllPlayersFromPlayers(roomCode);
 
     if (!players) {
       return { success: false, payload: 0 }; // Room does not exist
@@ -39,7 +39,7 @@ export const joinRoomService = async (roomCode: string, nickname: string): Promi
 
     multi = client.multi();
 
-    await roomRepository.setPlayer(roomCode, nickname, multi);
+    await roomRepository.setPlayerInPlayers(roomCode, nickname, multi);
     await roomRepository.setPlayerInLeaderboard(roomCode, nickname, multi);
 
     await multi.exec();
@@ -77,4 +77,24 @@ export const toggleReadyService = async (roomCode: string, nickname: string): Pr
   }
 
   return { success: true, payload: playerReadyCount }; // Success and number of players ready
+};
+
+export const deleteRoomService = async (roomCode: string): Promise<IReturnData> => {
+  let multi: ChainableCommander;
+
+  try {
+    multi = client.multi();
+
+    await roomRepository.deleteLeaderboard(roomCode, multi);
+    await roomRepository.deleteRoomStatus(roomCode, multi);
+    await roomRepository.deletePlayers(roomCode, multi);
+    await roomRepository.deleteIsReady(roomCode, multi);
+
+    await multi.exec();
+  } catch (error) {
+    console.error(`Room deletion failed for room ${roomCode}: ${error}`);
+    return { success: false }; // Room not deleted
+  }
+
+  return { success: true }; // Room deleted
 };
