@@ -114,3 +114,57 @@ export async function getPlayerScoreFromLeaderboard(roomCode: string, nickname: 
   const playerScore = await client.zscore(leaderboardKey, nickname);
   return playerScore ? parseInt(playerScore) : null;
 }
+
+/**
+ * Removes a player from leaderboard
+ * @param roomCode - The unique identifier for the room.
+ * @param nickname - The nickname of the player.
+ * @param multi - (OPTIONAL)
+ * @returns A promise that resolves to void.
+ */
+export async function removePlayerFromLeaderboard(roomCode: string, nickname: string): Promise<void>;
+
+/**
+ * Removes a player from leaderboard
+ * @param roomCode - The unique identifier for the room.
+ * @param nickname - The nickname of the player.
+ * @param multi - Redis client.multi() instance for executing queries in transaction
+ * @returns A promise that resolves to void.
+ */
+export async function removePlayerFromLeaderboard(roomCode: string, nickname: string, multi: ChainableCommander): Promise<void>;
+
+export async function removePlayerFromLeaderboard(roomCode: string, nickname: string, multi?: ChainableCommander): Promise<void> {
+  const leaderboardKey = `room:${roomCode}:leaderboard`;
+
+  if (multi) {
+    multi.zrem(leaderboardKey, nickname);
+  } else {
+    await client.zrem(leaderboardKey, nickname);
+  }
+}
+
+/**
+ * Deletes the leaderboard of the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param multi - (OPTIONAL)
+ * @returns A promise that resolves to void.
+ */
+export async function deleteLeaderboard(roomCode: string): Promise<void>;
+
+/**
+ * Deletes the leaderboard of the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param multi - Redis client.multi() instance for executing queries in transaction
+ * @returns A promise that resolves to void.
+ */
+export async function deleteLeaderboard(roomCode: string, multi: ChainableCommander): Promise<void>;
+
+export async function deleteLeaderboard(roomCode: string, multi?: ChainableCommander): Promise<void> {
+  const leaderboardKey = `room:${roomCode}:leaderboard`;
+
+  if (multi) {
+    multi.del(leaderboardKey);
+  } else {
+    await client.del(leaderboardKey);
+  }
+}

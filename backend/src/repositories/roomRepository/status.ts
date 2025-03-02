@@ -89,3 +89,29 @@ export async function getRoomStatus(roomCode: string): Promise<IStatusData | nul
 
   return statusData as IStatusData;
 }
+
+/**
+ * Deletes the status of the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param multi - (OPTIONAL)
+ * @returns A promise that resolves to void.
+ */
+export async function deleteRoomStatus(roomCode: string): Promise<void>;
+
+/**
+ * Deletes the status of the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param multi - Redis client.multi() instance for executing queries in transaction
+ * @returns A promise that resolves to void.
+ */
+export async function deleteRoomStatus(roomCode: string, multi: ChainableCommander): Promise<void>;
+
+export async function deleteRoomStatus(roomCode: string, multi?: ChainableCommander): Promise<void> {
+  const statusKey = `room:${roomCode}:status`;
+
+  if (multi) {
+    multi.del(statusKey);
+  } else {
+    await client.del(statusKey);
+  }
+}

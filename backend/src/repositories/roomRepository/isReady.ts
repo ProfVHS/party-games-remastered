@@ -76,3 +76,57 @@ export async function isPlayerReady(roomCode: string, nickname: string): Promise
   const readySetKey = `room:${roomCode}:readyPlayers`;
   return await client.sismember(readySetKey, nickname);
 }
+
+/**
+ * Removes a player from the ready set in the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param nickname - The player's nickname.
+ * @param multi - (OPTIONAL)
+ * @returns A promise that resolves to void.
+ */
+export async function removePlayerFromReady(roomCode: string, nickname: string): Promise<void>;
+
+/**
+ * Removes a player from the ready set in the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param nickname - The player's nickname.
+ * @param multi - Redis client.multi() instance for executing queries in transaction
+ * @returns A promise that resolves to void.
+ */
+export async function removePlayerFromReady(roomCode: string, nickname: string, multi: ChainableCommander): Promise<void>;
+
+export async function removePlayerFromReady(roomCode: string, nickname: string, multi?: ChainableCommander): Promise<void> {
+  const readySetKey = `room:${roomCode}:readyPlayers`;
+
+  if (multi) {
+    multi.srem(readySetKey, nickname);
+  } else {
+    await client.srem(readySetKey, nickname);
+  }
+}
+
+/**
+ * Deletes the ready set of the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param multi - (OPTIONAL)
+ * @returns A promise that resolves to void.
+ */
+export async function deleteIsReady(roomCode: string): Promise<void>;
+
+/**
+ * Deletes the ready set of the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param multi - Redis client.multi() instance for executing queries in transaction
+ * @returns A promise that resolves to void.
+ */
+export async function deleteIsReady(roomCode: string, multi: ChainableCommander): Promise<void>;
+
+export async function deleteIsReady(roomCode: string, multi?: ChainableCommander): Promise<void> {
+  const readySetKey = `room:${roomCode}:readyPlayers`;
+
+  if (multi) {
+    multi.del(readySetKey);
+  } else {
+    await client.del(readySetKey);
+  }
+}

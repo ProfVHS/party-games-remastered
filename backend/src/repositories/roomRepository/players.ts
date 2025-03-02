@@ -13,7 +13,7 @@ import { IPlayerData, IPlayer } from '../../interfaces/roomRepositoryInterfaces'
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function setPlayer(roomCode: string, nickname: string): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, nickname: string): Promise<void>;
 /**
  * If player DOESN'T EXIST, it ADDS the player.
  * If player EXISTS, it UPDATES the player data.
@@ -25,7 +25,7 @@ export async function setPlayer(roomCode: string, nickname: string): Promise<voi
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayer(roomCode: string, nickname: string, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, nickname: string, multi: ChainableCommander): Promise<void>;
 /**
  * If player DOESN'T EXIST, it ADDS the player.
  * If player EXISTS, it UPDATES the player data.
@@ -37,7 +37,7 @@ export async function setPlayer(roomCode: string, nickname: string, multi: Chain
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function setPlayer(roomCode: string, nickname: string, playerData: IPlayerData): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, nickname: string, playerData: IPlayerData): Promise<void>;
 /**
  * If player DOESN'T EXIST, it ADDS the player.
  * If player EXISTS, it UPDATES the player data.
@@ -49,9 +49,9 @@ export async function setPlayer(roomCode: string, nickname: string, playerData: 
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayer(roomCode: string, nickname: string, playerData: IPlayerData, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, nickname: string, playerData: IPlayerData, multi: ChainableCommander): Promise<void>;
 
-export async function setPlayer(roomCode: string, nickname: string, arg3?: IPlayerData | ChainableCommander, arg4?: ChainableCommander): Promise<void> {
+export async function setPlayerInPlayers(roomCode: string, nickname: string, arg3?: IPlayerData | ChainableCommander, arg4?: ChainableCommander): Promise<void> {
   const playersKey = `room:${roomCode}:players`;
   const defaultPlayerData: IPlayerData = { points: 0, isAlive: true };
 
@@ -80,7 +80,7 @@ export async function setPlayer(roomCode: string, nickname: string, arg3?: IPlay
  * @example output: [{ nickname: 'John', data: { points: 0, isAlive: true } }, { nickname: 'Sam', data: { points: 0, isAlive: true } }]
  * @example output: null
  */
-export async function getAllPlayers(roomCode: string): Promise<IPlayer[] | null> {
+export async function getAllPlayersFromPlayers(roomCode: string): Promise<IPlayer[] | null> {
   const playersKey = `room:${roomCode}:players`;
 
   const rawPlayers = await client.hgetall(playersKey);
@@ -106,7 +106,7 @@ export async function getAllPlayers(roomCode: string): Promise<IPlayer[] | null>
  * @example output: { nickname: 'John', data: { points: 0, isAlive: true } }
  * @example output: null
  */
-export async function getPlayer(roomCode: string, nickname: string): Promise<IPlayer | null> {
+export async function getPlayerFromPlayers(roomCode: string, nickname: string): Promise<IPlayer | null> {
   const playersKey = `room:${roomCode}:players`;
 
   const rawPlayer = await client.hget(playersKey, nickname);
@@ -122,9 +122,52 @@ export async function getPlayer(roomCode: string, nickname: string): Promise<IPl
  * Removes a player from the room.
  * @param roomCode - The unique identifier for the room.
  * @param nickname - The nickname of the player.
+ * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function removePlayer(roomCode: string, nickname: string): Promise<void> {
+export async function removePlayerFromPlayers(roomCode: string, nickname: string): Promise<void>;
+
+/**
+ * Removes a player from the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param nickname - The nickname of the player.
+ * @param multi - Redis client.multi() instance for executing queries in transaction
+ * @returns A promise that resolves to void.
+ */
+export async function removePlayerFromPlayers(roomCode: string, nickname: string, multi: ChainableCommander): Promise<void>;
+
+export async function removePlayerFromPlayers(roomCode: string, nickname: string, multi?: ChainableCommander): Promise<void> {
   const playersKey = `room:${roomCode}:players`;
-  await client.hdel(playersKey, nickname);
+
+  if (multi) {
+    multi.hdel(playersKey, nickname);
+  } else {
+    await client.hdel(playersKey, nickname);
+  }
+}
+
+/**
+ * Deletes all players in the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param multi - (OPTIONAL)
+ * @returns A promise that resolves to void.
+ */
+export async function deletePlayers(roomCode: string): Promise<void>;
+
+/**
+ * Deletes all players in the room.
+ * @param roomCode - The unique identifier for the room.
+ * @param multi - Redis client.multi() instance for executing queries in transaction
+ * @returns A promise that resolves to void.
+ */
+export async function deletePlayers(roomCode: string, multi: ChainableCommander): Promise<void>;
+
+export async function deletePlayers(roomCode: string, multi?: ChainableCommander): Promise<void> {
+  const playersKey = `room:${roomCode}:players`;
+
+  if (multi) {
+    multi.del(playersKey);
+  } else {
+    await client.del(playersKey);
+  }
 }
