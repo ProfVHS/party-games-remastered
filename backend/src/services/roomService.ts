@@ -107,7 +107,7 @@ export const deletePlayerService = async (roomCode: string, nickname: string): P
 
     await roomRepository.removePlayerFromLeaderboard(roomCode, nickname, multi);
     await roomRepository.removePlayerFromPlayers(roomCode, nickname, multi);
-    await roomRepository.removePlayerFromReady(roomCode, nickname);
+    await roomRepository.removePlayerFromReady(roomCode, nickname, multi);
 
     await multi.exec();
   } catch (error) {
