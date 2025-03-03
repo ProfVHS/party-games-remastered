@@ -98,3 +98,22 @@ export const deleteRoomService = async (roomCode: string): Promise<IReturnData> 
 
   return { success: true }; // Room deleted
 };
+
+export const deletePlayerService = async (roomCode: string, nickname: string): Promise<IReturnData> => {
+  let multi: ChainableCommander;
+
+  try {
+    multi = client.multi();
+
+    await roomRepository.removePlayerFromLeaderboard(roomCode, nickname, multi);
+    await roomRepository.removePlayerFromPlayers(roomCode, nickname, multi);
+    await roomRepository.removePlayerFromReady(roomCode, nickname);
+
+    await multi.exec();
+  } catch (error) {
+    console.error(`Player deletion failed for room ${roomCode} and player: ${nickname}: ${error}`);
+    return { success: false }; // Player not deleted
+  }
+
+  return { success: true }; // Player deleted
+};
