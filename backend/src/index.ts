@@ -4,7 +4,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
-import { roomSockets } from './Sockets/Room/roomSockets';
+import { roomSockets } from './sockets/roomSockets';
 
 const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
