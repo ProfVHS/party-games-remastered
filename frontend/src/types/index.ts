@@ -4,4 +4,4 @@ export * from './Minigame.ts';
 export * from './roomType.ts';
 export * from './ToastContextType.ts';
 export * from './AddToastPropsType.ts';
-export * from './DynamicAvatars.ts';
+export * from './Player.ts';
