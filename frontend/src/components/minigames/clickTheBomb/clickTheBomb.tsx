@@ -1,7 +1,7 @@
 import { SVGProps, useState, useContext } from 'react';
 import './ClickTheBombStyle.scss';
 import { Button } from '../../ui/button/Button.tsx';
-import { clientDataContext } from '../../../useContext/clientDataContext';
+
 import { Player } from '../../../types/Player.ts';
 
 type ClickTheBombProps = {
@@ -17,7 +17,6 @@ export const ClickTheBomb = ({
   userTurn,
   counter = 0,
 }: ClickTheBombProps) => {
-  const client = useContext(clientDataContext);
   const [skipButtonDisplay, setSkipButtonDisplay] = useState<boolean>(false);
 
   return (

@@ -16,7 +16,7 @@ export const RoomPage = () => {
     <div className="room-page">
       <div className="room-page__content">
         <RoomLayout players={MockPlayersArr}>
-          <Lobby />
+          <Lobby/>
         </RoomLayout>
       </div>
     </div>
