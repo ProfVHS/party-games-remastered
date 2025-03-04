@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
-import { MinigameIcon } from '../../../assets/icon/MinigameIcon.tsx';
 import { Button } from '../../ui/button/Button.tsx';
 import { Minigame } from '../../../types';
 import classNames from 'classnames';
+import { Icon } from '../../../assets/icon';
 
 type MinigamesListProps = {
   onCancel: () => void;
@@ -39,11 +39,12 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
             width: '100%',
             height: '100%',
             overflowY: 'auto',
-            scrollbarWidth: 'none',
+            scrollbarWidth: 'none'
           }}
         >
           {minigamesList.map((minigame) => (
-            <Reorder.Item key={minigame.minigame_id} value={minigame} style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}>
+            <Reorder.Item key={minigame.minigame_id} value={minigame}
+                          style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}>
               <MinigameItem minigame={minigame} type="remove" />
             </Reorder.Item>
           ))}
@@ -70,10 +71,11 @@ type MinigameItemProps = {
 const MinigameItem = ({ minigame, type, onClick }: MinigameItemProps) => {
   return (
     <div className={classNames('minigames-list__minigame', { draggable: type == 'remove' })}>
-      <div className="minigames-list__minigame-icon">{minigame.minigame_id === 'CTB' && <MinigameIcon minigameIcon="Bomb" />}</div>
+      <div className="minigames-list__minigame-icon">{minigame.minigame_id === 'CTB' && <Icon icon="Bomb" />}</div>
       <div className="minigames-list__minigame-content">
         <span>{minigame.name}</span>
-        <Button onClick={() => onClick && onClick(minigame)} variant="round" color={`${type === 'remove' ? 'remove' : 'primary'}`} size="small">
+        <Button onClick={() => onClick && onClick(minigame)} variant="round"
+                color={`${type === 'remove' ? 'remove' : 'primary'}`} size="small">
           {type}
         </Button>
       </div>
