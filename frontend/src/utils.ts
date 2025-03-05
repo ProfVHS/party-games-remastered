@@ -1,3 +1,5 @@
+import { Minigame } from "./types";
+
 export function setSessionVariables(roomCode: string, nickname: string) {
   sessionStorage.setItem('roomCode', roomCode);
   sessionStorage.setItem('nickname', nickname);
@@ -76,6 +78,15 @@ export const generateRandomUserName = () => {
                           ${nouns[Math.floor(Math.random() * nouns.length)]}`;
   return randomUsername;
 };
+
+export const shuffleGames = (minigames: Minigame[]) => {
+  const shuffledGames = minigames;
+  for (let i = shuffledGames.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledGames[i], shuffledGames[j]] = [shuffledGames[j], shuffledGames[i]];
+  }
+  return shuffledGames;
+}
 
 // Record => Object which needs to have: keys of type XYZ and values of type XYZ
 // In this case Keys NEED to be a number and values NEED to be an array of objects with...
