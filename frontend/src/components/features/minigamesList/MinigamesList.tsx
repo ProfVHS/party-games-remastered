@@ -71,7 +71,9 @@ type MinigameItemProps = {
 const MinigameItem = ({ minigame, type, onClick }: MinigameItemProps) => {
   return (
     <div className={classNames('minigames-list__minigame', { draggable: type == 'remove' })}>
-      <div className="minigames-list__minigame-icon">{minigame.minigame_id === 'CTB' && <Icon icon="Bomb" />}</div>
+      <div className="minigames-list__minigame-icon">
+        {minigame.minigame_id === 'CTB' && <Icon icon="Bomb" />}
+      </div>
       <div className="minigames-list__minigame-content">
         <span>{minigame.name}</span>
         <Button onClick={() => onClick && onClick(minigame)} variant="round"
