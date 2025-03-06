@@ -47,9 +47,8 @@ export const joinRoomService = async (roomCode: string, nickname: string): Promi
     playerReadyCount = await roomRepository.getAllReadyPlayerCount(roomCode);
   } catch (error) {
     console.error(`Room joining failed for room ${roomCode} and player: ${nickname}: ${error}`);
-    return { success: false }; // Room not joined
+    return { success: false, payload: -100 }; // Room not joined
   }
-
   return { success: true, payload: playerReadyCount }; // Success and number of players ready
 };
 

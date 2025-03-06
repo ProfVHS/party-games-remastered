@@ -3,13 +3,14 @@ import { Button } from '../../ui/button/Button';
 import { useState } from 'react';
 import { LobbySettings } from '../lobbySettings/LobbySettings';
 import { socket } from '../../../socket.ts';
-import { useSyncReadyPlayers } from '../../../hooks/useSyncReadyPlayers.ts';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
 import { LobbySettingsType } from '../../../types';
 import { useToast } from '../../../hooks/useToast.ts';
+import { useRoomToggle } from '../../../hooks/useRoomToggle.ts';
+import { useRoomFetch } from '../../../hooks/useRoomFetch.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -60,7 +61,8 @@ const LobbyContent = () => {
   const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  useSyncReadyPlayers({ setPlayersReady, setIsLoading });
+  useRoomToggle({ setPlayersReady, setIsLoading });
+  useRoomFetch({ setPlayersReady });
 
   const toast = useToast();
 

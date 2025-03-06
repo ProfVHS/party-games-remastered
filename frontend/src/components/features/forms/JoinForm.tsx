@@ -3,10 +3,9 @@ import './Form.scss';
 import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../ui/button/Button.tsx';
 import { socket } from '../../../socket.ts';
-import { useJoinRoom } from '../../../hooks/useJoinRoom.ts';
 import { generateRandomUserName, setSessionVariables } from '../../../utils.ts';
-import { useRoomNotFound } from '../../../hooks/useRoomNotFound.ts';
 import { useToast } from '../../../hooks/useToast.ts';
+import { useRoomJoin } from '../../../hooks/useRoomJoin.ts';
 
 type FormInputs = {
   nickname: string;
@@ -38,8 +37,7 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
     }
   };
 
-  useJoinRoom();
-  useRoomNotFound();
+  useRoomJoin();
 
   return (
     <form className="form" onSubmit={handleSubmit(handleJoin, handleShowToast)} onReset={onCancel}>
