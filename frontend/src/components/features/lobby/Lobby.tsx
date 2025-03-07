@@ -86,6 +86,17 @@ const LobbyContent = () => {
     }
   };
 
+  const tempFunction = () => {
+    const roomCode = sessionStorage.getItem('roomCode');
+    if (roomCode) {
+      socket.emit('start_minigame', roomCode, 'Click the Bomb');
+    }
+  };
+
+  socket.on('started_minigame', () => {
+    console.log('Minigame started1!!!!!!!');
+  });
+
   return (
     <>
       <span className="lobby__title">
@@ -101,6 +112,7 @@ const LobbyContent = () => {
       <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
         {ready ? 'Unready' : 'Ready'}
       </Button>
+      <button onClick={tempFunction}>Start Minigame</button>
     </>
   );
 };

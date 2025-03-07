@@ -2,7 +2,8 @@ import { client } from '../config/db';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 import { IReturnData } from '../interfaces/roomServiceInterfaces';
 import { ChainableCommander } from 'ioredis';
-import { IPlayer } from '../interfaces/roomRepositoryInterfaces';
+import { IPlayer, EPossibleMinigames, EPossibleStates } from '../interfaces/roomRepositoryInterfaces';
+import { clickTheBombConfig } from '../config/minigames';
 
 export const createRoomService = async (roomCode: string, nickname: string): Promise<IReturnData> => {
   let multi: ChainableCommander;
@@ -10,7 +11,6 @@ export const createRoomService = async (roomCode: string, nickname: string): Pro
   try {
     multi = client.multi();
     await roomRepository.setPlayerInPlayers(roomCode, nickname, multi);
-    await roomRepository.setRoomStatus(roomCode, multi);
     await roomRepository.setPlayerInLeaderboard(roomCode, nickname, multi);
     await multi.exec();
   } catch (error) {
@@ -85,7 +85,6 @@ export const deleteRoomService = async (roomCode: string): Promise<IReturnData> 
     multi = client.multi();
 
     await roomRepository.deleteLeaderboard(roomCode, multi);
-    await roomRepository.deleteRoomStatus(roomCode, multi);
     await roomRepository.deletePlayers(roomCode, multi);
     await roomRepository.deleteIsReady(roomCode, multi);
 
@@ -115,4 +114,22 @@ export const deletePlayerService = async (roomCode: string, nickname: string): P
   }
 
   return { success: true }; // Player deleted
+};
+
+export const startMinigameService = async (roomCode: string, minigame: EPossibleMinigames): Promise<IReturnData> => {
+  try {
+    switch (minigame) {
+      case EPossibleMinigames.clickTheBomb:
+        await roomRepository.setMinigame(roomCode, clickTheBombConfig);
+        break;
+      default:
+        console.error("Tried setting game which doesn't exist");
+        break;
+    }
+  } catch (error) {
+    console.error(`Minigame start failed for room ${roomCode}: ${error}`);
+    return { success: false }; // Minigame not started
+  }
+
+  return { success: true }; // Minigame started
 };

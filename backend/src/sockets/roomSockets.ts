@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
+import { EPossibleMinigames } from '../interfaces/roomRepositoryInterfaces';
 
 export const roomSockets = (socket: Socket) => {
   socket.on('create_room', async (roomCode: string, nickname: string) => {
@@ -36,5 +37,16 @@ export const roomSockets = (socket: Socket) => {
     }
 
     socket.nsp.in(roomCode).emit('toggled_player_ready', response.payload);
+  });
+
+  socket.on('start_minigame', async (roomCode: string, minigame: EPossibleMinigames) => {
+    const response = await roomService.startMinigameService(roomCode, minigame);
+
+    if (!response.success) {
+      socket.nsp.to(socket.id).emit('failed_to_start_minigame');
+      return;
+    }
+
+    socket.nsp.in(roomCode).emit('started_minigame', minigame);
   });
 };

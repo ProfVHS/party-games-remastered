@@ -1,12 +1,28 @@
-// STATUS.TS
+// MINIGAME.TS
+
 export enum EPossibleStates {
-  waiting = 'waiting',
   playing = 'playing',
   finished = 'finished',
 }
 
 export enum EPossibleMinigames {
   none = 'none',
+  clickTheBomb = 'Click the Bomb',
+}
+
+interface IClickTheBombData {
+  maxClicks: number;
+}
+
+export type ICustomData = IClickTheBombData;
+
+export interface IMinigameData {
+  minigame: EPossibleMinigames;
+  state: EPossibleStates;
+  rounds: number;
+  currentRound: number;
+  timeForTurn: number;
+  customData: ICustomData;
 }
 
 export interface IStatusData {
