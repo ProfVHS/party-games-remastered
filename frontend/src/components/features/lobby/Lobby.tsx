@@ -11,6 +11,7 @@ import { LobbySettingsType } from '../../../types';
 import { useToast } from '../../../hooks/useToast.ts';
 import { useRoomToggle } from '../../../hooks/useRoomToggle.ts';
 import { useRoomFetch } from '../../../hooks/useRoomFetch.ts';
+import { useRoomStart } from '../../../hooks/useRoomStart.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -63,6 +64,7 @@ const LobbyContent = () => {
 
   useRoomToggle({ setPlayersReady, setIsLoading });
   useRoomFetch({ setPlayersReady });
+  useRoomStart({ playersReady });
 
   const toast = useToast();
 
@@ -86,17 +88,6 @@ const LobbyContent = () => {
     }
   };
 
-  const tempFunction = () => {
-    const roomCode = sessionStorage.getItem('roomCode');
-    if (roomCode) {
-      socket.emit('start_minigame', roomCode, 'Click the Bomb');
-    }
-  };
-
-  socket.on('started_minigame', () => {
-    console.log('Minigame started1!!!!!!!');
-  });
-
   return (
     <>
       <span className="lobby__title">
@@ -112,7 +103,7 @@ const LobbyContent = () => {
       <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
         {ready ? 'Unready' : 'Ready'}
       </Button>
-      <button onClick={tempFunction}>Start Minigame</button>
+      <button>Start Minigame</button>
     </>
   );
 };

@@ -1,12 +1,12 @@
-import { IMinigameData, EPossibleMinigames, EPossibleStates } from '../interfaces/roomRepositoryInterfaces';
+import { TMinigameData, EPossibleMinigames, EPossibleStates } from '../types/roomRepositoryTypes';
 
-export const clickTheBombConfig: IMinigameData = {
+export const clickTheBombConfig: TMinigameData = {
   minigame: EPossibleMinigames.clickTheBomb,
   state: EPossibleStates.playing,
   rounds: 5,
   currentRound: 1,
   timeForTurn: 15,
-  customData: {
+  currentMinigameData: {
     maxClicks: 10,
   },
 };

@@ -1,4 +1,4 @@
-export interface IReturnData {
+export type IReturnData = {
   success: boolean;
   payload?: any;
-}
+};

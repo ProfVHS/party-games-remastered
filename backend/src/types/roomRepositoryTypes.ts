@@ -10,38 +10,34 @@ export enum EPossibleMinigames {
   clickTheBomb = 'Click the Bomb',
 }
 
-interface IClickTheBombData {
+type TClickTheBombData = {
   maxClicks: number;
-}
+};
 
-export type ICustomData = IClickTheBombData;
+export type TCurrentMinigameData = TClickTheBombData;
 
-export interface IMinigameData {
+export type TMinigameData = {
   minigame: EPossibleMinigames;
   state: EPossibleStates;
   rounds: number;
   currentRound: number;
   timeForTurn: number;
-  customData: ICustomData;
-}
-
-export interface IStatusData {
-  minigame?: string;
-  state?: EPossibleStates;
-}
+  currentMinigameData: TCurrentMinigameData;
+};
 
 // LEADERBOARD.TS
-export interface ILeaderboardData {
+export type TLeaderboardData = {
   points: number;
-}
+};
 
 // PLAYERS.TS
-export interface IPlayer {
-  nickname: string;
-  data: IPlayerData;
-}
+export type TPlayer = {
+  id: string;
+  data: TPlayerData;
+};
 
-export interface IPlayerData {
+export type TPlayerData = {
+  nickname: string;
   points?: number;
   isAlive?: boolean;
-}
+};

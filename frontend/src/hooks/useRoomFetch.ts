@@ -1,6 +1,5 @@
 import { useEffect, Dispatch, SetStateAction } from 'react';
 import { socket } from '../socket';
-import { SocketPayload } from '../types';
 
 type useRoomToggleProps = {
   setPlayersReady: Dispatch<SetStateAction<number>>;
@@ -8,8 +7,8 @@ type useRoomToggleProps = {
 
 export const useRoomFetch = ({ setPlayersReady }: useRoomToggleProps) => {
   useEffect(() => {
-    socket.on('joined_room', (playersReadyCount: SocketPayload) => {
-      setPlayersReady(playersReadyCount as number);
+    socket.on('joined_room', (playersReadyCount: number) => {
+      setPlayersReady(playersReadyCount);
     });
 
     return () => {
