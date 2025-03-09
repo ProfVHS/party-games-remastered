@@ -22,3 +22,7 @@ export type TMinigameData = {
   timeForTurn: number;
   currentMinigameData: TCurrentMinigameData;
 };
+
+export type TMinigameEntry = {
+  name: string;
+};

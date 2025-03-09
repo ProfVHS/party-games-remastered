@@ -103,7 +103,6 @@ const LobbyContent = () => {
       <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
         {ready ? 'Unready' : 'Ready'}
       </Button>
-      <button>Start Minigame</button>
     </>
   );
 };

@@ -2,19 +2,18 @@ import { useState } from 'react';
 import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
 import { Button } from '../../ui/button/Button.tsx';
-import { TMinigameData, EPossibleMinigames } from '../../../types';
+import { EPossibleMinigames, TMinigameEntry } from '../../../types';
 import classNames from 'classnames';
 import { Icon } from '../../../assets/icon';
-import { clickTheBombConfig } from '../../../minigamesConfig.ts';
 
 type MinigamesListProps = {
   onCancel: () => void;
-  onSave: (Minigames: TMinigameData[]) => void;
-  minigames?: TMinigameData[];
+  onSave: (Minigames: TMinigameEntry[]) => void;
+  minigames?: TMinigameEntry[];
 };
 
 export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProps) => {
-  const [minigamesList, setMinigamesList] = useState<TMinigameData[]>(minigames! || []);
+  const [minigamesList, setMinigamesList] = useState<TMinigameEntry[]>(minigames! || []);
 
   const handleSave = () => {
     onSave && onSave(minigamesList);
@@ -25,7 +24,7 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
     <div className="minigames-list">
       <div className="minigames-list__table">
         <span className="minigames-list__title">Minigames</span>
-        <MinigameItem minigame={clickTheBombConfig} type="add" />
+        <MinigameItem minigame={{ name: EPossibleMinigames.clickTheBomb }} type="add" />
       </div>
       <div className="minigames-list__table">
         <span className="minigames-list__title">Your minigames queue</span>
@@ -44,7 +43,7 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
           }}
         >
           {minigamesList.map((minigame) => (
-            <Reorder.Item key={minigame.minigame} value={minigame} style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}>
+            <Reorder.Item key={minigame.name} value={minigame} style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}>
               <MinigameItem minigame={minigame} type="remove" />
             </Reorder.Item>
           ))}
@@ -63,17 +62,17 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
 };
 
 type MinigameItemProps = {
-  minigame: TMinigameData;
+  minigame: TMinigameEntry;
   type: 'add' | 'remove';
-  onClick?: (minigame: TMinigameData) => void;
+  onClick?: (minigame: TMinigameEntry) => void;
 };
 
 const MinigameItem = ({ minigame, type, onClick }: MinigameItemProps) => {
   return (
     <div className={classNames('minigames-list__minigame', { draggable: type == 'remove' })}>
-      <div className="minigames-list__minigame-icon">{minigame.minigame === EPossibleMinigames.clickTheBomb && <Icon icon="Bomb" />}</div>
+      <div className="minigames-list__minigame-icon">{minigame.name === EPossibleMinigames.clickTheBomb && <Icon icon="Bomb" />}</div>
       <div className="minigames-list__minigame-content">
-        <span>{minigame.minigame}</span>
+        <span>{minigame.name}</span>
         <Button onClick={() => onClick && onClick(minigame)} variant="round" color={`${type === 'remove' ? 'remove' : 'primary'}`} size="small">
           {type}
         </Button>
