@@ -1,4 +1,4 @@
-import { vi, describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
 import { io as Client, Socket as ClientSocket } from 'socket.io-client';
@@ -10,7 +10,9 @@ describe('Socket IO Tests', () => {
 
   beforeAll(async () => {
     // Create an HTTP server and Socket.io server
-    io.on('connection', (socket: Socket) => {});
+    io.on('connection', (socket: Socket) => {
+      console.log(`Server connected ${socket.id}`);
+    });
 
     // Start server and wait until it's listening
     await new Promise<void>((resolve) => {

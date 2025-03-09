@@ -27,10 +27,6 @@ const handleModulesOnConnection = async (socket: Socket) => {
 
   roomSockets(socket);
 
-  socket.on('disconnect', (reason) => {
-    console.log(`Disconnected: ${socket.id} (Reason: ${reason})`);
-  });
-
   socket.on('error', (err) => {
     console.error(`Socket error: ${err}`);
   });

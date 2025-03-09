@@ -1,17 +1,18 @@
 import { client } from '../config/db';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
-import { IReturnData } from '../interfaces/roomServiceInterfaces';
+import { IReturnData } from '../types/roomServiceTypes';
 import { ChainableCommander } from 'ioredis';
-import { IPlayer } from '../interfaces/roomRepositoryInterfaces';
+import { PlayerType, PossibleMinigamesEnum, MinigameDataType } from '../types/roomRepositoryTypes';
+import { clickTheBombConfig } from '../config/minigames';
+import { Socket } from 'socket.io';
 
-export const createRoomService = async (roomCode: string, nickname: string): Promise<IReturnData> => {
+export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<IReturnData> => {
   let multi: ChainableCommander;
 
   try {
     multi = client.multi();
-    await roomRepository.setPlayerInPlayers(roomCode, nickname, multi);
-    await roomRepository.setRoomStatus(roomCode, multi);
-    await roomRepository.setPlayerInLeaderboard(roomCode, nickname, multi);
+    await roomRepository.setPlayerInPlayers(roomCode, socket.id, nickname, multi);
+    await roomRepository.setPlayerInLeaderboard(roomCode, socket.id, multi);
     await multi.exec();
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${nickname}: ${error}`);
@@ -21,8 +22,8 @@ export const createRoomService = async (roomCode: string, nickname: string): Pro
   return { success: true }; // Room created
 };
 
-export const joinRoomService = async (roomCode: string, nickname: string): Promise<IReturnData> => {
-  let players: IPlayer[] | null;
+export const joinRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<IReturnData> => {
+  let players: PlayerType[] | null;
   let multi: ChainableCommander;
   let playerReadyCount: number;
 
@@ -39,40 +40,39 @@ export const joinRoomService = async (roomCode: string, nickname: string): Promi
 
     multi = client.multi();
 
-    await roomRepository.setPlayerInPlayers(roomCode, nickname, multi);
-    await roomRepository.setPlayerInLeaderboard(roomCode, nickname, multi);
+    await roomRepository.setPlayerInPlayers(roomCode, socket.id, nickname, multi);
+    await roomRepository.setPlayerInLeaderboard(roomCode, socket.id, multi);
 
     await multi.exec();
 
     playerReadyCount = await roomRepository.getAllReadyPlayerCount(roomCode);
   } catch (error) {
-    console.error(`Room joining failed for room ${roomCode} and player: ${nickname}: ${error}`);
-    return { success: false }; // Room not joined
+    console.error(`Room joining failed for room ${roomCode} and player: ${socket.id}: ${error}`);
+    return { success: false, payload: -100 }; // Room not joined
   }
-
   return { success: true, payload: playerReadyCount }; // Success and number of players ready
 };
 
-export const toggleReadyService = async (roomCode: string, nickname: string): Promise<IReturnData> => {
+export const toggleReadyService = async (roomCode: string, socket: Socket): Promise<IReturnData> => {
   let multi: ChainableCommander;
   let playerReadyCount: number;
 
   try {
     multi = client.multi();
 
-    const isReady = await roomRepository.isPlayerReady(roomCode, nickname);
+    const isReady = await roomRepository.isPlayerReady(roomCode, socket.id);
 
     if (isReady) {
-      await roomRepository.setPlayerReady(roomCode, nickname, false, multi);
+      await roomRepository.setPlayerReady(roomCode, socket.id, false, multi);
     } else {
-      await roomRepository.setPlayerReady(roomCode, nickname, true, multi);
+      await roomRepository.setPlayerReady(roomCode, socket.id, true, multi);
     }
 
     multi.exec();
 
     playerReadyCount = await roomRepository.getAllReadyPlayerCount(roomCode);
   } catch (error) {
-    console.error(`Player ready status toggle failed for room ${roomCode} and player: ${nickname}: ${error}`);
+    console.error(`Player ready status toggle failed for room ${roomCode} and player: ${socket.id}: ${error}`);
     return { success: false }; // Ready status not
   }
 
@@ -86,7 +86,6 @@ export const deleteRoomService = async (roomCode: string): Promise<IReturnData> 
     multi = client.multi();
 
     await roomRepository.deleteLeaderboard(roomCode, multi);
-    await roomRepository.deleteRoomStatus(roomCode, multi);
     await roomRepository.deletePlayers(roomCode, multi);
     await roomRepository.deleteIsReady(roomCode, multi);
 
@@ -99,21 +98,49 @@ export const deleteRoomService = async (roomCode: string): Promise<IReturnData> 
   return { success: true }; // Room deleted
 };
 
-export const deletePlayerService = async (roomCode: string, nickname: string): Promise<IReturnData> => {
+export const deletePlayerService = async (socket: Socket): Promise<IReturnData> => {
   let multi: ChainableCommander;
+  let roomCode: string | null;
 
   try {
+    roomCode = await roomRepository.getRoomCodeFromPlayer(socket.id);
+
+    if (!roomCode) {
+      return { success: false }; // Player not deleted
+    }
+
     multi = client.multi();
 
-    await roomRepository.removePlayerFromLeaderboard(roomCode, nickname, multi);
-    await roomRepository.removePlayerFromPlayers(roomCode, nickname, multi);
-    await roomRepository.removePlayerFromReady(roomCode, nickname, multi);
+    await roomRepository.removePlayerFromLeaderboard(roomCode, socket.id, multi);
+    await roomRepository.removePlayerFromPlayers(roomCode, socket.id, multi);
+    await roomRepository.removePlayerFromReady(roomCode, socket.id, multi);
 
     await multi.exec();
   } catch (error) {
-    console.error(`Player deletion failed for room ${roomCode} and player: ${nickname}: ${error}`);
+    console.error(`Player deletion failed for player: ${socket.id}: ${error}`);
     return { success: false }; // Player not deleted
   }
 
-  return { success: true }; // Player deleted
+  return { success: true, payload: roomCode }; // Player deleted
+};
+
+export const startMinigameService = async (roomCode: string, minigame: PossibleMinigamesEnum): Promise<IReturnData> => {
+  let minigameData: MinigameDataType | null;
+
+  try {
+    switch (minigame) {
+      case PossibleMinigamesEnum.clickTheBomb:
+        await roomRepository.setMinigame(roomCode, clickTheBombConfig);
+        break;
+      default:
+        console.error("Tried setting game which doesn't exist");
+        break;
+    }
+    minigameData = await roomRepository.getMinigame(roomCode);
+  } catch (error) {
+    console.error(`Minigame start failed for room ${roomCode}: ${error}`);
+    return { success: false }; // Minigame not started
+  }
+
+  return { success: true, payload: minigameData }; // Minigame started
 };
