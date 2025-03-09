@@ -1,8 +1,8 @@
-import { TMinigameData, EPossibleMinigames, EPossibleStates } from '../types/roomRepositoryTypes';
+import { MinigameDataType, PossibleMinigamesEnum, PossibleStatesEnum } from '../types/roomRepositoryTypes';
 
-export const clickTheBombConfig: TMinigameData = {
-  minigame: EPossibleMinigames.clickTheBomb,
-  state: EPossibleStates.playing,
+export const clickTheBombConfig: MinigameDataType = {
+  minigame: PossibleMinigamesEnum.clickTheBomb,
+  state: PossibleStatesEnum.playing,
   rounds: 5,
   currentRound: 1,
   timeForTurn: 15,

@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
-import { EPossibleMinigames } from '../types/roomRepositoryTypes';
+import { PossibleMinigamesEnum } from '../types/roomRepositoryTypes';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 
 export const roomSockets = (socket: Socket) => {
@@ -49,7 +49,7 @@ export const roomSockets = (socket: Socket) => {
     }, 500);
   });
 
-  socket.on('toggle_player_ready', async (roomCode: string, nickname: string) => {
+  socket.on('toggle_player_ready', async (roomCode: string) => {
     const response = await roomService.toggleReadyService(roomCode, socket);
 
     if (!response.success) {
@@ -61,7 +61,7 @@ export const roomSockets = (socket: Socket) => {
     socket.nsp.in(roomCode).emit('toggled_player_ready', response.payload);
   });
 
-  socket.on('start_minigame', async (roomCode: string, minigame: EPossibleMinigames) => {
+  socket.on('start_minigame', async (roomCode: string, minigame: PossibleMinigamesEnum) => {
     const response = await roomService.startMinigameService(roomCode, minigame);
 
     if (!response.success) {

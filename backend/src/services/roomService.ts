@@ -2,7 +2,7 @@ import { client } from '../config/db';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 import { IReturnData } from '../types/roomServiceTypes';
 import { ChainableCommander } from 'ioredis';
-import { TPlayer, EPossibleMinigames, TMinigameData } from '../types/roomRepositoryTypes';
+import { PlayerType, PossibleMinigamesEnum, MinigameDataType } from '../types/roomRepositoryTypes';
 import { clickTheBombConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
 
@@ -23,7 +23,7 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
 };
 
 export const joinRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<IReturnData> => {
-  let players: TPlayer[] | null;
+  let players: PlayerType[] | null;
   let multi: ChainableCommander;
   let playerReadyCount: number;
 
@@ -124,12 +124,12 @@ export const deletePlayerService = async (socket: Socket): Promise<IReturnData> 
   return { success: true, payload: roomCode }; // Player deleted
 };
 
-export const startMinigameService = async (roomCode: string, minigame: EPossibleMinigames): Promise<IReturnData> => {
-  let minigameData: TMinigameData | null;
+export const startMinigameService = async (roomCode: string, minigame: PossibleMinigamesEnum): Promise<IReturnData> => {
+  let minigameData: MinigameDataType | null;
 
   try {
     switch (minigame) {
-      case EPossibleMinigames.clickTheBomb:
+      case PossibleMinigamesEnum.clickTheBomb:
         await roomRepository.setMinigame(roomCode, clickTheBombConfig);
         break;
       default:

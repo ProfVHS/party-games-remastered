@@ -1,6 +1,6 @@
 import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
-import { TLeaderboardData } from '../../types/roomRepositoryTypes';
+import { LeaderboardDataType } from '../../types/roomRepositoryTypes';
 
 /**
  * If player DOESN'T EXIST, it ADDS the player to the leaderboard.
@@ -39,7 +39,7 @@ export async function setPlayerInLeaderboard(roomCode: string, playerID: string,
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInLeaderboard(roomCode: string, playerID: string, leaderboardData: TLeaderboardData): Promise<void>;
+export async function setPlayerInLeaderboard(roomCode: string, playerID: string, leaderboardData: LeaderboardDataType): Promise<void>;
 
 /**
  * If player DOESN'T EXIST, it ADDS the player to the leaderboard.
@@ -52,13 +52,13 @@ export async function setPlayerInLeaderboard(roomCode: string, playerID: string,
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInLeaderboard(roomCode: string, playerID: string, leaderboardData: TLeaderboardData, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInLeaderboard(roomCode: string, playerID: string, leaderboardData: LeaderboardDataType, multi: ChainableCommander): Promise<void>;
 
-export async function setPlayerInLeaderboard(roomCode: string, playerID: string, arg3?: TLeaderboardData | ChainableCommander, arg4?: ChainableCommander): Promise<void> {
+export async function setPlayerInLeaderboard(roomCode: string, playerID: string, arg3?: LeaderboardDataType | ChainableCommander, arg4?: ChainableCommander): Promise<void> {
   const leaderboardKey = `room:${roomCode}:leaderboard`;
-  const defaultLeaderboardData: TLeaderboardData = { points: 0 };
+  const defaultLeaderboardData: LeaderboardDataType = { points: 0 };
 
-  let leaderboardData: TLeaderboardData;
+  let leaderboardData: LeaderboardDataType;
   let multi: ChainableCommander | undefined;
 
   if (arg3 && typeof arg3 === 'object' && !Array.isArray(arg3) && 'points' in arg3) {

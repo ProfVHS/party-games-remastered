@@ -1,42 +1,42 @@
 // MINIGAME.TS
 
-export enum EPossibleStates {
+export enum PossibleStatesEnum {
   playing = 'playing',
   finished = 'finished',
 }
 
-export enum EPossibleMinigames {
+export enum PossibleMinigamesEnum {
   none = 'none',
   clickTheBomb = 'Click the Bomb',
 }
 
-type TClickTheBombData = {
+type ClickTheBombDataType = {
   maxClicks: number;
 };
 
-export type TCurrentMinigameData = TClickTheBombData;
+export type CurrentMinigameDataType = ClickTheBombDataType;
 
-export type TMinigameData = {
-  minigame: EPossibleMinigames;
-  state: EPossibleStates;
+export type MinigameDataType = {
+  minigame: PossibleMinigamesEnum;
+  state: PossibleStatesEnum;
   rounds: number;
   currentRound: number;
   timeForTurn: number;
-  currentMinigameData: TCurrentMinigameData;
+  currentMinigameData: CurrentMinigameDataType;
 };
 
 // LEADERBOARD.TS
-export type TLeaderboardData = {
+export type LeaderboardDataType = {
   points: number;
 };
 
 // PLAYERS.TS
-export type TPlayer = {
+export type PlayerType = {
   id: string;
-  data: TPlayerData;
+  data: PlayerDataType;
 };
 
-export type TPlayerData = {
+export type PlayerDataType = {
   nickname: string;
   points?: number;
   isAlive?: boolean;

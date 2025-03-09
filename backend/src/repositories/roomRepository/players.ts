@@ -1,7 +1,6 @@
 import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
-import { TPlayerData, TPlayer } from '../../types/roomRepositoryTypes';
-import { Socket } from 'socket.io';
+import { PlayerDataType, PlayerType } from '../../types/roomRepositoryTypes';
 
 /**
  * If player DOESN'T EXIST, it ADDS the player.
@@ -41,7 +40,7 @@ export async function setPlayerInPlayers(roomCode: string, playerID: string, nic
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, playerData: TPlayerData): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, playerData: PlayerDataType): Promise<void>;
 /**
  * If player DOESN'T EXIST, it ADDS the player.
  * If player EXISTS, it UPDATES the player data.
@@ -54,13 +53,13 @@ export async function setPlayerInPlayers(roomCode: string, playerID: string, nic
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, playerData: TPlayerData, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, playerData: PlayerDataType, multi: ChainableCommander): Promise<void>;
 
-export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, arg4?: TPlayerData | ChainableCommander, arg5?: ChainableCommander): Promise<void> {
+export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, arg4?: PlayerDataType | ChainableCommander, arg5?: ChainableCommander): Promise<void> {
   const playersKey = `room:${roomCode}:players`;
-  const defaultPlayerData: TPlayerData = { nickname: nickname, points: 0, isAlive: true };
+  const defaultPlayerData: PlayerDataType = { nickname: nickname, points: 0, isAlive: true };
 
-  let playerData: TPlayerData;
+  let playerData: PlayerDataType;
   let multi: ChainableCommander | undefined;
 
   if (arg4 && typeof arg4 === 'object' && !Array.isArray(arg4) && ('points' in arg4 || 'isAlive' in arg4)) {
@@ -85,7 +84,7 @@ export async function setPlayerInPlayers(roomCode: string, playerID: string, nic
  * @example output: [{ id: 'UJBLISUygy7t565sf', data: { nickname: 'John', points: 0, isAlive: true } }, { id: 'LIsjbclyiqld6785', data: { nickname: 'Sam', points: 0, isAlive: true } }]
  * @example output: null
  */
-export async function getAllPlayersFromPlayers(roomCode: string): Promise<TPlayer[] | null> {
+export async function getAllPlayersFromPlayers(roomCode: string): Promise<PlayerType[] | null> {
   const playersKey = `room:${roomCode}:players`;
 
   const rawPlayers = await client.hgetall(playersKey);
@@ -94,7 +93,7 @@ export async function getAllPlayersFromPlayers(roomCode: string): Promise<TPlaye
     return null;
   }
 
-  const parsedPlayers: TPlayer[] = [];
+  const parsedPlayers: PlayerType[] = [];
 
   for (const [id, playerData] of Object.entries(rawPlayers)) {
     parsedPlayers.push({ id, data: JSON.parse(playerData) });
@@ -111,7 +110,7 @@ export async function getAllPlayersFromPlayers(roomCode: string): Promise<TPlaye
  * @example output: { id: 'UIQOENFI76f5f', data: { nickname: 'John', points: 0, isAlive: true } }
  * @example output: null
  */
-export async function getPlayerFromPlayers(roomCode: string, playerID: string): Promise<TPlayer | null> {
+export async function getPlayerFromPlayers(roomCode: string, playerID: string): Promise<PlayerType | null> {
   const playersKey = `room:${roomCode}:players`;
 
   const rawPlayer = await client.hget(playersKey, playerID);
