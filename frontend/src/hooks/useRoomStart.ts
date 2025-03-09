@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
-import { TMinigameData, EPossibleMinigames } from '../types';
+import { EPossibleMinigames, TMinigameData } from '../types';
 
 type useRoomStartProps = {
   playersReady: number;
@@ -40,7 +40,9 @@ export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
 
   useEffect(() => {
     socket.on('started_minigame', (minigameData: TMinigameData) => {
+
       // TODO: Display Minigame / Navigate to minigame / Start minigame on client idk
+      console.log(minigameData); // TODO: remove this later
     });
 
     socket.on('failed_to_start_minigame', () => {
