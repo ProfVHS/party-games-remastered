@@ -1,7 +1,6 @@
 import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
 import { TLeaderboardData } from '../../types/roomRepositoryTypes';
-import { Socket } from 'socket.io';
 
 /**
  * If player DOESN'T EXIST, it ADDS the player to the leaderboard.
@@ -9,12 +8,12 @@ import { Socket } from 'socket.io';
  * WITHOUT a leaderboardData object as parameter, it sets the player with DEFAULT DATA.
  * WITH a leaderboardData object, it sets the player with the SUPPLIED DATA.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param leaderboardData - (OPTIONAL)
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInLeaderboard(roomCode: string, socket: Socket): Promise<void>;
+export async function setPlayerInLeaderboard(roomCode: string, playerID: string): Promise<void>;
 
 /**
  * If player DOESN'T EXIST, it ADDS the player to the leaderboard.
@@ -22,12 +21,12 @@ export async function setPlayerInLeaderboard(roomCode: string, socket: Socket): 
  * WITHOUT a leaderboardData object as parameter, it sets the player with DEFAULT DATA.
  * WITH a leaderboardData object, it sets the player with the SUPPLIED DATA.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param leaderboardData - (OPTIONAL)
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInLeaderboard(roomCode: string, socket: Socket, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInLeaderboard(roomCode: string, playerID: string, multi: ChainableCommander): Promise<void>;
 
 /**
  * If player DOESN'T EXIST, it ADDS the player to the leaderboard.
@@ -35,12 +34,12 @@ export async function setPlayerInLeaderboard(roomCode: string, socket: Socket, m
  * WITHOUT a leaderboardData object as parameter, it sets the player with DEFAULT DATA.
  * WITH a leaderboardData object, it sets the player with the SUPPLIED DATA.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param leaderboardData - Leaderboard data object of format: { points?: number }
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInLeaderboard(roomCode: string, socket: Socket, leaderboardData: TLeaderboardData): Promise<void>;
+export async function setPlayerInLeaderboard(roomCode: string, playerID: string, leaderboardData: TLeaderboardData): Promise<void>;
 
 /**
  * If player DOESN'T EXIST, it ADDS the player to the leaderboard.
@@ -48,14 +47,14 @@ export async function setPlayerInLeaderboard(roomCode: string, socket: Socket, l
  * WITHOUT a leaderboardData object as parameter, it sets the player with DEFAULT DATA.
  * WITH a leaderboardData object, it sets the player with the SUPPLIED DATA.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param leaderboardData - Leaderboard data object of format: { points?: number }
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInLeaderboard(roomCode: string, socket: Socket, leaderboardData: TLeaderboardData, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInLeaderboard(roomCode: string, playerID: string, leaderboardData: TLeaderboardData, multi: ChainableCommander): Promise<void>;
 
-export async function setPlayerInLeaderboard(roomCode: string, socket: Socket, arg3?: TLeaderboardData | ChainableCommander, arg4?: ChainableCommander): Promise<void> {
+export async function setPlayerInLeaderboard(roomCode: string, playerID: string, arg3?: TLeaderboardData | ChainableCommander, arg4?: ChainableCommander): Promise<void> {
   const leaderboardKey = `room:${roomCode}:leaderboard`;
   const defaultLeaderboardData: TLeaderboardData = { points: 0 };
 
@@ -71,9 +70,9 @@ export async function setPlayerInLeaderboard(roomCode: string, socket: Socket, a
   }
 
   if (multi) {
-    multi.zadd(leaderboardKey, leaderboardData.points, socket.id);
+    multi.zadd(leaderboardKey, leaderboardData.points, playerID);
   } else {
-    await client.zadd(leaderboardKey, leaderboardData.points, socket.id);
+    await client.zadd(leaderboardKey, leaderboardData.points, playerID);
   }
 }
 
@@ -105,42 +104,42 @@ export async function getAllPlayersFromLeaderboard(roomCode: string): Promise<{ 
 /**
  * Gets score of a player from leaderboard
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @returns A promise that resolves to the number of points of the player or null if player doesn't exist.
  * @example output: { points: 100 }
  * @example output: null
  */
-export async function getPlayerScoreFromLeaderboard(roomCode: string, socket: Socket): Promise<number | null> {
+export async function getPlayerScoreFromLeaderboard(roomCode: string, playerID: string): Promise<number | null> {
   const leaderboardKey = `room:${roomCode}:leaderboard`;
-  const playerScore = await client.zscore(leaderboardKey, socket.id);
+  const playerScore = await client.zscore(leaderboardKey, playerID);
   return playerScore ? parseInt(playerScore) : null;
 }
 
 /**
  * Removes a player from leaderboard
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function removePlayerFromLeaderboard(roomCode: string, socket: Socket): Promise<void>;
+export async function removePlayerFromLeaderboard(roomCode: string, playerID: string): Promise<void>;
 
 /**
  * Removes a player from leaderboard
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function removePlayerFromLeaderboard(roomCode: string, socket: Socket, multi: ChainableCommander): Promise<void>;
+export async function removePlayerFromLeaderboard(roomCode: string, playerID: string, multi: ChainableCommander): Promise<void>;
 
-export async function removePlayerFromLeaderboard(roomCode: string, socket: Socket, multi?: ChainableCommander): Promise<void> {
+export async function removePlayerFromLeaderboard(roomCode: string, playerID: string, multi?: ChainableCommander): Promise<void> {
   const leaderboardKey = `room:${roomCode}:leaderboard`;
 
   if (multi) {
-    multi.zrem(leaderboardKey, socket.id);
+    multi.zrem(leaderboardKey, playerID);
   } else {
-    await client.zrem(leaderboardKey, socket.id);
+    await client.zrem(leaderboardKey, playerID);
   }
 }
 

@@ -1,6 +1,6 @@
 import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
-import { TMinigameData, EPossibleStates, EPossibleMinigames } from '../../types/roomRepositoryTypes';
+import { TMinigameData } from '../../types/roomRepositoryTypes';
 
 /**
  * Sets the minigame data in the room.
@@ -33,8 +33,8 @@ export async function setMinigame(roomCode: string, minigameData: TMinigameData,
 /**
  *
  * @param roomCode - The unique identifier for the room.
- * @returns A promise that resolves to the minigame data or null if there is no minigame running.
- * @example { minigame: 'Click the Bomb', state: 'playing', turns: 3, currentTurn: 1, timeForTurn: 10, currentMinigameData: { maxClicks: 5 } }
+ * @returns A promise that resolves to the minigame data.
+ * @example { minigame: "Click the Bomb", state: "playing", rounds: 3, currentRound: 1, timeForTurn: 10, currentMinigameData: { ... } }
  */
 export async function getMinigame(roomCode: string): Promise<TMinigameData | null> {
   const minigameKey = `room:${roomCode}:minigame`;

@@ -9,54 +9,54 @@ import { Socket } from 'socket.io';
  * WITHOUT a playerData object as parameter, it sets the player with DEFAULT DATA.
  * WITH a playerData object, it sets the player with the SUPPLIED DATA.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param nickname - The nickname of the player.
  * @param playerData - (OPTIONAL)
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInPlayers(roomCode: string, socket: Socket, nickname: string): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string): Promise<void>;
 /**
  * If player DOESN'T EXIST, it ADDS the player.
  * If player EXISTS, it UPDATES the player data.
  * WITHOUT a playerData object as parameter, it sets the player with DEFAULT DATA.
  * WITH a playerData object, it sets the player with the SUPPLIED DATA.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param nickname - The nickname of the player.
  * @param playerData - (OPTIONAL)
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInPlayers(roomCode: string, socket: Socket, nickname: string, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, multi: ChainableCommander): Promise<void>;
 /**
  * If player DOESN'T EXIST, it ADDS the player.
  * If player EXISTS, it UPDATES the player data.
  * WITHOUT a playerData object as parameter, it sets the player with DEFAULT DATA.
  * WITH a playerData object, it sets the player with the SUPPLIED DATA.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param nickname - The nickname of the player.
  * @param playerData - Player data object of format: { points?: number, isAlive?: boolean }
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInPlayers(roomCode: string, socket: Socket, nickname: string, playerData: TPlayerData): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, playerData: TPlayerData): Promise<void>;
 /**
  * If player DOESN'T EXIST, it ADDS the player.
  * If player EXISTS, it UPDATES the player data.
  * WITHOUT a playerData object as parameter, it sets the player with DEFAULT DATA.
  * WITH a playerData object, it sets the player with the SUPPLIED DATA.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param nickname - The nickname of the player.
  * @param playerData - Player data object of format: { points?: number, isAlive?: boolean }
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInPlayers(roomCode: string, socket: Socket, nickname: string, playerData: TPlayerData, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, playerData: TPlayerData, multi: ChainableCommander): Promise<void>;
 
-export async function setPlayerInPlayers(roomCode: string, socket: Socket, nickname: string, arg4?: TPlayerData | ChainableCommander, arg5?: ChainableCommander): Promise<void> {
+export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, arg4?: TPlayerData | ChainableCommander, arg5?: ChainableCommander): Promise<void> {
   const playersKey = `room:${roomCode}:players`;
   const defaultPlayerData: TPlayerData = { nickname: nickname, points: 0, isAlive: true };
 
@@ -72,9 +72,9 @@ export async function setPlayerInPlayers(roomCode: string, socket: Socket, nickn
   }
 
   if (multi) {
-    multi.hset(playersKey, socket.id, JSON.stringify(playerData));
+    multi.hset(playersKey, playerID, JSON.stringify(playerData));
   } else {
-    await client.hset(playersKey, socket.id, JSON.stringify(playerData));
+    await client.hset(playersKey, playerID, JSON.stringify(playerData));
   }
 }
 
@@ -106,48 +106,48 @@ export async function getAllPlayersFromPlayers(roomCode: string): Promise<TPlaye
 /**
  * Gets a player in the room.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @returns A promise that resolves to an object containing socket ID and data of the player or null if player doesn't exist.
- * @example output: { nickname: 'John', data: { points: 0, isAlive: true } }
+ * @example output: { id: 'UIQOENFI76f5f', data: { nickname: 'John', points: 0, isAlive: true } }
  * @example output: null
  */
-export async function getPlayerFromPlayers(roomCode: string, socket: Socket): Promise<TPlayer | null> {
+export async function getPlayerFromPlayers(roomCode: string, playerID: string): Promise<TPlayer | null> {
   const playersKey = `room:${roomCode}:players`;
 
-  const rawPlayer = await client.hget(playersKey, socket.id);
+  const rawPlayer = await client.hget(playersKey, playerID);
 
   if (!rawPlayer) {
     return null;
   }
 
-  return { id: socket.id, data: JSON.parse(rawPlayer) };
+  return { id: playerID, data: JSON.parse(rawPlayer) };
 }
 
 /**
  * Removes a player from the room.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
-export async function removePlayerFromPlayers(roomCode: string, socket: Socket): Promise<void>;
+export async function removePlayerFromPlayers(roomCode: string, playerID: string): Promise<void>;
 
 /**
  * Removes a player from the room.
  * @param roomCode - The unique identifier for the room.
- * @param socket - The socket object of the player.
+ * @param playerID - The unique identifier for the player.
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function removePlayerFromPlayers(roomCode: string, socket: Socket, multi: ChainableCommander): Promise<void>;
+export async function removePlayerFromPlayers(roomCode: string, playerID: string, multi: ChainableCommander): Promise<void>;
 
-export async function removePlayerFromPlayers(roomCode: string, socket: Socket, multi?: ChainableCommander): Promise<void> {
+export async function removePlayerFromPlayers(roomCode: string, playerID: string, multi?: ChainableCommander): Promise<void> {
   const playersKey = `room:${roomCode}:players`;
 
   if (multi) {
-    multi.hdel(playersKey, socket.id);
+    multi.hdel(playersKey, playerID);
   } else {
-    await client.hdel(playersKey, socket.id);
+    await client.hdel(playersKey, playerID);
   }
 }
 
@@ -175,4 +175,25 @@ export async function deletePlayers(roomCode: string, multi?: ChainableCommander
   } else {
     await client.del(playersKey);
   }
+}
+
+/**
+ * Finds the room code where a player is currently present.
+ * @param playerID - The socket ID of the player.
+ * @returns A promise that resolves to the room code if found, otherwise null.
+ * @example output: 'ABCDE'
+ * @example output: null
+ */
+export async function findPlayerRoom(playerID: string): Promise<string | null> {
+  const roomKeysPattern = 'room:*:players';
+  const roomKeys = await client.keys(roomKeysPattern);
+
+  for (const roomKey of roomKeys) {
+    const exists = await client.hexists(roomKey, playerID);
+    if (exists) {
+      return roomKey.split(':')[1]; // Extracting the roomCode from the key
+    }
+  }
+
+  return null;
 }
