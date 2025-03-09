@@ -1,8 +1,3 @@
-export type Minigame = {
-  minigame_id: string;
-  name: string;
-};
-
 export enum EPossibleStates {
   playing = 'playing',
   finished = 'finished',

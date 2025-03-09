@@ -1,8 +1,8 @@
-import { Minigame } from './Minigame.ts';
+import { TMinigameData } from './Minigame.ts';
 
 export type LobbySettingsType = {
   isRandomMinigames: boolean;
   isTutorialsEnabled: boolean;
   numberOfMinigames?: number;
-  minigames?: Minigame[];
+  minigames?: TMinigameData[];
 };
