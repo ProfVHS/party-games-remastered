@@ -184,7 +184,7 @@ export async function deletePlayers(roomCode: string, multi?: ChainableCommander
  * @example output: 'ABCDE'
  * @example output: null
  */
-export async function findPlayerRoom(playerID: string): Promise<string | null> {
+export async function getRoomCodeFromPlayer(playerID: string): Promise<string | null> {
   const roomKeysPattern = 'room:*:players';
   const roomKeys = await client.keys(roomKeysPattern);
 

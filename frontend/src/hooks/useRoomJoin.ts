@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { socket } from '../socket';
 import { useToast } from './useToast';
-import { SocketPayload } from '../types';
 
 export const useRoomJoin = () => {
   const navigate = useNavigate();
@@ -12,7 +11,7 @@ export const useRoomJoin = () => {
       navigate('/room');
     });
 
-    socket.on('failed_to_join_room', (playersReadyCount: SocketPayload) => {
+    socket.on('failed_to_join_room', (playersReadyCount: number) => {
       switch (playersReadyCount as number) {
         case 0: {
           toast.error({ message: 'Room does not exist', duration: 5 });

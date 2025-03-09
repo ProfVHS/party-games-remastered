@@ -1,8 +1,25 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
 import { EPossibleMinigames } from '../types/roomRepositoryTypes';
+import * as roomRepository from '../repositories/roomRepository/roomRepository';
 
 export const roomSockets = (socket: Socket) => {
+  socket.on('disconnect', async (reason) => {
+    console.log(`Disconnected: ${socket.id} (Reason: ${reason})`);
+    const response = await roomService.deletePlayerService(socket);
+
+    if (!response.success) {
+      return;
+    }
+
+    // TODO: TEMPORARY SOLUTION, change later
+
+    // Payload: room code
+    const playersReady = await roomRepository.getAllReadyPlayerCount(response.payload);
+    socket.leave(response.payload);
+    socket.nsp.to(response.payload).emit('fetch_ready_players', playersReady);
+  });
+
   socket.on('create_room', async (roomCode: string, nickname: string) => {
     const response = await roomService.createRoomService(roomCode, socket, nickname);
 
@@ -26,7 +43,8 @@ export const roomSockets = (socket: Socket) => {
 
     socket.join(roomCode);
     // Payload: number of players ready
-    socket.nsp.to(socket.id).emit('joined_room', response.payload);
+    socket.nsp.to(socket.id).emit('joined_room');
+    socket.nsp.to(socket.id).emit('fetch_ready_players', response.payload);
   });
 
   socket.on('toggle_player_ready', async (roomCode: string, nickname: string) => {

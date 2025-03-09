@@ -7,12 +7,12 @@ type useRoomToggleProps = {
 
 export const useRoomFetch = ({ setPlayersReady }: useRoomToggleProps) => {
   useEffect(() => {
-    socket.on('joined_room', (playersReadyCount: number) => {
+    socket.on('fetch_ready_players', (playersReadyCount: number) => {
       setPlayersReady(playersReadyCount);
     });
 
     return () => {
-      socket.off('joined_room');
+      socket.off('fetch_ready_players');
     };
   }, []);
 };

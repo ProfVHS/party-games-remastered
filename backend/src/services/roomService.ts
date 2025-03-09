@@ -11,8 +11,8 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
 
   try {
     multi = client.multi();
-    await roomRepository.setPlayerInPlayers(roomCode, socket, nickname, multi);
-    await roomRepository.setPlayerInLeaderboard(roomCode, socket, multi);
+    await roomRepository.setPlayerInPlayers(roomCode, socket.id, nickname, multi);
+    await roomRepository.setPlayerInLeaderboard(roomCode, socket.id, multi);
     await multi.exec();
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${nickname}: ${error}`);
@@ -40,8 +40,8 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
 
     multi = client.multi();
 
-    await roomRepository.setPlayerInPlayers(roomCode, socket, nickname, multi);
-    await roomRepository.setPlayerInLeaderboard(roomCode, socket, multi);
+    await roomRepository.setPlayerInPlayers(roomCode, socket.id, nickname, multi);
+    await roomRepository.setPlayerInLeaderboard(roomCode, socket.id, multi);
 
     await multi.exec();
 
@@ -60,12 +60,12 @@ export const toggleReadyService = async (roomCode: string, socket: Socket): Prom
   try {
     multi = client.multi();
 
-    const isReady = await roomRepository.isPlayerReady(roomCode, socket);
+    const isReady = await roomRepository.isPlayerReady(roomCode, socket.id);
 
     if (isReady) {
-      await roomRepository.setPlayerReady(roomCode, socket, false, multi);
+      await roomRepository.setPlayerReady(roomCode, socket.id, false, multi);
     } else {
-      await roomRepository.setPlayerReady(roomCode, socket, true, multi);
+      await roomRepository.setPlayerReady(roomCode, socket.id, true, multi);
     }
 
     multi.exec();
@@ -98,23 +98,30 @@ export const deleteRoomService = async (roomCode: string): Promise<IReturnData> 
   return { success: true }; // Room deleted
 };
 
-export const deletePlayerService = async (roomCode: string, socket: Socket): Promise<IReturnData> => {
+export const deletePlayerService = async (socket: Socket): Promise<IReturnData> => {
   let multi: ChainableCommander;
+  let roomCode: string | null;
 
   try {
+    roomCode = await roomRepository.getRoomCodeFromPlayer(socket.id);
+
+    if (!roomCode) {
+      return { success: false }; // Player not deleted
+    }
+
     multi = client.multi();
 
-    await roomRepository.removePlayerFromLeaderboard(roomCode, socket, multi);
-    await roomRepository.removePlayerFromPlayers(roomCode, socket, multi);
-    await roomRepository.removePlayerFromReady(roomCode, socket, multi);
+    await roomRepository.removePlayerFromLeaderboard(roomCode, socket.id, multi);
+    await roomRepository.removePlayerFromPlayers(roomCode, socket.id, multi);
+    await roomRepository.removePlayerFromReady(roomCode, socket.id, multi);
 
     await multi.exec();
   } catch (error) {
-    console.error(`Player deletion failed for room ${roomCode} and player: ${socket.id}: ${error}`);
+    console.error(`Player deletion failed for player: ${socket.id}: ${error}`);
     return { success: false }; // Player not deleted
   }
 
-  return { success: true }; // Player deleted
+  return { success: true, payload: roomCode }; // Player deleted
 };
 
 export const startMinigameService = async (roomCode: string, minigame: EPossibleMinigames): Promise<IReturnData> => {
