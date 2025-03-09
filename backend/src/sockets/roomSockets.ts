@@ -1,47 +1,75 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
+import { PossibleMinigamesEnum } from '../types/roomRepositoryTypes';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 
 export const roomSockets = (socket: Socket) => {
-  socket.on('create_room', async (roomCode: string, nickname: string) => {
-    const response = await roomService.createRoomService(roomCode, nickname);
+  socket.on('disconnect', async (reason) => {
+    console.log(`Disconnected: ${socket.id} (Reason: ${reason})`);
+    const response = await roomService.deletePlayerService(socket);
 
     if (!response.success) {
-      // TODO: Handle this emit on frontend
-      socket.nsp.to(socket.id).emit('room_creation_failed');
+      return;
+    }
+
+    // TODO: TEMPORARY SOLUTION, change later
+
+    // Payload: room code
+    const playersReady = await roomRepository.getAllReadyPlayerCount(response.payload);
+    socket.leave(response.payload);
+    socket.nsp.to(response.payload).emit('fetch_ready_players', playersReady);
+  });
+
+  socket.on('create_room', async (roomCode: string, nickname: string) => {
+    const response = await roomService.createRoomService(roomCode, socket, nickname);
+
+    if (!response.success) {
+      socket.nsp.to(socket.id).emit('failed_to_create_room');
       return;
     }
 
     socket.join(roomCode);
-    // TODO: Change to separate emit called 'created_room' and handle it on frontend
-    socket.nsp.to(socket.id).emit('joined_room');
+    socket.nsp.to(socket.id).emit('created_room');
   });
 
   socket.on('join_room', async (roomCode: string, nickname: string) => {
-    const response = await roomService.joinRoomService(roomCode, nickname);
+    const response = await roomService.joinRoomService(roomCode, socket, nickname);
 
+    // Payload: 0 = Room does not exist, -1 = Room is full, -100 = Room not joined
     if (!response.success) {
-      // TODO: change name of this emit to 'room_join_failed' and handle it on frontend
-      // Also change emit's payload depending on response.payload
-      socket.nsp.to(socket.id).emit('room_not_found');
+      socket.nsp.to(socket.id).emit('failed_to_join_room', response.payload);
       return;
     }
 
     socket.join(roomCode);
+    // Payload: number of players ready
     socket.nsp.to(socket.id).emit('joined_room');
-    // TODO: Check if this emit is necessary when we create separate emit for 'created_room'
-    socket.nsp.to(socket.id).emit('fetched_players_ready', response.payload);
+    setTimeout(() => {
+      socket.nsp.to(socket.id).emit('fetch_ready_players', response.payload);
+    }, 500);
   });
 
-  socket.on('toggle_player_ready', async (roomCode: string, nickname: string) => {
-    const response = await roomService.toggleReadyService(roomCode, nickname);
+  socket.on('toggle_player_ready', async (roomCode: string) => {
+    const response = await roomService.toggleReadyService(roomCode, socket);
 
     if (!response.success) {
-      // TODO: Handle this emit on frontend
-      socket.nsp.to(socket.id).emit('toggle_player_ready_failed');
+      socket.nsp.to(socket.id).emit('failed_to_toggle');
       return;
     }
 
+    // Payload: number of players ready
     socket.nsp.in(roomCode).emit('toggled_player_ready', response.payload);
+  });
+
+  socket.on('start_minigame', async (roomCode: string, minigame: PossibleMinigamesEnum) => {
+    const response = await roomService.startMinigameService(roomCode, minigame);
+
+    if (!response.success) {
+      socket.nsp.to(socket.id).emit('failed_to_start_minigame');
+      return;
+    }
+
+    // Payload: minigame data
+    socket.nsp.in(roomCode).emit('started_minigame', response.payload);
   });
 };
