@@ -1,7 +1,7 @@
 import { SVGProps } from 'react';
 import './SettingsButton.scss';
-import classNames from 'classnames';
 import { Icon } from '../../../assets/icon';
+import { ClassNames } from '../../../utils.ts';
 
 type SettingsButtonProps = {
   onClick: () => void;
@@ -10,7 +10,7 @@ type SettingsButtonProps = {
 };
 export const SettingsButton = ({ onClick, className, props }: SettingsButtonProps) => {
   return (
-    <button className={classNames('settings-button', [className])} onClick={onClick}>
+    <button className={ClassNames('settings-button', className)} onClick={onClick}>
       <Icon icon="Settings" {...props} />
     </button>
   );

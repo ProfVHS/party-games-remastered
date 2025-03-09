@@ -3,7 +3,7 @@ import './Toast.scss';
 import { motion, useAnimate } from 'framer-motion';
 import { useToast } from '../../../hooks/useToast.ts';
 import { Icon } from '../../../assets/icon';
-import classNames from 'classnames';
+import { ClassNames } from '../../../utils.ts';
 
 type ToastType = {
   id: number;
@@ -22,7 +22,6 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
 
   useEffect(() => {
     animate(scope.current, { opacity: [0, 1], scale: [0, 1] }, { type: 'spring', duration: 0.5 });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -38,7 +37,6 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
         clearTimeout(timer.current);
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const exitAnimation = async () => {
@@ -48,7 +46,7 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
   const handleDismiss = () => toast.remove(id);
 
   return (
-    <motion.div className={classNames('alert', { [`alert--${type}`]: type })} ref={scope}>
+    <motion.div className={ClassNames('alert', [type])} ref={scope}>
       <motion.div className="alert__progress" initial={{ width: '100%' }} animate={{ width: '0%' }} transition={{ duration, ease: 'linear' }} />
       <div className="alert__icon">
         {type === 'success' && <Icon icon="Success" />}

@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+
 export function setSessionVariables(roomCode: string, nickname: string) {
   sessionStorage.setItem('roomCode', roomCode);
   sessionStorage.setItem('nickname', nickname);
@@ -7,6 +9,31 @@ export function clearSessionVariables() {
   sessionStorage.removeItem('roomCode');
   sessionStorage.removeItem('nickname');
 }
+
+type Modifier = string | false | null | undefined;
+type ConditionalModifiers = Record<string, boolean | undefined | null>
+type ClassName = string | undefined
+
+export const ClassNames = (block: string, ...args: (Modifier[] | ConditionalModifiers | ClassName)[]): string => {
+  let modifiers: Modifier[] = [];
+  let conditionalModifiers: ConditionalModifiers = {};
+  let className: string | undefined;
+
+  args.forEach(arg => {
+    if (Array.isArray(arg)) {
+      modifiers = arg;
+    } else if (typeof arg === 'string') {
+      className = arg;
+    } else if (typeof arg === 'object' && arg !== null) {
+      conditionalModifiers = arg;
+    }
+  });
+
+  const formattedModifiers = modifiers.filter((modifier) => Boolean(modifier)).map(modifier => `${block}--${modifier}`);
+  const conditionalClasses = Object.entries(conditionalModifiers).filter(([_key, value]) => Boolean(value)).map(([key]) => `${block}--${key}`);
+
+  return classNames(block, ...formattedModifiers, ...conditionalClasses, className);
+};
 
 export const generateRandomUserName = () => {
   const adjectives = [
@@ -42,7 +69,7 @@ export const generateRandomUserName = () => {
     'King',
     'Queen',
     'Lord',
-    'Sir',
+    'Sir'
   ];
 
   const nouns = [
@@ -69,41 +96,40 @@ export const generateRandomUserName = () => {
     'Penguin',
     'Marcello',
     'Fernando Melo',
-    'Amigo',
+    'Amigo'
   ];
 
-  const randomUsername = `${adjectives[Math.floor(Math.random() * adjectives.length)]}
+  return `${adjectives[Math.floor(Math.random() * adjectives.length)]}
                           ${nouns[Math.floor(Math.random() * nouns.length)]}`;
-  return randomUsername;
 };
 
 // Record => Object which needs to have: keys of type XYZ and values of type XYZ
 // In this case Keys NEED to be a number and values NEED to be an array of objects with...
 // ... keys named row and col which are both numbers
 export const possibleAvatarLayouts: Record<number, { row: number; col: number }[]> = {
-  // All positions comments are relative to the lobby eg. Top means Above/Top of the lobby
+  // All positions comments are relative to the lobby e.g. Top means Above/Top of the lobby
   1: [{ row: 1, col: 2 }], // Top
   2: [
     { row: 2, col: 1 }, // Left
-    { row: 2, col: 3 }, // Right
+    { row: 2, col: 3 } // Right
   ],
   3: [
     { row: 1, col: 1 }, // Top left
     { row: 1, col: 2 }, // Top
-    { row: 1, col: 3 }, // Top right
+    { row: 1, col: 3 } // Top right
   ],
   4: [
     { row: 1, col: 1 }, // Top left
     { row: 1, col: 3 }, // Top right
     { row: 3, col: 1 }, // Bottom left
-    { row: 3, col: 3 }, // Bottom right
+    { row: 3, col: 3 } // Bottom right
   ],
   5: [
     { row: 2, col: 1 }, // Left
     { row: 1, col: 1 }, // Top left
     { row: 1, col: 2 }, // Top
     { row: 1, col: 3 }, // Top right
-    { row: 2, col: 3 }, // Right
+    { row: 2, col: 3 } // Right
   ],
   6: [
     { row: 1, col: 1 }, // Top left
@@ -111,7 +137,7 @@ export const possibleAvatarLayouts: Record<number, { row: number; col: number }[
     { row: 1, col: 3 }, // Top right
     { row: 3, col: 1 }, // Bottom left
     { row: 3, col: 2 }, // Bottom
-    { row: 3, col: 3 }, // Bottom right
+    { row: 3, col: 3 } // Bottom right
   ],
   7: [
     { row: 1, col: 1 }, // Top left
@@ -120,7 +146,7 @@ export const possibleAvatarLayouts: Record<number, { row: number; col: number }[
     { row: 2, col: 1 }, // Left
     { row: 3, col: 1 }, // Bottom left
     { row: 3, col: 2 }, // Bottom
-    { row: 3, col: 3 }, // Bottom right
+    { row: 3, col: 3 } // Bottom right
   ],
   8: [
     { row: 1, col: 1 }, // Top left
@@ -130,6 +156,6 @@ export const possibleAvatarLayouts: Record<number, { row: number; col: number }[
     { row: 2, col: 3 }, // Right
     { row: 3, col: 1 }, // Bottom left
     { row: 3, col: 2 }, // Bottom
-    { row: 3, col: 3 }, // Bottom right
-  ],
+    { row: 3, col: 3 } // Bottom right
+  ]
 };

@@ -7,5 +7,14 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-  },
+    'react-hooks/exhaustive-deps': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      "error",
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_'
+      }
+    ]
+  }
 };

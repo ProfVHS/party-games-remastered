@@ -3,12 +3,12 @@ import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
 import { Button } from '../../ui/button/Button.tsx';
 import { Minigame } from '../../../types';
-import classNames from 'classnames';
 import { Icon } from '../../../assets/icon';
+import { ClassNames } from '../../../utils.ts';
 
 type MinigamesListProps = {
   onCancel: () => void;
-  onSave: (Minigames: Minigame[]) => void;
+  onSave: (minigames: Minigame[]) => void;
   minigames?: Minigame[];
 };
 
@@ -70,7 +70,7 @@ type MinigameItemProps = {
 
 const MinigameItem = ({ minigame, type, onClick }: MinigameItemProps) => {
   return (
-    <div className={classNames('minigames-list__minigame', { draggable: type == 'remove' })}>
+    <div className={ClassNames('minigames-list__minigame', { draggable: type == 'remove' })}>
       <div className="minigames-list__minigame-icon">
         {minigame.minigame_id === 'CTB' && <Icon icon="Bomb" />}
       </div>
