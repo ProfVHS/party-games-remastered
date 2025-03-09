@@ -17,7 +17,7 @@ type ButtonProps = {
 export const Button = ({ children, className, onClick, style, type = 'button', variant = 'square', color = 'primary', size = 'medium', isDisabled = false }: ButtonProps) => {
   return (
     <button
-      className={ClassNames('button', [variant, color, size], {"true": true, "test": true}, className)}
+      className={ClassNames('button', [variant, color, size], className)}
       type={type}
       style={style}
       onClick={onClick}
