@@ -44,7 +44,9 @@ export const roomSockets = (socket: Socket) => {
     socket.join(roomCode);
     // Payload: number of players ready
     socket.nsp.to(socket.id).emit('joined_room');
-    socket.nsp.to(socket.id).emit('fetch_ready_players', response.payload);
+    setTimeout(() => {
+      socket.nsp.to(socket.id).emit('fetch_ready_players', response.payload);
+    }, 500);
   });
 
   socket.on('toggle_player_ready', async (roomCode: string, nickname: string) => {
