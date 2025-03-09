@@ -50,6 +50,6 @@ export const roomSockets = (socket: Socket) => {
     }
 
     // Payload: minigame data
-    socket.nsp.in(roomCode).emit('started_minigame', minigame);
+    socket.nsp.in(roomCode).emit('started_minigame', response.payload);
   });
 };
