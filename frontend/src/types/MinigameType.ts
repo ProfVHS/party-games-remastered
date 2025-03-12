@@ -14,7 +14,7 @@ type TClickTheBombData = {
 
 export type TCurrentMinigameData = TClickTheBombData;
 
-export type TMinigameData = {
+export type MinigameDataType = {
   minigame: EPossibleMinigames;
   state: EPossibleStates;
   rounds: number;
@@ -23,6 +23,10 @@ export type TMinigameData = {
   currentMinigameData: TCurrentMinigameData;
 };
 
-export type TMinigameEntry = {
+export type MinigameEntryType = {
   name: string;
 };
+
+export type MinigameListItemType = MinigameEntryType & {
+  id?: string;
+}
