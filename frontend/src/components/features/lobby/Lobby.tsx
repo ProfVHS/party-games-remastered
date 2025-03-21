@@ -3,13 +3,15 @@ import { Button } from '../../ui/button/Button';
 import { useState } from 'react';
 import { LobbySettings } from '../lobbySettings/LobbySettings';
 import { socket } from '../../../socket.ts';
-import { useSyncReadyPlayers } from '../../../hooks/useSyncReadyPlayers.ts';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
 import { LobbySettingsType } from '../../../types';
 import { useToast } from '../../../hooks/useToast.ts';
+import { useRoomToggle } from '../../../hooks/useRoomToggle.ts';
+import { useRoomFetch } from '../../../hooks/useRoomFetch.ts';
+import { useRoomStart } from '../../../hooks/useRoomStart.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -58,12 +60,16 @@ export const Lobby = () => {
 const LobbyContent = () => {
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useSyncReadyPlayers({ setPlayersReady });
-  
+  useRoomToggle({ setPlayersReady, setIsLoading });
+  useRoomFetch({ setPlayersReady });
+  useRoomStart({ playersReady });
+
   const toast = useToast();
 
   const toggleReady = () => {
+    setIsLoading(true);
     const nickname = sessionStorage.getItem('nickname');
     const roomCode = sessionStorage.getItem('roomCode');
 
@@ -79,19 +85,22 @@ const LobbyContent = () => {
     if (roomCode) {
       navigator.clipboard.writeText(roomCode);
       toast.info({ message: 'Room code copied!', duration: 5 });
-    } 
+    }
   };
 
   return (
     <>
       <span className="lobby__title">
-        Room Code: <span className="lobby__code" onClick={handleCopyRoomCode}>{sessionStorage.getItem('roomCode')}</span>
+        Room Code:{' '}
+        <span className="lobby__code" onClick={handleCopyRoomCode}>
+          {sessionStorage.getItem('roomCode')}
+        </span>
       </span>
       <div className="lobby__info">
         <span className="lobby__players">{playersReady}</span>
         <span className="lobby__text">Players ready</span>
       </div>
-      <Button style={{ width: '75%' }} onClick={toggleReady}>
+      <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
         {ready ? 'Unready' : 'Ready'}
       </Button>
     </>

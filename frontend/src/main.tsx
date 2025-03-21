@@ -9,5 +9,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ToastProvider>
       <AppRoutes />
     </ToastProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
