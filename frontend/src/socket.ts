@@ -6,5 +6,5 @@ export const serverUrl = SOCKET_SERVER_URL || 'http://localhost:3000';
 
 export const socket: Socket = io(serverUrl, {
   autoConnect: true,
-  reconnection: true,
+  reconnection: true
 });

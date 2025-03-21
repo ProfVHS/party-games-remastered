@@ -5,24 +5,16 @@ import { ToastsContainer } from '../../components/ui/toastsContainer/ToastsConta
 import { ToastContext } from './ToastContext.ts';
 
 const initialState = {
-  toasts: [],
+  toasts: []
 };
 
 const ToastProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(toastReducer, initialState);
+  const [state, dispatch] = useReducer(toastReducer, initialState)
 
-  type addToastType = Omit<ToastsType, 'id'>;
+  type addToastType = Omit<ToastsType, 'id'>
   const addToast = (toast: addToastType) => {
     const id = Math.floor(Math.random() * 1000000);
-    dispatch({
-      type: 'ADD_TOAST',
-      payload: {
-        id,
-        message: toast.message,
-        type: toast.type,
-        duration: toast.duration,
-      },
-    });
+    dispatch({ type: 'ADD_TOAST', payload: { id, message: toast.message, type: toast.type, duration: toast.duration } });
   };
 
   const success = ({ message, duration }: addToastProps) => addToast({ message, duration, type: 'success' });

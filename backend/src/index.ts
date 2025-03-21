@@ -4,7 +4,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
-import { roomSockets } from './sockets/roomSockets';
+import { roomSockets } from './Sockets/Room/roomSockets';
 
 const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
@@ -26,6 +26,10 @@ const handleModulesOnConnection = async (socket: Socket) => {
   console.log(`New connection: ${socket.id}`);
 
   roomSockets(socket);
+
+  socket.on('disconnect', (reason) => {
+    console.log(`Disconnected: ${socket.id} (Reason: ${reason})`);
+  });
 
   socket.on('error', (err) => {
     console.error(`Socket error: ${err}`);

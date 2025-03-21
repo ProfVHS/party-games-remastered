@@ -1,39 +1,34 @@
 import { useState } from 'react';
 import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
+import { BombIcon } from './SvgIcons';
 import { Button } from '../../ui/button/Button.tsx';
-import { EPossibleMinigames, MinigameListItemType } from '../../../types';
-import { MinigameItem } from './MinigameItem.tsx';
-import { DraggableMinigameItem } from './DraggableMinigameItem.tsx';
+import { Minigame } from '../../../types';
 
 type MinigamesListProps = {
   onCancel: () => void;
-  onSave: (Minigames: MinigameListItemType[]) => void;
-  minigames?: MinigameListItemType[];
+  onSave: (Minigames: Minigame[]) => void;
+  minigames?: Minigame[];
 };
 
 export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProps) => {
-  const [minigamesList, setMinigamesList] = useState<MinigameListItemType[]>(minigames! || []);
+  const [minigamesList, setMinigamesList] = useState<Minigame[]>(
+    minigames! || []
+  );
 
   const handleSave = () => {
     onSave && onSave(minigamesList);
     onCancel && onCancel();
   };
 
-  const addMinigameToList = (minigame: MinigameListItemType) => {
-    const id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
-    setMinigamesList((prevMinigames) => [...prevMinigames, { ...minigame, id }]);
-  };
-
-  const removeMinigameFromList = (minigame: MinigameListItemType) => {
-    setMinigamesList((prevMinigamesList) => prevMinigamesList.filter((m) => m.id !== minigame.id));
-  };
-
   return (
     <div className="minigames-list">
       <div className="minigames-list__table">
         <span className="minigames-list__title">Minigames</span>
-        <MinigameItem minigame={{ name: EPossibleMinigames.clickTheBomb }} onClick={addMinigameToList} type="add" />
+        <MinigameItem
+          minigame={{ minigame_id: 'CTB', name: 'Click The Bomb' }}
+          type="add"
+        />
       </div>
       <div className="minigames-list__table">
         <span className="minigames-list__title">Your minigames queue</span>
@@ -48,11 +43,20 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
             width: '100%',
             height: '100%',
             overflowY: 'auto',
-            scrollbarWidth: 'none',
+            scrollbarWidth: 'none'
           }}
         >
           {minigamesList.map((minigame) => (
-            <DraggableMinigameItem key={minigame.id} minigame={minigame} onClick={removeMinigameFromList} />
+            <Reorder.Item
+              key={minigame.minigame_id}
+              value={minigame}
+              style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}
+            >
+              <MinigameItem
+                minigame={minigame}
+                type="remove"
+              />
+            </Reorder.Item>
           ))}
         </Reorder.Group>
       </div>
@@ -62,6 +66,37 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
         </Button>
         <Button style={{ width: '30%' }} onClick={onCancel}>
           Cancel
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+type MinigameItemProps = {
+  minigame: Minigame;
+  type: 'add' | 'remove';
+  onClick?: (minigame: Minigame) => void;
+};
+
+const MinigameItem = ({ minigame, type, onClick }: MinigameItemProps) => {
+  return (
+    <div
+      className={`minigames-list__minigame ${
+        type === 'remove' ? 'draggable' : ''
+      }`}
+    >
+      <div className="minigames-list__minigame-icon">
+        {minigame.minigame_id === 'CTB' && <BombIcon height={25} />}
+      </div>
+      <div className="minigames-list__minigame-content">
+        <span>{minigame.name}</span>
+        <Button
+          onClick={() => onClick && onClick(minigame)}
+          variant="round"
+          color={`${type === 'remove' ? 'remove' : 'primary'}`}
+          size="small"
+        >
+          {type}
         </Button>
       </div>
     </div>
