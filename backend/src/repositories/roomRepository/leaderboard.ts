@@ -52,9 +52,19 @@ export async function setPlayerInLeaderboard(roomCode: string, playerID: string,
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInLeaderboard(roomCode: string, playerID: string, leaderboardData: LeaderboardDataType, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInLeaderboard(
+  roomCode: string,
+  playerID: string,
+  leaderboardData: LeaderboardDataType,
+  multi: ChainableCommander,
+): Promise<void>;
 
-export async function setPlayerInLeaderboard(roomCode: string, playerID: string, arg3?: LeaderboardDataType | ChainableCommander, arg4?: ChainableCommander): Promise<void> {
+export async function setPlayerInLeaderboard(
+  roomCode: string,
+  playerID: string,
+  arg3?: LeaderboardDataType | ChainableCommander,
+  arg4?: ChainableCommander,
+): Promise<void> {
   const leaderboardKey = `room:${roomCode}:leaderboard`;
   const defaultLeaderboardData: LeaderboardDataType = { points: 0 };
 
