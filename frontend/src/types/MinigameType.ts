@@ -29,4 +29,4 @@ export type MinigameEntryType = {
 
 export type MinigameListItemType = MinigameEntryType & {
   id?: string;
-}
+};

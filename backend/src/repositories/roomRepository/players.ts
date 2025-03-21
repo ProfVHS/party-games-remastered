@@ -53,9 +53,21 @@ export async function setPlayerInPlayers(roomCode: string, playerID: string, nic
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
-export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, playerData: PlayerDataType, multi: ChainableCommander): Promise<void>;
+export async function setPlayerInPlayers(
+  roomCode: string,
+  playerID: string,
+  nickname: string,
+  playerData: PlayerDataType,
+  multi: ChainableCommander,
+): Promise<void>;
 
-export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, arg4?: PlayerDataType | ChainableCommander, arg5?: ChainableCommander): Promise<void> {
+export async function setPlayerInPlayers(
+  roomCode: string,
+  playerID: string,
+  nickname: string,
+  arg4?: PlayerDataType | ChainableCommander,
+  arg5?: ChainableCommander,
+): Promise<void> {
   const playersKey = `room:${roomCode}:players`;
   const defaultPlayerData: PlayerDataType = { nickname: nickname, points: 0, isAlive: true };
 

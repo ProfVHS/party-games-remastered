@@ -22,11 +22,11 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
 
   const addMinigameToList = (minigame: MinigameListItemType) => {
     const id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
-    setMinigamesList(prevMinigames => [...prevMinigames, { ...minigame, id }]);
+    setMinigamesList((prevMinigames) => [...prevMinigames, { ...minigame, id }]);
   };
 
   const removeMinigameFromList = (minigame: MinigameListItemType) => {
-    setMinigamesList(prevMinigamesList => prevMinigamesList.filter((m) => m.id !== minigame.id));
+    setMinigamesList((prevMinigamesList) => prevMinigamesList.filter((m) => m.id !== minigame.id));
   };
 
   return (
@@ -48,7 +48,7 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
             width: '100%',
             height: '100%',
             overflowY: 'auto',
-            scrollbarWidth: 'none'
+            scrollbarWidth: 'none',
           }}
         >
           {minigamesList.map((minigame) => (
