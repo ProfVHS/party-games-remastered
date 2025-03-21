@@ -40,7 +40,6 @@ export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
 
   useEffect(() => {
     socket.on('started_minigame', (minigameData: MinigameDataType) => {
-
       // TODO: Display Minigame / Navigate to minigame / Start minigame on client idk
       console.log(minigameData); // TODO: remove this later
     });

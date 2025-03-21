@@ -11,14 +11,13 @@ export const DraggableMinigameItem = ({ minigame, onClick }: DraggableMinigameIt
   const controls = useDragControls();
   return (
     <Reorder.Item
-      key={minigame.id} value={minigame}
+      key={minigame.id}
+      value={minigame}
       dragListener={false}
       dragControls={controls}
-      style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}>
-      <MinigameItem minigame={minigame}
-                    type="remove"
-                    onDrag={(e) => controls.start(e)}
-                    onClick={onClick} />
+      style={{ listStyle: 'none', padding: '0', marginBottom: '8px' }}
+    >
+      <MinigameItem minigame={minigame} type="remove" onDrag={(e) => controls.start(e)} onClick={onClick} />
     </Reorder.Item>
   );
 };

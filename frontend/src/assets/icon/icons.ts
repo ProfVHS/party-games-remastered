@@ -13,5 +13,5 @@ export const icons = {
   Success,
   Logo,
   Settings,
-  Bomb
+  Bomb,
 };
