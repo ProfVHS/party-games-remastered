@@ -5,10 +5,10 @@ import { NumberPicker } from './NumberPicker';
 const meta = {
   component: NumberPicker,
   parameters: {
-    controls: {
-      exclude: ['style', 'onchange'],
-    },
-  },
+    controls:{
+      exclude: ["style", "onchange"]
+    }
+  }
 } satisfies Meta<typeof NumberPicker>;
 
 export default meta;

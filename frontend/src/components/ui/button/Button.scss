@@ -1,4 +1,4 @@
-@use 'sass:color';
+@use "sass:color";
 @use '../../../common/styles/_variables.scss' as *;
 
 .button {
@@ -33,24 +33,24 @@
 
   //==== Sizes ====//
 
-  &--small {
+  &--smallSize {
     padding: 2px 16px;
     font-size: 1rem;
   }
 
-  &--medium {
+  &--mediumSize {
     font-size: 1.5rem;
     padding: 2px 16px;
   }
 
-  &--large {
+  &--largeSize {
     font-size: 2rem;
     padding: 4px 16px;
   }
 
   //==== Colors ====//
 
-  &--primary {
+  &--primaryColor {
     background-color: $primaryColor;
     box-shadow: 0 4px 0 0 color.adjust($primaryColor, $lightness: -30%);
 
@@ -66,7 +66,7 @@
     }
   }
 
-  &--remove {
+  &--removeColor {
     background-color: #c81414;
     box-shadow: 0 4px 0 0 color.adjust(#c81414, $lightness: -30%);
 

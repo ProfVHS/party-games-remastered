@@ -12,7 +12,9 @@ export const NotFound = () => {
       <div className="not-found__content">
         <span className="not-found__title">404</span>
         <span className="not-found__subtitle">Page not found</span>
-        <span className="not-found__description">The page you are looking for does not exist.</span>
+        <span className="not-found__description">
+          The page you are looking for does not exist.
+        </span>
         <Button onClick={handleGoHome}>Go to Homepage</Button>
       </div>
     </div>

@@ -6,4 +6,4 @@ export type ToastContextType = {
   warning: ({ message, duration }: addToastProps) => void;
   error: ({ message, duration }: addToastProps) => void;
   remove: (id: number) => void;
-};
+}

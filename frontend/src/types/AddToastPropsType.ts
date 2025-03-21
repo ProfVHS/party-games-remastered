@@ -1,4 +1,4 @@
 export type addToastProps = {
-  message: string;
-  duration: number;
-};
+  message: string,
+  duration: number,
+}
