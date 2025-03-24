@@ -42,6 +42,8 @@ export const roomSockets = (socket: Socket) => {
     }
 
     socket.join(roomCode);
+
+    socket.to(roomCode).emit('player_join_toast', nickname);
     // Payload: number of players ready
     socket.nsp.to(socket.id).emit('joined_room');
     setTimeout(() => {
