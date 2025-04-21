@@ -28,7 +28,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
   let playerReadyCount: number;
 
   try {
-    players = await roomRepository.getAllPlayersFromPlayers(roomCode);
+    players = await roomRepository.getAllPlayers(roomCode);
 
     if (!players) {
       return { success: false, payload: 0 }; // Room does not exist

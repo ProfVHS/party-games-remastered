@@ -74,4 +74,10 @@ export const roomSockets = (socket: Socket) => {
     // Payload: minigame data
     socket.nsp.in(roomCode).emit('started_minigame', response.payload);
   });
+
+  socket.on('get_players', async (roomCode: string) => {
+    const response = await roomRepository.getAllPlayers(roomCode);
+
+    socket.nsp.emit('set_players', response);
+  });
 };

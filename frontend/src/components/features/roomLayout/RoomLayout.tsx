@@ -1,10 +1,10 @@
 import './RoomLayout.scss';
-import { Player } from '../../../types/index';
+import { PlayerType } from '../../../types/index';
 import { PlayerAvatar } from '../playerAvatar/PlayerAvatar';
 import { possibleAvatarLayouts } from '../../../utils';
 
 type RoomLayoutProps = {
-  players: Player[];
+  players: PlayerType[];
   children: React.ReactNode;
 };
 

@@ -36,7 +36,7 @@ export async function setPlayerInPlayers(roomCode: string, playerID: string, nic
  * @param roomCode - The unique identifier for the room.
  * @param playerID - The unique identifier for the player.
  * @param nickname - The nickname of the player.
- * @param playerData - Player data object of format: { points?: number, isAlive?: boolean }
+ * @param playerData - Player data object of format: { score?: number, isAlive?: boolean }
  * @param multi - (OPTIONAL)
  * @returns A promise that resolves to void.
  */
@@ -49,7 +49,7 @@ export async function setPlayerInPlayers(roomCode: string, playerID: string, nic
  * @param roomCode - The unique identifier for the room.
  * @param playerID - The unique identifier for the player.
  * @param nickname - The nickname of the player.
- * @param playerData - Player data object of format: { points?: number, isAlive?: boolean }
+ * @param playerData - Player data object of format: { score?: number, isAlive?: boolean }
  * @param multi - Redis client.multi() instance for executing queries in transaction
  * @returns A promise that resolves to void.
  */
@@ -69,12 +69,12 @@ export async function setPlayerInPlayers(
   arg5?: ChainableCommander,
 ): Promise<void> {
   const playersKey = `room:${roomCode}:players`;
-  const defaultPlayerData: PlayerDataType = { nickname: nickname, points: 0, isAlive: true };
+  const defaultPlayerData: PlayerDataType = { nickname: nickname, score: 0, isAlive: true };
 
   let playerData: PlayerDataType;
   let multi: ChainableCommander | undefined;
 
-  if (arg4 && typeof arg4 === 'object' && !Array.isArray(arg4) && ('points' in arg4 || 'isAlive' in arg4)) {
+  if (arg4 && typeof arg4 === 'object' && !Array.isArray(arg4) && ('score' in arg4 || 'isAlive' in arg4)) {
     playerData = { ...defaultPlayerData, ...arg4 };
     multi = arg5;
   } else {
@@ -93,10 +93,10 @@ export async function setPlayerInPlayers(
  * Gets all players in the room.
  * @param roomCode - The unique identifier for the room.
  * @returns A promise that resolves to an array of objects containing nickname and data of all players or null if there are no players.
- * @example output: [{ id: 'UJBLISUygy7t565sf', data: { nickname: 'John', points: 0, isAlive: true } }, { id: 'LIsjbclyiqld6785', data: { nickname: 'Sam', points: 0, isAlive: true } }]
+ * @example output: [{ id: 'UJBLISUygy7t565sf', data: { nickname: 'John', score: 0, isAlive: true } }, { id: 'LIsjbclyiqld6785', data: { nickname: 'Sam', score: 0, isAlive: true } }]
  * @example output: null
  */
-export async function getAllPlayersFromPlayers(roomCode: string): Promise<PlayerType[] | null> {
+export async function getAllPlayers(roomCode: string): Promise<PlayerType[] | null> {
   const playersKey = `room:${roomCode}:players`;
 
   const rawPlayers = await client.hgetall(playersKey);
@@ -119,7 +119,7 @@ export async function getAllPlayersFromPlayers(roomCode: string): Promise<Player
  * @param roomCode - The unique identifier for the room.
  * @param playerID - The unique identifier for the player.
  * @returns A promise that resolves to an object containing socket ID and data of the player or null if player doesn't exist.
- * @example output: { id: 'UIQOENFI76f5f', data: { nickname: 'John', points: 0, isAlive: true } }
+ * @example output: { id: 'UIQOENFI76f5f', data: { nickname: 'John', score: 0, isAlive: true } }
  * @example output: null
  */
 export async function getPlayerFromPlayers(roomCode: string, playerID: string): Promise<PlayerType | null> {
