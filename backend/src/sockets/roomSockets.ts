@@ -78,6 +78,6 @@ export const roomSockets = (socket: Socket) => {
   socket.on('get_players', async (roomCode: string) => {
     const response = await roomRepository.getAllPlayers(roomCode);
 
-    socket.nsp.emit('set_players', response);
+    socket.nsp.to(roomCode).emit('set_players', response);
   });
 };
