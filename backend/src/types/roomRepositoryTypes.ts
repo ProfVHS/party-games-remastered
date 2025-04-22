@@ -27,7 +27,7 @@ export type MinigameDataType = {
 
 // LEADERBOARD.TS
 export type LeaderboardDataType = {
-  points: number;
+  score: number;
 };
 
 // PLAYERS.TS
@@ -38,6 +38,6 @@ export type PlayerType = {
 
 export type PlayerDataType = {
   nickname: string;
-  points?: number;
+  score?: number;
   isAlive?: boolean;
 };
