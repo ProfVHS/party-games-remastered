@@ -24,11 +24,15 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
   const handleJoin: SubmitHandler<FormInputs> = (data) => {
     const nickname = data.nickname || generateRandomUserName();
 
-    setSessionVariables(data.room, nickname);
+    if (socket.id && nickname) {
+      setSessionVariables(data.room, socket.id);
 
-    socket.emit('join_room', data.room, nickname);
+      socket.emit('join_room', data.room, nickname);
 
-    setValue('room', '');
+      setValue('room', '');
+    } else {
+      toast.error({ message: 'Something went wrong. Please refresh the page or try again!', duration: 3 });
+    }
   };
 
   const handleShowToast = (error: FieldErrors<FormInputs>) => {
