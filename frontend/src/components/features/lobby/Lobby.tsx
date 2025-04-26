@@ -90,9 +90,9 @@ const LobbyContent = () => {
   return (
     <>
       <span className="lobby__title">
-        Room Code:{' '}
+        Room Code:
         <span className="lobby__code" onClick={handleCopyRoomCode}>
-          {sessionStorage.getItem('roomCode')}
+          {roomCode}
         </span>
       </span>
       <div className="lobby__info">
