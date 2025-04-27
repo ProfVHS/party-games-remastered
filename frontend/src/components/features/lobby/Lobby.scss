@@ -20,12 +20,18 @@
   user-select: none;
 
   &__title {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     color: $darkerPrimaryColor;
   }
 
   &__code {
+    margin-left: 7px;
+
     cursor: pointer;
 
     &:hover {

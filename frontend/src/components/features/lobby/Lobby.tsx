@@ -61,6 +61,7 @@ const LobbyContent = () => {
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const roomCode = sessionStorage.getItem('roomCode');
 
   useRoomToggle({ setPlayersReady, setIsLoading });
   useRoomFetch({ setPlayersReady });
@@ -70,18 +71,15 @@ const LobbyContent = () => {
 
   const toggleReady = () => {
     setIsLoading(true);
-    const nickname = sessionStorage.getItem('nickname');
-    const roomCode = sessionStorage.getItem('roomCode');
 
     setReady((prevReady) => !prevReady);
 
-    if (nickname && roomCode) {
-      socket.emit('toggle_player_ready', roomCode, nickname);
+    if (roomCode) {
+      socket.emit('toggle_player_ready', roomCode, socket.id);
     }
   };
 
   const handleCopyRoomCode = () => {
-    const roomCode = sessionStorage.getItem('roomCode');
     if (roomCode) {
       navigator.clipboard.writeText(roomCode);
       toast.info({ message: 'Room code copied!', duration: 5 });
@@ -91,9 +89,9 @@ const LobbyContent = () => {
   return (
     <>
       <span className="lobby__title">
-        Room Code:{' '}
+        Room Code:
         <span className="lobby__code" onClick={handleCopyRoomCode}>
-          {sessionStorage.getItem('roomCode')}
+          {roomCode}
         </span>
       </span>
       <div className="lobby__info">

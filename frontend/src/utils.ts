@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 
-export function setSessionVariables(roomCode: string, nickname: string) {
+export function setSessionVariables(roomCode: string, id: string) {
   sessionStorage.setItem('roomCode', roomCode);
-  sessionStorage.setItem('nickname', nickname);
+  localStorage.setItem('id', id);
 }
 
 export function clearSessionVariables() {
   sessionStorage.removeItem('roomCode');
-  sessionStorage.removeItem('nickname');
+  localStorage.removeItem('id');
 }
 
 type Modifier = string | false | null | undefined;
