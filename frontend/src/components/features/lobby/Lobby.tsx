@@ -61,7 +61,6 @@ const LobbyContent = () => {
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const id = sessionStorage.getItem('id');
   const roomCode = sessionStorage.getItem('roomCode');
 
   useRoomToggle({ setPlayersReady, setIsLoading });
@@ -75,8 +74,8 @@ const LobbyContent = () => {
 
     setReady((prevReady) => !prevReady);
 
-    if (id && roomCode) {
-      socket.emit('toggle_player_ready', roomCode, id);
+    if (roomCode) {
+      socket.emit('toggle_player_ready', roomCode, socket.id);
     }
   };
 

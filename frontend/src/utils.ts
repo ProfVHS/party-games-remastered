@@ -2,12 +2,12 @@ import classNames from 'classnames';
 
 export function setSessionVariables(roomCode: string, id: string) {
   sessionStorage.setItem('roomCode', roomCode);
-  sessionStorage.setItem('id', id);
+  localStorage.setItem('id', id);
 }
 
 export function clearSessionVariables() {
   sessionStorage.removeItem('roomCode');
-  sessionStorage.removeItem('id');
+  localStorage.removeItem('id');
 }
 
 type Modifier = string | false | null | undefined;
