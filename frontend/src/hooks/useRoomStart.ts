@@ -16,8 +16,6 @@ export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
 
-    // TODO: "=== 8" should be dynamic, reacting to the number of current players in the lobby
-    // and not hardcoded to 8 as well as with minimum of players.length set to 2
     if (playersReady === players.length && players.length >= 2) {
       setCountdown(3);
 
