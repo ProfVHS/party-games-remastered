@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
 import { EPossibleMinigames, MinigameDataType } from '../types';
+import { usePlayersStore } from '../stores/playersStore';
 
 type useRoomStartProps = {
   playersReady: number;
@@ -10,13 +11,14 @@ type useRoomStartProps = {
 export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
+  const { players } = usePlayersStore();
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
 
     // TODO: "=== 8" should be dynamic, reacting to the number of current players in the lobby
     // and not hardcoded to 8 as well as with minimum of players.length set to 2
-    if (playersReady === 8) {
+    if (playersReady === players.length && players.length >= 2) {
       setCountdown(3);
 
       timer = setInterval(() => {
