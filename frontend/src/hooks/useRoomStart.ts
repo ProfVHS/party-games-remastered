@@ -14,17 +14,16 @@ export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
 
+    // TODO: "=== 8" should be dynamic, reacting to the number of current players in the lobby
+    // and not hardcoded to 8 as well as with minimum of players.length set to 2
     if (playersReady === 8) {
       setCountdown(3);
 
       timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1) {
-            const roomCode = sessionStorage.getItem('roomCode');
-            if (roomCode) {
-              // TODO: Minigame is hardcoded here, should be dynamic
-              socket.emit('start_minigame', roomCode, EPossibleMinigames.clickTheBomb);
-            }
+            // TODO: Minigame is hardcoded here, should be dynamic
+            socket.emit('start_minigame', EPossibleMinigames.clickTheBomb);
             clearInterval(timer);
             return null;
           }

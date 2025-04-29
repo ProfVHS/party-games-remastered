@@ -1,210 +1,95 @@
 import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
-import { PlayerDataType, PlayerType } from '../../types/roomRepositoryTypes';
+import { PlayerType } from '../../types/roomRepositoryTypes';
 
-/**
- * If player DOESN'T EXIST, it ADDS the player.
- * If player EXISTS, it UPDATES the player data.
- * WITHOUT a playerData object as parameter, it sets the player with DEFAULT DATA.
- * WITH a playerData object, it sets the player with the SUPPLIED DATA.
- * @param roomCode - The unique identifier for the room.
- * @param playerID - The unique identifier for the player.
- * @param nickname - The nickname of the player.
- * @param playerData - (OPTIONAL)
- * @param multi - (OPTIONAL)
- * @returns A promise that resolves to void.
- */
-export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string): Promise<void>;
-/**
- * If player DOESN'T EXIST, it ADDS the player.
- * If player EXISTS, it UPDATES the player data.
- * WITHOUT a playerData object as parameter, it sets the player with DEFAULT DATA.
- * WITH a playerData object, it sets the player with the SUPPLIED DATA.
- * @param roomCode - The unique identifier for the room.
- * @param playerID - The unique identifier for the player.
- * @param nickname - The nickname of the player.
- * @param playerData - (OPTIONAL)
- * @param multi - Redis client.multi() instance for executing queries in transaction
- * @returns A promise that resolves to void.
- */
-export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, multi: ChainableCommander): Promise<void>;
-/**
- * If player DOESN'T EXIST, it ADDS the player.
- * If player EXISTS, it UPDATES the player data.
- * WITHOUT a playerData object as parameter, it sets the player with DEFAULT DATA.
- * WITH a playerData object, it sets the player with the SUPPLIED DATA.
- * @param roomCode - The unique identifier for the room.
- * @param playerID - The unique identifier for the player.
- * @param nickname - The nickname of the player.
- * @param playerData - Player data object of format: { score?: number, isAlive?: boolean }
- * @param multi - (OPTIONAL)
- * @returns A promise that resolves to void.
- */
-export async function setPlayerInPlayers(roomCode: string, playerID: string, nickname: string, playerData: PlayerDataType): Promise<void>;
-/**
- * If player DOESN'T EXIST, it ADDS the player.
- * If player EXISTS, it UPDATES the player data.
- * WITHOUT a playerData object as parameter, it sets the player with DEFAULT DATA.
- * WITH a playerData object, it sets the player with the SUPPLIED DATA.
- * @param roomCode - The unique identifier for the room.
- * @param playerID - The unique identifier for the player.
- * @param nickname - The nickname of the player.
- * @param playerData - Player data object of format: { score?: number, isAlive?: boolean }
- * @param multi - Redis client.multi() instance for executing queries in transaction
- * @returns A promise that resolves to void.
- */
-export async function setPlayerInPlayers(
-  roomCode: string,
-  playerID: string,
-  nickname: string,
-  playerData: PlayerDataType,
-  multi: ChainableCommander,
-): Promise<void>;
-
-export async function setPlayerInPlayers(
-  roomCode: string,
-  playerID: string,
-  nickname: string,
-  arg4?: PlayerDataType | ChainableCommander,
-  arg5?: ChainableCommander,
-): Promise<void> {
+export const createPlayer = async (roomCode: string, id: string, playerData: PlayerType, multi?: ChainableCommander) => {
   const playersKey = `room:${roomCode}:players`;
-  const defaultPlayerData: PlayerDataType = { nickname: nickname, score: 0, isAlive: true };
 
-  let playerData: PlayerDataType;
-  let multi: ChainableCommander | undefined;
-
-  if (arg4 && typeof arg4 === 'object' && !Array.isArray(arg4) && ('score' in arg4 || 'isAlive' in arg4)) {
-    playerData = { ...defaultPlayerData, ...arg4 };
-    multi = arg5;
+  if (!multi) {
+    await client.hset(playersKey, id, JSON.stringify(playerData));
   } else {
-    playerData = defaultPlayerData;
-    multi = arg4 as ChainableCommander | undefined;
+    multi.hset(playersKey, id, JSON.stringify(playerData));
   }
+};
 
-  if (multi) {
-    multi.hset(playersKey, playerID, JSON.stringify(playerData));
+export const updatePlayer = async (roomCode: string, id: string, updates: Partial<PlayerType>, multi?: ChainableCommander): Promise<boolean> => {
+  const playersKey = `room:${roomCode}:players`;
+
+  const existingData = await client.hget(playersKey, id);
+  if (!existingData) return false;
+
+  const currentData: PlayerType = JSON.parse(existingData);
+  const updatedData = { ...currentData, ...updates };
+
+  if (!multi) {
+    await client.hset(playersKey, id, JSON.stringify(updatedData));
   } else {
-    await client.hset(playersKey, playerID, JSON.stringify(playerData));
+    multi.hset(playersKey, id, JSON.stringify(updatedData));
   }
-}
 
-/**
- * Gets all players in the room.
- * @param roomCode - The unique identifier for the room.
- * @returns A promise that resolves to an array of objects containing nickname and data of all players or null if there are no players.
- * @example output: [{ id: 'UJBLISUygy7t565sf', data: { nickname: 'John', score: 0, isAlive: true } }, { id: 'LIsjbclyiqld6785', data: { nickname: 'Sam', score: 0, isAlive: true } }]
- * @example output: null
- */
-export async function getAllPlayers(roomCode: string): Promise<PlayerType[] | null> {
+  return true;
+};
+
+export const updateAllPlayers = async (roomCode: string, updates: Partial<PlayerType>, multi?: ChainableCommander): Promise<void> => {
   const playersKey = `room:${roomCode}:players`;
 
-  const rawPlayers = await client.hgetall(playersKey);
+  const players = await client.hgetall(playersKey);
 
-  if (Object.keys(rawPlayers).length === 0) {
-    return null;
-  }
+  if (!players) return;
 
-  const parsedPlayers: PlayerType[] = [];
+  const playerIds = Object.keys(players);
 
-  for (const [id, playerData] of Object.entries(rawPlayers)) {
-    parsedPlayers.push({ id, data: JSON.parse(playerData) });
-  }
-
-  return parsedPlayers;
-}
-
-/**
- * Gets a player in the room.
- * @param roomCode - The unique identifier for the room.
- * @param playerID - The unique identifier for the player.
- * @returns A promise that resolves to an object containing socket ID and data of the player or null if player doesn't exist.
- * @example output: { id: 'UIQOENFI76f5f', data: { nickname: 'John', score: 0, isAlive: true } }
- * @example output: null
- */
-export async function getPlayerFromPlayers(roomCode: string, playerID: string): Promise<PlayerType | null> {
-  const playersKey = `room:${roomCode}:players`;
-
-  const rawPlayer = await client.hget(playersKey, playerID);
-
-  if (!rawPlayer) {
-    return null;
-  }
-
-  return { id: playerID, data: JSON.parse(rawPlayer) };
-}
-
-/**
- * Removes a player from the room.
- * @param roomCode - The unique identifier for the room.
- * @param playerID - The unique identifier for the player.
- * @param multi - (OPTIONAL)
- * @returns A promise that resolves to void.
- */
-export async function removePlayerFromPlayers(roomCode: string, playerID: string): Promise<void>;
-
-/**
- * Removes a player from the room.
- * @param roomCode - The unique identifier for the room.
- * @param playerID - The unique identifier for the player.
- * @param multi - Redis client.multi() instance for executing queries in transaction
- * @returns A promise that resolves to void.
- */
-export async function removePlayerFromPlayers(roomCode: string, playerID: string, multi: ChainableCommander): Promise<void>;
-
-export async function removePlayerFromPlayers(roomCode: string, playerID: string, multi?: ChainableCommander): Promise<void> {
-  const playersKey = `room:${roomCode}:players`;
-
-  if (multi) {
-    multi.hdel(playersKey, playerID);
+  if (!multi) {
+    for (const id of playerIds) {
+      await updatePlayer(roomCode, id, updates);
+    }
   } else {
-    await client.hdel(playersKey, playerID);
-  }
-}
-
-/**
- * Deletes all players in the room.
- * @param roomCode - The unique identifier for the room.
- * @param multi - (OPTIONAL)
- * @returns A promise that resolves to void.
- */
-export async function deletePlayers(roomCode: string): Promise<void>;
-
-/**
- * Deletes all players in the room.
- * @param roomCode - The unique identifier for the room.
- * @param multi - Redis client.multi() instance for executing queries in transaction
- * @returns A promise that resolves to void.
- */
-export async function deletePlayers(roomCode: string, multi: ChainableCommander): Promise<void>;
-
-export async function deletePlayers(roomCode: string, multi?: ChainableCommander): Promise<void> {
-  const playersKey = `room:${roomCode}:players`;
-
-  if (multi) {
-    multi.del(playersKey);
-  } else {
-    await client.del(playersKey);
-  }
-}
-
-/**
- * Finds the room code where a player is currently present.
- * @param playerID - The socket ID of the player.
- * @returns A promise that resolves to the room code if found, otherwise null.
- * @example output: 'ABCDE'
- * @example output: null
- */
-export async function getRoomCodeFromPlayer(playerID: string): Promise<string | null> {
-  const roomKeysPattern = 'room:*:players';
-  const roomKeys = await client.keys(roomKeysPattern);
-
-  for (const roomKey of roomKeys) {
-    const exists = await client.hexists(roomKey, playerID);
-    if (exists) {
-      return roomKey.split(':')[1]; // Extracting the roomCode from the key
+    for (const id of playerIds) {
+      updatePlayer(roomCode, id, updates, multi);
     }
   }
+};
 
-  return null;
-}
+export const deletePlayer = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
+  const playersKey = `room:${roomCode}:players`;
+
+  if (!multi) {
+    await client.hdel(playersKey, id);
+  } else {
+    multi.hdel(playersKey, id);
+  }
+};
+
+export const deleteAllPlayers = async (roomCode: string, multi?: ChainableCommander): Promise<void> => {
+  const playersKey = `room:${roomCode}:players`;
+
+  if (!multi) {
+    await client.del(playersKey);
+  } else {
+    multi.del(playersKey);
+  }
+};
+
+export const getPlayer = async (roomCode: string, id: string): Promise<PlayerType | null> => {
+  const playersKey = `room:${roomCode}:players`;
+
+  const player = await client.hget(playersKey, id);
+
+  if (!player) {
+    return null;
+  } else {
+    return JSON.parse(player);
+  }
+};
+
+export const getAllPlayers = async (roomCode: string): Promise<PlayerType[] | null> => {
+  const playersKey = `room:${roomCode}:players`;
+
+  const players = await client.hgetall(playersKey);
+
+  if (!players) {
+    return null;
+  } else {
+    return Object.values(players).map((player) => JSON.parse(player));
+  }
+};

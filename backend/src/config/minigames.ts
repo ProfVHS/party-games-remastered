@@ -1,11 +1,10 @@
-import { MinigameDataType, PossibleMinigamesEnum, PossibleStatesEnum } from '../types/roomRepositoryTypes';
+import { GameRoomDataType, MinigamesEnum } from '../types/roomRepositoryTypes';
 
-export const clickTheBombConfig: MinigameDataType = {
-  minigame: PossibleMinigamesEnum.clickTheBomb,
-  state: PossibleStatesEnum.playing,
-  rounds: 5,
+export const clickTheBombConfig: GameRoomDataType = {
+  maxRounds: 5,
   currentRound: 1,
-  timeForTurn: 15,
+  timeForTurn: 30,
+  minigame: MinigamesEnum.clickTheBomb,
   currentMinigameData: {
     maxClicks: 10,
   },

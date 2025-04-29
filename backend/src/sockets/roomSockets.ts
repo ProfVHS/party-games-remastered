@@ -1,23 +1,22 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
-import { PossibleMinigamesEnum } from '../types/roomRepositoryTypes';
+import { MinigamesEnum } from '../types/roomRepositoryTypes';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 
 export const roomSockets = (socket: Socket) => {
   socket.on('disconnect', async (reason) => {
-    console.log(`Disconnected: ${socket.id} (Reason: ${reason})`);
+    const playerID = socket.id;
+    const roomCode = socket.data.roomCode;
+    console.log(`Disconnected: ${playerID} (Reason: ${reason})`);
     const response = await roomService.deletePlayerService(socket);
 
     if (!response.success) {
       return;
     }
 
-    // TODO: TEMPORARY SOLUTION, change later
-
-    // Payload: room code
-    const playersReady = await roomRepository.getAllReadyPlayerCount(response.payload);
-    socket.leave(response.payload);
-    socket.nsp.to(response.payload).emit('fetch_ready_players', playersReady);
+    const playersReady = await roomRepository.getReadyPlayersCount(roomCode);
+    socket.leave(roomCode);
+    socket.nsp.to(roomCode).emit('fetch_ready_players', playersReady);
   });
 
   socket.on('create_room', async (roomCode: string, nickname: string) => {
@@ -51,8 +50,9 @@ export const roomSockets = (socket: Socket) => {
     }, 500);
   });
 
-  socket.on('toggle_player_ready', async (roomCode: string) => {
-    const response = await roomService.toggleReadyService(roomCode, socket);
+  socket.on('toggle_player_ready', async () => {
+    const roomCode = socket.data.roomCode;
+    const response = await roomService.toggleReadyService(socket);
 
     if (!response.success) {
       socket.nsp.to(socket.id).emit('failed_to_toggle');
@@ -63,11 +63,13 @@ export const roomSockets = (socket: Socket) => {
     socket.nsp.in(roomCode).emit('toggled_player_ready', response.payload);
   });
 
-  socket.on('start_minigame', async (roomCode: string, minigame: PossibleMinigamesEnum) => {
+  socket.on('start_minigame', async (minigame: MinigamesEnum) => {
+    const playerID = socket.id;
+    const roomCode = socket.data.roomCode;
     const response = await roomService.startMinigameService(roomCode, minigame);
 
     if (!response.success) {
-      socket.nsp.to(socket.id).emit('failed_to_start_minigame');
+      socket.nsp.to(playerID).emit('failed_to_start_minigame');
       return;
     }
 
@@ -75,7 +77,8 @@ export const roomSockets = (socket: Socket) => {
     socket.nsp.in(roomCode).emit('started_minigame', response.payload);
   });
 
-  socket.on('get_players', async (roomCode: string) => {
+  socket.on('get_players', async () => {
+    const roomCode = socket.data.roomCode;
     const response = await roomRepository.getAllPlayers(roomCode);
 
     socket.nsp.to(roomCode).emit('set_players', response);
