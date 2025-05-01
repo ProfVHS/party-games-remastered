@@ -6,19 +6,14 @@ export const toggleReady = async (roomCode: string, id: string, multi?: Chainabl
 
   const isReady = await client.sismember(readyKey, id);
 
-  if (multi) {
-    if (isReady) {
-      multi.srem(readyKey, id);
-    } else {
-      multi.sadd(readyKey, id);
-    }
-    return;
-  }
+  const command = isReady ? 'srem' : 'sadd';
 
-  if (isReady) {
-    await client.srem(readyKey, id);
+  if (!multi) {
+    await client[command](readyKey, id);
+    return;
   } else {
-    await client.sadd(readyKey, id);
+    multi[command](readyKey, id);
+    return;
   }
 };
 
@@ -28,7 +23,13 @@ export const getReadyPlayersCount = async (roomCode: string): Promise<number> =>
   return count;
 };
 
-export const deleteReady = async (roomCode: string, multi?: ChainableCommander): Promise<void> => {
+export const getReadyPlayers = async (roomCode: string): Promise<string[]> => {
+  const readyKey = `room:${roomCode}:ready`;
+  const players = await client.smembers(readyKey);
+  return players;
+};
+
+export const deleteReadyTable = async (roomCode: string, multi?: ChainableCommander): Promise<void> => {
   const readyKey = `room:${roomCode}:ready`;
 
   if (!multi) {
@@ -38,7 +39,7 @@ export const deleteReady = async (roomCode: string, multi?: ChainableCommander):
   }
 };
 
-export const deletePlayerFromReady = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
+export const deletePlayerFromReadyTable = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
   const readyKey = `room:${roomCode}:ready`;
 
   if (!multi) {

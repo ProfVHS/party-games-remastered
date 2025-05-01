@@ -1,3 +1,3 @@
-export * from './ready';
-export * from './players';
-export * from './gameRoom';
+export * from './readyTable';
+export * from './playersTable';
+export * from './gameRoomTable';
