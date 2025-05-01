@@ -72,7 +72,7 @@ export const deletePlayerService = async (socket: Socket): Promise<IReturnData> 
     multi = client.multi();
 
     await roomRepository.deletePlayer(roomCode, playerID, multi);
-    await roomRepository.deletePlayerFromReady(roomCode, playerID, multi);
+    await roomRepository.deletePlayerFromReadyTable(roomCode, playerID, multi);
 
     await multi.exec();
   } catch (error) {
@@ -91,7 +91,7 @@ export const deleteRoomService = async (socket: Socket): Promise<IReturnData> =>
     multi = client.multi();
 
     await roomRepository.deleteAllPlayers(roomCode, multi);
-    await roomRepository.deleteReady(roomCode, multi); // In case room gets deleted before first minigame starts
+    await roomRepository.deleteReadyTable(roomCode, multi); // In case room gets deleted before first minigame starts
 
     await multi.exec();
   } catch (error) {
@@ -115,7 +115,7 @@ export const startMinigameService = async (roomCode: string, minigame: Minigames
         break;
     }
     minigameData = await roomRepository.getGameRoom(roomCode);
-    await roomRepository.deleteReady(roomCode); // We don't need it after the game has started
+    await roomRepository.deleteReadyTable(roomCode); // We don't need it after the game has started
   } catch (error) {
     console.error(`Minigame start failed for room ${roomCode}: ${error}`);
     return { success: false }; // Minigame not started
