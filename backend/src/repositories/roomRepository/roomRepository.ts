@@ -1,4 +1,3 @@
-export * from './isReady';
-export * from './leaderboard';
-export * from './players';
-export * from './minigame';
+export * from './readyTable';
+export * from './playersTable';
+export * from './gameRoomTable';

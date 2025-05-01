@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
 import { EPossibleMinigames, MinigameDataType } from '../types';
+import { usePlayersStore } from '../stores/playersStore';
 
 type useRoomStartProps = {
   playersReady: number;
@@ -10,21 +11,19 @@ type useRoomStartProps = {
 export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
+  const { players } = usePlayersStore();
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
 
-    if (playersReady === 8) {
+    if (playersReady === players.length && players.length >= 2) {
       setCountdown(3);
 
       timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1) {
-            const roomCode = sessionStorage.getItem('roomCode');
-            if (roomCode) {
-              // TODO: Minigame is hardcoded here, should be dynamic
-              socket.emit('start_minigame', roomCode, EPossibleMinigames.clickTheBomb);
-            }
+            // TODO: Minigame is hardcoded here, should be dynamic
+            socket.emit('start_minigame', EPossibleMinigames.clickTheBomb);
             clearInterval(timer);
             return null;
           }

@@ -75,7 +75,7 @@ const LobbyContent = () => {
     setReady((prevReady) => !prevReady);
 
     if (roomCode) {
-      socket.emit('toggle_player_ready', roomCode, socket.id);
+      socket.emit('toggle_player_ready');
     }
   };
 

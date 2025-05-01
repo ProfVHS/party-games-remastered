@@ -7,7 +7,6 @@ import { useToast } from '../../../hooks/useToast.ts';
 import { usePlayersStore } from '../../../stores/playersStore.ts';
 
 export const RoomPage = () => {
-  const roomCode = sessionStorage.getItem('roomCode');
   const { players, fetchPlayers } = usePlayersStore();
   const toast = useToast();
 
@@ -18,7 +17,7 @@ export const RoomPage = () => {
   }, [socket]);
 
   useEffect(() => {
-    fetchPlayers(roomCode!);
+    fetchPlayers();
   }, []);
 
   return (

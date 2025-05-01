@@ -5,7 +5,7 @@ import { socket } from '../socket';
 interface PlayersStoreProps {
   players: PlayerType[];
   setPlayers: (data: PlayerType[]) => void;
-  fetchPlayers: (roomCode: string) => void;
+  fetchPlayers: () => void;
 }
 
 export const usePlayersStore = create<PlayersStoreProps>((set) => ({
@@ -13,8 +13,8 @@ export const usePlayersStore = create<PlayersStoreProps>((set) => ({
   setPlayers: (data: PlayerType[]) => {
     set({ players: data });
   },
-  fetchPlayers: (roomCode: string) => {
-    socket.emit('get_players', roomCode);
+  fetchPlayers: () => {
+    socket.emit('get_players');
 
     socket.on('set_players', (data: PlayerType[]) => {
       set({ players: data });
