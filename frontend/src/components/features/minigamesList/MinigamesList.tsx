@@ -2,30 +2,30 @@ import { useState } from 'react';
 import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
 import { Button } from '../../ui/button/Button.tsx';
-import { EPossibleMinigames, MinigameListItemType } from '../../../types';
+import { MinigamesEnum, MinigamesListItemType } from '../../../types';
 import { MinigameItem } from './MinigameItem.tsx';
 import { DraggableMinigameItem } from './DraggableMinigameItem.tsx';
 
 type MinigamesListProps = {
   onCancel: () => void;
-  onSave: (Minigames: MinigameListItemType[]) => void;
-  minigames?: MinigameListItemType[];
+  onSave: (Minigames: MinigamesListItemType[]) => void;
+  minigames?: MinigamesListItemType[];
 };
 
 export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProps) => {
-  const [minigamesList, setMinigamesList] = useState<MinigameListItemType[]>(minigames! || []);
+  const [minigamesList, setMinigamesList] = useState<MinigamesListItemType[]>(minigames! || []);
 
   const handleSave = () => {
     onSave && onSave(minigamesList);
     onCancel && onCancel();
   };
 
-  const addMinigameToList = (minigame: MinigameListItemType) => {
+  const addMinigameToList = (minigame: MinigamesListItemType) => {
     const id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
     setMinigamesList((prevMinigames) => [...prevMinigames, { ...minigame, id }]);
   };
 
-  const removeMinigameFromList = (minigame: MinigameListItemType) => {
+  const removeMinigameFromList = (minigame: MinigamesListItemType) => {
     setMinigamesList((prevMinigamesList) => prevMinigamesList.filter((m) => m.id !== minigame.id));
   };
 
@@ -33,7 +33,8 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
     <div className="minigames-list">
       <div className="minigames-list__table">
         <span className="minigames-list__title">Minigames</span>
-        <MinigameItem minigame={{ name: EPossibleMinigames.clickTheBomb }} onClick={addMinigameToList} type="add" />
+        <MinigameItem minigame={{ name: MinigamesEnum.clickTheBomb }} onClick={addMinigameToList} type="add" />
+        <MinigameItem minigame={{ name: MinigamesEnum.memoryButtons }} onClick={addMinigameToList} type="add" />
       </div>
       <div className="minigames-list__table">
         <span className="minigames-list__title">Your minigames queue</span>

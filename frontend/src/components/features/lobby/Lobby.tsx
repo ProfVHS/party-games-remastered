@@ -9,9 +9,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
 import { LobbySettingsType } from '../../../types';
 import { useToast } from '../../../hooks/useToast.ts';
-import { useRoomToggle } from '../../../hooks/useRoomToggle.ts';
-import { useRoomFetch } from '../../../hooks/useRoomFetch.ts';
-import { useRoomStart } from '../../../hooks/useRoomStart.ts';
+import { useLobbyToggle } from '../../../hooks/lobby/useLobbyToggle.ts';
+import { useLobbyFetch } from '../../../hooks/lobby/useLobbyFetch.ts';
+import { useLobbyStart } from '../../../hooks/lobby/useLobbyStart.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -63,9 +63,9 @@ const LobbyContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = sessionStorage.getItem('roomCode');
 
-  useRoomToggle({ setPlayersReady, setIsLoading });
-  useRoomFetch({ setPlayersReady });
-  const countdown = useRoomStart({ playersReady });
+  useLobbyToggle({ setPlayersReady, setIsLoading });
+  useLobbyFetch({ setPlayersReady });
+  const countdown = useLobbyStart({ playersReady });
 
   const toast = useToast();
 

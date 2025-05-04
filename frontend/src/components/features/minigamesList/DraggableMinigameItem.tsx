@@ -1,10 +1,10 @@
 import { Reorder, useDragControls } from 'framer-motion';
 import { MinigameItem } from './MinigameItem.tsx';
-import { MinigameListItemType } from '../../../types';
+import { MinigamesListItemType } from '../../../types';
 
 type DraggableMinigameItemProps = {
-  minigame: MinigameListItemType;
-  onClick?: (minigame: MinigameListItemType) => void;
+  minigame: MinigamesListItemType;
+  onClick?: (minigame: MinigamesListItemType) => void;
 };
 
 export const DraggableMinigameItem = ({ minigame, onClick }: DraggableMinigameItemProps) => {

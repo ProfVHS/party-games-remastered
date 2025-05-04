@@ -10,12 +10,17 @@ export type GameRoomDataType = {
 export enum MinigamesEnum {
   none = 'none',
   clickTheBomb = 'Click the Bomb',
+  memoryButtons = 'Memory Buttons',
 }
 
-export type CurrentMinigameDataType = ClickTheBombDataType;
+export type CurrentMinigameDataType = ClickTheBombDataType | MemoryButtonsDataType;
 
 type ClickTheBombDataType = {
   maxClicks: number;
+};
+
+type MemoryButtonsDataType = {
+  colourSequence: number[];
 };
 
 // PLAYERS.TS

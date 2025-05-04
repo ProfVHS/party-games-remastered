@@ -1,12 +1,12 @@
 import { client } from '../config/db';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
-import { IReturnData } from '../types/roomServiceTypes';
+import { ReturnDataType } from '../types/roomServiceTypes';
 import { ChainableCommander } from 'ioredis';
 import { PlayerType, MinigamesEnum, GameRoomDataType } from '../types/roomRepositoryTypes';
-import { clickTheBombConfig } from '../config/minigames';
+import { minigamesConfigs } from '../config/minigames';
 import { Socket } from 'socket.io';
 
-export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<IReturnData> => {
+export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
   socket.data.roomCode = roomCode;
   try {
@@ -19,7 +19,7 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
   return { success: true }; // Room created
 };
 
-export const joinRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<IReturnData> => {
+export const joinRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
   let players: PlayerType[] | null;
   let playerReadyCount: number;
@@ -46,7 +46,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
   return { success: true, payload: playerReadyCount }; // Success and number of players ready
 };
 
-export const toggleReadyService = async (socket: Socket): Promise<IReturnData> => {
+export const toggleReadyService = async (socket: Socket): Promise<ReturnDataType> => {
   const playerID = socket.id;
   const roomCode = socket.data.roomCode;
   let playerReadyCount: number;
@@ -63,7 +63,7 @@ export const toggleReadyService = async (socket: Socket): Promise<IReturnData> =
   return { success: true, payload: playerReadyCount }; // Success and number of players ready
 };
 
-export const deletePlayerService = async (socket: Socket): Promise<IReturnData> => {
+export const deletePlayerService = async (socket: Socket): Promise<ReturnDataType> => {
   const playerID = socket.id;
   const roomCode = socket.data.roomCode;
   let multi: ChainableCommander;
@@ -83,7 +83,7 @@ export const deletePlayerService = async (socket: Socket): Promise<IReturnData> 
   return { success: true }; // Player deleted
 };
 
-export const deleteRoomService = async (socket: Socket): Promise<IReturnData> => {
+export const deleteRoomService = async (socket: Socket): Promise<ReturnDataType> => {
   const roomCode = socket.data.roomCode;
   let multi: ChainableCommander;
 
@@ -102,13 +102,16 @@ export const deleteRoomService = async (socket: Socket): Promise<IReturnData> =>
   return { success: true }; // Room deleted
 };
 
-export const startMinigameService = async (roomCode: string, minigame: MinigamesEnum): Promise<IReturnData> => {
+export const startMinigameService = async (roomCode: string, minigame: MinigamesEnum): Promise<ReturnDataType> => {
   let minigameData: GameRoomDataType | null;
 
   try {
     switch (minigame) {
       case MinigamesEnum.clickTheBomb:
-        await roomRepository.setGameRoom(roomCode, clickTheBombConfig);
+        await roomRepository.setGameRoom(roomCode, minigamesConfigs.clickTheBomb);
+        break;
+      case MinigamesEnum.memoryButtons:
+        await roomRepository.setGameRoom(roomCode, minigamesConfigs.memoryButtons);
         break;
       default:
         console.error("Tried setting game which doesn't exist");

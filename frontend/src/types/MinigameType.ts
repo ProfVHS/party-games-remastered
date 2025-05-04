@@ -1,32 +1,35 @@
-export enum EPossibleStates {
-  playing = 'playing',
-  finished = 'finished',
-}
+export type GameRoomDataType = {
+  maxRounds: number;
+  currentRound: number;
+  timeForTurn: number;
+  minigame: MinigamesEnum;
+  currentMinigameData: CurrentMinigameDataType;
+};
 
-export enum EPossibleMinigames {
+export enum MinigamesEnum {
   none = 'none',
   clickTheBomb = 'Click the Bomb',
+  memoryButtons = 'Memory Buttons',
 }
 
-type TClickTheBombData = {
+export type CurrentMinigameDataType = ClickTheBombDataType | MemoryButtonsDataType;
+
+type ClickTheBombDataType = {
   maxClicks: number;
 };
 
-export type TCurrentMinigameData = TClickTheBombData;
-
-export type MinigameDataType = {
-  minigame: EPossibleMinigames;
-  state: EPossibleStates;
-  rounds: number;
-  currentRound: number;
-  timeForTurn: number;
-  currentMinigameData: TCurrentMinigameData;
+type MemoryButtonsDataType = {
+  colourSequence: number[];
 };
 
-export type MinigameEntryType = {
-  name: string;
+export type PlayerType = {
+  nickname: string;
+  isAlive: boolean;
+  score: number;
 };
 
-export type MinigameListItemType = MinigameEntryType & {
+//FRONTEND ONLY
+export type MinigamesListItemType = {
   id?: string;
+  name: MinigamesEnum;
 };

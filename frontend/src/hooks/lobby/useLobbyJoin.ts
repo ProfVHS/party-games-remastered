@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { socket } from '../socket';
-import { useToast } from './useToast';
+import { socket } from '../../socket';
+import { useToast } from '../useToast';
 
-export const useRoomJoin = () => {
+export const useLobbyJoin = () => {
   const navigate = useNavigate();
   const toast = useToast();
   useEffect(() => {

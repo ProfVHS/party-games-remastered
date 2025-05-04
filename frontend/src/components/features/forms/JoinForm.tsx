@@ -5,7 +5,7 @@ import { Button } from '../../ui/button/Button.tsx';
 import { socket } from '../../../socket.ts';
 import { generateRandomUserName, setSessionVariables } from '../../../utils.ts';
 import { useToast } from '../../../hooks/useToast.ts';
-import { useRoomJoin } from '../../../hooks/useRoomJoin.ts';
+import { useLobbyJoin } from '../../../hooks/lobby/useLobbyJoin.ts';
 
 type FormInputs = {
   nickname: string;
@@ -41,7 +41,7 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
     }
   };
 
-  useRoomJoin();
+  useLobbyJoin();
 
   return (
     <form className="form" onSubmit={handleSubmit(handleJoin, handleShowToast)} onReset={onCancel}>

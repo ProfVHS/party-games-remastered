@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../ui/button/Button.tsx';
 import { socket } from '../../../socket.ts';
 import { generateRandomUserName, setSessionVariables } from '../../../utils.ts';
-import { useRoomCreate } from '../../../hooks/useRoomCreate.ts';
+import { useLobbyCreate } from '../../../hooks/lobby/useLobbyCreate.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 
 interface FormInputs {
@@ -43,7 +43,7 @@ export const CreateForm = ({ onCancel }: CreateFormProps) => {
     }
   };
 
-  useRoomCreate();
+  useLobbyCreate();
 
   return (
     <form className="form" onSubmit={handleSubmit(handleCreateRoom)} onReset={onCancel}>

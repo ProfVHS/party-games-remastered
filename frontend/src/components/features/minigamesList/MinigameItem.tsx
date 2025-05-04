@@ -1,4 +1,4 @@
-import { EPossibleMinigames, MinigameListItemType } from '../../../types';
+import { MinigamesEnum, MinigamesListItemType } from '../../../types';
 import { ClassNames } from '../../../utils.ts';
 import { Icon } from '../../../assets/icon';
 import { Button } from '../../ui/button/Button.tsx';
@@ -6,9 +6,9 @@ import { Button } from '../../ui/button/Button.tsx';
 import './MinigameItem.scss';
 
 type MinigameItemProps = {
-  minigame: MinigameListItemType;
+  minigame: MinigamesListItemType;
   type: 'add' | 'remove';
-  onClick?: (minigame: MinigameListItemType) => void;
+  onClick?: (minigame: MinigamesListItemType) => void;
   onDrag?: (e: React.PointerEvent<HTMLDivElement>) => void;
 };
 
@@ -16,7 +16,7 @@ export const MinigameItem = ({ minigame, type, onClick, onDrag }: MinigameItemPr
   return (
     <div className={ClassNames('minigame-item', { draggable: type == 'remove' })}>
       <div className="minigame-item__icon" onPointerDown={(e) => onDrag && onDrag(e)}>
-        {minigame.name === EPossibleMinigames.clickTheBomb && <Icon icon="Bomb" />}
+        {minigame.name === MinigamesEnum.clickTheBomb && <Icon icon="Bomb" />}
       </div>
       <div className="minigame-item__content">
         <span>{minigame.name}</span>
