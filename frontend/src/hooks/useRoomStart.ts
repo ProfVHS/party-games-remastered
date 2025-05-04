@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
 import { EPossibleMinigames, MinigameDataType } from '../types';
@@ -12,19 +12,19 @@ export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
   const { players } = usePlayersStore();
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval>;
-
-    if (playersReady === players.length && players.length >= 2) {
+    //TODO: Change back to '2' after finished minigame development
+    if (playersReady === players.length && players.length >= 1) {
       setCountdown(3);
 
-      timer = setInterval(() => {
+      timerRef.current = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1) {
             // TODO: Minigame is hardcoded here, should be dynamic
             socket.emit('start_minigame', EPossibleMinigames.clickTheBomb);
-            clearInterval(timer);
+            clearInterval(timerRef.current!);
             return null;
           }
           return prev ? prev - 1 : null;
@@ -34,8 +34,13 @@ export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
       setCountdown(null);
     }
 
-    return () => clearInterval(timer);
-  }, [playersReady]);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [playersReady, players.length]);
 
   useEffect(() => {
     socket.on('started_minigame', (minigameData: MinigameDataType) => {
@@ -53,5 +58,5 @@ export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
     };
   }, []);
 
-  return { countdown };
+  return countdown;
 };

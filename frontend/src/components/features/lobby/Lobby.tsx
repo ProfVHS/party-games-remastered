@@ -65,7 +65,7 @@ const LobbyContent = () => {
 
   useRoomToggle({ setPlayersReady, setIsLoading });
   useRoomFetch({ setPlayersReady });
-  useRoomStart({ playersReady });
+  const countdown = useRoomStart({ playersReady });
 
   const toast = useToast();
 
@@ -88,19 +88,28 @@ const LobbyContent = () => {
 
   return (
     <>
-      <span className="lobby__title">
-        Room Code:
-        <span className="lobby__code" onClick={handleCopyRoomCode}>
-          {roomCode}
-        </span>
-      </span>
-      <div className="lobby__info">
-        <span className="lobby__players">{playersReady}</span>
-        <span className="lobby__text">Players ready</span>
-      </div>
-      <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
-        {ready ? 'Unready' : 'Ready'}
-      </Button>
+      {countdown ? (
+        <>
+          <span className="lobby__countdown">{countdown}</span>
+          <span className="lobby__countdown-text">Get ready to rumble!</span>
+        </>
+      ) : (
+        <>
+          <span className="lobby__title">
+            Room Code:
+            <span className="lobby__code" onClick={handleCopyRoomCode}>
+              {roomCode}
+            </span>
+          </span>
+          <div className="lobby__info">
+            <span className="lobby__players">{playersReady}</span>
+            <span className="lobby__text">Players ready</span>
+          </div>
+          <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
+            {ready ? 'Unready' : 'Ready'}
+          </Button>
+        </>
+      )}
     </>
   );
 };
