@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '../../ui/button/Button';
 import './LobbySettings.scss';
 import { AnimatePresence } from 'framer-motion';
-import { LobbySettingsType, MinigameEntryType } from '../../../types';
+import { LobbySettingsType, MinigamesListItemType } from '../../../types';
 import { NumberPicker } from '../../ui/numberPicker/NumberPicker.tsx';
 import { Switch } from '../../ui/switch/Switch.tsx';
 import { Modal } from '../../ui/modal/Modal.tsx';
@@ -88,7 +88,7 @@ export const LobbySettings = ({ onCancel, lobbySettings, setLobbySettings }: Lob
           <Modal onClose={() => setMinigamesModal(false)}>
             <MinigamesList
               onCancel={() => setMinigamesModal(false)}
-              onSave={(minigames: MinigameEntryType[]) => setNewSettings({ ...newSettings, minigames })}
+              onSave={(minigames: MinigamesListItemType[]) => setNewSettings({ ...newSettings, minigames })}
               minigames={newSettings.minigames || []}
             />
           </Modal>
