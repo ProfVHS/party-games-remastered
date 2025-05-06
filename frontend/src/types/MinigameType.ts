@@ -13,12 +13,14 @@ export enum MinigamesEnum {
 }
 
 export type CurrentMinigameDataType = ClickTheBombDataType | MemoryButtonsDataType;
-
+//'type' field is required because dumbfuck typescript can't handle unions ^
 type ClickTheBombDataType = {
+  type: 'clickTheBomb';
   maxClicks: number;
 };
 
 type MemoryButtonsDataType = {
+  type: 'memoryButtons';
   colourSequence: number[];
 };
 

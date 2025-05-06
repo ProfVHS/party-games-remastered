@@ -1,0 +1,12 @@
+@use '../../../common/styles/_variables.scss' as *;
+
+.game-preview {
+  &__title {
+    font-family: 'Spicy Rice';
+    font-size: 3em;
+    color: $darkerPrimaryColor;
+  }
+
+  &__image {
+  }
+}
