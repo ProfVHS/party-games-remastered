@@ -5,6 +5,7 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 import { roomSockets } from './sockets/roomSockets';
+import { turnSockets } from './sockets/turnSockets';
 
 const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
@@ -26,6 +27,7 @@ const handleModulesOnConnection = async (socket: Socket) => {
   console.log(`New connection: ${socket.id}`);
 
   roomSockets(socket);
+  turnSockets(socket);
 
   socket.on('error', (err) => {
     console.error(`Socket error: ${err}`);

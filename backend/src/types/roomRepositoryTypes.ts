@@ -2,6 +2,7 @@
 export type GameRoomDataType = {
   maxRounds: number;
   currentRound: number;
+  currentTurn: number;
   timeForTurn: number;
   minigame: MinigamesEnum;
   currentMinigameData: CurrentMinigameDataType;
