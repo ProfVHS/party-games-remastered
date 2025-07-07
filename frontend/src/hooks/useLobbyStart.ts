@@ -4,19 +4,20 @@ import { useToast } from './useToast';
 import { EPossibleMinigames, MinigameDataType } from '../types';
 import { usePlayersStore } from '../stores/playersStore';
 
-type useRoomStartProps = {
+type useLobbyStartProps = {
   playersReady: number;
 };
 
-export const useRoomStart = ({ playersReady }: useRoomStartProps) => {
+export const useLobbyStart = ({ playersReady }: useLobbyStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
   const { players } = usePlayersStore();
+  const minPlayersToSttart = 2; // Minimum players required to start the game
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
 
-    if (playersReady === players.length && players.length >= 2) {
+    if (playersReady === players.length && players.length >= minPlayersToSttart) {
       setCountdown(3);
 
       timer = setInterval(() => {

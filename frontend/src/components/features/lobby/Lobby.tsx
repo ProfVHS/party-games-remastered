@@ -9,9 +9,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
 import { LobbySettingsType } from '../../../types';
 import { useToast } from '../../../hooks/useToast.ts';
-import { useRoomToggle } from '../../../hooks/useRoomToggle.ts';
-import { useRoomFetch } from '../../../hooks/useRoomFetch.ts';
-import { useRoomStart } from '../../../hooks/useRoomStart.ts';
+import { useLobbyToggle } from '../../../hooks/useLobbyToggle.ts';
+import { useLobbyFetch } from '../../../hooks/useLobbyFetch.ts';
+import { useLobbyStart } from '../../../hooks/useLobbyStart.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -63,9 +63,9 @@ const LobbyContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = sessionStorage.getItem('roomCode');
 
-  useRoomToggle({ setPlayersReady, setIsLoading });
-  useRoomFetch({ setPlayersReady });
-  useRoomStart({ playersReady });
+  useLobbyToggle({ setPlayersReady, setIsLoading });
+  useLobbyFetch({ setPlayersReady });
+  const { countdown } = useLobbyStart({ playersReady });
 
   const toast = useToast();
 
@@ -88,19 +88,28 @@ const LobbyContent = () => {
 
   return (
     <>
-      <span className="lobby__title">
-        Room Code:
-        <span className="lobby__code" onClick={handleCopyRoomCode}>
-          {roomCode}
-        </span>
-      </span>
-      <div className="lobby__info">
-        <span className="lobby__players">{playersReady}</span>
-        <span className="lobby__text">Players ready</span>
-      </div>
-      <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
-        {ready ? 'Unready' : 'Ready'}
-      </Button>
+      {countdown !== null ? (
+        <>
+          <span className="lobby__countdown">{countdown}</span>
+          <span className="lobby__countdown-text">Get ready to rumble!</span>
+        </>
+      ) : (
+        <>
+          <span className="lobby__title">
+            Room Code:
+            <span className="lobby__code" onClick={handleCopyRoomCode}>
+              {roomCode}
+            </span>
+          </span>
+          <div className="lobby__info">
+            <span className="lobby__players">{playersReady}</span>
+            <span className="lobby__text">Players ready</span>
+          </div>
+          <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
+            {ready ? 'Unready' : 'Ready'}
+          </Button>
+        </>
+      )}
     </>
   );
 };
