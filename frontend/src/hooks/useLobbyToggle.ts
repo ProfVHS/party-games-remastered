@@ -2,12 +2,12 @@ import { useEffect, Dispatch, SetStateAction } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
 
-type useRoomToggleProps = {
+type useLobbyToggleProps = {
   setPlayersReady: Dispatch<SetStateAction<number>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
-export const useRoomToggle = ({ setPlayersReady, setIsLoading }: useRoomToggleProps) => {
+export const useLobbyToggle = ({ setPlayersReady, setIsLoading }: useLobbyToggleProps) => {
   const toast = useToast();
   useEffect(() => {
     socket.on('toggled_player_ready', (playersReadyCount: number) => {

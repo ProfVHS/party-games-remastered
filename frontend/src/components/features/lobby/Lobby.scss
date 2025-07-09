@@ -66,6 +66,19 @@
     color: $secondaryColor;
   }
 
+  &__countdown {
+    font-family: 'Spicy Rice', cursive;
+    font-size: 4em;
+    color: $darkerPrimaryColor;
+  }
+
+  &__countdown-text {
+    font-family: 'Spicy Rice', cursive;
+    font-size: 1.5em;
+    text-align: center;
+    color: $darkerPrimaryColor;
+  }
+
   &__settingsbutton {
     position: absolute;
     top: 4px;
