@@ -6,25 +6,44 @@ import { usePlayersStore } from '../stores/playersStore';
 
 type useLobbyStartProps = {
   playersReady: number;
+  minigames: EPossibleMinigames[];
+  numberOfMinigames?: number | 2;
 };
 
-export const useLobbyStart = ({ playersReady }: useLobbyStartProps) => {
+export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: useLobbyStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
   const { players } = usePlayersStore();
-  const minPlayersToSttart = 2; // Minimum players required to start the game
+  const minPlayersToStart = 1;
+
+  const getRandomMinigames = (numberOfMinigames: number = 2): EPossibleMinigames[] => {
+    const allMinigames = Object.values(EPossibleMinigames).filter((val) => val !== EPossibleMinigames.none);
+
+    // if (numberOfMinigames < 2 || numberOfMinigames > allMinigames.length) {
+    //   throw new Error(`Number of minigames must be between 2 and ${allMinigames.length}, but received ${numberOfMinigames}`);
+    // }
+
+    const shuffled = [...allMinigames].sort(() => Math.random() - 0.5);
+
+    return shuffled.slice(0, numberOfMinigames);
+  };
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
 
-    if (playersReady === players.length && players.length >= minPlayersToSttart) {
-      setCountdown(3);
+    if (playersReady === players.length && players.length >= minPlayersToStart) {
+      setCountdown(() => 3);
+
+      if (!minigames || minigames.length === 0) {
+        minigames = getRandomMinigames(numberOfMinigames);
+      }
 
       timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1) {
-            // TODO: Minigame is hardcoded here, should be dynamic
-            socket.emit('start_minigame', EPossibleMinigames.clickTheBomb);
+            // TODO: Only host can start the minigame
+            socket.emit('set_game_plan', minigames);
+            socket.emit('start_minigame', minigames[0]);
             clearInterval(timer);
             return null;
           }
