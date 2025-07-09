@@ -6,12 +6,13 @@ import { socket } from '../../../socket.ts';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { EPossibleMinigames, LobbySettingsType, MinigameEntryType } from '../../../types';
+
 import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
-import { LobbySettingsType } from '../../../types';
 import { useToast } from '../../../hooks/useToast.ts';
-import { useRoomToggle } from '../../../hooks/useRoomToggle.ts';
-import { useRoomFetch } from '../../../hooks/useRoomFetch.ts';
-import { useRoomStart } from '../../../hooks/useRoomStart.ts';
+import { useLobbyToggle } from '../../../hooks/useLobbyToggle.ts';
+import { useLobbyFetch } from '../../../hooks/useLobbyFetch.ts';
+import { useLobbyStart } from '../../../hooks/useLobbyStart.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -21,6 +22,25 @@ export const Lobby = () => {
     isTutorialsEnabled: true,
     minigames: [],
   });
+
+  /**
+   * Converts a list of minigame entries (with string names)
+   * into a valid array of EPossibleMinigames enum values.
+   *
+   * Filters out any invalid or unrecognized names that don't exist in the enum.
+   *
+   * Example:
+   * Input:  [{ name: 'Click the Bomb' }, { name: 'none' }, { name: 'invalid' }]
+   * Output: [EPossibleMinigames.clickTheBomb, EPossibleMinigames.none]
+   */
+  const convertToMinigameEnums = (minigameList: MinigameEntryType[]): EPossibleMinigames[] => {
+    return minigameList
+      .map((minigame) => {
+        const match = Object.values(EPossibleMinigames).find((val) => val === minigame.name);
+        return match as EPossibleMinigames | undefined;
+      })
+      .filter((val): val is EPossibleMinigames => val !== undefined);
+  };
 
   const toggleLobbySettings = () => setIsSettingsOpen((prev) => !prev);
   return (
@@ -47,7 +67,7 @@ export const Lobby = () => {
               exit={{ scale: 0.5, opacity: 0, transition: { duration: 0.2 } }}
               transition={{ delay: 0.2, duration: 0.2 }}
             >
-              <LobbyContent />
+              <LobbyContent minigames={convertToMinigameEnums(lobbySettings.minigames)} numberOfMinigames={lobbySettings.numberOfMinigames} />
               <SettingsButton className="lobby__settingsbutton" onClick={() => toggleLobbySettings()} />
             </motion.div>
           )}
@@ -57,15 +77,15 @@ export const Lobby = () => {
   );
 };
 
-const LobbyContent = () => {
+const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: EPossibleMinigames[]; numberOfMinigames?: number }) => {
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = sessionStorage.getItem('roomCode');
 
-  useRoomToggle({ setPlayersReady, setIsLoading });
-  useRoomFetch({ setPlayersReady });
-  useRoomStart({ playersReady });
+  useLobbyToggle({ setPlayersReady, setIsLoading });
+  useLobbyFetch({ setPlayersReady });
+  const { countdown } = useLobbyStart({ playersReady, minigames, numberOfMinigames });
 
   const toast = useToast();
 
@@ -88,19 +108,28 @@ const LobbyContent = () => {
 
   return (
     <>
-      <span className="lobby__title">
-        Room Code:
-        <span className="lobby__code" onClick={handleCopyRoomCode}>
-          {roomCode}
-        </span>
-      </span>
-      <div className="lobby__info">
-        <span className="lobby__players">{playersReady}</span>
-        <span className="lobby__text">Players ready</span>
-      </div>
-      <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
-        {ready ? 'Unready' : 'Ready'}
-      </Button>
+      {countdown !== null ? (
+        <>
+          <span className="lobby__countdown">{countdown}</span>
+          <span className="lobby__countdown-text">Get ready to rumble!</span>
+        </>
+      ) : (
+        <>
+          <span className="lobby__title">
+            Room Code:
+            <span className="lobby__code" onClick={handleCopyRoomCode}>
+              {roomCode}
+            </span>
+          </span>
+          <div className="lobby__info">
+            <span className="lobby__players">{playersReady}</span>
+            <span className="lobby__text">Players ready</span>
+          </div>
+          <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
+            {ready ? 'Unready' : 'Ready'}
+          </Button>
+        </>
+      )}
     </>
   );
 };

@@ -8,11 +8,11 @@ export enum EPossibleMinigames {
   clickTheBomb = 'Click the Bomb',
 }
 
-type TClickTheBombData = {
+type ClickTheBombDataType = {
   maxClicks: number;
 };
 
-export type TCurrentMinigameData = TClickTheBombData;
+export type CurrentMinigameDataType = ClickTheBombDataType;
 
 export type MinigameDataType = {
   minigame: EPossibleMinigames;
@@ -20,7 +20,7 @@ export type MinigameDataType = {
   rounds: number;
   currentRound: number;
   timeForTurn: number;
-  currentMinigameData: TCurrentMinigameData;
+  currentMinigameData: CurrentMinigameDataType;
 };
 
 export type MinigameEntryType = {

@@ -1,11 +1,11 @@
 import { useEffect, Dispatch, SetStateAction } from 'react';
 import { socket } from '../socket';
 
-type useRoomToggleProps = {
+type useLobbyFetchProps = {
   setPlayersReady: Dispatch<SetStateAction<number>>;
 };
 
-export const useRoomFetch = ({ setPlayersReady }: useRoomToggleProps) => {
+export const useLobbyFetch = ({ setPlayersReady }: useLobbyFetchProps) => {
   useEffect(() => {
     socket.on('fetch_ready_players', (playersReadyCount: number) => {
       setPlayersReady(playersReadyCount);

@@ -63,6 +63,13 @@ export const roomSockets = (socket: Socket) => {
     socket.nsp.in(roomCode).emit('toggled_player_ready', response.payload);
   });
 
+  socket.on('set_game_plan', async (minigames: MinigamesEnum[]) => {
+    const roomCode = socket.data.roomCode;
+    await roomRepository.setGamePlan(roomCode, minigames);
+
+    const minigamesData = await roomRepository.getGamePlan(roomCode);
+  });
+
   socket.on('start_minigame', async (minigame: MinigamesEnum) => {
     const playerID = socket.id;
     const roomCode = socket.data.roomCode;
