@@ -1,6 +1,6 @@
 import './Lobby.scss';
 import { Button } from '../../ui/button/Button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { LobbySettings } from '../lobbySettings/LobbySettings';
 import { socket } from '../../../socket.ts';
 
