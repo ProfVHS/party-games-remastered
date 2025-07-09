@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
-import { EPossibleMinigames, MinigameDataType } from '../types';
+import { PossibleMinigamesEnum, MinigameDataType } from '../types';
 import { usePlayersStore } from '../stores/playersStore';
 
 type useLobbyStartProps = {
   playersReady: number;
-  minigames: EPossibleMinigames[];
+  minigames: PossibleMinigamesEnum[];
   numberOfMinigames?: number | 2;
 };
 
@@ -16,8 +16,8 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
   const { players } = usePlayersStore();
   const minPlayersToStart = 1;
 
-  const getRandomMinigames = (numberOfMinigames: number = 2): EPossibleMinigames[] => {
-    const allMinigames = Object.values(EPossibleMinigames).filter((val) => val !== EPossibleMinigames.none);
+  const getRandomMinigames = (numberOfMinigames: number = 2): PossibleMinigamesEnum[] => {
+    const allMinigames = Object.values(PossibleMinigamesEnum).filter((val) => val !== PossibleMinigamesEnum.none);
 
     // if (numberOfMinigames < 2 || numberOfMinigames > allMinigames.length) {
     //   throw new Error(`Number of minigames must be between 2 and ${allMinigames.length}, but received ${numberOfMinigames}`);

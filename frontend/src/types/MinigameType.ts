@@ -3,7 +3,7 @@ export enum EPossibleStates {
   finished = 'finished',
 }
 
-export enum EPossibleMinigames {
+export enum PossibleMinigamesEnum {
   none = 'none',
   clickTheBomb = 'Click the Bomb',
 }
@@ -15,7 +15,7 @@ type ClickTheBombDataType = {
 export type CurrentMinigameDataType = ClickTheBombDataType;
 
 export type MinigameDataType = {
-  minigame: EPossibleMinigames;
+  minigame: PossibleMinigamesEnum;
   state: EPossibleStates;
   rounds: number;
   currentRound: number;
