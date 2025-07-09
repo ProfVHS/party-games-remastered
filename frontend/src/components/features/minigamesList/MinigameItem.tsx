@@ -14,7 +14,7 @@ type MinigameItemProps = {
 
 export const MinigameItem = ({ minigame, type, onClick, onDrag }: MinigameItemProps) => {
   return (
-    <div className={ClassNames('minigame-item', { draggable: type == 'remove' })}>
+    <div className={ClassNames('minigame-item', { draggable: type === 'remove' })}>
       <div className="minigame-item__icon" onPointerDown={(e) => onDrag && onDrag(e)}>
         {minigame.name === EPossibleMinigames.clickTheBomb && <Icon icon="Bomb" />}
       </div>
