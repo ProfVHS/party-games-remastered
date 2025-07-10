@@ -108,8 +108,7 @@ export const generateRandomUserName = () => {
     'Amigo'
   ];
 
-  return `${adjectives[Math.floor(Math.random() * adjectives.length)]}
-                          ${nouns[Math.floor(Math.random() * nouns.length)]}`;
+  return `${adjectives[Math.floor(Math.random() * adjectives.length)]} ${nouns[Math.floor(Math.random() * nouns.length)]}`;
 };
 
 // Record => Object which needs to have: keys of type XYZ and values of type XYZ

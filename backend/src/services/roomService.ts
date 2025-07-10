@@ -10,7 +10,7 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
   const playerID = socket.id;
   socket.data.roomCode = roomCode;
   try {
-    await roomRepository.createPlayer(roomCode, playerID, { nickname, isAlive: true, score: 0 });
+    await roomRepository.createPlayer(roomCode, playerID, {id: playerID, nickname, isAlive: true, score: 0 , isHost: true });
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${playerID}: ${error}`);
     return { success: false }; // Room not created
@@ -35,7 +35,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       return { success: false, payload: -1 }; // Room is full
     }
 
-    await roomRepository.createPlayer(roomCode, playerID, { nickname, isAlive: true, score: 0 });
+    await roomRepository.createPlayer(roomCode, playerID, { id: playerID, nickname, isAlive: true, score: 0 , isHost: false });
 
     playerReadyCount = await roomRepository.getReadyPlayersCount(roomCode);
     socket.data.roomCode = roomCode;

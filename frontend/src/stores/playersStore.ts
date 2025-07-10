@@ -15,7 +15,6 @@ export const usePlayersStore = create<PlayersStoreProps>((set) => ({
   },
   fetchPlayers: () => {
     socket.emit('get_players');
-
     socket.on('set_players', (data: PlayerType[]) => {
       set({ players: data });
     });

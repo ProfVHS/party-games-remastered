@@ -17,16 +17,13 @@ export const RoomPage = () => {
     socket.on('player_join_toast', (nickname: string) => {
       toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
     });
+
   }, [socket]);
 
   useEffect(() => {
     fetchPlayers();
     fetchMinigameData();
   }, []);
-
-  useEffect(() => {
-    console.log('Minigame data updated:', minigameData);
-  }, [minigameData]);
 
   return (
     <div className="room-page">
