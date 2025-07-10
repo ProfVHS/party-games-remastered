@@ -3,6 +3,7 @@ import { socket } from '../socket';
 import { useToast } from './useToast';
 import { PossibleMinigamesEnum, MinigameDataType } from '../types';
 import { usePlayersStore } from '../stores/playersStore';
+import { useMinigameStore } from '../stores/gameStore';
 
 type useLobbyStartProps = {
   playersReady: number;
@@ -14,6 +15,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
   const { players } = usePlayersStore();
+  const { setMinigameData } = useMinigameStore();
   const minPlayersToStart = 1;
 
   const getRandomMinigames = (numberOfMinigames: number = 2): PossibleMinigamesEnum[] => {
@@ -59,8 +61,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
 
   useEffect(() => {
     socket.on('started_minigame', (minigameData: MinigameDataType) => {
-      // TODO: Display Minigame / Navigate to minigame / Start minigame on client idk
-      console.log(minigameData); // TODO: remove this later
+      setMinigameData(minigameData);
     });
 
     socket.on('failed_to_start_minigame', () => {
@@ -71,7 +72,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
       socket.off('started_minigame');
       socket.off('failed_to_start_minigame');
     };
-  }, []);
+  }, [socket]);
 
   return { countdown };
 };
