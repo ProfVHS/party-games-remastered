@@ -2,55 +2,80 @@ import { useEffect, useState, useRef } from 'react';
 import './ClickTheBomb.scss';
 import { Button } from '../../ui/button/Button.tsx';
 import Bomb from '../../../assets/textures/C4.svg?react';
-import { formatMilisecondsToTimer } from '../../../utils.ts';
 import { socket } from '../../../socket.ts';
+
+const formatMilisecondsToTimer = (ms: number) => {
+  const seconds = Math.floor(ms / 1000);
+  const milliseconds = Math.floor((ms % 1000) / 10); // two-digit ms
+  return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
+};
 
 export const ClickTheBomb = () => {
   const [canSkipTurn, setCanSkipTurn] = useState<boolean>(false);
   const [clicksCount, setClicksCount] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState(15000);
   const [loading, setLoading] = useState<boolean>(false);
-  const intervalRef = useRef<number>(0);
+  const [timeLeft, setTimeLeft] = useState(15000);
 
-  const startInterval = () => {
-    if (intervalRef.current !== 0) stopInterval();
-    if (timeLeft <= 0) stopInterval();
+  const startTimeRef = useRef<number>();
+  const animationRef = useRef<number>();
+  const duration = 15000;
 
-    intervalRef.current = setInterval(() => {
-      setTimeLeft((prev) => (prev - 2 >= 0 ? prev - 2 : 0));
-    }, 1);
+  const animate = (timestamp: number) => {
+    // Store the starting time
+    if (!startTimeRef.current) startTimeRef.current = timestamp;
+
+    // Calculate how much time has passed since the countdown started
+    const elapsed = timestamp - startTimeRef.current;
+
+    // Calculate the remaining time, making sure it doesn't go below 0.
+    const newTimeLeft = Math.max(duration - elapsed, 0);
+
+    // Update UI with the new time
+    setTimeLeft(newTimeLeft);
+
+    if (newTimeLeft > 0) {
+      animationRef.current = requestAnimationFrame(animate);
+    } else {
+      stopCountdown();
+    }
   };
 
-  const stopInterval = () => {
-    clearInterval(intervalRef.current);
-    intervalRef.current = 0;
+  const startCountdown = () => {
+    stopCountdown();
+    startTimeRef.current = undefined; // Allow fresh start on next animate call
+    animationRef.current = requestAnimationFrame(animate);
+  };
+
+  const stopCountdown = () => {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = undefined;
+    }
+  };
+
+  const updateClickCount = () => {
+    socket.emit('update_click_count');
+    stopCountdown();
   };
 
   useEffect(() => {
     socket.on('received_updated_clicks', (updatedClickCount: number) => {
       setLoading(false);
       setClicksCount(updatedClickCount);
-      startInterval();
-      setTimeLeft(15000);
+      setTimeLeft(duration);
+      startCountdown();
     });
 
     return () => {
       socket.off('received_updated_clicks');
+      stopCountdown();
     };
   }, [socket]);
 
-  const updateClickCount = () => {
-    socket.emit('update_click_count');
-    stopInterval();
-  };
-
   useEffect(() => {
-    if (timeLeft > 0) {
-      startInterval();
-    }
-
-    return () => stopInterval();
-  }, [timeLeft]);
+    startCountdown();
+    return () => stopCountdown();
+  }, []);
 
   return (
     <div className="click-the-bomb">

@@ -2,7 +2,7 @@ import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
 import { MinigamesEnum } from '../../types/roomRepositoryTypes';
 
-const getKey = (roomCode: string) => `game:${roomCode}:gamePlan`;
+const getKey = (roomCode: string) => `room:${roomCode}:gamePlan`;
 
 export const setGamePlan = async (roomCode: string, minigames: MinigamesEnum[], multi?: ChainableCommander) => {
   if (multi) {

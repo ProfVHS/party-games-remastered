@@ -1,50 +1,44 @@
 import { ChainableCommander } from 'ioredis';
 import { client } from '../../config/db';
 
-export const toggleReady = async (roomCode: string, id: string, multi?: ChainableCommander) => {
-  const readyKey = `room:${roomCode}:ready`;
+const getKey = (roomCode: string) => `room:${roomCode}:ready`;
 
-  const isReady = await client.sismember(readyKey, id);
+export const toggleReady = async (roomCode: string, id: string, multi?: ChainableCommander) => {
+  const isReady = await client.sismember(getKey(roomCode), id);
 
   const command = isReady ? 'srem' : 'sadd';
 
   if (!multi) {
-    await client[command](readyKey, id);
+    await client[command](getKey(roomCode), id);
     return;
   } else {
-    multi[command](readyKey, id);
+    multi[command](getKey(roomCode), id);
     return;
   }
 };
 
 export const getReadyPlayersCount = async (roomCode: string): Promise<number> => {
-  const readyKey = `room:${roomCode}:ready`;
-  const count = await client.scard(readyKey);
+  const count = await client.scard(getKey(roomCode));
   return count;
 };
 
 export const getReadyPlayers = async (roomCode: string): Promise<string[]> => {
-  const readyKey = `room:${roomCode}:ready`;
-  const players = await client.smembers(readyKey);
+  const players = await client.smembers(getKey(roomCode));
   return players;
 };
 
 export const deleteReadyTable = async (roomCode: string, multi?: ChainableCommander): Promise<void> => {
-  const readyKey = `room:${roomCode}:ready`;
-
   if (!multi) {
-    await client.del(readyKey);
+    await client.del(getKey(roomCode));
   } else {
-    multi.del(readyKey);
+    multi.del(getKey(roomCode));
   }
 };
 
 export const deletePlayerFromReadyTable = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
-  const readyKey = `room:${roomCode}:ready`;
-
   if (!multi) {
-    await client.srem(readyKey, id);
+    await client.srem(getKey(roomCode), id);
   } else {
-    multi.srem(readyKey, id);
+    multi.srem(getKey(roomCode), id);
   }
 };
