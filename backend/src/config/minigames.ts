@@ -8,5 +8,6 @@ export const clickTheBombConfig: GameRoomDataType = {
   minigame: MinigamesEnum.clickTheBomb,
   currentMinigameData: {
     maxClicks: 10,
+    clickCount: 0
   },
 };

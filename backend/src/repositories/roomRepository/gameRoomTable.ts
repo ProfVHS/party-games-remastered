@@ -1,6 +1,6 @@
 import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
-import { GameRoomDataType } from '../../types/roomRepositoryTypes';
+import { CurrentMinigameDataType, GameRoomDataType } from '../../types/roomRepositoryTypes';
 
 export async function setGameRoom(roomCode: string, minigameData: GameRoomDataType, multi?: ChainableCommander): Promise<void> {
   const gameRoomKey = `room:${roomCode}:gameRoom`;
@@ -19,4 +19,18 @@ export async function getGameRoom(roomCode: string): Promise<GameRoomDataType | 
   if (!data) return null;
 
   return JSON.parse(data);
+}
+
+export async function updateMinigameData(roomCode: string, minigameData: CurrentMinigameDataType) {
+  const gameRoomKey = `room:${roomCode}:gameRoom`;
+  const existingData = await client.get(gameRoomKey);
+
+  if (!existingData) {
+    throw new Error(`Game room with code "${roomCode}" not found`);
+  }
+
+  const parsedData: GameRoomDataType = JSON.parse(existingData);
+  parsedData.currentMinigameData = minigameData;
+
+  await client.set(gameRoomKey, JSON.stringify(parsedData));
 }

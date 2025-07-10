@@ -17,6 +17,7 @@ export type CurrentMinigameDataType = ClickTheBombDataType;
 
 type ClickTheBombDataType = {
   maxClicks: number;
+  clickCount: number;
 };
 
 // PLAYERS.TS
