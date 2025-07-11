@@ -19,7 +19,6 @@ export type MinigameDataType = {
   state: EPossibleStates;
   rounds: number;
   currentRound: number;
-  timeForTurn: number;
   currentMinigameData: CurrentMinigameDataType;
 };
 

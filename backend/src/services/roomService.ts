@@ -3,14 +3,14 @@ import * as roomRepository from '../repositories/roomRepository/roomRepository';
 import { IReturnData } from '../types/roomServiceTypes';
 import { ChainableCommander } from 'ioredis';
 import { PlayerType, MinigamesEnum, GameRoomDataType } from '../types/roomRepositoryTypes';
-import { clickTheBombConfig } from '../config/minigames';
+import { createClickTheBombConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<IReturnData> => {
   const playerID = socket.id;
   socket.data.roomCode = roomCode;
   try {
-    await roomRepository.createPlayer(roomCode, playerID, {id: playerID, nickname, isAlive: true, score: 0 , isHost: true });
+    await roomRepository.createPlayer(roomCode, playerID, { id: playerID, nickname, isAlive: true, score: 0, isHost: true });
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${playerID}: ${error}`);
     return { success: false }; // Room not created
@@ -35,7 +35,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       return { success: false, payload: -1 }; // Room is full
     }
 
-    await roomRepository.createPlayer(roomCode, playerID, { id: playerID, nickname, isAlive: true, score: 0 , isHost: false });
+    await roomRepository.createPlayer(roomCode, playerID, { id: playerID, nickname, isAlive: true, score: 0, isHost: false });
 
     playerReadyCount = await roomRepository.getReadyPlayersCount(roomCode);
     socket.data.roomCode = roomCode;
@@ -104,10 +104,18 @@ export const deleteRoomService = async (socket: Socket): Promise<IReturnData> =>
 
 export const startMinigameService = async (roomCode: string, minigame: MinigamesEnum): Promise<IReturnData> => {
   let minigameData: GameRoomDataType | null;
+  const playersLength = await roomRepository.getAllPlayers(roomCode);
+
+  if (!playersLength || playersLength.length === 0) {
+    console.error(`No players found in room ${roomCode} for starting minigame`);
+    return { success: false }; // No players to start the minigame
+  }
 
   try {
     switch (minigame) {
       case MinigamesEnum.clickTheBomb:
+        const clickTheBombConfig = createClickTheBombConfig(playersLength.length);
+        console.log(`Starting Click The Bomb minigame in room ${roomCode} with config:`, clickTheBombConfig);
         await roomRepository.setGameRoom(roomCode, clickTheBombConfig);
         break;
       default:
