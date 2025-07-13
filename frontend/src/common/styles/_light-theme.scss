@@ -44,5 +44,10 @@ html[data-theme="light"] {
   --minigame-list-item-bg: #{rgba($primaryColor, 0.06)};
   --minigame-list-item-border: color.adjust($primaryColor, $lightness: -10%);
   --minigame-list-item-icon: #{$darkerPrimaryColor};
-  --minigame-list-item-text: #{rgba(#000, 0.4)}
+  --minigame-list-item-text: #{rgba(#000, 0.4)};
+
+  //== Click The Bomb ==//
+  --click-the-bomb-bg: #{$lightBgColor};
+  --click-the-bomb-turn: #000;
+  --click-the-bomb-title: #{$secondaryColor};
 }
