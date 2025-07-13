@@ -8,19 +8,17 @@
 
   width: 100%;
 
-  $color: rgba($primaryColor, 0.06);
-
   user-select: none;
   pointer-events: auto;
-  color: rgba(#000, $alpha: 0.4);
+  color: var(--minigame-list-item-text);
   font-weight: 700;
 
   &__content {
-    background-color: $color;
+    background-color: var(--minigame-list-item-bg);
 
     width: calc(100% - 50px);
 
-    border: 2px solid color.adjust($color, $lightness: -10%);
+    border: 2px solid var(--minigame-list-item-border);
     border-radius: 4px;
 
     display: flex;
@@ -40,7 +38,7 @@
 
     border-radius: 4px;
 
-    background-color: $darkerPrimaryColor;
+    background-color: var(--minigame-list-item-icon);
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 
     cursor: grab;

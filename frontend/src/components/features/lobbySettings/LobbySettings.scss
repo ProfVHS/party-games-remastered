@@ -2,11 +2,9 @@
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-
   gap: 8px;
 
   height: 100%;
-
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
 
@@ -15,9 +13,12 @@
 
   user-select: none;
 
+  color: var(--text-color);
+
   &__title {
     font-size: 1.4em;
     font-weight: 700;
+    color: var(--header-color);
   }
 
   &__option {
