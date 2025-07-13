@@ -1,0 +1,9 @@
+.user-settings{
+  min-width: 300px;
+
+  &__content{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+}

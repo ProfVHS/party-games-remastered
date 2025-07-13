@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './index.scss';
 import { AppRoutes } from './AppRoutes.tsx';
-import ToastProvider from './context/Toast/ToastProvider.tsx';
+import ToastProvider from './context/toast/ToastProvider.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

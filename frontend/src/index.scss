@@ -1,3 +1,5 @@
+@use "./common/styles/variables" as *;
+
 html {
   font-size: 16px;
   font-family: 'Poppins', sans-serif;
@@ -14,6 +16,19 @@ body {
   background-image: url('./assets/textures/background.svg');
   background-repeat: repeat;
   animation: backgroundAnimation 40s linear infinite;
+}
+
+.user-settings-button{
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+
+  & path{
+    fill: rgba($primaryColor, 0.75);
+  }
 }
 
 @keyframes backgroundAnimation {
