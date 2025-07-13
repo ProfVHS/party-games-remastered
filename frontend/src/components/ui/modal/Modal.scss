@@ -1,4 +1,4 @@
-@use "../../../common/styles/variables" as *;
+@use "../../../common/styles/themes" as *;
 
 .modal {
   position: fixed;
@@ -9,6 +9,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  color: var(--text-color);
 
   &__content {
     position: relative;
@@ -22,9 +24,13 @@
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     padding: 16px;
-    background-color: $background;
+    background-color: var(--background);
     border-radius: 4px;
     box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+
+    &--transparent-bg{
+      background-color: transparent;
+    }
   }
 
   &__backdrop {

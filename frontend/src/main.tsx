@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.scss';
 import { AppRoutes } from './AppRoutes.tsx';
 import ToastProvider from './context/toast/ToastProvider.tsx';
+import { ThemeProvider } from './context/theme/ThemeProvider.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ToastProvider>
-      <AppRoutes />
+      <ThemeProvider>
+        <AppRoutes />
+      </ThemeProvider>
     </ToastProvider>
   </React.StrictMode>,
 );

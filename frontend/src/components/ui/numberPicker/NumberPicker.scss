@@ -1,4 +1,4 @@
-@use '../../../common/styles/_variables.scss' as *;
+@use '../../../common/styles/themes' as *;
 
 .number-picker {
   display: grid;
@@ -9,10 +9,10 @@
   font-family: 'Poppins', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--number-picker-text);
 
-  background-color: $primaryColor;
-  box-shadow: 0 4px 0 0 #5a189a;
+  background-color: var(--number-picker-bg);
+  box-shadow: 0 4px 0 0 var(--number-picker-shadow);
   border-radius: 4px;
 
   transform: translate(0, -2px);
@@ -27,7 +27,7 @@
     height: 100%;
 
     &:active {
-      background-color: $darkerPrimaryColor;
+      background-color: var(--number-picker-bg-active);
     }
   }
 

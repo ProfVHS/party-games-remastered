@@ -5,4 +5,7 @@ type ThemeContextProps = {
   toggleDarkMode: () => void;
 }
 
-export const ThemeContext = createContext<ThemeContextProps | null>(null);
+export const ThemeContext = createContext<ThemeContextProps>({
+  darkMode: false,
+  toggleDarkMode: () => {},
+});

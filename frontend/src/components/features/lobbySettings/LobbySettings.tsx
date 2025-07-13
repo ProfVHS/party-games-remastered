@@ -85,7 +85,7 @@ export const LobbySettings = ({ onCancel, lobbySettings, setLobbySettings }: Lob
       </div>
       <AnimatePresence>
         {minigamesModal && (
-          <Modal onClose={() => setMinigamesModal(false)}>
+          <Modal onClose={() => setMinigamesModal(false)} transparentBg>
             <MinigamesList
               onCancel={() => setMinigamesModal(false)}
               onSave={(minigames: MinigameEntryType[]) => setNewSettings({ ...newSettings, minigames })}

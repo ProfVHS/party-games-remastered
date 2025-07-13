@@ -5,6 +5,12 @@ html {
   font-family: 'Poppins', sans-serif;
 }
 
+html[data-theme="dark"]{
+  body{
+    background-image: url('./assets/textures/background-dark.svg');
+  }
+}
+
 body {
   margin: 0;
   display: flex;

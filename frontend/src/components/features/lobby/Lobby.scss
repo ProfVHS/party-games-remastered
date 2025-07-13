@@ -1,5 +1,5 @@
 @use 'sass:color';
-@use '../../../common/styles/_variables.scss' as *;
+@use '../../../common/styles/themes' as *;
 
 .lobby {
   gap: 15px;
@@ -11,7 +11,7 @@
 
   max-width: 450px;
 
-  background-color: #fff;
+  background-color: var(--background);
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
 
   border-radius: 8px;
@@ -26,7 +26,7 @@
 
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
-    color: $darkerPrimaryColor;
+    color: var(--header-color);
   }
 
   &__code {
@@ -35,11 +35,11 @@
     cursor: pointer;
 
     &:hover {
-      color: color.adjust($darkerPrimaryColor, $lightness: 10%);
+
     }
 
     &:active {
-      color: $darkerPrimaryColor;
+      color: var(--header-color);
     }
   }
 
@@ -55,7 +55,7 @@
   &__players {
     font-family: 'Spicy Rice', cursive;
     font-size: 3em;
-    color: $darkerPrimaryColor;
+    color: var(--header-color);
   }
 
   &__text {
@@ -63,20 +63,20 @@
     width: 3em;
     font-size: 0.7em;
     font-family: 'Spicy Rice', cursive;
-    color: $secondaryColor;
+    color: var(--lobby-player-text);
   }
 
   &__countdown {
     font-family: 'Spicy Rice', cursive;
     font-size: 4em;
-    color: $darkerPrimaryColor;
+    color: var(--header-color);
   }
 
   &__countdown-text {
     font-family: 'Spicy Rice', cursive;
     font-size: 1.5em;
     text-align: center;
-    color: $darkerPrimaryColor;
+    color: var(--header-color);
   }
 
   &__settingsbutton {

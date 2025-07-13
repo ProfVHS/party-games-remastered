@@ -1,0 +1,48 @@
+@use 'sass:color';
+@use './variables' as *;
+
+html[data-theme="dark"] {
+
+  //== Global ==//
+  --background: #{$darkBgColor};
+  --text-color: #fff;
+  --header-color: #{$darkerPrimaryColor};
+  --party-games-fill: #{$darkerPrimaryColor};
+  --cartoon-shadow: 0 4px rgba(0, 0, 0, 0.3);
+
+  //== Player Avatar ==//
+  --player-avatar-username: #{$darkerPrimaryColor};
+  --player-avatar-score: #{$darkerPrimaryColor};
+  --player-avatar-bg: #{$darkBgColor};
+
+  //== Button ==//
+  --button-primary-bg: #6F359E;
+  --button-primary-shadow: #39135D;
+  --button-text: #{rgba(#fff, 0.4)};
+
+  //== Switch ==//
+  --switch-bg: #{$primaryColor};
+  --switch-track: #505050;
+  --switch-track-checked: #{$darkerPrimaryColor};
+  --switch-thumb: #{$primaryColor};
+
+  //== Number Picker ==//
+  --number-picker-bg: #6F359E;
+  --number-picker-bg-active: #{color.adjust(#6F359E, $lightness: -10%)};
+  --number-picker-shadow: #39135D;
+  --number-picker-text: #{rgba(255, 255, 255, 0.4)};
+
+  //== Lobby ==//
+  --lobby-player-text: #{$primaryColor2};
+
+  //== Minigame List ==//
+  --minigame-list-bg: #{$darkBgColor};
+  --minigame-list-title: rgba(#fff, 0.8);
+  --minigame-list-hr: #{rgba(255, 255, 255, 0.1)};
+
+  //== Minigame List Item ==//
+  --minigame-list-item-bg: #{rgba($primaryColor, 0.4)};
+  --minigame-list-item-border: color.adjust($primaryColor, $lightness: -10%);
+  --minigame-list-item-icon: #{$darkerPrimaryColor};
+  --minigame-list-item-text: #{rgba(#fff, 0.4)}
+}
