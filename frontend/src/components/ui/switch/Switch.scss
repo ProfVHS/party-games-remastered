@@ -33,7 +33,7 @@
     right: 0;
     bottom: 0;
 
-    background-color: #ccc;
+    background-color: var(--switch-track);
     border-radius: 16px;
 
     transition: 0.3s ease;
@@ -41,10 +41,10 @@
 
   &__input:checked ~ &__thumb {
     transform: translateX(24px);
-    background-color: $primaryColor;
+    background-color: var(--switch-thumb);
   }
 
   &__input:checked ~ &__track {
-    background-color: $darkerPrimaryColor;
+    background-color: var(--switch-track-checked);
   }
 }

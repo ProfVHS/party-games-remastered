@@ -13,7 +13,7 @@ type Story = StoryObj<typeof meta>;
 export const Error: Story = {
   args: {
     id: 1,
-    message: 'Test Toast message, lorem ipsum',
+    message: 'Test toast message, lorem ipsum',
     type: 'error',
     autoDismiss: false,
   },
@@ -22,7 +22,7 @@ export const Error: Story = {
 export const Warning: Story = {
   args: {
     id: 1,
-    message: 'Test Toast message, lorem ipsum',
+    message: 'Test toast message, lorem ipsum',
     type: 'warning',
     autoDismiss: false,
   },
@@ -31,7 +31,7 @@ export const Warning: Story = {
 export const Info: Story = {
   args: {
     id: 1,
-    message: 'Test Toast message, lorem ipsum',
+    message: 'Test toast message, lorem ipsum',
     type: 'info',
     autoDismiss: false,
   },
@@ -40,7 +40,7 @@ export const Info: Story = {
 export const Success: Story = {
   args: {
     id: 1,
-    message: 'Test Toast message, lorem ipsum',
+    message: 'Test toast message, lorem ipsum',
     type: 'success',
     autoDismiss: false,
   },

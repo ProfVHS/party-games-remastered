@@ -1,12 +1,13 @@
 @use 'sass:color';
 @use '../../../common/styles/_variables.scss' as *;
+@use '../../../common/styles/themes' as *;
 
 .button {
   display: flex;
   justify-content: center;
   align-items: center;
 
-  color: #fff;
+  color: var(--button-text);
   font-size: 1.5rem;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
@@ -51,18 +52,18 @@
   //==== Colors ====//
 
   &--primary {
-    background-color: $primaryColor;
-    box-shadow: 0 4px 0 0 color.adjust($primaryColor, $lightness: -30%);
+    background-color: var(--button-primary-bg);
+    box-shadow: 0 4px 0 0 var(--button-primary-shadow);
 
     &:active {
-      box-shadow: 0 2px 0 0 color.adjust($primaryColor, $lightness: -30%);
+      box-shadow: 0 2px 0 0 var(--button-primary-shadow);
     }
 
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
       transform: translateY(1px);
-      box-shadow: 0 2px 0 0 color.adjust($primaryColor, $lightness: -30%);
+      box-shadow: 0 2px 0 0 var(--button-primary-shadow);
     }
   }
 
