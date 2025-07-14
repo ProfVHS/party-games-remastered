@@ -1,0 +1,73 @@
+@use '../../../common/styles/themes' as *;
+.alert-box{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  background: var(--alert-box-bg);
+  color: var(--alert-box-text);
+
+  border-radius: 4px;
+  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+  min-height: 150px;
+  width: 500px;
+  padding: 15px 0;
+  box-sizing: border-box;
+
+  font-family: "Poppins", sans-serif;
+  font-weight: bold;
+
+  &__title{
+    font-size: 1.2rem;
+  }
+
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    margin-top: 16px;
+    margin-bottom: 8px;
+
+    & path {
+      fill: #000000;
+    }
+
+    &--success {
+      & path{
+        fill: #72d8ad;
+      }
+    }
+
+    &--error {
+      & path{
+        fill: #ff5656;
+      }
+    }
+
+    &--info {
+      & path{
+        fill: #8794f8;
+      }
+    }
+
+    &--warning {
+      & path{
+        fill: #ffcd5a;
+      }
+    }
+  }
+
+  &__buttons{
+    display: flex;
+    justify-content: center;
+    grid-template-columns: 50% 50%;
+    width: 100%;
+    gap: 15px;
+
+    margin-top: 15px;
+  }
+
+  &__button{
+    width: 35%;
+  }
+}
