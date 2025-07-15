@@ -2,6 +2,7 @@ import './AlertBox.scss';
 import { Icon } from '../../../assets/icon';
 import { ClassNames } from '../../../utils.ts';
 import { Button } from '../button/Button.tsx';
+import _ from 'lodash';
 
 type AlertBoxProps = {
   type: 'error' | 'info' | 'warning' | 'success';
@@ -9,9 +10,10 @@ type AlertBoxProps = {
   onClose?: () => void;
   confirmText?: string;
   cancelText?: string;
+  message: string;
 }
 
-export const AlertBox = ({ type, onConfirm, onClose, confirmText, cancelText }: AlertBoxProps) => {
+export const AlertBox = ({ type, onConfirm, onClose, confirmText, cancelText, message }: AlertBoxProps) => {
   return (
     <div className="alert-box">
       <div className={ClassNames('alert-box__icon', [type])}>
@@ -20,8 +22,8 @@ export const AlertBox = ({ type, onConfirm, onClose, confirmText, cancelText }: 
         {type === 'warning' && <Icon icon="Warning" />}
         {type === 'info' && <Icon icon="Info" />}
       </div>
-      <span className="alert-box__title">Warning</span>
-      <span className="alert-box__message">Are dead seroius u wanna party with demons?</span>
+      <span className="alert-box__title">{_.capitalize(type)}</span>
+      <span className="alert-box__message">{message}?</span>
       <div className="alert-box__buttons">
         <Button color="primary" size="small" className="alert-box__button"
                 onClick={onConfirm}>{confirmText || 'Yes'}</Button>
