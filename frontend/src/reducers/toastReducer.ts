@@ -1,4 +1,5 @@
 import { ToastsType } from '../types';
+import React from 'react';
 
 type ToastsState = {
   toasts: ToastsType[];
@@ -11,14 +12,14 @@ export const toastReducer: React.Reducer<ToastsState, ToastsAction> = (state, ac
     case 'ADD_TOAST': {
       return {
         ...state,
-        toasts: [...state.toasts, action.payload],
+        toasts: [...state.toasts, action.payload]
       };
     }
     case 'REMOVE_TOAST': {
       const updatedToasts = state.toasts.filter((toast: ToastsType) => toast.id !== action.payload);
       return {
         ...state,
-        toasts: updatedToasts,
+        toasts: updatedToasts
       };
     }
     default:

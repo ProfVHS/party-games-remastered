@@ -19,6 +19,8 @@ html[data-theme="light"] {
   --button-primary-bg: #{$primaryColor};
   --button-primary-shadow: #{color.adjust($primaryColor, $lightness: -30%)};
   --button-text: #fff;
+  --button-remove-bg: #c81414;
+  --button-remove-shadow: #{color.adjust(#c81414, $lightness: -30%)};
 
   //== Switch ==//
   --switch-bg: #{$primaryColor};
@@ -31,6 +33,10 @@ html[data-theme="light"] {
   --number-picker-bg-active: #{$darkerPrimaryColor};
   --number-picker-shadow: #5a189a;
   --number-picker-text: #{rgba(255, 255, 255, 0.8)};
+
+  //== Alert Box ==//
+  --alert-box-bg: #{$lightBgColor};
+  --alert-box-text: #000;
 
   //== Lobby ==//
   --lobby-player-text: #{$secondaryColor};

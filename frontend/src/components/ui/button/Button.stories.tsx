@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from './Button';
 
@@ -24,4 +24,7 @@ export const Default: Story = {
     isDisabled: false,
     type: 'reset',
   },
+  parameters: {
+    theme: "light"
+  }
 };
