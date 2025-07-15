@@ -10,7 +10,7 @@ type AlertContainerProps = {
 
 export const AlertContainer = ({ alert }: AlertContainerProps) => {
 
-  const _alert = useAlert();
+  const alertHook = useAlert();
 
   return (
     <div className="alert-container">
@@ -21,7 +21,7 @@ export const AlertContainer = ({ alert }: AlertContainerProps) => {
             animate={{ opacity: 1, transition: { duration: 0.3 } }}
             exit={{ opacity: 0 }}
             className="alert-container__backdrop"
-            onClick={_alert.hide}
+            onClick={alertHook.hide}
           />
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
@@ -32,9 +32,9 @@ export const AlertContainer = ({ alert }: AlertContainerProps) => {
             }}
             exit={{ opacity: 0, scale: 0 }}
             className="alert-container__alert">
-            <AlertBox {...alert} onClose={_alert.hide} onConfirm={() => {
+            <AlertBox {...alert} onClose={alertHook.hide} onConfirm={() => {
               alert.onConfirm();
-              _alert.hide();
+              alertHook.hide();
             }} />
           </motion.div>
         </>
