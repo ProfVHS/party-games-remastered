@@ -2,7 +2,7 @@ import './AlertBox.scss';
 import { Icon } from '../../../assets/icon';
 import { ClassNames } from '../../../utils.ts';
 import { Button } from '../button/Button.tsx';
-import _ from 'lodash';
+import { capitalize } from 'lodash';
 
 type AlertBoxProps = {
   type: 'error' | 'info' | 'warning' | 'success';
@@ -22,7 +22,7 @@ export const AlertBox = ({ type, onConfirm, onClose, confirmText, cancelText, me
         {type === 'warning' && <Icon icon="Warning" />}
         {type === 'info' && <Icon icon="Info" />}
       </div>
-      <span className="alert-box__title">{_.capitalize(type)}</span>
+      <span className="alert-box__title">{capitalize(type)}</span>
       <span className="alert-box__message">{message}?</span>
       <div className="alert-box__buttons">
         <Button color="primary" size="small" className="alert-box__button"
