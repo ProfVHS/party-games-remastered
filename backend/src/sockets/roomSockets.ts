@@ -60,7 +60,7 @@ export const roomSockets = (socket: Socket) => {
     }
 
     // Payload: number of players ready
-    socket.nsp.in(roomCode).emit('toggled_player_ready', response.payload);
+    socket.nsp.in(roomCode).emit('fetch_ready_players', response.payload);
   });
 
   socket.on('set_game_plan', async (minigames: MinigamesEnum[]) => {

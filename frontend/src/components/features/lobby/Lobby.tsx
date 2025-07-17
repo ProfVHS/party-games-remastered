@@ -94,6 +94,8 @@ const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: EPossibleMi
 
     setReady((prevReady) => !prevReady);
 
+    console.time('togglePlayerReady');
+
     if (roomCode) {
       socket.emit('toggle_player_ready');
     }
