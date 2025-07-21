@@ -2,44 +2,41 @@ import { ChainableCommander } from 'ioredis';
 import { client } from '../../config/db';
 import { getKey } from './roomRepository';
 
-const key = 'ready';
+const keyName = 'ready';
 
-export const toggleReady = async (roomCode: string, id: string, multi?: ChainableCommander) => {
-  const isReady = await client.sismember(getKey(roomCode, key), id);
-
+export const toggleReady = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
+  const isReady = await client.sismember(getKey(roomCode, keyName), id);
   const command = isReady ? 'srem' : 'sadd';
 
-  if (!multi) {
-    await client[command](getKey(roomCode, key), id);
-    return;
+  if (multi) {
+    multi[command](getKey(roomCode, keyName), id);
   } else {
-    multi[command](getKey(roomCode, key), id);
-    return;
+    await client[command](getKey(roomCode, keyName), id);
   }
 };
 
 export const getReadyPlayersCount = async (roomCode: string): Promise<number> => {
-  const count = await client.scard(getKey(roomCode, key));
+  const count = await client.scard(getKey(roomCode, keyName));
   return count;
 };
 
 export const getReadyPlayers = async (roomCode: string): Promise<string[]> => {
-  const players = await client.smembers(getKey(roomCode, key));
+  const players = await client.smembers(getKey(roomCode, keyName));
   return players;
 };
 
 export const deleteReadyTable = async (roomCode: string, multi?: ChainableCommander): Promise<void> => {
-  if (!multi) {
-    await client.del(getKey(roomCode, key));
+  if (multi) {
+    multi.del(getKey(roomCode, keyName));
   } else {
-    multi.del(getKey(roomCode, key));
+    await client.del(getKey(roomCode, keyName));
   }
 };
 
 export const deletePlayerFromReadyTable = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
-  if (!multi) {
-    await client.srem(getKey(roomCode, key), id);
+  if (multi) {
+    multi.srem(getKey(roomCode, keyName), id);
   } else {
-    multi.srem(getKey(roomCode, key), id);
+    await client.srem(getKey(roomCode, keyName), id);
   }
 };

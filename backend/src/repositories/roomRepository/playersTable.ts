@@ -15,7 +15,7 @@ const parsePlayerData = (rawData: Record<string, string>): PlayerType => {
   };
 };
 
-export const createPlayer = async (roomCode: string, id: string, playerData: PlayerType, multi?: ChainableCommander) => {
+export const createPlayer = async (roomCode: string, id: string, playerData: PlayerType, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.hset(getKey(roomCode, keyName, id), playerData);
     multi.rpush(getKey(roomCode, keyName), id);
@@ -25,7 +25,7 @@ export const createPlayer = async (roomCode: string, id: string, playerData: Pla
   }
 };
 
-export const updatePlayer = async (roomCode: string, id: string, updates: Partial<PlayerType>, multi?: ChainableCommander) => {
+export const updatePlayer = async (roomCode: string, id: string, updates: Partial<PlayerType>, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.hset(getKey(roomCode, keyName, id), updates);
   } else {
