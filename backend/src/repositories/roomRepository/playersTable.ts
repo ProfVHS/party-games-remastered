@@ -1,93 +1,88 @@
 import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
 import { PlayerType } from '../../types/roomRepositoryTypes';
+import { getKey } from './roomRepository';
 
-// players or playersOrder
-const getKey = (roomCode: string, keyName: string) => `room:${roomCode}:${keyName}`;
+const keyName = 'players';
+
+const parsePlayerData = (rawData: Record<string, string>): PlayerType => {
+  return {
+    id: rawData.id,
+    nickname: rawData.nickname,
+    isAlive: rawData.isAlive === 'true',
+    score: parseInt(rawData.score, 10) || 0,
+    isHost: rawData.isHost === 'true',
+  };
+};
 
 export const createPlayer = async (roomCode: string, id: string, playerData: PlayerType, multi?: ChainableCommander) => {
-  if (!multi) {
-    await client.hset(getKey(roomCode, 'players'), id, JSON.stringify(playerData));
-    await client.rpush(getKey(roomCode, 'playersOrder'), id);
+  if (multi) {
+    multi.hset(getKey(roomCode, keyName, id), playerData);
+    multi.rpush(getKey(roomCode, keyName), id);
   } else {
-    multi.hset(getKey(roomCode, 'players'), id, JSON.stringify(playerData));
-    multi.rpush(getKey(roomCode, 'playersOrders'), id);
+    await client.hset(getKey(roomCode, keyName, id), playerData);
+    await client.rpush(getKey(roomCode, keyName), id);
   }
 };
 
-export const updatePlayer = async (roomCode: string, id: string, updates: Partial<PlayerType>, multi?: ChainableCommander): Promise<boolean> => {
-  const existingData = await client.hget(getKey(roomCode, 'players'), id);
-  if (!existingData) return false;
-
-  const currentData: PlayerType = JSON.parse(existingData);
-  const updatedData = { ...currentData, ...updates };
-
-  if (!multi) {
-    await client.hset(getKey(roomCode, 'players'), id, JSON.stringify(updatedData));
+export const updatePlayer = async (roomCode: string, id: string, updates: Partial<PlayerType>, multi?: ChainableCommander) => {
+  if (multi) {
+    multi.hset(getKey(roomCode, keyName, id), updates);
   } else {
-    multi.hset(getKey(roomCode, 'players'), id, JSON.stringify(updatedData));
+    await client.hset(getKey(roomCode, keyName, id), updates);
   }
-
-  return true;
 };
 
 export const updateAllPlayers = async (roomCode: string, updates: Partial<PlayerType>, multi?: ChainableCommander): Promise<void> => {
-  const players = await client.hgetall(getKey(roomCode, 'players'));
+  const playerIds = await client.lrange(getKey(roomCode, keyName), 0, -1);
+  const playerKeys = playerIds.map((id) => getKey(roomCode, keyName, id));
 
-  if (!players) return;
-
-  const playerIds = Object.keys(players);
-
-  if (!multi) {
-    for (const id of playerIds) {
-      await updatePlayer(roomCode, id, updates);
-    }
+  if (multi) {
+    playerKeys.forEach((key) => multi.hset(key, updates));
   } else {
-    for (const id of playerIds) {
-      updatePlayer(roomCode, id, updates, multi);
+    for (const key of playerKeys) {
+      await client.hset(key, updates);
     }
   }
 };
 
 export const deletePlayer = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
-  if (!multi) {
-    await client.hdel(getKey(roomCode, 'players'), id);
-    await client.lrem(getKey(roomCode, 'playersOrder'), 0, id);
+  if (multi) {
+    multi.del(getKey(roomCode, keyName, id));
+    multi.lrem(getKey(roomCode, keyName), 0, id);
   } else {
-    multi.hdel(getKey(roomCode, 'players'), id);
-    multi.lrem(getKey(roomCode, 'playersOrder'), 0, id);
+    await client.del(getKey(roomCode, keyName, id));
+    await client.lrem(getKey(roomCode, keyName), 0, id);
   }
 };
 
 export const deleteAllPlayers = async (roomCode: string, multi?: ChainableCommander): Promise<void> => {
-  if (!multi) {
-    await client.del(getKey(roomCode, 'players'));
-    await client.del(getKey(roomCode, 'playersOrder'));
+  const playerIds = await client.lrange(getKey(roomCode, keyName), 0, -1);
+  const playerKeys = playerIds.map((id) => getKey(roomCode, keyName, id));
+
+  if (multi) {
+    multi.del(getKey(roomCode, keyName));
+    multi.del(...playerKeys);
   } else {
-    multi.del(getKey(roomCode, 'players'));
-    multi.del(getKey(roomCode, 'playersOrder'));
+    await client.del(getKey(roomCode, keyName));
+    await client.del(...playerKeys);
   }
 };
 
 export const getPlayer = async (roomCode: string, id: string): Promise<PlayerType | null> => {
-  const player = await client.hget(getKey(roomCode, 'players'), id);
+  const player = await client.hgetall(getKey(roomCode, keyName, id));
 
-  if (!player) {
-    return null;
-  } else {
-    return JSON.parse(player);
-  }
+  if (!player || Object.keys(player).length === 0) return null;
+
+  return parsePlayerData(player);
 };
 
-export const getAllPlayers = async (roomCode: string): Promise<PlayerType[] | null> => {
-  const playerIds = await client.lrange(getKey(roomCode, 'playersOrder'), 0, -1);
+export const getAllPlayers = async (roomCode: string): Promise<PlayerType[]> => {
+  const playerIds = await client.lrange(getKey(roomCode, keyName), 0, -1);
 
-  const rawData = await client.hmget(getKey(roomCode, 'players'), ...playerIds);
+  const playersRawData = await Promise.all(playerIds.map((id) => client.hgetall(getKey(roomCode, keyName, id))));
 
-  const players = rawData.map((player) => {
-    if (!player) return null;
-    return JSON.parse(player);
-  });
+  const players: PlayerType[] = playersRawData.filter((player) => Object.keys(player).length > 0).map(parsePlayerData);
 
-  return players ? players : null;
+  return players;
 };

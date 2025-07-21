@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
 import { MinigameNamesEnum, MinigameDataType, RoomDataType } from '../types';
@@ -17,6 +17,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
   const { players } = usePlayersStore();
   const { setMinigameData } = useMinigameStore();
   const minPlayersToStart = 1;
+  const hasStarted = useRef<boolean>(false);
 
   const getRandomMinigames = (numberOfMinigames: number = 2): MinigameNamesEnum[] => {
     const allMinigames = Object.values(MinigameNamesEnum);
@@ -42,10 +43,11 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
 
       timer = setInterval(() => {
         setCountdown((prev) => {
-          if (prev === 1) {
+          if (prev === 1 && !hasStarted.current) {
             // TODO: Only host can start the minigame
             socket.emit('set_game_plan', minigames);
             socket.emit('start_minigame', minigames[0]);
+            hasStarted.current = true;
             clearInterval(timer);
             return null;
           }

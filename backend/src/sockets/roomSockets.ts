@@ -65,9 +65,7 @@ export const roomSockets = (socket: Socket) => {
 
   socket.on('set_game_plan', async (minigames: MinigameNamesEnum[]) => {
     const roomCode = socket.data.roomCode;
-    await roomRepository.setGamePlan(roomCode, minigames);
-
-    const minigamesData = await roomRepository.getGamePlan(roomCode);
+    await roomRepository.setMinigames(roomCode, minigames);
   });
 
   socket.on('start_minigame', async (minigame: MinigameNamesEnum) => {
