@@ -12,16 +12,16 @@ export async function setRoomData(roomCode: string, roomData: RoomDataType, mult
   };
 
   if (multi) {
-    multi.set(getKey(roomCode, keyName), JSON.stringify(roomData));
+    multi.hset(getKey(roomCode, keyName), roomData);
   } else {
-    await client.set(getKey(roomCode, keyName), JSON.stringify(roomData));
+    await client.hset(getKey(roomCode, keyName), roomData);
   }
 }
 
 export async function getRoomData(roomCode: string): Promise<RoomDataType | null> {
-  const data = await client.get(getKey(roomCode, keyName));
+  const roomData = await client.hgetall(getKey(roomCode, keyName));
 
-  if (!data) return null;
+  if (!roomData || Object.keys(roomData).length === 0) return null;
 
-  return JSON.parse(data);
+  return roomData as RoomDataType;
 }

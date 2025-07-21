@@ -7,16 +7,16 @@ const keyName = 'minigameData';
 
 export async function setMinigameData(roomCode: string, minigameData: MinigameDataType, multi?: ChainableCommander): Promise<void> {
   if (multi) {
-    multi.set(getKey(roomCode, keyName), JSON.stringify(minigameData));
+    multi.hset(getKey(roomCode, keyName), minigameData);
   } else {
-    await client.set(getKey(roomCode, keyName), JSON.stringify(minigameData));
+    await client.hset(getKey(roomCode, keyName), minigameData);
   }
 }
 
 export async function getMinigameData(roomCode: string): Promise<MinigameDataType | null> {
-  const data = await client.get(getKey(roomCode, keyName));
+  const minigameData = await client.hgetall(getKey(roomCode, keyName));
 
-  if (!data) return null;
+  if (!minigameData || Object.keys(minigameData).length === 0) return null;
 
-  return JSON.parse(data);
+  return minigameData as MinigameDataType;
 }
