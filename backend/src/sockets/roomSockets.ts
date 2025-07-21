@@ -1,6 +1,5 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
-import { MinigameNamesEnum } from '../types/roomRepositoryTypes';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 
 export const roomSockets = (socket: Socket) => {
@@ -48,45 +47,6 @@ export const roomSockets = (socket: Socket) => {
     setTimeout(() => {
       socket.nsp.to(socket.id).emit('fetch_ready_players', response.payload);
     }, 500);
-  });
-
-  socket.on('toggle_player_ready', async () => {
-    const roomCode = socket.data.roomCode;
-    const response = await roomService.toggleReadyService(socket);
-
-    if (!response.success) {
-      socket.nsp.to(socket.id).emit('failed_to_toggle');
-      return;
-    }
-
-    // Payload: number of players ready
-    socket.nsp.in(roomCode).emit('toggled_player_ready', response.payload);
-  });
-
-  socket.on('set_game_plan', async (minigames: MinigameNamesEnum[]) => {
-    const roomCode = socket.data.roomCode;
-    await roomRepository.setMinigames(roomCode, minigames);
-  });
-
-  socket.on('start_minigame', async (minigame: MinigameNamesEnum) => {
-    const playerID = socket.id;
-    const roomCode = socket.data.roomCode;
-    const response = await roomService.startMinigameService(roomCode, minigame);
-
-    if (!response.success) {
-      socket.nsp.to(playerID).emit('failed_to_start_minigame');
-      return;
-    }
-
-    // Payload: { roomData, minigameData }
-    socket.nsp.in(roomCode).emit('started_minigame', response.payload);
-  });
-
-  socket.on('get_players', async () => {
-    const roomCode = socket.data.roomCode;
-    const response = await roomRepository.getAllPlayers(roomCode);
-
-    socket.nsp.to(roomCode).emit('set_players', response);
   });
 
   socket.on('get_room_data', async () => {
