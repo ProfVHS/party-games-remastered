@@ -16,7 +16,7 @@ export const useMinigameStore = create<MinigameStoreProps>((set) => ({
   fetchMinigameData: () => {
     socket.emit('get_game_data');
 
-    socket.on('received_game_data', (data: MinigameDataType) => {
+    socket.on('got_game_data', (data: MinigameDataType) => {
       set({ minigameData: data });
     });
 
