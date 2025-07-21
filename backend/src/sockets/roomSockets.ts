@@ -54,7 +54,7 @@ export const roomSockets = (socket: Socket) => {
     const gameData = await roomRepository.getRoomData(roomCode);
 
     if (gameData) {
-      socket.nsp.to(socket.id).emit('received_room_data', gameData);
+      socket.nsp.to(socket.id).emit('got_room_data', gameData);
     } else {
       socket.nsp.to(socket.id).emit('failed_to_get_room_data');
     }

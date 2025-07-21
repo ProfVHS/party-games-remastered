@@ -68,18 +68,18 @@
   }
 
   &--remove {
-    background-color: #c81414;
-    box-shadow: 0 4px 0 0 color.adjust(#c81414, $lightness: -30%);
+    background-color: var(--button-remove-bg);
+    box-shadow: 0 4px 0 0 var(--button-remove-shadow);
 
     &:active {
-      box-shadow: 0 2px 0 0 color.adjust($primaryColor, $lightness: -30%);
+      box-shadow: 0 2px 0 0 var(--button-remove-shadow);
     }
 
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
       transform: translateY(1px);
-      box-shadow: 0 2px 0 0 color.adjust($primaryColor, $lightness: -30%);
+      box-shadow: 0 2px 0 0 var(--button-remove-shadow);
     }
   }
 }

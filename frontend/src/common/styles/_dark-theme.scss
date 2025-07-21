@@ -19,6 +19,8 @@ html[data-theme="dark"] {
   --button-primary-bg: #6F359E;
   --button-primary-shadow: #39135D;
   --button-text: #{rgba(#fff, 0.4)};
+  --button-remove-bg: #971010;
+  --button-remove-shadow: #{color.adjust(#971010, $lightness: -20%)};
 
   //== Switch ==//
   --switch-bg: #{$primaryColor};
@@ -31,6 +33,10 @@ html[data-theme="dark"] {
   --number-picker-bg-active: #{color.adjust(#6F359E, $lightness: -10%)};
   --number-picker-shadow: #39135D;
   --number-picker-text: #{rgba(255, 255, 255, 0.4)};
+
+  //== Alert Box ==//
+  --alert-box-bg: #{$darkBgColor};
+  --alert-box-text: rgba(255,255,255, 0.6);
 
   //== Lobby ==//
   --lobby-player-text: #{$primaryColor2};
