@@ -1,5 +1,5 @@
 import './RoomLayout.scss';
-import { PlayerType } from '../../../types/index';
+import { PlayerType } from '../../../types';
 import { PlayerAvatar } from '../playerAvatar/PlayerAvatar';
 import { possibleAvatarLayouts } from '../../../utils';
 
@@ -17,7 +17,8 @@ export const RoomLayout = ({ players, children }: RoomLayoutProps) => {
     return players.map((player, index) => {
       const { row, col } = relevantGridPositions[index];
 
-      return <PlayerAvatar key={index} player={player} style={{ gridColumn: col, gridRow: row }} />;
+      return <PlayerAvatar key={index} player={player} style={{ gridColumn: col, gridRow: row }}
+                           avatar='monkey' status='idle' />;
     });
   };
 
