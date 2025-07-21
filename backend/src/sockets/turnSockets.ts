@@ -12,6 +12,6 @@ export const turnSockets = (socket: Socket) => {
     const roomCode = socket.data.roomCode;
 
     // socket to clients
-    // socket.nsp.to(roomCode).emit("", players[gameRoomData.currentTurn].nickname);
+    // socket.nsp.to(roomCode).emit("changed_turn", players[gameRoomData.currentTurn].nickname);
   });
 };

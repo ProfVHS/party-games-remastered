@@ -15,7 +15,7 @@ export const roomSockets = (socket: Socket) => {
 
     const playersReady = await roomRepository.getReadyPlayersCount(roomCode);
     socket.leave(roomCode);
-    socket.nsp.to(roomCode).emit('fetch_ready_players', playersReady);
+    socket.nsp.to(roomCode).emit('fetched_ready_players', playersReady);
   });
 
   socket.on('create_room', async (roomCode: string, nickname: string) => {
@@ -45,7 +45,7 @@ export const roomSockets = (socket: Socket) => {
     // Payload: number of players ready
     socket.nsp.to(socket.id).emit('joined_room');
     setTimeout(() => {
-      socket.nsp.to(socket.id).emit('fetch_ready_players', response.payload);
+      socket.nsp.to(socket.id).emit('fetched_ready_players', response.payload);
     }, 500);
   });
 

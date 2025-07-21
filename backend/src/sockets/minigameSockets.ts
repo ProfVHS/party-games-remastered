@@ -4,7 +4,7 @@ import * as roomService from '../services/roomService';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 
 export const minigameSockets = (socket: Socket) => {
-  socket.on('set_game_plan', async (minigames: MinigameNamesEnum[]) => {
+  socket.on('set_minigames', async (minigames: MinigameNamesEnum[]) => {
     const roomCode = socket.data.roomCode;
     await roomRepository.setMinigames(roomCode, minigames);
   });

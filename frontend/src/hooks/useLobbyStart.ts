@@ -45,7 +45,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
         setCountdown((prev) => {
           if (prev === 1 && !hasStarted.current) {
             // TODO: Only host can start the minigame
-            socket.emit('set_game_plan', minigames);
+            socket.emit('set_minigames', minigames);
             socket.emit('start_minigame', minigames[0]);
             hasStarted.current = true;
             clearInterval(timer);
