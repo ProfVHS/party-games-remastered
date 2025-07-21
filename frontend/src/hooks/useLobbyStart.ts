@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
-import { PossibleMinigamesEnum, MinigameDataType } from '../types';
+import { MinigameNamesEnum, MinigameDataType, RoomDataType } from '../types';
 import { usePlayersStore } from '../stores/playersStore';
 import { useMinigameStore } from '../stores/gameStore';
 
 type useLobbyStartProps = {
   playersReady: number;
-  minigames: PossibleMinigamesEnum[];
+  minigames: MinigameNamesEnum[];
   numberOfMinigames?: number | 2;
 };
 
@@ -18,8 +18,8 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
   const { setMinigameData } = useMinigameStore();
   const minPlayersToStart = 1;
 
-  const getRandomMinigames = (numberOfMinigames: number = 2): PossibleMinigamesEnum[] => {
-    const allMinigames = Object.values(PossibleMinigamesEnum).filter((val) => val !== PossibleMinigamesEnum.none);
+  const getRandomMinigames = (numberOfMinigames: number = 2): MinigameNamesEnum[] => {
+    const allMinigames = Object.values(MinigameNamesEnum);
 
     // if (numberOfMinigames < 2 || numberOfMinigames > allMinigames.length) {
     //   throw new Error(`Number of minigames must be between 2 and ${allMinigames.length}, but received ${numberOfMinigames}`);
@@ -60,8 +60,8 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
   }, [playersReady]);
 
   useEffect(() => {
-    socket.on('started_minigame', (minigameData: MinigameDataType) => {
-      setMinigameData(minigameData);
+    socket.on('started_minigame', (data: { roomData: RoomDataType; minigameData: MinigameDataType }) => {
+      setMinigameData(data.minigameData);
     });
 
     socket.on('failed_to_start_minigame', () => {

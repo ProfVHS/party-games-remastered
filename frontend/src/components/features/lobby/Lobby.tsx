@@ -6,7 +6,7 @@ import { socket } from '../../../socket.ts';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { PossibleMinigamesEnum, LobbySettingsType, MinigameEntryType } from '../../../types';
+import { MinigameNamesEnum, LobbySettingsType, MinigameEntryType } from '../../../types';
 
 import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
 import { useToast } from '../../../hooks/useToast.ts';
@@ -33,13 +33,13 @@ export const Lobby = () => {
    * Input:  [{ name: 'Click the Bomb' }, { name: 'none' }, { name: 'invalid' }]
    * Output: [PossibleMinigamesEnum.clickTheBomb, PossibleMinigamesEnum.none]
    */
-  const convertToMinigameEnums = (minigameList: MinigameEntryType[]): PossibleMinigamesEnum[] => {
+  const convertToMinigameEnums = (minigameList: MinigameEntryType[]): MinigameNamesEnum[] => {
     return minigameList
       .map((minigame) => {
-        const match = Object.values(PossibleMinigamesEnum).find((val) => val === minigame.name);
-        return match as PossibleMinigamesEnum | undefined;
+        const match = Object.values(MinigameNamesEnum).find((val) => val === minigame.name);
+        return match as MinigameNamesEnum | undefined;
       })
-      .filter((val): val is PossibleMinigamesEnum => val !== undefined);
+      .filter((val): val is MinigameNamesEnum => val !== undefined);
   };
 
   const toggleLobbySettings = () => setIsSettingsOpen((prev) => !prev);
@@ -77,7 +77,7 @@ export const Lobby = () => {
   );
 };
 
-const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: PossibleMinigamesEnum[]; numberOfMinigames?: number }) => {
+const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: MinigameNamesEnum[]; numberOfMinigames?: number }) => {
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);

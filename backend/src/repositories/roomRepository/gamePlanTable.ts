@@ -1,10 +1,10 @@
 import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
-import { MinigamesEnum } from '../../types/roomRepositoryTypes';
+import { MinigameNamesEnum } from '../../types/roomRepositoryTypes';
 
 const getKey = (roomCode: string) => `room:${roomCode}:gamePlan`;
 
-export const setGamePlan = async (roomCode: string, minigames: MinigamesEnum[], multi?: ChainableCommander) => {
+export const setGamePlan = async (roomCode: string, minigames: MinigameNamesEnum[], multi?: ChainableCommander) => {
   if (multi) {
     multi.set(getKey(roomCode), JSON.stringify(minigames));
   } else {
@@ -12,7 +12,7 @@ export const setGamePlan = async (roomCode: string, minigames: MinigamesEnum[], 
   }
 };
 
-export const getGamePlan = async (roomCode: string): Promise<MinigamesEnum[] | null> => {
+export const getGamePlan = async (roomCode: string): Promise<MinigameNamesEnum[] | null> => {
   const data = await client.get(getKey(roomCode));
   return data ? JSON.parse(data) : null;
 };

@@ -1,29 +1,34 @@
 import { Socket } from 'socket.io';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
+import { MinigameNamesEnum } from '../types/roomRepositoryTypes';
+import { ChainableCommander } from 'ioredis';
+import { client } from '../config/db';
 
 export const clickTheBombSockets = (socket: Socket) => {
   socket.on('update_click_count', async () => {
     const roomCode = socket.data.roomCode;
 
-    const response = await roomRepository.getGameRoom(roomCode);
+    const minigameDataResponse = await roomRepository.getMinigameData(roomCode);
+    const roomDataResponse = await roomRepository.getRoomData(roomCode);
+    if (minigameDataResponse?.minigameName !== MinigameNamesEnum.clickTheBomb) return;
 
-    if (!response) {
-      console.error(`Game data not found`);
+    if (!minigameDataResponse || !roomDataResponse) {
+      console.error(`Game or minigame data not found`);
       return;
     }
 
-    response.currentMinigameData.clickCount += 1;
+    minigameDataResponse.clickCount += 1;
 
-    const clickCount = response.currentMinigameData.clickCount;
-    const maxClicks = response.currentMinigameData.maxClicks;
+    const clickCount = minigameDataResponse.clickCount;
+    const maxClicks = minigameDataResponse.maxClicks;
 
     if (clickCount >= maxClicks) {
-      response.currentRound += 1;
-      response.currentMinigameData.clickCount = 0;
+      roomDataResponse.currentRound += 1;
+      minigameDataResponse.clickCount = 0;
 
       // TODO: Handle player death and score adjustment logic here
 
-      if (response.currentRound > response.maxRounds) {
+      if (roomDataResponse.currentRound > roomDataResponse.maxRounds) {
         // TODO: Handle end of game logic here
         return;
       }
@@ -32,7 +37,10 @@ export const clickTheBombSockets = (socket: Socket) => {
     }
 
     // TODO: Update current player score data
-    await roomRepository.updateMinigameData(roomCode, response.currentMinigameData);
+    let multi: ChainableCommander = client.multi();
+    await roomRepository.setRoomData(roomCode, roomDataResponse, multi);
+    await roomRepository.setMinigameData(roomCode, minigameDataResponse, multi);
+    multi.exec();
 
     socket.nsp.to(roomCode).emit('received_updated_clicks', clickCount);
   });

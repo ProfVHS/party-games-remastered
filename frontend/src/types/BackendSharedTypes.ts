@@ -1,4 +1,3 @@
-// roomDataTable.ts
 export type RoomDataType = {
   roomCode: string;
   maxRounds: number;
@@ -31,7 +30,6 @@ export enum MinigameStatesEnum {
   finished = 'finished',
 }
 
-// playersTable.ts
 export type PlayerType = {
   id: string;
   nickname: string;

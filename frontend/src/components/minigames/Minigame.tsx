@@ -1,4 +1,4 @@
-import { MinigameDataType, PossibleMinigamesEnum } from '../../types';
+import { MinigameDataType, MinigameNamesEnum } from '../../types';
 import { ClickTheBomb } from './clickthebomb/ClickTheBomb';
 
 type MinigameProps = {
@@ -6,9 +6,5 @@ type MinigameProps = {
 };
 
 export const Minigame = ({ minigameData }: MinigameProps) => {
-  return (
-    <div>
-      {(minigameData.minigame == PossibleMinigamesEnum.clickTheBomb) && <ClickTheBomb />}
-    </div>
-  )
+  return <div>{minigameData.minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}</div>;
 };
