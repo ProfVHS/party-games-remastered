@@ -1,50 +1,42 @@
 import { ChainableCommander } from 'ioredis';
 import { client } from '../../config/db';
+import { getKey } from './roomRepository';
 
-export const toggleReady = async (roomCode: string, id: string, multi?: ChainableCommander) => {
-  const readyKey = `room:${roomCode}:ready`;
+const keyName = 'ready';
 
-  const isReady = await client.sismember(readyKey, id);
-
+export const toggleReady = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
+  const isReady = await client.sismember(getKey(roomCode, keyName), id);
   const command = isReady ? 'srem' : 'sadd';
 
-  if (!multi) {
-    await client[command](readyKey, id);
-    return;
+  if (multi) {
+    multi[command](getKey(roomCode, keyName), id);
   } else {
-    multi[command](readyKey, id);
-    return;
+    await client[command](getKey(roomCode, keyName), id);
   }
 };
 
 export const getReadyPlayersCount = async (roomCode: string): Promise<number> => {
-  const readyKey = `room:${roomCode}:ready`;
-  const count = await client.scard(readyKey);
+  const count = await client.scard(getKey(roomCode, keyName));
   return count;
 };
 
 export const getReadyPlayers = async (roomCode: string): Promise<string[]> => {
-  const readyKey = `room:${roomCode}:ready`;
-  const players = await client.smembers(readyKey);
+  const players = await client.smembers(getKey(roomCode, keyName));
   return players;
 };
 
 export const deleteReadyTable = async (roomCode: string, multi?: ChainableCommander): Promise<void> => {
-  const readyKey = `room:${roomCode}:ready`;
-
-  if (!multi) {
-    await client.del(readyKey);
+  if (multi) {
+    multi.del(getKey(roomCode, keyName));
   } else {
-    multi.del(readyKey);
+    await client.del(getKey(roomCode, keyName));
   }
 };
 
 export const deletePlayerFromReadyTable = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
-  const readyKey = `room:${roomCode}:ready`;
-
-  if (!multi) {
-    await client.srem(readyKey, id);
+  if (multi) {
+    multi.srem(getKey(roomCode, keyName), id);
   } else {
-    multi.srem(readyKey, id);
+    await client.srem(getKey(roomCode, keyName), id);
   }
 };

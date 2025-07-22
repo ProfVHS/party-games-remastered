@@ -7,12 +7,13 @@ type useLobbyFetchProps = {
 
 export const useLobbyFetch = ({ setPlayersReady }: useLobbyFetchProps) => {
   useEffect(() => {
-    socket.on('fetch_ready_players', (playersReadyCount: number) => {
+    socket.on('fetched_ready_players', (playersReadyCount: number) => {
       setPlayersReady(playersReadyCount);
+      console.timeEnd('togglePlayerReady');
     });
 
     return () => {
-      socket.off('fetch_ready_players');
+      socket.off('fetched_ready_players');
     };
   }, []);
 };

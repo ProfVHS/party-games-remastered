@@ -50,5 +50,10 @@ html[data-theme="dark"] {
   --minigame-list-item-bg: #{rgba($primaryColor, 0.4)};
   --minigame-list-item-border: color.adjust($primaryColor, $lightness: -10%);
   --minigame-list-item-icon: #{$darkerPrimaryColor};
-  --minigame-list-item-text: #{rgba(#fff, 0.4)}
+  --minigame-list-item-text: #{rgba(#fff, 0.4)};
+
+  //== Click The Bomb ==//
+  --click-the-bomb-bg: #{$darkBgColor};
+  --click-the-bomb-turn: #fff;
+  --click-the-bomb-title: #{$darkerPrimaryColor};
 }
