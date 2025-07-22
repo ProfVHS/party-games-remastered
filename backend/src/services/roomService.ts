@@ -106,16 +106,16 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
   let roomData: RoomDataType | null;
   let minigameData: MinigameDataType | null;
   let multi: ChainableCommander;
-  const playersLength = await roomRepository.getAllPlayers(roomCode);
+  const players = await roomRepository.getAllPlayers(roomCode);
 
-  if (!playersLength || playersLength.length === 0) {
+  if (!players || players.length === 0) {
     console.error(`No players found in room ${roomCode} for starting minigame`);
     return { success: false }; // No players to start the minigame
   }
 
   try {
     multi = client.multi();
-    await roomRepository.setRoomData(roomCode, createRoomConfig(playersLength.length), multi);
+    await roomRepository.setRoomData(roomCode, createRoomConfig(players.length), multi);
 
     switch (minigameName) {
       case MinigameNamesEnum.clickTheBomb:
