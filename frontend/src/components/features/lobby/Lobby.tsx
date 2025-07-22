@@ -6,7 +6,7 @@ import { socket } from '../../../socket.ts';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { EPossibleMinigames, LobbySettingsType, MinigameEntryType } from '../../../types';
+import { MinigameNamesEnum, LobbySettingsType, MinigameEntryType } from '../../../types';
 
 import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
 import { useToast } from '../../../hooks/useToast.ts';
@@ -25,21 +25,21 @@ export const Lobby = () => {
 
   /**
    * Converts a list of minigame entries (with string names)
-   * into a valid array of EPossibleMinigames enum values.
+   * into a valid array of PossibleMinigamesEnum enum values.
    *
    * Filters out any invalid or unrecognized names that don't exist in the enum.
    *
    * Example:
    * Input:  [{ name: 'Click the Bomb' }, { name: 'none' }, { name: 'invalid' }]
-   * Output: [EPossibleMinigames.clickTheBomb, EPossibleMinigames.none]
+   * Output: [PossibleMinigamesEnum.clickTheBomb, PossibleMinigamesEnum.none]
    */
-  const convertToMinigameEnums = (minigameList: MinigameEntryType[]): EPossibleMinigames[] => {
+  const convertToMinigameEnums = (minigameList: MinigameEntryType[]): MinigameNamesEnum[] => {
     return minigameList
       .map((minigame) => {
-        const match = Object.values(EPossibleMinigames).find((val) => val === minigame.name);
-        return match as EPossibleMinigames | undefined;
+        const match = Object.values(MinigameNamesEnum).find((val) => val === minigame.name);
+        return match as MinigameNamesEnum | undefined;
       })
-      .filter((val): val is EPossibleMinigames => val !== undefined);
+      .filter((val): val is MinigameNamesEnum => val !== undefined);
   };
 
   const toggleLobbySettings = () => setIsSettingsOpen((prev) => !prev);
@@ -77,7 +77,7 @@ export const Lobby = () => {
   );
 };
 
-const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: EPossibleMinigames[]; numberOfMinigames?: number }) => {
+const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: MinigameNamesEnum[]; numberOfMinigames?: number }) => {
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);

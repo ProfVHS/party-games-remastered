@@ -1,13 +1,8 @@
-// UWAGA: Pola typu "string", które reprezentują liczby (// number),
-// są przechowywane jako string celowo — Redis hash (HSET) zapisuje wszystkie wartości jako stringi
-// Dzięki temu można bez problemu używać komend typu HINCRBY, HGET, itp., bez dodatkowej konwersji
-
-// roomDataTable.ts
 export type RoomDataType = {
   roomCode: string;
-  maxRounds: string; // number
-  currentRound: string; // number
-  currentTurn: string; // number
+  maxRounds: number;
+  currentRound: number;
+  currentTurn: number;
 };
 
 export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType;
@@ -15,8 +10,8 @@ export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType;
 type ClickTheBombDataType = {
   minigameName: MinigameNamesEnum.clickTheBomb;
   state: MinigameStatesEnum;
-  clickCount: string; // number
-  maxClicks: string; // number
+  clickCount: number;
+  maxClicks: number;
 };
 
 type ColorsMemoryDataType = {
@@ -35,7 +30,6 @@ export enum MinigameStatesEnum {
   finished = 'finished',
 }
 
-// playersTable.ts
 export type PlayerType = {
   id: string;
   nickname: string;

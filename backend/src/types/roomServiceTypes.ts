@@ -1,4 +1,4 @@
-export type IReturnData = {
+export type ReturnDataType = {
   success: boolean;
   payload?: any;
 };

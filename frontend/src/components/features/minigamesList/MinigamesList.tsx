@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
 import { Button } from '../../ui/button/Button.tsx';
-import { EPossibleMinigames, MinigameListItemType } from '../../../types';
+import { MinigameNamesEnum, MinigameListItemType } from '../../../types';
 import { MinigameItem } from './MinigameItem.tsx';
 import { DraggableMinigameItem } from './DraggableMinigameItem.tsx';
 
@@ -33,7 +33,7 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
     <div className="minigames-list">
       <div className="minigames-list__table">
         <span className="minigames-list__title">Minigames</span>
-        <MinigameItem minigame={{ name: EPossibleMinigames.clickTheBomb }} onClick={addMinigameToList} type="add" />
+        <MinigameItem minigame={{ name: MinigameNamesEnum.clickTheBomb }} onClick={addMinigameToList} type="add" />
       </div>
       <div className="minigames-list__table">
         <span className="minigames-list__title">Your minigames queue</span>

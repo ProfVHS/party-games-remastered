@@ -1,12 +1,15 @@
-import { GameRoomDataType, MinigamesEnum } from '../types/roomRepositoryTypes';
+import { MinigameDataType, MinigameNamesEnum, MinigameStatesEnum, RoomDataType } from '../types/roomRepositoryTypes';
 
-export const clickTheBombConfig: GameRoomDataType = {
-  maxRounds: 5,
-  currentRound: 1,
-  currentTurn: 0, // Change it to random player
-  timeForTurn: 15,
-  minigame: MinigamesEnum.clickTheBomb,
-  currentMinigameData: {
-    maxClicks: 10,
-  },
-};
+export const createRoomConfig = (playersLength: number): RoomDataType => ({
+  roomCode: '',
+  maxRounds: (playersLength - 1).toString(),
+  currentRound: '1',
+  currentTurn: Math.floor(Math.random() * playersLength).toString(), // Randomly select the first player to start
+});
+
+export const createClickTheBombConfig = (): MinigameDataType => ({
+  minigameName: MinigameNamesEnum.clickTheBomb,
+  state: MinigameStatesEnum.running,
+  clickCount: '0',
+  maxClicks: '10',
+});
