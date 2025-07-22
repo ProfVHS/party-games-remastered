@@ -14,11 +14,10 @@ export const usePlayersStore = create<PlayersStoreProps>((set) => ({
     set({ players: data });
   },
   fetchPlayers: () => {
-    console.time('fetchPlayers');
     socket.emit('get_players');
+
     socket.on('got_players', (data: PlayerType[]) => {
       set({ players: data });
-      console.timeEnd('fetchPlayers');
     });
   },
 }));
