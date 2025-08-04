@@ -1,23 +1,9 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
+import { createRoomConfig } from '../config/minigames';
 
 export const roomSockets = (socket: Socket) => {
-  socket.on('disconnect', async (reason) => {
-    const playerID = socket.id;
-    const roomCode = socket.data.roomCode;
-    console.log(`Disconnected: ${playerID} (Reason: ${reason})`);
-    const response = await roomService.deletePlayerService(socket);
-
-    if (!response.success) {
-      return;
-    }
-
-    const playersReady = await roomRepository.getReadyPlayersCount(roomCode);
-    socket.leave(roomCode);
-    socket.nsp.to(roomCode).emit('fetched_ready_players', playersReady);
-  });
-
   socket.on('create_room', async (roomCode: string, nickname: string) => {
     const response = await roomService.createRoomService(roomCode, socket, nickname);
 
@@ -26,14 +12,18 @@ export const roomSockets = (socket: Socket) => {
       return;
     }
 
+    // Initialize room configuration to help with diconnect and reconnect events
+    const roomConfig = createRoomConfig(1);
+    await roomRepository.setRoomData(roomCode, roomConfig);
+
     socket.join(roomCode);
-    socket.nsp.to(socket.id).emit('created_room');
+    socket.nsp.to(socket.id).emit('created_room', { roomCode: roomCode, id: socket.id });
   });
 
-  socket.on('join_room', async (roomCode: string, nickname: string) => {
-    const response = await roomService.joinRoomService(roomCode, socket, nickname);
+  socket.on('join_room', async (roomCode: string, nickname: string, storageId: string) => {
+    const response = await roomService.joinRoomService(roomCode, socket, nickname, storageId);
 
-    // Payload: 0 = Room does not exist, -1 = Room is full, -100 = Room not joined
+    // Payload: -1 = Room does not exist, -2 = Room is full, -3 = Room is in game, -100 = Room not joined
     if (!response.success) {
       socket.nsp.to(socket.id).emit('failed_to_join_room', response.payload);
       return;
@@ -42,11 +32,7 @@ export const roomSockets = (socket: Socket) => {
     socket.join(roomCode);
 
     socket.to(roomCode).emit('player_join_toast', nickname);
-    // Payload: number of players ready
-    socket.nsp.to(socket.id).emit('joined_room');
-    setTimeout(() => {
-      socket.nsp.to(socket.id).emit('fetched_ready_players', response.payload);
-    }, 500);
+    socket.nsp.to(socket.id).emit('joined_room', { roomCode: roomCode, id: socket.id });
   });
 
   socket.on('get_room_data', async () => {

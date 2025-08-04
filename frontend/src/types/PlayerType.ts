@@ -1,7 +1,8 @@
 export type PlayerType = {
   id: string;
   nickname: string;
-  isAlive: boolean;
-  score: number;
-  isHost: boolean;
+  isAlive: string; // boolean
+  score: string; // number
+  isHost: string; // boolean
+  status: string;
 };

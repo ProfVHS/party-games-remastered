@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
 import { MinigameNamesEnum, MinigameDataType, RoomDataType } from '../types';
@@ -9,14 +9,15 @@ type useLobbyStartProps = {
   playersReady: number;
   minigames: MinigameNamesEnum[];
   numberOfMinigames?: number | 2;
+  setReady: Dispatch<SetStateAction<boolean>>;
 };
 
-export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: useLobbyStartProps) => {
+export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setReady }: useLobbyStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
   const { players } = usePlayersStore();
   const { setMinigameData } = useMinigameStore();
-  const minPlayersToStart = 1;
+  const minPlayersToStart = 2;
   const hasStarted = useRef<boolean>(false);
 
   const getRandomMinigames = (numberOfMinigames: number = 2): MinigameNamesEnum[] => {
@@ -68,6 +69,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
 
     socket.on('failed_to_start_minigame', () => {
       toast.error({ message: 'Failed to start the game', duration: 5 });
+      setReady(false);
     });
 
     return () => {

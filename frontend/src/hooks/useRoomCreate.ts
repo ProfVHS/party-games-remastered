@@ -2,12 +2,14 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { socket } from '../socket';
 import { useToast } from './useToast';
+import { setSessionVariables } from '../utils';
 
 export const useRoomCreate = () => {
   const navigate = useNavigate();
   const toast = useToast();
   useEffect(() => {
-    socket.on('created_room', () => {
+    socket.on('created_room', (data: { roomCode: string; id: string }) => {
+      setSessionVariables(data.roomCode, data.id);
       navigate('/room');
     });
 

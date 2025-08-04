@@ -5,7 +5,7 @@ import { getKey } from './roomRepository';
 
 const keyName = 'roomData';
 
-export async function setRoomData(roomCode: string, roomData: RoomDataType, multi?: ChainableCommander): Promise<void> {
+export const setRoomData = async (roomCode: string, roomData: RoomDataType, multi?: ChainableCommander): Promise<void> => {
   roomData = {
     ...roomData,
     roomCode,
@@ -16,12 +16,20 @@ export async function setRoomData(roomCode: string, roomData: RoomDataType, mult
   } else {
     await client.hset(getKey(roomCode, keyName), roomData);
   }
-}
+};
 
-export async function getRoomData(roomCode: string): Promise<RoomDataType | null> {
+export const getRoomData = async (roomCode: string): Promise<RoomDataType | null> => {
   const roomData = await client.hgetall(getKey(roomCode, keyName));
 
   if (!roomData || Object.keys(roomData).length === 0) return null;
 
   return roomData as RoomDataType;
-}
+};
+
+export const deleteRoomData = async (roomCode: string, multi?: ChainableCommander) => {
+  if (multi) {
+    multi.del(getKey(roomCode, keyName));
+  } else {
+    await client.del(getKey(roomCode, keyName));
+  }
+};

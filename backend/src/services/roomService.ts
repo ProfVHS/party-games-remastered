@@ -2,15 +2,23 @@ import { client } from '../config/db';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 import { ReturnDataType } from '../types/roomServiceTypes';
 import { ChainableCommander } from 'ioredis';
-import { MinigameNamesEnum, PlayerType, RoomDataType, MinigameDataType } from '../types/roomRepositoryTypes';
+import { MinigameNamesEnum, PlayerType, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '../types/roomRepositoryTypes';
 import { createClickTheBombConfig, createRoomConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
   socket.data.roomCode = roomCode;
+
   try {
-    await roomRepository.createPlayer(roomCode, playerID, { id: playerID, nickname, isAlive: true, score: 0, isHost: true });
+    await roomRepository.createPlayer(roomCode, playerID, {
+      id: playerID,
+      nickname,
+      isAlive: 'true',
+      score: '0',
+      isHost: 'true',
+      status: PlayerStatusEnum.onilne,
+    });
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${playerID}: ${error}`);
     return { success: false }; // Room not created
@@ -19,31 +27,51 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
   return { success: true }; // Room created
 };
 
-export const joinRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
+export const joinRoomService = async (roomCode: string, socket: Socket, nickname: string, storageId: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
-  let players: PlayerType[] | null;
-  let playerReadyCount: number;
+  let players: string[] | null;
+  let roomData: RoomDataType | null;
+  let playersReady: string[] | null;
 
   try {
-    players = await roomRepository.getAllPlayers(roomCode);
+    // TODO: Is the pipeline here fine?
+    players = await roomRepository.getAllPlayerIds(roomCode);
+    roomData = await roomRepository.getRoomData(roomCode);
+    playersReady = await roomRepository.getReadyPlayers(roomCode);
 
-    if (!players) {
-      return { success: false, payload: 0 }; // Room does not exist
+    if (players.length === 0) {
+      return { success: false, payload: -1 }; // Room does not exist
     }
 
     if (Object.keys(players).length >= 8) {
-      return { success: false, payload: -1 }; // Room is full
+      return { success: false, payload: -2 }; // Room is full
     }
 
-    await roomRepository.createPlayer(roomCode, playerID, { id: playerID, nickname, isAlive: true, score: 0, isHost: false });
+    if (roomData?.status === RoomStatusEnum.game) {
+      if (!players.includes(storageId)) return { success: false, payload: -3 }; // Room is in game
+    }
 
-    playerReadyCount = await roomRepository.getReadyPlayersCount(roomCode);
+    // TODO: Change 2 to MinPlayers to start
+    const minPlayersToStart = 2;
+    if (players.length === playersReady.length && players.length >= minPlayersToStart) {
+      return { success: false, payload: -4 }; // Room is starting the game
+    }
+
+    await roomRepository.createPlayer(roomCode, playerID, {
+      id: playerID,
+      nickname,
+      isAlive: 'true',
+      score: '0',
+      isHost: 'false',
+      status: PlayerStatusEnum.onilne,
+    });
+
     socket.data.roomCode = roomCode;
   } catch (error) {
     console.error(`Room joining failed for room ${roomCode} and player: ${playerID}: ${error}`);
     return { success: false, payload: -100 }; // Room not joined
   }
-  return { success: true, payload: playerReadyCount }; // Success and number of players ready
+  return { success: true }; // Success join room
 };
 
 export const toggleReadyService = async (socket: Socket): Promise<ReturnDataType> => {
@@ -75,12 +103,15 @@ export const deletePlayerService = async (socket: Socket): Promise<ReturnDataTyp
     await roomRepository.deletePlayerFromReadyTable(roomCode, playerID, multi);
 
     await multi.exec();
+
+    const players = await roomRepository.getAllPlayers(roomCode);
+    if (players.length === 0) return { success: true, payload: 1 }; // Last player in room
   } catch (error) {
     console.error(`Player deletion failed for player: ${playerID}: ${error}`);
     return { success: false }; // Player not deleted
   }
 
-  return { success: true }; // Player deleted
+  return { success: true, payload: 0 }; // Player deleted
 };
 
 export const deleteRoomService = async (socket: Socket): Promise<ReturnDataType> => {
@@ -89,9 +120,9 @@ export const deleteRoomService = async (socket: Socket): Promise<ReturnDataType>
 
   try {
     multi = client.multi();
-
     await roomRepository.deleteAllPlayers(roomCode, multi);
     await roomRepository.deleteReadyTable(roomCode, multi); // In case room gets deleted before first minigame starts
+    await roomRepository.deleteRoomData(roomCode, multi);
 
     await multi.exec();
   } catch (error) {
@@ -116,6 +147,8 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
   try {
     multi = client.multi();
     await roomRepository.setRoomData(roomCode, createRoomConfig(players.length), multi);
+    // TODO: Remove it and change it (maybe createRoomConfig too)
+    multi.hset(`room:${roomCode}:roomData`, 'status', RoomStatusEnum.game);
 
     switch (minigameName) {
       case MinigameNamesEnum.clickTheBomb:
