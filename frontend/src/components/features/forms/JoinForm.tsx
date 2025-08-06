@@ -3,7 +3,7 @@ import './Form.scss';
 import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../ui/button/Button.tsx';
 import { socket } from '../../../socket.ts';
-import { generateRandomUserName, setSessionVariables } from '../../../utils.ts';
+import { generateRandomUserName } from '../../../utils.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 import { useRoomJoin } from '../../../hooks/useRoomJoin.ts';
 
@@ -23,11 +23,10 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
 
   const handleJoin: SubmitHandler<FormInputs> = (data) => {
     const nickname = data.nickname || generateRandomUserName();
+    const storageId = localStorage.getItem('id');
 
     if (socket.id && nickname) {
-      setSessionVariables(data.room, socket.id);
-
-      socket.emit('join_room', data.room, nickname);
+      socket.emit('join_room', data.room, nickname, storageId);
 
       setValue('room', '');
     } else {

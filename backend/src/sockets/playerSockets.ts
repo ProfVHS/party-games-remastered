@@ -22,4 +22,11 @@ export const playerSockets = (socket: Socket) => {
 
     socket.nsp.to(roomCode).emit('got_players', response);
   });
+
+  socket.on('fetch_ready_players', async () => {
+    const roomCode = socket.data.roomCode;
+
+    const playersReady = await roomRepository.getReadyPlayersCount(roomCode);
+    socket.nsp.to(roomCode).emit('fetched_ready_players', playersReady);
+  });
 };

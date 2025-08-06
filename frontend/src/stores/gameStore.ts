@@ -19,9 +19,5 @@ export const useMinigameStore = create<MinigameStoreProps>((set) => ({
     socket.on('got_game_data', (data: MinigameDataType) => {
       set({ minigameData: data });
     });
-
-    return () => {
-      socket.off('set_game_data');
-    };
   },
 }));

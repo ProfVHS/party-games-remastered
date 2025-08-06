@@ -5,6 +5,7 @@ import { CreateForm } from '../../features/forms/CreateForm.tsx';
 import { useEffect, useState } from 'react';
 import { useAnimate } from 'framer-motion';
 import { Icon } from '../../../assets/icon';
+import { socket } from '../../../socket.ts';
 
 export const HomePage = () => {
   const [scope, animate] = useAnimate();
@@ -18,6 +19,13 @@ export const HomePage = () => {
   useEffect(() => {
     animate(scope.current, { scale: [0.5, 1], opacity: [0, 1] }, { duration: 0.5, type: 'spring' });
   }, [animate, scope, status]);
+
+  useEffect(() => {
+    // Ensures the player is connected to the socket (Home page)
+    if (!socket.connected) {
+      socket.connect();
+    }
+  }, [location.pathname]);
 
   return (
     <div className="home-page">
