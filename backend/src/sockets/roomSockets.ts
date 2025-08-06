@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 import { createRoomConfig } from '../config/minigames';
+import { RoomStatusEnum } from '../types/roomRepositoryTypes';
 
 export const roomSockets = (socket: Socket) => {
   socket.on('create_room', async (roomCode: string, nickname: string) => {
@@ -13,7 +14,7 @@ export const roomSockets = (socket: Socket) => {
     }
 
     // Initialize room configuration to help with diconnect and reconnect events
-    const roomConfig = createRoomConfig(1);
+    const roomConfig = createRoomConfig(1, RoomStatusEnum.lobby);
     await roomRepository.setRoomData(roomCode, roomConfig);
 
     socket.join(roomCode);

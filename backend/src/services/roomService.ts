@@ -146,9 +146,7 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
 
   try {
     multi = client.multi();
-    await roomRepository.setRoomData(roomCode, createRoomConfig(players.length), multi);
-    // TODO: Remove it and change it (maybe createRoomConfig too)
-    multi.hset(`room:${roomCode}:roomData`, 'status', RoomStatusEnum.game);
+    await roomRepository.setRoomData(roomCode, createRoomConfig(players.length, RoomStatusEnum.game), multi);
 
     switch (minigameName) {
       case MinigameNamesEnum.clickTheBomb:
