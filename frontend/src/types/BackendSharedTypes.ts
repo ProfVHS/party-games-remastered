@@ -1,39 +1,43 @@
+export enum RoomStatusEnum {
+  lobby = 'lobby',
+  game = 'game',
+}
+
+export enum MinigameNamesEnum {
+  clickTheBomb = 'Click the Bomb',
+  colorsMemory = 'Colors Memory',
+  cards = 'Cards',
+}
+
+export enum PlayerStatusEnum {
+  onilne = 'online',
+  offline = 'offline',
+}
+
 export type RoomDataType = {
   roomCode: string;
   maxRounds: number;
   currentRound: number;
   currentTurn: number;
+  status: RoomStatusEnum;
 };
 
-export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType;
+export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType | CardsDataType;
 
 type ClickTheBombDataType = {
   minigameName: MinigameNamesEnum.clickTheBomb;
-  state: MinigameStatesEnum;
   clickCount: number;
   maxClicks: number;
 };
 
 type ColorsMemoryDataType = {
   minigameName: MinigameNamesEnum.colorsMemory;
-  state: MinigameStatesEnum;
   sequence: string[];
 };
 
-export enum MinigameNamesEnum {
-  clickTheBomb = 'Click the Bomb',
-  colorsMemory = 'Colors Memory',
-}
+type CardsDataType = { minigameName: MinigameNamesEnum.cards };
 
-export enum MinigameStatesEnum {
-  running = 'running',
-  finished = 'finished',
-}
-
-export type PlayerType = {
-  id: string;
-  nickname: string;
-  isAlive: boolean;
-  score: number;
-  isHost: boolean;
+export type ReturnDataType = {
+  success: boolean;
+  payload?: any;
 };

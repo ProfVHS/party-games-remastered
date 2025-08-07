@@ -1,10 +1,17 @@
-import { MinigameDataType, MinigameNamesEnum } from '../../types';
+import { MinigameNamesEnum } from '../../types';
+import { Cards } from './cards/Cards';
 import { ClickTheBomb } from './clickthebomb/ClickTheBomb';
 
 type MinigameProps = {
-  minigameData: MinigameDataType;
+  minigameName: string;
 };
 
-export const Minigame = ({ minigameData }: MinigameProps) => {
-  return <div>{minigameData.minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}</div>;
+export const Minigame = ({ minigameName }: MinigameProps) => {
+  return (
+    <>
+      <div>{minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}</div>
+      <div>{minigameName == MinigameNamesEnum.cards && <Cards />}</div>
+      <div>{minigameName == MinigameNamesEnum.colorsMemory && <div>Colors Memory</div>}</div>
+    </>
+  );
 };

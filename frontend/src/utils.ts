@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 
 export function setSessionVariables(roomCode: string, id: string) {
-  sessionStorage.setItem('roomCode', roomCode);
+  localStorage.setItem('roomCode', roomCode);
   localStorage.setItem('id', id);
 }
 
 export function clearSessionVariables() {
-  sessionStorage.removeItem('roomCode');
+  localStorage.removeItem('roomCode');
   localStorage.removeItem('id');
 }
 
@@ -78,7 +78,7 @@ export const generateRandomUserName = () => {
     'King',
     'Queen',
     'Lord',
-    'Sir'
+    'Sir',
   ];
 
   const nouns = [
@@ -105,7 +105,7 @@ export const generateRandomUserName = () => {
     'Penguin',
     'Marcello',
     'Fernando Melo',
-    'Amigo'
+    'Amigo',
   ];
 
   return `${adjectives[Math.floor(Math.random() * adjectives.length)]} ${nouns[Math.floor(Math.random() * nouns.length)]}`;
@@ -119,25 +119,25 @@ export const possibleAvatarLayouts: Record<number, { row: number; col: number }[
   1: [{ row: 1, col: 2 }], // Top
   2: [
     { row: 2, col: 1 }, // Left
-    { row: 2, col: 3 } // Right
+    { row: 2, col: 3 }, // Right
   ],
   3: [
     { row: 1, col: 1 }, // Top left
     { row: 1, col: 2 }, // Top
-    { row: 1, col: 3 } // Top right
+    { row: 1, col: 3 }, // Top right
   ],
   4: [
     { row: 1, col: 1 }, // Top left
     { row: 1, col: 3 }, // Top right
     { row: 3, col: 1 }, // Bottom left
-    { row: 3, col: 3 } // Bottom right
+    { row: 3, col: 3 }, // Bottom right
   ],
   5: [
     { row: 2, col: 1 }, // Left
     { row: 1, col: 1 }, // Top left
     { row: 1, col: 2 }, // Top
     { row: 1, col: 3 }, // Top right
-    { row: 2, col: 3 } // Right
+    { row: 2, col: 3 }, // Right
   ],
   6: [
     { row: 1, col: 1 }, // Top left
@@ -145,7 +145,7 @@ export const possibleAvatarLayouts: Record<number, { row: number; col: number }[
     { row: 1, col: 3 }, // Top right
     { row: 3, col: 1 }, // Bottom left
     { row: 3, col: 2 }, // Bottom
-    { row: 3, col: 3 } // Bottom right
+    { row: 3, col: 3 }, // Bottom right
   ],
   7: [
     { row: 1, col: 1 }, // Top left
@@ -154,7 +154,7 @@ export const possibleAvatarLayouts: Record<number, { row: number; col: number }[
     { row: 2, col: 1 }, // Left
     { row: 3, col: 1 }, // Bottom left
     { row: 3, col: 2 }, // Bottom
-    { row: 3, col: 3 } // Bottom right
+    { row: 3, col: 3 }, // Bottom right
   ],
   8: [
     { row: 1, col: 1 }, // Top left
@@ -164,6 +164,6 @@ export const possibleAvatarLayouts: Record<number, { row: number; col: number }[
     { row: 2, col: 3 }, // Right
     { row: 3, col: 1 }, // Bottom left
     { row: 3, col: 2 }, // Bottom
-    { row: 3, col: 3 } // Bottom right
-  ]
+    { row: 3, col: 3 }, // Bottom right
+  ],
 };

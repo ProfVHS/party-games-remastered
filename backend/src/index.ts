@@ -5,6 +5,7 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 
+import { connectionSockets } from './sockets/connectionSockets';
 import { roomSockets } from './sockets/roomSockets';
 import { turnSockets } from './sockets/turnSockets';
 import { playerSockets } from './sockets/playerSockets';
@@ -28,8 +29,7 @@ const io = new Server(socketServer, {
 });
 
 const handleModulesOnConnection = async (socket: Socket) => {
-  console.log(`New connection: ${socket.id}`);
-
+  connectionSockets(socket);
   roomSockets(socket);
   turnSockets(socket);
   playerSockets(socket);

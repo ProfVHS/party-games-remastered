@@ -1,5 +1,5 @@
 import './PlayerAvatar.scss';
-import { PlayerType } from '../../../types';
+import { PlayerType } from '../../../types/PlayerType';
 import { avatarList } from './avatarList';
 import React, { createElement } from 'react';
 

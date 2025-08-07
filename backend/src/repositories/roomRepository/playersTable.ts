@@ -5,16 +5,6 @@ import { getKey } from './roomRepository';
 
 const keyName = 'players';
 
-const parsePlayerData = (rawData: Record<string, string>): PlayerType => {
-  return {
-    id: rawData.id,
-    nickname: rawData.nickname,
-    isAlive: rawData.isAlive === 'true',
-    score: parseInt(rawData.score, 10) || 0,
-    isHost: rawData.isHost === 'true',
-  };
-};
-
 export const createPlayer = async (roomCode: string, id: string, playerData: PlayerType, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.hset(getKey(roomCode, keyName, id), playerData);
@@ -62,10 +52,10 @@ export const deleteAllPlayers = async (roomCode: string, multi?: ChainableComman
 
   if (multi) {
     multi.del(getKey(roomCode, keyName));
-    multi.del(...playerKeys);
+    if (playerKeys.length > 0) multi.del(...playerKeys);
   } else {
     await client.del(getKey(roomCode, keyName));
-    await client.del(...playerKeys);
+    if (playerKeys.length > 0) await client.del(...playerKeys);
   }
 };
 
@@ -74,15 +64,21 @@ export const getPlayer = async (roomCode: string, id: string): Promise<PlayerTyp
 
   if (!player || Object.keys(player).length === 0) return null;
 
-  return parsePlayerData(player);
+  return player as PlayerType;
 };
 
 export const getAllPlayers = async (roomCode: string): Promise<PlayerType[]> => {
   const playerIds = await client.lrange(getKey(roomCode, keyName), 0, -1);
 
-  const playersRawData = await Promise.all(playerIds.map((id) => client.hgetall(getKey(roomCode, keyName, id))));
+  if (playerIds.length === 0) return [];
 
-  const players: PlayerType[] = playersRawData.filter((player) => Object.keys(player).length > 0).map(parsePlayerData);
+  const players = await Promise.all(playerIds.map((id) => client.hgetall(getKey(roomCode, keyName, id))));
 
-  return players;
+  return players as PlayerType[];
+};
+
+export const getAllPlayerIds = async (roomCode: string): Promise<string[]> => {
+  const playerIds = await client.lrange(getKey(roomCode, keyName), 0, -1);
+
+  return playerIds;
 };

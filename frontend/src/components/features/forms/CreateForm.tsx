@@ -3,7 +3,7 @@ import './Form.scss';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../ui/button/Button.tsx';
 import { socket } from '../../../socket.ts';
-import { generateRandomUserName, setSessionVariables } from '../../../utils.ts';
+import { generateRandomUserName } from '../../../utils.ts';
 import { useRoomCreate } from '../../../hooks/useRoomCreate.ts';
 import { useToast } from '../../../hooks/useToast.ts';
 import { Input } from '../../ui/input/Input.tsx';
@@ -36,8 +36,6 @@ export const CreateForm = ({ onCancel }: CreateFormProps) => {
     const nickname = data.nickname || generateRandomUserName();
 
     if (socket.id && nickname && randomCode) {
-      setSessionVariables(randomCode, socket.id!);
-
       socket.emit('create_room', randomCode, nickname);
     } else {
       toast.error({ message: 'Something went wrong. Please refresh the page or try again!', duration: 3 });

@@ -13,9 +13,11 @@ import { useToast } from '../../../hooks/useToast.ts';
 import { useLobbyToggle } from '../../../hooks/useLobbyToggle.ts';
 import { useLobbyFetch } from '../../../hooks/useLobbyFetch.ts';
 import { useLobbyStart } from '../../../hooks/useLobbyStart.ts';
+import { usePlayersStore } from '../../../stores/playersStore.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { currentPlayer } = usePlayersStore();
 
   const [lobbySettings, setLobbySettings] = useState<LobbySettingsType>({
     isRandomMinigames: true,
@@ -68,7 +70,7 @@ export const Lobby = () => {
               transition={{ delay: 0.2, duration: 0.2 }}
             >
               <LobbyContent minigames={convertToMinigameEnums(lobbySettings.minigames)} numberOfMinigames={lobbySettings.numberOfMinigames} />
-              <SettingsButton className="lobby__settingsbutton" onClick={() => toggleLobbySettings()} />
+              {currentPlayer?.isHost === 'true' && <SettingsButton className="lobby__settingsbutton" onClick={() => toggleLobbySettings()} />}
             </motion.div>
           )}
         </AnimatePresence>
@@ -81,11 +83,11 @@ const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: MinigameNam
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const roomCode = sessionStorage.getItem('roomCode');
+  const roomCode = localStorage.getItem('roomCode');
 
   useLobbyToggle({ setPlayersReady, setIsLoading });
   useLobbyFetch({ setPlayersReady });
-  const { countdown } = useLobbyStart({ playersReady, minigames, numberOfMinigames });
+  const { countdown } = useLobbyStart({ playersReady, minigames, numberOfMinigames, setReady });
 
   const toast = useToast();
 
@@ -93,8 +95,6 @@ const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: MinigameNam
     setIsLoading(true);
 
     setReady((prevReady) => !prevReady);
-
-    console.time('togglePlayerReady');
 
     if (roomCode) {
       socket.emit('toggle_player_ready');
