@@ -13,9 +13,11 @@ import { useToast } from '../../../hooks/useToast.ts';
 import { useLobbyToggle } from '../../../hooks/useLobbyToggle.ts';
 import { useLobbyFetch } from '../../../hooks/useLobbyFetch.ts';
 import { useLobbyStart } from '../../../hooks/useLobbyStart.ts';
+import { usePlayersStore } from '../../../stores/playersStore.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { currentPlayer } = usePlayersStore();
 
   const [lobbySettings, setLobbySettings] = useState<LobbySettingsType>({
     isRandomMinigames: true,
@@ -68,7 +70,7 @@ export const Lobby = () => {
               transition={{ delay: 0.2, duration: 0.2 }}
             >
               <LobbyContent minigames={convertToMinigameEnums(lobbySettings.minigames)} numberOfMinigames={lobbySettings.numberOfMinigames} />
-              <SettingsButton className="lobby__settingsbutton" onClick={() => toggleLobbySettings()} />
+              {currentPlayer?.isHost === 'true' && <SettingsButton className="lobby__settingsbutton" onClick={() => toggleLobbySettings()} />}
             </motion.div>
           )}
         </AnimatePresence>

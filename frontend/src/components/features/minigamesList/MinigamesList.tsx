@@ -34,6 +34,8 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
       <div className="minigames-list__table">
         <span className="minigames-list__title">Minigames</span>
         <MinigameItem minigame={{ name: MinigameNamesEnum.clickTheBomb }} onClick={addMinigameToList} type="add" />
+        <MinigameItem minigame={{ name: MinigameNamesEnum.cards }} onClick={addMinigameToList} type="add" />
+        <MinigameItem minigame={{ name: MinigameNamesEnum.colorsMemory }} onClick={addMinigameToList} type="add" />
       </div>
       <div className="minigames-list__table">
         <span className="minigames-list__title">Your minigames queue</span>

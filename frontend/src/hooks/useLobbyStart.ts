@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
 import { socket } from '../socket';
 import { useToast } from './useToast';
-import { MinigameNamesEnum, MinigameDataType, RoomDataType } from '../types';
+import { MinigameNamesEnum } from '../types';
 import { usePlayersStore } from '../stores/playersStore';
-import { useMinigameStore } from '../stores/gameStore';
 
 type useLobbyStartProps = {
   playersReady: number;
@@ -15,8 +14,7 @@ type useLobbyStartProps = {
 export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setReady }: useLobbyStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
-  const { players } = usePlayersStore();
-  const { setMinigameData } = useMinigameStore();
+  const { currentPlayer, players } = usePlayersStore();
   const minPlayersToStart = 2;
   const hasStarted = useRef<boolean>(false);
 
@@ -38,16 +36,17 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setR
     if (playersReady === players.length && players.length >= minPlayersToStart) {
       setCountdown(() => 3);
 
-      if (!minigames || minigames.length === 0) {
+      if ((!minigames || minigames.length === 0) && currentPlayer?.isHost === 'true') {
         minigames = getRandomMinigames(numberOfMinigames);
       }
 
       timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1 && !hasStarted.current) {
-            // TODO: Only host can start the minigame
-            socket.emit('set_minigames', minigames);
-            socket.emit('start_minigame', minigames[0]);
+            if (currentPlayer?.isHost == 'true') {
+              socket.emit('set_minigames', minigames);
+              socket.emit('start_minigame', minigames[0]);
+            }
             hasStarted.current = true;
             clearInterval(timer);
             return null;
@@ -63,17 +62,12 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setR
   }, [playersReady]);
 
   useEffect(() => {
-    socket.on('started_minigame', (data: { roomData: RoomDataType; minigameData: MinigameDataType }) => {
-      setMinigameData(data.minigameData);
-    });
-
     socket.on('failed_to_start_minigame', () => {
       toast.error({ message: 'Failed to start the game', duration: 5 });
       setReady(false);
     });
 
     return () => {
-      socket.off('started_minigame');
       socket.off('failed_to_start_minigame');
     };
   }, [socket]);
