@@ -1,5 +1,5 @@
 import './PlayerAvatar.scss';
-import { PlayerType } from '../../../types';
+import { PlayerType } from '../../../types/PlayerType';
 
 type PlayerAvatarProps = {
   player: PlayerType;
