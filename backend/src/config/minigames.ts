@@ -13,3 +13,7 @@ export const createClickTheBombConfig = (): MinigameDataType => ({
   clickCount: '0',
   maxClicks: '10',
 });
+
+export const createCardsConfig = (): MinigameDataType => ({ minigameName: MinigameNamesEnum.cards });
+
+export const createColorsMemoryConfig = (): MinigameDataType => ({ minigameName: MinigameNamesEnum.colorsMemory, sequence: [] });

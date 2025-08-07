@@ -6,6 +6,7 @@ export enum RoomStatusEnum {
 export enum MinigameNamesEnum {
   clickTheBomb = 'Click the Bomb',
   colorsMemory = 'Colors Memory',
+  cards = 'Cards',
 }
 
 export enum PlayerStatusEnum {
@@ -21,7 +22,7 @@ export type RoomDataType = {
   status: RoomStatusEnum;
 };
 
-export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType;
+export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType | CardsDataType;
 
 type ClickTheBombDataType = {
   minigameName: MinigameNamesEnum.clickTheBomb;
@@ -34,14 +35,7 @@ type ColorsMemoryDataType = {
   sequence: string[];
 };
 
-export type PlayerType = {
-  id: string;
-  nickname: string;
-  isAlive: boolean;
-  score: number;
-  isHost: boolean;
-  status: PlayerStatusEnum;
-};
+type CardsDataType = { minigameName: MinigameNamesEnum.cards };
 
 export type ReturnDataType = {
   success: boolean;

@@ -2,8 +2,8 @@ import { client } from '../config/db';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 import { ReturnDataType } from '../types/roomServiceTypes';
 import { ChainableCommander } from 'ioredis';
-import { MinigameNamesEnum, PlayerType, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '../types/roomRepositoryTypes';
-import { createClickTheBombConfig, createRoomConfig } from '../config/minigames';
+import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '../types/roomRepositoryTypes';
+import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
@@ -152,13 +152,24 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
       case MinigameNamesEnum.clickTheBomb:
         const clickTheBombConfig = createClickTheBombConfig();
         console.log(`Starting Click The Bomb minigame in room ${roomCode} with config:`, clickTheBombConfig);
-        await roomRepository.setMinigameData(roomCode, createClickTheBombConfig(), multi);
+        await roomRepository.setMinigameData(roomCode, clickTheBombConfig, multi);
+        break;
+      case MinigameNamesEnum.cards:
+        const cardsConfig = createCardsConfig();
+        console.log(`Starting Cards minigame in room ${roomCode} with config:`, cardsConfig);
+        await roomRepository.setMinigameData(roomCode, cardsConfig, multi);
+        break;
+      case MinigameNamesEnum.colorsMemory:
+        const colorsMemoryConfig = createColorsMemoryConfig();
+        console.log(`Starting Colors Memory minigame in room ${roomCode} with config:`, colorsMemoryConfig);
+        await roomRepository.setMinigameData(roomCode, colorsMemoryConfig, multi);
         break;
       default:
         console.error("Tried setting game which doesn't exist");
         break;
     }
     await multi.exec();
+
     roomData = await roomRepository.getRoomData(roomCode);
     minigameData = await roomRepository.getMinigameData(roomCode);
     await roomRepository.deleteReadyTable(roomCode); // We don't need it after the game has started
