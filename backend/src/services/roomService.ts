@@ -34,7 +34,6 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
   let playersReady: string[] | null;
 
   try {
-    // TODO: Is the pipeline here fine?
     players = await roomRepository.getAllPlayerIds(roomCode);
     roomData = await roomRepository.getRoomData(roomCode);
     playersReady = await roomRepository.getReadyPlayers(roomCode);
