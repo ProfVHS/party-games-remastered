@@ -36,6 +36,14 @@ export const updateAllPlayers = async (roomCode: string, updates: Partial<Player
   }
 };
 
+export const updatePlayerScore = async (roomCode: string, id: string, score: number, multi?: ChainableCommander): Promise<void> => {
+  if (multi) {
+    multi.hincrby(getKey(roomCode, keyName, id), 'score', score);
+  } else {
+    await client.hincrby(getKey(roomCode, keyName, id), 'score', score);
+  }
+};
+
 export const deletePlayer = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.del(getKey(roomCode, keyName, id));

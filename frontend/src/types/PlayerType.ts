@@ -5,4 +5,5 @@ export type PlayerType = {
   score: string; // number
   isHost: string; // boolean
   status: string;
+  selectedObjectId: string; // number
 };

@@ -18,6 +18,7 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
       score: '0',
       isHost: 'true',
       status: PlayerStatusEnum.onilne,
+      selectedObjectId: '-100',
     });
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${playerID}: ${error}`);
@@ -63,6 +64,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       score: '0',
       isHost: 'false',
       status: PlayerStatusEnum.onilne,
+      selectedObjectId: '-100',
     });
 
     socket.data.roomCode = roomCode;

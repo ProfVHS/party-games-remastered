@@ -50,4 +50,5 @@ export type PlayerType = {
   score: string; // number
   isHost: string; // boolean
   status: PlayerStatusEnum;
+  selectedObjectId: string; // number
 };
