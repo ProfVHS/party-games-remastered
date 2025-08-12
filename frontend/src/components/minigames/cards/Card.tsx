@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import './Cards.scss';
 import { PlayerType } from '../../../types/PlayerType';
 import { usePlayersStore } from '../../../stores/playersStore';
+import { Icon } from '../../../assets/icon';
+
 interface CardProps {
   id: number;
   points: number; // number
@@ -11,37 +13,48 @@ interface CardProps {
 }
 
 export const Card = ({ id, points, isPositive, newPlayersPointsCard, onClick }: CardProps) => {
-  const [isRevealed, setIsRevealed] = useState(false);
-  const revealeTime = 400 * (id + 1); // Time in milliseconds to reveal the card
-
+  const [cardType, setCardType] = useState<'back' | 'positive' | 'negative'>('back'); // 'back', 'positive', 'negative'
+  const [flipping, setFlipping] = useState<boolean>(false);
+  const revealeTime: number = 400 * (id + 1); // Time in milliseconds to reveal the card
   const { players, setPlayers } = usePlayersStore();
+  const pointsToDisplay: string = points < 0 ? points.toString() : '+' + points.toString();
 
   useEffect(() => {
     if (points == 0) return;
 
     setTimeout(() => {
-      setIsRevealed(true);
-      if (!newPlayersPointsCard) return;
+      setFlipping(true);
 
-      const pointsToAdd = points < 0 ? points * newPlayersPointsCard.length : points / newPlayersPointsCard.length;
+      setTimeout(() => {
+        setCardType(isPositive ? 'positive' : 'negative');
 
-      // TODO: Change it if it will be a problem
-      // Update the score of players who selected this card
-      newPlayersPointsCard.forEach((player) => {
-        players.forEach((p) => {
-          if (p.id === player.id) {
-            p.score = (parseInt(p.score) + pointsToAdd).toString();
-          }
+        if (!newPlayersPointsCard) return;
+
+        // Update the score for each affected player
+        const pointsToAdd = Math.floor(points < 0 ? points * newPlayersPointsCard.length : points / newPlayersPointsCard.length);
+        newPlayersPointsCard.forEach((player) => {
+          players.forEach((p) => {
+            if (p.id === player.id) {
+              p.score = (parseInt(p.score) + pointsToAdd).toString();
+            }
+          });
         });
-      });
 
-      setPlayers([...players]);
+        setPlayers([...players]);
+        setFlipping(false);
+      }, 400);
     }, revealeTime);
   }, [points]);
 
   return (
-    <div className={`card ${!isRevealed ? 'back' : isPositive ? 'positive' : 'negative'}`} onClick={!isRevealed ? () => onClick(id) : undefined}>
-      {isRevealed && points}
+    <div className={`card ${cardType} ${flipping ? 'flipping' : ''}`} onClick={cardType === 'back' ? () => onClick(id) : undefined}>
+      {cardType !== 'back' && <div className="card__content__top">{pointsToDisplay}</div>}
+      <div className="card__content">
+        {cardType === 'back' && <Icon icon="Logo" className="svg" />}
+        {cardType === 'positive' && pointsToDisplay}
+        {cardType === 'negative' && <Icon icon="Mine" className="svg" />}
+      </div>
+      {cardType !== 'back' && <div className="card__content__bottom">{pointsToDisplay}</div>}
     </div>
   );
 };

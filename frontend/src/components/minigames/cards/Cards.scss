@@ -52,22 +52,77 @@
     height: 130px;
     margin: 5px;
 
+    border-radius: 5px;
+
+    transition: transform 0.4s ease;
+    transform-origin: center;
+
     // TODO: Temporary code
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 150%;
 
+    border: 3px solid;
+    color: white;
+
+    transform: rotateY(0deg);
+
+    &__content {
+      width: 80%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+
+      &__top {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        font-size: 16px;
+      }
+
+      &__bottom {
+        position: absolute;
+        bottom: 3px;
+        right: 3px;
+        font-size: 16px;
+        transform: rotate(180deg);
+      }
+    }
+
     &.back {
-      background-color: gray;
+      background-color: #f1eaf7;
+      border-color: #9d4edd;
+      background-image: url('./../../../assets/textures/card-back.svg');
     }
 
     &.positive {
-      background-color: green;
+      background-color: #b87de8;
+      border-color: #5a189a;
+      background-image: url('./../../../assets/textures/card-front.svg');
     }
 
     &.negative {
-      background-color: red;
+      background-color: #9d1133;
+      border-color: #000000;
+      background-image: url('./../../../assets/textures/card-front.svg');
     }
+
+    .svg {
+      width: 60px;
+      height: 60px;
+    }
+  }
+
+  .flipping {
+    transform: rotateY(90deg);
+  }
+
+  .card:hover {
+    cursor: pointer;
+    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
   }
 }
