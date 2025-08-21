@@ -26,6 +26,14 @@ export const getRoomData = async (roomCode: string): Promise<RoomDataType | null
   return roomData as RoomDataType;
 };
 
+export const updateRoomData = async (roomCode: string, updates: Partial<RoomDataType>, multi?: ChainableCommander): Promise<void> => {
+  if (multi) {
+    multi.hset(getKey(roomCode, keyName), updates);
+  } else {
+    await client.hset(getKey(roomCode, keyName), updates);
+  }
+};
+
 export const deleteRoomData = async (roomCode: string, multi?: ChainableCommander) => {
   if (multi) {
     multi.del(getKey(roomCode, keyName));

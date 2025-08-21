@@ -98,6 +98,12 @@
       background-image: url('./../../../assets/textures/card-back.svg');
     }
 
+    &.back:hover {
+      cursor: pointer;
+      box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+    }
+
     &.positive {
       background-color: #b87de8;
       border-color: #5a189a;
@@ -118,11 +124,57 @@
 
   .flipping {
     transform: rotateY(90deg);
+    pointer-events: none;
   }
 
-  .card:hover {
-    cursor: pointer;
-    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
-    transform: scale(1.05);
+  .selected {
+    animation: blink 1s linear infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.02);
+    }
+  }
+
+  .players__list {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 2px;
+    font-size: 12px;
+    z-index: 10;
+    animation: fadeIn 0.8s ease-out forwards;
+
+    div {
+      white-space: nowrap;
+      overflow: hidden; // hide extra text
+      text-overflow: ellipsis; // add "..."
+      max-width: 80px;
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      background-color: rgba(0, 0, 0, 0);
+    }
+    100% {
+      opacity: 1;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
   }
 }
