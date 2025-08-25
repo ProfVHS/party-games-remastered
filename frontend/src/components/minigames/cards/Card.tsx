@@ -6,7 +6,6 @@ import { Icon } from '@assets/icon';
 
 // TODO:
 // Responsive design
-// Change card back design (image)
 // Add sound effects
 
 interface CardProps {
