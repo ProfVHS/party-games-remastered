@@ -5,6 +5,7 @@ import { ChainableCommander } from 'ioredis';
 import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '../types/roomRepositoryTypes';
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
+import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
@@ -51,9 +52,8 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       if (!players.includes(storageId)) return { success: false, payload: -3 }; // Room is in game
     }
 
-    // TODO: Change 2 to MinPlayers to start
-    const minPlayersToStart = 2;
-    if (players.length === playersReady.length && players.length >= minPlayersToStart) {
+    if (players.length === playersReady.length && players.length >= MIN_PLAYERS_TO_START) {
+      console.log('Game is starting, cannot join now', players.length, playersReady.length, MIN_PLAYERS_TO_START);
       return { success: false, payload: -4 }; // Room is starting the game
     }
 

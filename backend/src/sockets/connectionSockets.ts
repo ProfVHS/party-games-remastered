@@ -1,7 +1,8 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
-import { PlayerStatusEnum, RoomStatusEnum } from '../types/roomRepositoryTypes';
+import { RoomStatusEnum } from '../types/roomRepositoryTypes';
+import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';
 
 export const connectionSockets = (socket: Socket) => {
   console.log(`New connection: ${socket.id}`);
@@ -27,11 +28,9 @@ export const connectionSockets = (socket: Socket) => {
       let playersReady = await roomRepository.getReadyPlayersCount(roomCode);
       const playerIds = await roomRepository.getAllPlayerIds(roomCode);
 
-      // TODO: Make it global in config, idk
-      const minPlayersToStart = 2;
       // Prevents the minigame from starting if a player disconnects
       // but the required number of players to start still appears ready
-      if (playersReady === playerIds.length && playersReady >= minPlayersToStart) {
+      if (playersReady === playerIds.length && playersReady >= MIN_PLAYERS_TO_START) {
         await roomRepository.deleteReadyTable(roomCode);
         socket.to(roomCode).emit('failed_to_start_minigame');
         playersReady = 0;
