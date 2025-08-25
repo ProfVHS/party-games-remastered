@@ -126,7 +126,7 @@
     &.back {
       background-color: var(--cards-back-bg);
       border-color: var(--cards-back-border);
-      background-image: url('./../../../assets/textures/card-back.svg');
+      background-image: var(--cards-back-img);
     }
 
     &.back:hover {

@@ -62,6 +62,7 @@ html[data-theme='dark'] {
   --cards-title: #{$darkerPrimaryColor};
   --cards-round-bg: #{$darkBgColor};
   --cards-text: #fff;
+  --cards-back-img: url('../../assets/textures/card-back-dark.svg');
   --cards-back-bg: #3c3c3c;
   --cards-back-border: #{$darkerPrimaryColor};
   --cards-positive-bg: #{$darkerPrimaryColor};
