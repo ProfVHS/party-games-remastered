@@ -51,9 +51,10 @@ export const cardsSockets = async (socket: Socket) => {
       }
     }
 
+    const nextRound = (parseInt(roomData!.currentRound) + 1).toString();
     await roomRepository.updateAllPlayers(roomCode, { selectedObjectId: '-100' });
-    await roomRepository.updateRoomData(roomCode, { currentRound: (parseInt(roomData!.currentRound) + 1).toString() });
+    await roomRepository.updateRoomData(roomCode, { currentRound: nextRound });
 
-    socket.nsp.to(roomCode).emit('cards_round_ended', cards, players, roomData!.currentRound);
+    socket.nsp.to(roomCode).emit('cards_round_ended', cards, players, nextRound);
   });
 };

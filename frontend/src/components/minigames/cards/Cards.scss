@@ -21,6 +21,33 @@
 
   user-select: none;
 
+  &__round {
+    position: absolute;
+    width: 280px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #303030;
+    color: #9d4edd;
+    top: 130px;
+    font-family: 'Spicy Rice', serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 60px;
+    border-radius: 5px;
+    display: none;
+    z-index: -100;
+
+    &.visible {
+      z-index: 100;
+      display: flex;
+      animation:
+        fadeIn 0.5s ease-out forwards,
+        fadeOut 0.5s ease-out 1.5s forwards;
+    }
+  }
+
   &__countdown {
     position: absolute;
     top: 0;
@@ -131,18 +158,6 @@
     animation: blink 1s linear infinite;
   }
 
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.5;
-      transform: scale(1.02);
-    }
-  }
-
   .players__list {
     position: absolute;
     width: 100%;
@@ -167,14 +182,33 @@
     }
   }
 
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.02);
+    }
+  }
+
   @keyframes fadeIn {
     0% {
       opacity: 0;
-      background-color: rgba(0, 0, 0, 0);
     }
     100% {
       opacity: 1;
-      background-color: rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
     }
   }
 }
