@@ -1,19 +1,20 @@
 import './Lobby.scss';
-import { Button } from '../../ui/button/Button';
+import { Button } from '@components/ui/button/Button';
 import { useState } from 'react';
-import { LobbySettings } from '../lobbySettings/LobbySettings';
-import { socket } from '../../../socket.ts';
+import { LobbySettings } from '@components/features/lobbySettings/LobbySettings';
+import { socket } from '@socket';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { MinigameNamesEnum, LobbySettingsType, MinigameEntryType } from '../../../types';
+import { LobbySettingsType, MinigameEntryType } from '@frontend-types/index';
+import { MinigameNamesEnum } from '@shared/types/index';
 
-import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
-import { useToast } from '../../../hooks/useToast.ts';
-import { useLobbyToggle } from '../../../hooks/useLobbyToggle.ts';
-import { useLobbyFetch } from '../../../hooks/useLobbyFetch.ts';
-import { useLobbyStart } from '../../../hooks/useLobbyStart.ts';
-import { usePlayersStore } from '../../../stores/playersStore.ts';
+import { SettingsButton } from '@components/ui/settingsButton/SettingsButton.tsx';
+import { useToast } from '@hooks/useToast.ts';
+import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
+import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
+import { useLobbyStart } from '@hooks/useLobbyStart.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);

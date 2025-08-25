@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
-import { socket } from '../socket';
-import { useToast } from './useToast';
-import { MinigameNamesEnum } from '../types';
-import { usePlayersStore } from '../stores/playersStore';
-import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';
+import { socket } from '@socket';
+import { useToast } from '@hooks/useToast';
+import { MinigameNamesEnum } from '@shared/types/index';
+import { usePlayersStore } from '@stores/playersStore';
+import { MIN_PLAYERS_TO_START } from '@shared/constants/game';
 
 type useLobbyStartProps = {
   playersReady: number;

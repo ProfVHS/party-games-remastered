@@ -1,5 +1,5 @@
 export type AlertType = {
   message: string;
-  onConfirm: () => void,
+  onConfirm: () => void;
   type: 'error' | 'info' | 'warning' | 'success';
-}
+};

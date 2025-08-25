@@ -1,6 +1,6 @@
-import React from 'react';
 import './Button.scss';
-import { ClassNames } from '../../../utils.ts';
+import React from 'react';
+import { ClassNames } from '@utils';
 
 type ButtonColors = 'primary' | 'remove';
 

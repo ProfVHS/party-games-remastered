@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { PlayerType } from '../types/PlayerType';
-import { socket } from '../socket';
+import { socket } from '@socket';
+import { PlayerType } from '@shared/types';
 
 interface PlayersStoreProps {
   currentPlayer: PlayerType | null;

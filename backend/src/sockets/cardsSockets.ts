@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
-import * as roomRepository from '../repositories/roomRepository/roomRepository';
 import { shuffle } from 'lodash';
+import * as roomRepository from '../repositories/roomRepository/roomRepository';
 
 export const cardsSockets = async (socket: Socket) => {
   socket.on('card_select', async (cardId: number) => {

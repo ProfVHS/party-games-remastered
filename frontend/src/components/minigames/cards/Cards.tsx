@@ -1,10 +1,10 @@
 import './Cards.scss';
 import { useEffect, useState, useRef } from 'react';
 import { Card } from './Card';
-import { socket } from '../../../socket';
-import { usePlayersStore } from '../../../stores/playersStore';
-import { PlayerType } from '../../../types/PlayerType';
-import { useCountdown } from '../../../hooks/useCountdown';
+import { socket } from '@socket';
+import { usePlayersStore } from '@stores/playersStore';
+import { PlayerType } from '@shared/types/index';
+import { useCountdown } from '@hooks/useCountdown';
 
 const countdownDuration = 5;
 

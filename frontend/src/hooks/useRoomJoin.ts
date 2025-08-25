@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { socket } from '../socket';
-import { useToast } from './useToast';
-import { setSessionVariables } from '../utils';
+import { socket } from '@socket';
+import { useToast } from '@hooks/useToast';
+import { setSessionVariables } from '@utils';
 
 export const useRoomJoin = () => {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
-import { MinigameNamesEnum } from '../../types';
-import { Cards } from './cards/Cards';
-import { ClickTheBomb } from './clickthebomb/ClickTheBomb';
+import { MinigameNamesEnum } from '@shared/types/index';
+import { Cards } from '@components/minigames/cards/Cards';
+import { ClickTheBomb } from '@components/minigames/clickthebomb/ClickTheBomb';
 
 type MinigameProps = {
   minigameName: string;

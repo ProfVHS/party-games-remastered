@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { socket } from '../socket';
 import { useNavigate } from 'react-router-dom';
-import { setSessionVariables } from '../utils';
-import { usePlayersStore } from '../stores/playersStore';
-import { useToast } from './useToast';
-import { ReturnDataType } from '../types';
+import { socket } from '@socket';
+import { setSessionVariables } from '@utils';
+import { usePlayersStore } from '@stores/playersStore';
+import { useToast } from '@hooks/useToast';
+import { ReturnDataType } from '@shared/types/index';
 
 export const useSocketConnection = () => {
   const navigate = useNavigate();

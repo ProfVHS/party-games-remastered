@@ -1,8 +1,8 @@
 import { client } from '../config/db';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
-import { ReturnDataType } from '../types/roomServiceTypes';
 import { ChainableCommander } from 'ioredis';
-import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '../types/roomRepositoryTypes';
+import { ReturnDataType } from '../types/roomServiceTypes';
+import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '../../../shared/types';
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
 import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';

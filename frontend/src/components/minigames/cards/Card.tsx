@@ -1,8 +1,8 @@
 import './Cards.scss';
 import { useEffect, useState } from 'react';
-import { PlayerType } from '../../../types/PlayerType';
-import { usePlayersStore } from '../../../stores/playersStore';
-import { Icon } from '../../../assets/icon';
+import { PlayerType } from '@shared/types/index';
+import { usePlayersStore } from '@stores/playersStore';
+import { Icon } from '@assets/icon';
 
 // TODO:
 // Responsive design

@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Button } from '../../ui/button/Button';
 import './LobbySettings.scss';
+import { useState } from 'react';
+import { Button } from '@components/ui/button/Button';
 import { AnimatePresence } from 'framer-motion';
-import { LobbySettingsType, MinigameEntryType } from '../../../types';
-import { NumberPicker } from '../../ui/numberPicker/NumberPicker.tsx';
-import { Switch } from '../../ui/switch/Switch.tsx';
-import { Modal } from '../../ui/modal/Modal.tsx';
-import { MinigamesList } from '../minigamesList/MinigamesList.tsx';
-import { useToast } from '../../../hooks/useToast.ts';
+import { LobbySettingsType, MinigameEntryType } from '@frontend-types/index';
+import { NumberPicker } from '@components/ui/numberPicker/NumberPicker.tsx';
+import { Switch } from '@components/ui/switch/Switch.tsx';
+import { Modal } from '@components/ui/modal/Modal.tsx';
+import { MinigamesList } from '@components/features/minigamesList/MinigamesList.tsx';
+import { useToast } from '@hooks/useToast.ts';
 
 type LobbySettingsProps = {
   onCancel: () => void;

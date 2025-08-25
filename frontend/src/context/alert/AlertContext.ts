@@ -6,6 +6,6 @@ export type AlertContextType = {
   warning: (message: string, onAccept: () => void) => void;
   error: (message: string, onAccept: () => void) => void;
   hide: () => void;
-}
+};
 
 export const AlertContext = createContext<AlertContextType | null>(null);

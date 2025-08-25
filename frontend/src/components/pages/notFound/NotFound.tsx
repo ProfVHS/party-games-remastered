@@ -1,6 +1,6 @@
 import './NotFound.scss';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../../ui/button/Button.tsx';
+import { Button } from '@components/ui/button/Button.tsx';
 
 export const NotFound = () => {
   const navigator = useNavigate();

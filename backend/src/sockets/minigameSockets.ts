@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { MinigameNamesEnum } from '../types/roomRepositoryTypes';
+import { MinigameNamesEnum } from '../../../shared/types';
 import * as roomService from '../services/roomService';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 

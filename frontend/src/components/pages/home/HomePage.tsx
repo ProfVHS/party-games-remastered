@@ -1,11 +1,11 @@
 import './HomePage.scss';
-import { Button } from '../../ui/button/Button.tsx';
-import { JoinForm } from '../../features/forms/JoinForm.tsx';
-import { CreateForm } from '../../features/forms/CreateForm.tsx';
+import { Button } from '@components/ui/button/Button.tsx';
+import { JoinForm } from '@components/features/forms/JoinForm.tsx';
+import { CreateForm } from '@components/features/forms/CreateForm.tsx';
 import { useEffect, useState } from 'react';
 import { useAnimate } from 'framer-motion';
-import { Icon } from '../../../assets/icon';
-import { socket } from '../../../socket.ts';
+import { Icon } from '@assets/icon';
+import { socket } from '@socket';
 
 export const HomePage = () => {
   const [scope, animate] = useAnimate();

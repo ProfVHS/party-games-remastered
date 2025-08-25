@@ -4,6 +4,11 @@ export type PlayerType = {
   isAlive: string; // boolean
   score: string; // number
   isHost: string; // boolean
-  status: string;
+  status: PlayerStatusEnum;
   selectedObjectId: string; // number
 };
+
+export enum PlayerStatusEnum {
+  onilne = "online",
+  offline = "offline",
+}
