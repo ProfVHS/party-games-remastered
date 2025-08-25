@@ -14,7 +14,7 @@
   max-width: 550px;
   min-width: 320px;
 
-  background-color: var(--click-the-bomb-bg);
+  background-color: var(--cards-bg);
   border-radius: 4px;
 
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
@@ -28,8 +28,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #303030;
-    color: #9d4edd;
+    background-color: var(--cards-round-bg);
+    color: var(--cards-title);
     top: 130px;
     font-family: 'Spicy Rice', serif;
     font-weight: 400;
@@ -60,8 +60,7 @@
     font-weight: 400;
     font-style: normal;
     font-size: 50px;
-    // TODO: Change it to variable
-    color: #9d4edd;
+    color: var(--cards-title);
 
     text-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
 
@@ -84,6 +83,11 @@
     transition: transform 0.4s ease;
     transform-origin: center;
 
+    font-family: 'Spicy Rice', serif;
+    font-weight: 400;
+    font-style: normal;
+    text-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+
     // TODO: Temporary code
     position: relative;
     display: flex;
@@ -92,7 +96,7 @@
     font-size: 150%;
 
     border: 3px solid;
-    color: white;
+    color: var(--cards-text);
 
     transform: rotateY(0deg);
 
@@ -120,8 +124,8 @@
     }
 
     &.back {
-      background-color: #f1eaf7;
-      border-color: #9d4edd;
+      background-color: var(--cards-back-bg);
+      border-color: var(--cards-back-border);
       background-image: url('./../../../assets/textures/card-back.svg');
     }
 
@@ -132,14 +136,14 @@
     }
 
     &.positive {
-      background-color: #b87de8;
-      border-color: #5a189a;
+      background-color: var(--cards-positive-bg);
+      border-color: var(--cards-positive-border);
       background-image: url('./../../../assets/textures/card-front.svg');
     }
 
     &.negative {
-      background-color: #9d1133;
-      border-color: #000000;
+      background-color: var(--cards-negative-bg);
+      border-color: var(--cards-negative-border);
       background-image: url('./../../../assets/textures/card-front.svg');
     }
 
@@ -168,7 +172,7 @@
     align-items: center;
     pointer-events: none;
     background-color: rgba(0, 0, 0, 0.5);
-    color: white;
+    color: var(--cards-text);
     border-radius: 2px;
     font-size: 12px;
     z-index: 10;

@@ -4,6 +4,11 @@ import { PlayerType } from '../../../types/PlayerType';
 import { usePlayersStore } from '../../../stores/playersStore';
 import { Icon } from '../../../assets/icon';
 
+// TODO:
+// Responsive design
+// Change card back design (image)
+// Add sound effects
+
 interface CardProps {
   id: number;
   points: number; // number

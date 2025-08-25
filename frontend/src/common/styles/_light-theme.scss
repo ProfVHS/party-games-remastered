@@ -1,10 +1,10 @@
 @use 'sass:color';
 @use './variables' as *;
 
-html[data-theme="light"] {
-
+html[data-theme='light'] {
   //== Global ==//
   --background: #{$lightBgColor};
+  --logo-background: #f1eaf7;
   --text-color: #000;
   --header-color: #{$darkerPrimaryColor};
   --party-games-fill: #fff;
@@ -56,4 +56,16 @@ html[data-theme="light"] {
   --click-the-bomb-bg: #{$lightBgColor};
   --click-the-bomb-turn: #000;
   --click-the-bomb-title: #{$secondaryColor};
+
+  //== Cards ==//
+  --cards-bg: #{$lightBgColor};
+  --cards-title: #{$secondaryColor};
+  --cards-round-bg: #{$lightBgColor};
+  --cards-text: #fff;
+  --cards-back-bg: #f1eaf7;
+  --cards-back-border: #{$darkerPrimaryColor};
+  --cards-positive-bg: #{$primaryColor};
+  --cards-positive-border: #{$secondaryColor};
+  --cards-negative-bg: #9d1133;
+  --cards-negative-border: #000;
 }
