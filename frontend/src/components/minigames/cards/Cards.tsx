@@ -6,9 +6,11 @@ import { usePlayersStore } from '@stores/playersStore';
 import { PlayerType } from '@shared/types/index';
 import { useCountdown } from '@hooks/useCountdown';
 
-const countdownDuration = 5;
-
 export const Cards = () => {
+  const countdownDuration = 5;
+  const roundIntroDuration = 2000;
+  const cardFlipHalfDuration = 400;
+
   const [gameStatus, setGameStatus] = useState<string>('Choose a card');
   const [isRoundIntroVisible, setIsRoundIntroVisible] = useState<boolean>(false);
 
@@ -17,11 +19,13 @@ export const Cards = () => {
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [newPlayersPoints, setNewPlayerPoints] = useState<PlayerType[]>([]);
 
-  const { timeLeft, startCountdown, resetCountdown } = useCountdown(countdownDuration, 1, () => endRound());
+  const { timeLeft, startCountdown } = useCountdown(countdownDuration, 1, () => endRound());
   const { currentPlayer } = usePlayersStore();
 
   const currentRound = useRef<string>('1');
   const hasStarted = useRef<boolean>(false);
+
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   const handleCardSelect = (id: number) => {
     // Player can only select a card if the countdown is running
@@ -31,36 +35,30 @@ export const Cards = () => {
     setSelectedCard(() => id);
   };
 
-  const showRoundIntro = () => {
+  const showRoundIntro = async () => {
     setIsRoundIntroVisible(true);
-    setTimeout(() => {
-      setIsRoundIntroVisible(false);
-    }, 2000);
+    await delay(roundIntroDuration);
+    setIsRoundIntroVisible(false);
   };
 
-  const startNewRound = () => {
+  const startNewRound = async () => {
     if (currentRound.current === '4') {
       console.log('Game Over');
       return;
     }
 
     showRoundIntro();
+    await delay(roundIntroDuration);
 
-    setTimeout(() => {
-      // Reset the game state for a new round
-      setTimeout(() => {
-        setIsFlipping(false);
+    setIsFlipping(false);
+    await delay(cardFlipHalfDuration);
 
-        setTimeout(() => {
-          resetCountdown();
-          setCards([0, 0, 0, 0, 0, 0, 0, 0, 0]);
-          setNewPlayerPoints([]);
-          setGameStatus('Choose a card');
-          hasStarted.current = false;
-          startCountdown();
-        }, 400);
-      }, 400);
-    }, 2000);
+    // Reset the game state for a new round
+    startCountdown();
+    setCards([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    setNewPlayerPoints([]);
+    setGameStatus('Choose a card');
+    hasStarted.current = false;
   };
 
   const endRound = () => {
@@ -90,10 +88,6 @@ export const Cards = () => {
       socket.off('cards_round_ended', handleCardsRoundEnded);
     };
   }, []);
-
-  useEffect(() => {
-    console.log('Current Round:', currentRound.current);
-  }, [currentRound.current]);
 
   return (
     <div className="cards">
