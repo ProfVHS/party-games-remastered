@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { AlertContext } from '../context/alert/AlertContext.ts';
+import { AlertContext } from '@context/alert/AlertContext.ts';
 
 export const useAlert = () => {
   const context = useContext(AlertContext);
@@ -7,4 +7,4 @@ export const useAlert = () => {
     throw new Error('useAlert must be used in a AlertProvider');
   }
   return context;
-}
+};

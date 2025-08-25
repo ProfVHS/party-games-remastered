@@ -1,13 +1,13 @@
-import { Lobby } from '../../features/lobby/Lobby.tsx';
-import { RoomLayout } from '../../features/roomLayout/RoomLayout.tsx';
 import './RoomPage.scss';
+import { Lobby } from '@components/features/lobby/Lobby.tsx';
+import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
 import { useEffect, useState } from 'react';
-import { socket } from '../../../socket.ts';
-import { useToast } from '../../../hooks/useToast.ts';
-import { usePlayersStore } from '../../../stores/playersStore.ts';
-import { Minigame } from '../../minigames/Minigame.tsx';
-import { useSocketConnection } from '../../../hooks/useSocketConnection.ts';
-import { RoomDataType, MinigameDataType } from '../../../types/BackendSharedTypes.ts';
+import { socket } from '@socket';
+import { useToast } from '@hooks/useToast.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
+import { Minigame } from '@components/minigames/Minigame.tsx';
+import { useSocketConnection } from '@hooks/useSocketConnection.ts';
+import { RoomDataType, MinigameDataType } from '@shared/types/index';
 
 export const RoomPage = () => {
   const { players } = usePlayersStore();

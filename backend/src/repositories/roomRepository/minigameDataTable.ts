@@ -1,6 +1,6 @@
-import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
-import { MinigameDataType } from '../../types/roomRepositoryTypes';
+import { client } from '../../config/db';
+import { MinigameDataType } from '../../../../shared/types';
 import { getKey } from './roomRepository';
 
 const keyName = 'minigameData';

@@ -1,10 +1,10 @@
 @use 'sass:color';
 @use './variables' as *;
 
-html[data-theme="dark"] {
-
+html[data-theme='dark'] {
   //== Global ==//
   --background: #{$darkBgColor};
+  --logo-bg: #272629;
   --text-color: #fff;
   --header-color: #{$darkerPrimaryColor};
   --party-games-fill: #{$darkerPrimaryColor};
@@ -16,8 +16,8 @@ html[data-theme="dark"] {
   --player-avatar-bg: #{$darkBgColor};
 
   //== Button ==//
-  --button-primary-bg: #6F359E;
-  --button-primary-shadow: #39135D;
+  --button-primary-bg: #6f359e;
+  --button-primary-shadow: #39135d;
   --button-text: #{rgba(#fff, 0.4)};
   --button-remove-bg: #971010;
   --button-remove-shadow: #{color.adjust(#971010, $lightness: -20%)};
@@ -29,14 +29,14 @@ html[data-theme="dark"] {
   --switch-thumb: #{$primaryColor};
 
   //== Number Picker ==//
-  --number-picker-bg: #6F359E;
-  --number-picker-bg-active: #{color.adjust(#6F359E, $lightness: -10%)};
-  --number-picker-shadow: #39135D;
+  --number-picker-bg: #6f359e;
+  --number-picker-bg-active: #{color.adjust(#6f359e, $lightness: -10%)};
+  --number-picker-shadow: #39135d;
   --number-picker-text: #{rgba(255, 255, 255, 0.4)};
 
   //== Alert Box ==//
   --alert-box-bg: #{$darkBgColor};
-  --alert-box-text: rgba(255,255,255, 0.6);
+  --alert-box-text: rgba(255, 255, 255, 0.6);
 
   //== Lobby ==//
   --lobby-player-text: #{$primaryColor2};
@@ -56,4 +56,17 @@ html[data-theme="dark"] {
   --click-the-bomb-bg: #{$darkBgColor};
   --click-the-bomb-turn: #fff;
   --click-the-bomb-title: #{$darkerPrimaryColor};
+
+  //== Cards ==//
+  --cards-bg: #{$darkBgColor};
+  --cards-title: #{$darkerPrimaryColor};
+  --cards-round-bg: #{$darkBgColor};
+  --cards-text: #fff;
+  --cards-back-img: url('../../assets/textures/card-back-dark.svg');
+  --cards-back-bg: #3c3c3c;
+  --cards-back-border: #{$darkerPrimaryColor};
+  --cards-positive-bg: #{$darkerPrimaryColor};
+  --cards-positive-border: #{$secondaryColor};
+  --cards-negative-bg: #9d1133;
+  --cards-negative-border: #000;
 }

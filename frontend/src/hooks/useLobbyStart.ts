@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
-import { socket } from '../socket';
-import { useToast } from './useToast';
-import { MinigameNamesEnum } from '../types';
-import { usePlayersStore } from '../stores/playersStore';
+import { socket } from '@socket';
+import { useToast } from '@hooks/useToast';
+import { MinigameNamesEnum } from '@shared/types/index';
+import { usePlayersStore } from '@stores/playersStore';
+import { MIN_PLAYERS_TO_START } from '@shared/constants/game';
 
 type useLobbyStartProps = {
   playersReady: number;
@@ -15,7 +16,6 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setR
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
   const { currentPlayer, players } = usePlayersStore();
-  const minPlayersToStart = 2;
   const hasStarted = useRef<boolean>(false);
 
   const getRandomMinigames = (numberOfMinigames: number = 2): MinigameNamesEnum[] => {
@@ -33,7 +33,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setR
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
 
-    if (playersReady === players.length && players.length >= minPlayersToStart) {
+    if (playersReady === players.length && players.length >= MIN_PLAYERS_TO_START) {
       setCountdown(() => 3);
 
       if ((!minigames || minigames.length === 0) && currentPlayer?.isHost === 'true') {

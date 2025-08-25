@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
 import './ClickTheBomb.scss';
-import { Button } from '../../ui/button/Button.tsx';
-import Bomb from '../../../assets/textures/C4.svg?react';
-import { socket } from '../../../socket.ts';
+import { useEffect, useState, useRef } from 'react';
+import { Button } from '@components/ui/button/Button.tsx';
+import Bomb from '@assets/textures/C4.svg?react';
+import { socket } from '@socket';
 
 const formatMilisecondsToTimer = (ms: number) => {
   const seconds = Math.floor(ms / 1000);

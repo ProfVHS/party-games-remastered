@@ -1,8 +1,8 @@
 import React, { useReducer } from 'react';
-import { addToastProps, ToastsType } from '../../types';
-import { toastReducer } from '../../reducers/toastReducer.ts';
-import { ToastsContainer } from '../../components/ui/toastsContainer/ToastsContainer.tsx';
-import { ToastContext } from './ToastContext.ts';
+import { addToastProps, ToastsType } from '@frontend-types/index';
+import { toastReducer } from '@reducers/toastReducer.ts';
+import { ToastsContainer } from '@components/ui/toastsContainer/ToastsContainer.tsx';
+import { ToastContext } from '@context/toast/ToastContext.ts';
 
 const initialState = {
   toasts: [],

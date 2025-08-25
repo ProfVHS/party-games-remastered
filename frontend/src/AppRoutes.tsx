@@ -1,11 +1,11 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { HomePage } from './components/pages/home/HomePage.tsx';
-import { NotFound } from './components/pages/notFound/NotFound.tsx';
-import { RoomPage } from './components/pages/room/RoomPage.tsx';
-import { Icon } from './assets/icon';
-import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { UserSettings } from './components/features/userSettings/UserSettings.tsx';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { HomePage } from '@components/pages/home/HomePage.tsx';
+import { NotFound } from '@components/pages/notFound/NotFound.tsx';
+import { RoomPage } from '@components/pages/room/RoomPage.tsx';
+import { UserSettings } from '@components/features/userSettings/UserSettings.tsx';
+import { Icon } from '@assets/icon';
 
 export const AppRoutes = () => {
   const [showUserSettings, setShowUserSettings] = useState(false);

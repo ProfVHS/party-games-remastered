@@ -1,8 +1,7 @@
 import './Modal.scss';
-
-import { motion } from 'framer-motion';
-import { ClassNames } from '../../../utils.ts';
 import React from 'react';
+import { motion } from 'framer-motion';
+import { ClassNames } from '@utils';
 
 type ModalProps = {
   children: React.ReactNode;
@@ -29,7 +28,7 @@ export const Modal = ({ children, onClose, className, transparentBg }: ModalProp
           transition: { duration: 0.3, delay: 0.3 },
         }}
         exit={{ opacity: 0, scale: 0 }}
-        className={ClassNames("modal__content", className, {"transparent-bg": transparentBg})}
+        className={ClassNames('modal__content', className, { 'transparent-bg': transparentBg })}
       >
         {children}
       </motion.div>

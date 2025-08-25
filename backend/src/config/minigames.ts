@@ -1,4 +1,4 @@
-import { MinigameDataType, MinigameNamesEnum, RoomDataType, RoomStatusEnum } from '../types/roomRepositoryTypes';
+import { MinigameDataType, MinigameNamesEnum, RoomDataType, RoomStatusEnum } from '../../../shared/types';
 
 export const createRoomConfig = (playersLength: number, roomStatus: RoomStatusEnum): RoomDataType => ({
   roomCode: '',

@@ -1,5 +1,5 @@
 import { useEffect, Dispatch, SetStateAction } from 'react';
-import { socket } from '../socket';
+import { socket } from '@socket';
 
 type useLobbyFetchProps = {
   setPlayersReady: Dispatch<SetStateAction<number>>;

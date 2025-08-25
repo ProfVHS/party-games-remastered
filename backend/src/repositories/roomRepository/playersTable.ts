@@ -1,6 +1,6 @@
 import { client } from '../../config/db';
 import { ChainableCommander } from 'ioredis';
-import { PlayerType } from '../../types/roomRepositoryTypes';
+import { PlayerType } from '../../../../shared/types';
 import { getKey } from './roomRepository';
 
 const keyName = 'players';
@@ -33,6 +33,14 @@ export const updateAllPlayers = async (roomCode: string, updates: Partial<Player
     for (const key of playerKeys) {
       await client.hset(key, updates);
     }
+  }
+};
+
+export const updatePlayerScore = async (roomCode: string, id: string, score: number, multi?: ChainableCommander): Promise<void> => {
+  if (multi) {
+    multi.hincrby(getKey(roomCode, keyName, id), 'score', score);
+  } else {
+    await client.hincrby(getKey(roomCode, keyName, id), 'score', score);
   }
 };
 
