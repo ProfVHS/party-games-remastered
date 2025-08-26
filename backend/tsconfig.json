@@ -9,6 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "exactOptionalPropertyTypes": true
   },
-  "include": ["src/**/*.ts", "../shared/**/*.ts"],
+  "include": ["src/**/*.ts", "../shared/*"],
   "exclude": ["node_modules", "dist"]
 }
