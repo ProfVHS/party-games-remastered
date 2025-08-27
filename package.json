@@ -7,7 +7,7 @@
     "shared"
   ],
   "scripts": {
-    "build": "npm run build --workspace backend && npm run build --workspace frontend",
+    "build": "npm run build --workspace shared && npm run build --workspace backend && npm run build --workspace frontend",
     "start:backend": "npm run start --workspace backend",
     "start:frontend": "npm run preview --workspace frontend"
   }
