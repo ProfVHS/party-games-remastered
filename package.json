@@ -5,5 +5,11 @@
     "frontend",
     "backend",
     "shared"
-  ]
+  ],
+  "scripts": {
+    "build:frontend": "npm run build --workspace frontend",
+    "build:backend": "npm run build --workspace backend",
+    "start:frontend": "npm run preview --workspace frontend",
+    "start:backend": "npm run start --workspace backend"
+  }
 }
