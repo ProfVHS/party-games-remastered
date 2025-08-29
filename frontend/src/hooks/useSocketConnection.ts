@@ -4,7 +4,7 @@ import { socket } from '@socket';
 import { setSessionVariables } from '@utils';
 import { usePlayersStore } from '@stores/playersStore';
 import { useToast } from '@hooks/useToast';
-import { ReturnDataType } from '@shared/types/index';
+import { ReturnDataType } from '@party-games/shared/types/index';
 
 export const useSocketConnection = () => {
   const navigate = useNavigate();
