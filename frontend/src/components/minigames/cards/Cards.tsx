@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Card } from './Card';
 import { socket } from '@socket';
 import { usePlayersStore } from '@stores/playersStore';
-import { PlayerType } from '@shared/types/index';
+import { PlayerType } from '@party-games/shared/types/index';
 import { useCountdown } from '@hooks/useCountdown';
 
 export const Cards = () => {

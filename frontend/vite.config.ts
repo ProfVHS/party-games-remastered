@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react(), svgr()],
   resolve: {
     alias: {
-      '@shared': path.resolve(__dirname, '../shared/dist'),
+      '@party-games/shared': path.resolve(__dirname, '../shared/dist'),
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@common': path.resolve(__dirname, 'src/common'),
       '@components': path.resolve(__dirname, 'src/components'),
