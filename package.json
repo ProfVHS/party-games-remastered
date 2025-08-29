@@ -1,11 +1,13 @@
 {
   "name": "party-games",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend",
-    "shared"
-  ],
+  "workspaces": {
+    "packages": [
+      "frontend",
+      "backend",
+      "shared"
+    ]
+  },
   "scripts": {
     "build": "npm run build --workspace shared && npm run build --workspace backend && npm run build --workspace frontend",
     "start:backend": "npm run start --workspace backend",
