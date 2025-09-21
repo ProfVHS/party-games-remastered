@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
 import { createRoomConfig } from '../config/minigames';
-import { RoomStatusEnum } from '../types/roomRepositoryTypes';
+import { RoomStatusEnum } from '../../../shared/types';
 
 export const roomSockets = (socket: Socket) => {
   socket.on('create_room', async (roomCode: string, nickname: string) => {

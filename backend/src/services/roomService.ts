@@ -1,10 +1,11 @@
 import { client } from '../config/db';
 import * as roomRepository from '../repositories/roomRepository/roomRepository';
-import { ReturnDataType } from '../types/roomServiceTypes';
 import { ChainableCommander } from 'ioredis';
-import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '../types/roomRepositoryTypes';
+import { ReturnDataType } from '../types/roomServiceTypes';
+import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '../../../shared/types';
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
+import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
@@ -18,6 +19,7 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
       score: '0',
       isHost: 'true',
       status: PlayerStatusEnum.onilne,
+      selectedObjectId: '-100',
     });
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${playerID}: ${error}`);
@@ -34,7 +36,6 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
   let playersReady: string[] | null;
 
   try {
-    // TODO: Is the pipeline here fine?
     players = await roomRepository.getAllPlayerIds(roomCode);
     roomData = await roomRepository.getRoomData(roomCode);
     playersReady = await roomRepository.getReadyPlayers(roomCode);
@@ -51,9 +52,8 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       if (!players.includes(storageId)) return { success: false, payload: -3 }; // Room is in game
     }
 
-    // TODO: Change 2 to MinPlayers to start
-    const minPlayersToStart = 2;
-    if (players.length === playersReady.length && players.length >= minPlayersToStart) {
+    if (players.length === playersReady.length && players.length >= MIN_PLAYERS_TO_START) {
+      console.log('Game is starting, cannot join now', players.length, playersReady.length, MIN_PLAYERS_TO_START);
       return { success: false, payload: -4 }; // Room is starting the game
     }
 
@@ -64,6 +64,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       score: '0',
       isHost: 'false',
       status: PlayerStatusEnum.onilne,
+      selectedObjectId: '-100',
     });
 
     socket.data.roomCode = roomCode;

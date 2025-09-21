@@ -1,10 +1,9 @@
-import { Modal } from '../../ui/modal/Modal.tsx';
-import { Switch } from '../../ui/switch/Switch.tsx';
-import { useContext } from 'react';
-import { Row } from '../../ui/row/Row.tsx';
-
 import './UserSettings.scss';
-import { ThemeContext } from '../../../context/theme/ThemeContext.ts';
+import { useContext } from 'react';
+import { Modal } from '@components/ui/modal/Modal.tsx';
+import { Switch } from '@components/ui/switch/Switch.tsx';
+import { Row } from '@components/ui/row/Row.tsx';
+import { ThemeContext } from '@context/theme/ThemeContext.ts';
 
 type UserSettingsProps = {
   onClose: () => void;

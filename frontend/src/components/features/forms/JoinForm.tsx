@@ -1,12 +1,12 @@
 import './Form.scss';
 
 import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
-import { Button } from '../../ui/button/Button.tsx';
-import { socket } from '../../../socket.ts';
-import { generateRandomUserName } from '../../../utils.ts';
-import { useToast } from '../../../hooks/useToast.ts';
-import { useRoomJoin } from '../../../hooks/useRoomJoin.ts';
-import { Input } from '../../ui/input/Input.tsx';
+import { Button } from '@components/ui/button/Button.tsx';
+import { socket } from '@socket';
+import { generateRandomUserName } from '@utils';
+import { useToast } from '@hooks/useToast.ts';
+import { useRoomJoin } from '@hooks/useRoomJoin.ts';
+import { Input } from '@components/ui/input/Input.tsx';
 
 type FormInputs = {
   nickname: string;

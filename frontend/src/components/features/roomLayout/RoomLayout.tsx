@@ -1,7 +1,7 @@
 import './RoomLayout.scss';
-import { PlayerType } from '../../../types/PlayerType';
-import { PlayerAvatar } from '../playerAvatar/PlayerAvatar';
-import { possibleAvatarLayouts } from '../../../utils';
+import { PlayerType } from '@shared/types/index';
+import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar';
+import { possibleAvatarLayouts } from '@utils';
 
 type RoomLayoutProps = {
   players: PlayerType[];

@@ -1,15 +1,15 @@
 import React, { useReducer } from 'react';
-import { AlertContext } from './AlertContext.ts';
-import { alertReducer } from '../../reducers/alertReducer.ts';
-import { AlertType } from '../../types/AlertType.ts';
-import { AlertContainer } from '../../components/ui/alertContainer/AlertContainer.tsx';
+import { AlertContext } from '@context/alert/AlertContext.ts';
+import { alertReducer } from '@reducers/alertReducer.ts';
+import { AlertType } from '@frontend-types/index';
+import { AlertContainer } from '@components/ui/alertContainer/AlertContainer.tsx';
 
 type alertProviderProps = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 const initialState = {
-  alert: null
+  alert: null,
 };
 
 export const AlertProvider = ({ children }: alertProviderProps) => {
@@ -21,8 +21,8 @@ export const AlertProvider = ({ children }: alertProviderProps) => {
       payload: {
         message: alert.message,
         onConfirm: alert.onConfirm,
-        type: alert.type
-      }
+        type: alert.type,
+      },
     });
   };
 

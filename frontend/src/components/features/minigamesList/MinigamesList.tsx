@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
-import { Button } from '../../ui/button/Button.tsx';
-import { MinigameNamesEnum, MinigameListItemType } from '../../../types';
-import { MinigameItem } from './MinigameItem.tsx';
-import { DraggableMinigameItem } from './DraggableMinigameItem.tsx';
+import { Button } from '@components/ui/button/Button.tsx';
+import { MinigameListItemType } from '@frontend-types/index';
+import { MinigameNamesEnum } from '@shared/types/index';
+import { MinigameItem } from '@components/features/minigamesList/MinigameItem';
+import { DraggableMinigameItem } from '@components/features/minigamesList/DraggableMinigameItem';
 
 type MinigamesListProps = {
   onCancel: () => void;

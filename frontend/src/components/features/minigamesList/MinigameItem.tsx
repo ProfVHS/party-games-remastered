@@ -1,7 +1,8 @@
-import { MinigameNamesEnum, MinigameListItemType } from '../../../types';
-import { ClassNames } from '../../../utils.ts';
-import { Icon } from '../../../assets/icon';
-import { Button } from '../../ui/button/Button.tsx';
+import { MinigameListItemType } from '@frontend-types/index';
+import { MinigameNamesEnum } from '@shared/types/index';
+import { ClassNames } from '@utils';
+import { Icon } from '@assets/icon';
+import { Button } from '@components/ui/button/Button.tsx';
 
 import './MinigameItem.scss';
 
