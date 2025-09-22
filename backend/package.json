@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/backend/index.js",
+    "start": "node dist/backend/src/index.js",
     "test": "vitest"
   },
   "author": "",
