@@ -1,6 +1,6 @@
 import './Cards.scss';
 import { useEffect, useState } from 'react';
-import { PlayerType } from '@shared/types/index';
+import { PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore';
 import { Icon } from '@assets/icon';
 

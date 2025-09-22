@@ -1,5 +1,5 @@
 import './PlayerAvatar.scss';
-import { PlayerType } from '@shared/types/index';
+import { PlayerType } from '@shared/types';
 import { avatarList } from './avatarList';
 import React, { createElement } from 'react';
 

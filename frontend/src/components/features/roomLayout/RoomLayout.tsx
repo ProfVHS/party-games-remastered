@@ -1,5 +1,5 @@
 import './RoomLayout.scss';
-import { PlayerType } from '@shared/types/index';
+import { PlayerType } from '@shared/types';
 import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar';
 import { possibleAvatarLayouts } from '@utils';
 

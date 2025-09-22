@@ -7,7 +7,7 @@ import { socket } from '@socket';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { LobbySettingsType, MinigameEntryType } from '@frontend-types/index';
-import { MinigameNamesEnum } from '@shared/types/index';
+import { MinigameNamesEnum } from '@shared/types';
 
 import { SettingsButton } from '@components/ui/settingsButton/SettingsButton.tsx';
 import { useToast } from '@hooks/useToast.ts';
