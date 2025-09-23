@@ -30,7 +30,7 @@ export const HomePage = () => {
   return (
     <div className="home-page">
       <div className="home-page__content">
-        <Icon icon={'Logo'} />
+        <Icon icon={'Logo'} className="home-page__logo" />
         <span className="home-page__title">Party Games</span>
         <div className="home-page__forms" ref={scope}>
           {status === 'selecting' && (
