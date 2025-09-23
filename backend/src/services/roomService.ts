@@ -6,6 +6,7 @@ import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, Ro
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
 import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';
+import { randomAvatars } from '../helpers/avatarsHelpers';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
@@ -20,6 +21,7 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
       isHost: 'true',
       status: PlayerStatusEnum.onilne,
       selectedObjectId: '-100',
+      avatar: await randomAvatars()
     });
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${playerID}: ${error}`);
@@ -65,6 +67,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       isHost: 'false',
       status: PlayerStatusEnum.onilne,
       selectedObjectId: '-100',
+      avatar: await randomAvatars(roomCode)
     });
 
     socket.data.roomCode = roomCode;
