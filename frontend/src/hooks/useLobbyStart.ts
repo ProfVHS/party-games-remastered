@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
 import { socket } from '@socket';
 import { useToast } from '@hooks/useToast';
-import { MinigameNamesEnum } from '@shared/types/index';
+import { MinigameNamesEnum } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/game';
 

@@ -3,7 +3,7 @@ import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
 import { Button } from '@components/ui/button/Button.tsx';
 import { MinigameListItemType } from '@frontend-types/index';
-import { MinigameNamesEnum } from '@shared/types/index';
+import { MinigameNamesEnum } from '@shared/types';
 import { MinigameItem } from '@components/features/minigamesList/MinigameItem';
 import { DraggableMinigameItem } from '@components/features/minigamesList/DraggableMinigameItem';
 

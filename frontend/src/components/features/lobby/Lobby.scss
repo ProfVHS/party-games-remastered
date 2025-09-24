@@ -4,12 +4,9 @@
 .lobby {
   gap: 15px;
   box-sizing: border-box;
-  height: 360px;
-
-  width: 75%;
-  min-width: 325px;
-
-  max-width: 450px;
+  height: auto;
+  width: 60%;
+  min-width: 350px;
 
   background-color: var(--background);
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
@@ -48,7 +45,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    gap: 8px;
+    gap: 0.5rem;
     width: 100%;
   }
 
@@ -92,7 +89,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
-    gap: 8px;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+    box-sizing: border-box;
   }
 }
