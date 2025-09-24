@@ -12,7 +12,8 @@
     "baseUrl": "./src",
     "paths": {
       "@shared/*": ["../../shared/*"],
-      "@config/*": ["config/*"]
+      "@config/*": ["config/*"],
+      "@roomRepository": ["repositories/roomRepository"]
     }
   },
   "include": ["src"],

@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
-import * as roomRepository from '../repositories/roomRepository/roomRepository';
+import { getReadyPlayersCount, getAllPlayers } from '@roomRepository';
 
 export const playerSockets = (socket: Socket) => {
   socket.on('toggle_player_ready', async () => {
@@ -18,7 +18,7 @@ export const playerSockets = (socket: Socket) => {
 
   socket.on('get_players', async () => {
     const roomCode = socket.data.roomCode;
-    const response = await roomRepository.getAllPlayers(roomCode);
+    const response = await getAllPlayers(roomCode);
 
     socket.nsp.to(roomCode).emit('got_players', response);
   });
@@ -26,7 +26,7 @@ export const playerSockets = (socket: Socket) => {
   socket.on('fetch_ready_players', async () => {
     const roomCode = socket.data.roomCode;
 
-    const playersReady = await roomRepository.getReadyPlayersCount(roomCode);
+    const playersReady = await getReadyPlayersCount(roomCode);
     socket.nsp.to(roomCode).emit('fetched_ready_players', playersReady);
   });
 };

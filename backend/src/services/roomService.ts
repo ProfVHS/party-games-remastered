@@ -1,5 +1,5 @@
 import { client } from '@config/db';
-import * as roomRepository from '../repositories/roomRepository/roomRepository';
+import * as roomRepository from '@roomRepository';
 import { ChainableCommander } from 'ioredis';
 import { ReturnDataType } from '../types/roomServiceTypes';
 import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '@shared/types';
