@@ -6,11 +6,12 @@ import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, Ro
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
 import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';
-import { randomAvatars } from '../helpers/avatarsHelpers';
+import { avatars } from '../../../shared/constants/avatars';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
   socket.data.roomCode = roomCode;
+
 
   try {
     await roomRepository.createPlayer(roomCode, playerID, {
@@ -21,7 +22,7 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
       isHost: 'true',
       status: PlayerStatusEnum.onilne,
       selectedObjectId: '-100',
-      avatar: await randomAvatars()
+      avatar: avatars[Math.floor(Math.random() * avatars.length)]
     });
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${playerID}: ${error}`);
@@ -33,29 +34,33 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
 
 export const joinRoomService = async (roomCode: string, socket: Socket, nickname: string, storageId: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
-  let players: string[] | null;
+  let playersIds: string[] | null;
   let roomData: RoomDataType | null;
   let playersReady: string[] | null;
 
   try {
-    players = await roomRepository.getAllPlayerIds(roomCode);
+    playersIds = await roomRepository.getAllPlayerIds(roomCode);
     roomData = await roomRepository.getRoomData(roomCode);
     playersReady = await roomRepository.getReadyPlayers(roomCode);
 
-    if (players.length === 0) {
+    const players = await roomRepository.getAllPlayers(roomCode);
+    const existingAvatars = players.map(p => p.avatar);
+    const availableAvatars =  avatars.filter(avatar => !existingAvatars.includes(avatar));
+
+    if (playersIds.length === 0) {
       return { success: false, payload: -1 }; // Room does not exist
     }
 
-    if (Object.keys(players).length >= 8) {
+    if (Object.keys(playersIds).length >= 8) {
       return { success: false, payload: -2 }; // Room is full
     }
 
     if (roomData?.status === RoomStatusEnum.game) {
-      if (!players.includes(storageId)) return { success: false, payload: -3 }; // Room is in game
+      if (!playersIds.includes(storageId)) return { success: false, payload: -3 }; // Room is in game
     }
 
-    if (players.length === playersReady.length && players.length >= MIN_PLAYERS_TO_START) {
-      console.log('Game is starting, cannot join now', players.length, playersReady.length, MIN_PLAYERS_TO_START);
+    if (playersIds.length === playersReady.length && playersIds.length >= MIN_PLAYERS_TO_START) {
+      console.log('Game is starting, cannot join now', playersIds.length, playersReady.length, MIN_PLAYERS_TO_START);
       return { success: false, payload: -4 }; // Room is starting the game
     }
 
@@ -67,7 +72,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       isHost: 'false',
       status: PlayerStatusEnum.onilne,
       selectedObjectId: '-100',
-      avatar: await randomAvatars(roomCode)
+      avatar: availableAvatars[Math.floor(Math.random() * availableAvatars.length)]
     });
 
     socket.data.roomCode = roomCode;
