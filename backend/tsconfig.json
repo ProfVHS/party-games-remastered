@@ -13,7 +13,8 @@
     "paths": {
       "@shared/*": ["../../shared/*"],
       "@config/*": ["config/*"],
-      "@roomRepository": ["repositories/roomRepository"]
+      "@roomRepository": ["repositories/roomRepository"],
+      "@backend-types": ["types"]
     }
   },
   "include": ["src"],

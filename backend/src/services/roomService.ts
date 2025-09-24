@@ -1,10 +1,10 @@
 import { client } from '@config/db';
+import { Socket } from 'socket.io';
 import * as roomRepository from '@roomRepository';
 import { ChainableCommander } from 'ioredis';
-import { ReturnDataType } from '../types/roomServiceTypes';
+import { ReturnDataType } from '@shared/types';
 import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '@shared/types';
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '@config/minigames';
-import { Socket } from 'socket.io';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/game';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
