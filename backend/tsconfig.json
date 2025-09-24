@@ -7,8 +7,14 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "exactOptionalPropertyTypes": true
+    "exactOptionalPropertyTypes": true,
+
+    "baseUrl": "./src",
+    "paths": {
+      "@shared/*": ["../../shared/*"],
+      "@config/*": ["config/*"]
+    }
   },
-  "include": ["src/**/*.ts", "../shared/**/*.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,5 @@
 import { ChainableCommander } from 'ioredis';
-import { client } from '../../config/db';
+import { client } from '@config/db';
 import { getKey } from './roomRepository';
 
 const keyName = 'ready';

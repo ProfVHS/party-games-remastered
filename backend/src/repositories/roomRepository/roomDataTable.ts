@@ -1,6 +1,6 @@
-import { client } from '../../config/db';
+import { client } from '@config/db';
 import { ChainableCommander } from 'ioredis';
-import { RoomDataType } from '../../../../shared/types';
+import { RoomDataType } from '@shared/types';
 import { getKey } from './roomRepository';
 
 const keyName = 'roomData';
