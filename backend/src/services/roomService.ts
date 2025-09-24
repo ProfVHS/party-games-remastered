@@ -6,7 +6,7 @@ import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, Ro
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
 import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';
-import { avatars } from '../../../shared/constants/avatars';
+import { avatars } from '@shared/constants/avatars';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
