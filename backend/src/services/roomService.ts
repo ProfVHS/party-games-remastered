@@ -6,7 +6,7 @@ import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, Ro
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '../config/minigames';
 import { Socket } from 'socket.io';
 import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';
-import { avatars } from '@shared/constants/avatars';
+import { avatars } from '../../../shared/constants/avatars';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
@@ -43,9 +43,10 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
     roomData = await roomRepository.getRoomData(roomCode);
     playersReady = await roomRepository.getReadyPlayers(roomCode);
 
+
     const players = await roomRepository.getAllPlayers(roomCode);
     const existingAvatars = players.map(p => p.avatar);
-    const availableAvatars =  avatars.filter(avatar => !existingAvatars.includes(avatar));
+    const availableAvatars = avatars.filter(avatar => !existingAvatars.includes(avatar));
 
     if (playersIds.length === 0) {
       return { success: false, payload: -1 }; // Room does not exist
@@ -63,6 +64,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       console.log('Game is starting, cannot join now', playersIds.length, playersReady.length, MIN_PLAYERS_TO_START);
       return { success: false, payload: -4 }; // Room is starting the game
     }
+
 
     await roomRepository.createPlayer(roomCode, playerID, {
       id: playerID,

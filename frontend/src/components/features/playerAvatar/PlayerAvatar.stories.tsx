@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { PlayerAvatar } from './PlayerAvatar';
+import { PlayerStatusEnum } from '@shared/types';
 
 const meta = {
   component: PlayerAvatar,
@@ -14,12 +15,16 @@ export const Monkey: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: 200,
-      isAlive: false
+      score: "200",
+      isAlive: "false",
+      id: "abc",
+      isHost: "false",
+      status: PlayerStatusEnum.onilne,
+      selectedObjectId: "",
+      avatar: "monkey"
     },
     style: {},
     status: 'idle',
-    avatar: "monkey"
   },
 };
 
@@ -27,12 +32,16 @@ export const Robot: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: 200,
-      isAlive: false
+      score: "200",
+      isAlive: "false",
+      id: "abc",
+      isHost: "false",
+      status: PlayerStatusEnum.onilne,
+      selectedObjectId: "",
+      avatar: "robot"
     },
     style: {},
     status: 'idle',
-    avatar: "robot"
   },
 };
 
@@ -40,12 +49,16 @@ export const Carton: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: 200,
-      isAlive: false
+      score: "200",
+      isAlive: "false",
+      id: "abc",
+      isHost: "false",
+      status: PlayerStatusEnum.onilne,
+      selectedObjectId: "",
+      avatar: "carton"
     },
     style: {},
     status: 'idle',
-    avatar: "carton"
   },
 };
 
@@ -53,12 +66,16 @@ export const Skeleton: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: 200,
-      isAlive: false
+      score: "200",
+      isAlive: "false",
+      id: "abc",
+      isHost: "false",
+      status: PlayerStatusEnum.onilne,
+      selectedObjectId: "",
+      avatar: "skeleton"
     },
     style: {},
     status: 'idle',
-    avatar: "skeleton"
   },
 };
 
@@ -66,11 +83,15 @@ export const Clown: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: 200,
-      isAlive: false
+      score: "200",
+      isAlive: "false",
+      id: "abc",
+      isHost: "false",
+      status: PlayerStatusEnum.onilne,
+      selectedObjectId: "",
+      avatar: "clown"
     },
     style: {},
     status: 'idle',
-    avatar: "clown"
   },
 };
