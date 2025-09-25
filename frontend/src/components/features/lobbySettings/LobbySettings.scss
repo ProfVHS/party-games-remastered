@@ -3,6 +3,12 @@
   flex-direction: column;
   justify-content: space-evenly;
   gap: 8px;
+  width: 60%;
+  min-width: 350px;
+  background-color: var(--background);
+
+  border-radius: 8px;
+  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
 
   height: 100%;
   font-family: 'Poppins', sans-serif;
@@ -23,11 +29,12 @@
 
   &__option {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     flex-direction: row;
     gap: 8px;
     width: 100%;
+    padding: 4px 0;
   }
 
   &__separator {

@@ -1,0 +1,17 @@
+@use '../../../common/styles/variables' as *;
+
+.badge {
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+
+  &--primary {
+    background-color: #{$primaryColor};
+  }
+
+  &--red {
+    background-color: var(--badge-red-bg);
+    color: var(--badge-text);
+  }
+}

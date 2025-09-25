@@ -34,6 +34,10 @@ html[data-theme='dark'] {
   --number-picker-shadow: #39135d;
   --number-picker-text: #{rgba(255, 255, 255, 0.4)};
 
+  //== Badge ==//
+  --badge-red-bg: #971010;
+  --badge-text: #{rgba(#fff, 0.4)};
+
   //== Alert Box ==//
   --alert-box-bg: #{$darkBgColor};
   --alert-box-text: rgba(255, 255, 255, 0.6);

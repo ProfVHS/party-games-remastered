@@ -34,6 +34,10 @@ html[data-theme='light'] {
   --number-picker-shadow: #5a189a;
   --number-picker-text: #{rgba(255, 255, 255, 0.8)};
 
+  //== Badge ==//
+  --badge-red-bg: #c81414;
+  --badge-text: #fff;
+
   //== Alert Box ==//
   --alert-box-bg: #{$lightBgColor};
   --alert-box-text: #000;
