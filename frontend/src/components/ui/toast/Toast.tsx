@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
 import './Toast.scss';
+import { useEffect, useRef } from 'react';
 import { motion, useAnimate } from 'framer-motion';
-import { useToast } from '../../../hooks/useToast.ts';
-import { Icon } from '../../../assets/icon';
-import { ClassNames } from '../../../utils.ts';
+import { useToast } from '@hooks/useToast.ts';
+import { Icon } from '@assets/icon';
+import { ClassNames } from '@utils';
 
 type ToastType = {
   id: number;
@@ -16,7 +16,7 @@ type ToastType = {
 export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: ToastType) => {
   const [scope, animate] = useAnimate();
 
-  const timer = useRef<number | undefined>(undefined);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const toast = useToast();
 

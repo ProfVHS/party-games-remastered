@@ -1,6 +1,6 @@
 import { Reorder, useDragControls } from 'framer-motion';
-import { MinigameItem } from './MinigameItem.tsx';
-import { MinigameListItemType } from '../../../types';
+import { MinigameItem } from '@components/features/minigamesList/MinigameItem';
+import { MinigameListItemType } from '@frontend-types/index';
 
 type DraggableMinigameItemProps = {
   minigame: MinigameListItemType;

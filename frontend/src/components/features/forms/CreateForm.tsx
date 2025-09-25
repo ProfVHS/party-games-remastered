@@ -1,11 +1,12 @@
 import './Form.scss';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Button } from '../../ui/button/Button.tsx';
-import { socket } from '../../../socket.ts';
-import { generateRandomUserName, setSessionVariables } from '../../../utils.ts';
-import { useRoomCreate } from '../../../hooks/useRoomCreate.ts';
-import { useToast } from '../../../hooks/useToast.ts';
+import { Button } from '@components/ui/button/Button.tsx';
+import { socket } from '@socket';
+import { generateRandomUserName } from '@utils';
+import { useRoomCreate } from '@hooks/useRoomCreate.ts';
+import { useToast } from '@hooks/useToast.ts';
+import { Input } from '@components/ui/input/Input.tsx';
 
 interface FormInputs {
   nickname: string;
@@ -35,8 +36,6 @@ export const CreateForm = ({ onCancel }: CreateFormProps) => {
     const nickname = data.nickname || generateRandomUserName();
 
     if (socket.id && nickname && randomCode) {
-      setSessionVariables(randomCode, socket.id!);
-
       socket.emit('create_room', randomCode, nickname);
     } else {
       toast.error({ message: 'Something went wrong. Please refresh the page or try again!', duration: 3 });
@@ -47,7 +46,7 @@ export const CreateForm = ({ onCancel }: CreateFormProps) => {
 
   return (
     <form className="form" onSubmit={handleSubmit(handleCreateRoom)} onReset={onCancel}>
-      <input className="form-input" style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" {...register('nickname')} />
+      <Input className="form-input" style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" register={register('nickname')} />
 
       <Button style={{ width: '100%' }} type="submit">
         Create
