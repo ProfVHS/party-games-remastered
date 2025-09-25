@@ -18,20 +18,24 @@ export const setRoomData = async (roomCode: string, roomData: RoomDataType, mult
   }
 };
 
+export const updateRoomData = async (roomCode: string, updates: Partial<RoomDataType>, multi?: ChainableCommander): Promise<void> => {
+  const updatedData = { ...updates };
+
+  for (const [field, value] of Object.entries(updatedData)) {
+    if (multi) {
+      multi.hset(getKey(roomCode, keyName), field, value);
+    } else {
+      await client.hset(getKey(roomCode, keyName), field, value);
+    }
+  }
+};
+
 export const getRoomData = async (roomCode: string): Promise<RoomDataType | null> => {
   const roomData = await client.hgetall(getKey(roomCode, keyName));
 
   if (!roomData || Object.keys(roomData).length === 0) return null;
 
   return roomData as RoomDataType;
-};
-
-export const updateRoomData = async (roomCode: string, updates: Partial<RoomDataType>, multi?: ChainableCommander): Promise<void> => {
-  if (multi) {
-    multi.hset(getKey(roomCode, keyName), updates);
-  } else {
-    await client.hset(getKey(roomCode, keyName), updates);
-  }
 };
 
 export const deleteRoomData = async (roomCode: string, multi?: ChainableCommander) => {

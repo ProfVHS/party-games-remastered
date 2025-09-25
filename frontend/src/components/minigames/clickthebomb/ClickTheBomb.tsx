@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Button } from '@components/ui/button/Button.tsx';
 import Bomb from '@assets/textures/C4.svg?react';
 import { socket } from '@socket';
+//import { usePlayersStore } from '../../../stores/playersStore.ts';
 
 const formatMilisecondsToTimer = (ms: number) => {
   const seconds = Math.floor(ms / 1000);
@@ -15,6 +16,9 @@ export const ClickTheBomb = () => {
   const [clicksCount, setClicksCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState(15000);
+  const [turnNickname, setTurnNickname] = useState<string>();
+  const [bombLock, setBombLock] = useState<boolean>(true);
+  //const { players } = usePlayersStore();
 
   const startTimeRef = useRef<number>();
   const animationRef = useRef<number>();
@@ -77,16 +81,42 @@ export const ClickTheBomb = () => {
     return () => stopCountdown();
   }, []);
 
+  const switchTurn = () => {
+    socket.emit('change_turn');
+    setCanSkipTurn(false);
+    stopCountdown();
+    setBombLock(true);
+  };
+
+  useEffect(() => {
+    socket.on('nextTurn', (nickname: string) => {
+      setCanSkipTurn(false);
+      setTimeLeft(duration);
+      startCountdown();
+      setTurnNickname(nickname);
+    });
+
+    /* const playernickname = await getPlayerNickname(socket.id);
+    if (turnNickname === playernickname) {
+      setBombLock(false);
+    } */
+
+    return () => {
+      socket.off('nextTurn');
+    };
+  }, [socket]);
+
   return (
     <div className="click-the-bomb">
       <div className="click-the-bomb__info">
         <span className="click-the-bomb__title">Click The Bomb</span>
-        <span className="click-the-bomb__turn">user's Turn</span>
+        <span className="click-the-bomb__turn">{turnNickname} Turn</span>
       </div>
       <div
         className="click-the-bomb__bomb"
         onClick={() => {
           if (loading) return;
+          if (bombLock) return;
           setLoading(true);
           updateClickCount();
           setCanSkipTurn(true);
@@ -102,7 +132,9 @@ export const ClickTheBomb = () => {
         size="medium"
         isDisabled={!canSkipTurn}
         onClick={() => {
+          setBombLock(false);
           setCanSkipTurn(false);
+          switchTurn();
         }}
       >
         Next

@@ -5,7 +5,7 @@ import { getKey } from '@roomRepository';
 
 const keyName = 'minigameData';
 
-export async function setMinigameData(roomCode: string, minigameData: MinigameDataType, multi?: ChainableCommander): Promise<void> {
+export async function setMinigameData(roomCode: string, minigameData: Partial<MinigameDataType>, multi?: ChainableCommander): Promise<void> {
   if (multi) {
     multi.hset(getKey(roomCode, keyName), minigameData);
   } else {
