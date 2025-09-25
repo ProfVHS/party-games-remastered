@@ -5,14 +5,12 @@ import { ChainableCommander } from 'ioredis';
 import { ReturnDataType } from '@shared/types';
 import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '@shared/types';
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '@config/minigames';
-import { MIN_PLAYERS_TO_START } from '../../../shared/constants/game';
-import { avatars } from '../../../shared/constants/avatars';
-
+import { MIN_PLAYERS_TO_START } from '@shared/constants/game';
+import { avatars } from '@shared/constants/avatars';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
   socket.data.roomCode = roomCode;
-
 
   try {
     await roomRepository.createPlayer(roomCode, playerID, {
@@ -23,7 +21,7 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
       isHost: 'true',
       status: PlayerStatusEnum.onilne,
       selectedObjectId: '-100',
-      avatar: avatars[Math.floor(Math.random() * avatars.length)]
+      avatar: avatars[Math.floor(Math.random() * avatars.length)],
     });
   } catch (error) {
     console.error(`Room creation failed for room ${roomCode} and player: ${playerID}: ${error}`);
@@ -44,10 +42,9 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
     roomData = await roomRepository.getRoomData(roomCode);
     playersReady = await roomRepository.getReadyPlayers(roomCode);
 
-
     const players = await roomRepository.getAllPlayers(roomCode);
-    const existingAvatars = players.map(p => p.avatar);
-    const availableAvatars = avatars.filter(avatar => !existingAvatars.includes(avatar));
+    const existingAvatars = players.map((p) => p.avatar);
+    const availableAvatars = avatars.filter((avatar) => !existingAvatars.includes(avatar));
 
     if (playersIds.length === 0) {
       return { success: false, payload: -1 }; // Room does not exist
@@ -66,7 +63,6 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       return { success: false, payload: -4 }; // Room is starting the game
     }
 
-
     await roomRepository.createPlayer(roomCode, playerID, {
       id: playerID,
       nickname,
@@ -75,7 +71,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       isHost: 'false',
       status: PlayerStatusEnum.onilne,
       selectedObjectId: '-100',
-      avatar: availableAvatars[Math.floor(Math.random() * availableAvatars.length)]
+      avatar: availableAvatars[Math.floor(Math.random() * availableAvatars.length)],
     });
 
     socket.data.roomCode = roomCode;
