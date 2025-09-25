@@ -7,7 +7,7 @@ export const clickTheBombSockets = (socket: Socket) => {
     const roomCode = socket.data.roomCode;
     const roomData = (await roomRepository.getMinigameData(roomCode)) as ClickTheBombDataType;
 
-    // do zmiany!!!
-    await roomRepository.setMinigameData(roomCode, { clickCount: ((parseInt(roomData?.clickCount) || 0) + 1).toString() });
+    //updating click count in redis
+    await roomRepository.incrementClickCount(roomCode);
   });
 };

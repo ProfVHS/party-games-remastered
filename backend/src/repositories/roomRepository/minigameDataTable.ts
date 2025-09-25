@@ -20,3 +20,11 @@ export async function getMinigameData(roomCode: string): Promise<MinigameDataTyp
 
   return minigameData as MinigameDataType;
 }
+
+export async function incrementClickCount(roomCode: string, multi?: ChainableCommander): Promise<void> {
+  if (multi) {
+    multi.hincrby(getKey(roomCode, keyName), 'clickCount', 1);
+  } else {
+    await client.hincrby(getKey(roomCode, keyName), 'clickCount', 1);
+  }
+}
