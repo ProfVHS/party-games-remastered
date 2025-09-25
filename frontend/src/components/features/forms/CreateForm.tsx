@@ -6,6 +6,7 @@ import { socket } from '@socket';
 import { generateRandomUserName } from '@utils';
 import { useRoomCreate } from '@hooks/useRoomCreate.ts';
 import { useToast } from '@hooks/useToast.ts';
+import { Input } from '@components/ui/input/Input.tsx';
 
 interface FormInputs {
   nickname: string;
@@ -45,7 +46,7 @@ export const CreateForm = ({ onCancel }: CreateFormProps) => {
 
   return (
     <form className="form" onSubmit={handleSubmit(handleCreateRoom)} onReset={onCancel}>
-      <input className="form-input" style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" {...register('nickname')} />
+      <Input className="form-input" style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" register={register('nickname')} />
 
       <Button style={{ width: '100%' }} type="submit">
         Create

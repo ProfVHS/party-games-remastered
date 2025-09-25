@@ -6,6 +6,7 @@ export type PlayerType = {
   isHost: string; // boolean
   status: PlayerStatusEnum;
   selectedObjectId: string; // number
+  avatar: string;
 };
 
 export enum PlayerStatusEnum {

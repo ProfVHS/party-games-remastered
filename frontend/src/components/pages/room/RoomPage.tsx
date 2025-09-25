@@ -7,7 +7,7 @@ import { useToast } from '@hooks/useToast.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { useSocketConnection } from '@hooks/useSocketConnection.ts';
-import { RoomDataType, MinigameDataType } from '@shared/types/index';
+import { RoomDataType, MinigameDataType } from '@shared/types';
 
 export const RoomPage = () => {
   const { players } = usePlayersStore();

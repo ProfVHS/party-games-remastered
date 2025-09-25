@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Card } from './Card';
 import { socket } from '@socket';
 import { usePlayersStore } from '@stores/playersStore';
-import { PlayerType } from '@shared/types/index';
+import { PlayerType } from '@shared/types';
 import { useCountdown } from '@hooks/useCountdown';
 
 export const Cards = () => {
@@ -100,7 +100,7 @@ export const Cards = () => {
             key={index}
             id={index}
             points={card}
-            isPositive={card < 0 ? false : true}
+            isPositive={card >= 0}
             isFlipping={isFlipping}
             selected={selectedCard === index}
             newPlayersPointsCard={newPlayersPoints.filter((player) => player.selectedObjectId == index.toString())}
