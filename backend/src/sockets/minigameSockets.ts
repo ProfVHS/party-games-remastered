@@ -1,12 +1,12 @@
 import { Socket } from 'socket.io';
-import { MinigameNamesEnum } from '../../../shared/types';
+import { MinigameNamesEnum } from '@shared/types';
 import * as roomService from '../services/roomService';
-import * as roomRepository from '../repositories/roomRepository/roomRepository';
+import { setMinigames } from '@roomRepository';
 
 export const minigameSockets = (socket: Socket) => {
   socket.on('set_minigames', async (minigames: MinigameNamesEnum[]) => {
     const roomCode = socket.data.roomCode;
-    await roomRepository.setMinigames(roomCode, minigames);
+    await setMinigames(roomCode, minigames);
   });
 
   socket.on('start_minigame', async (minigame: MinigameNamesEnum) => {
