@@ -60,6 +60,7 @@ export const ClickTheBomb = () => {
   const updateClickCount = () => {
     socket.emit('update_click_count');
     stopCountdown();
+    setLoading(false); // you can click again
   };
 
   useEffect(() => {

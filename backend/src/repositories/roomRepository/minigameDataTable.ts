@@ -5,26 +5,26 @@ import { getKey } from '@roomRepository';
 
 const keyName = 'minigameData';
 
-export async function setMinigameData(roomCode: string, minigameData: Partial<MinigameDataType>, multi?: ChainableCommander): Promise<void> {
+export const setMinigameData = async (roomCode: string, minigameData: MinigameDataType, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.hset(getKey(roomCode, keyName), minigameData);
   } else {
     await client.hset(getKey(roomCode, keyName), minigameData);
   }
-}
+};
 
-export async function getMinigameData(roomCode: string): Promise<MinigameDataType | null> {
+export const updateMinigameData = async (roomCode: string, updates: Partial<MinigameDataType>, multi?: ChainableCommander) => {
+  if (multi) {
+    multi.hset(getKey(roomCode, keyName), updates);
+  } else {
+    await client.hset(getKey(roomCode, keyName), updates);
+  }
+};
+
+export const getMinigameData = async (roomCode: string): Promise<MinigameDataType | null> => {
   const minigameData = await client.hgetall(getKey(roomCode, keyName));
 
   if (!minigameData || Object.keys(minigameData).length === 0) return null;
 
   return minigameData as MinigameDataType;
-}
-
-export async function incrementClickCount(roomCode: string, multi?: ChainableCommander): Promise<void> {
-  if (multi) {
-    multi.hincrby(getKey(roomCode, keyName), 'clickCount', 1);
-  } else {
-    await client.hincrby(getKey(roomCode, keyName), 'clickCount', 1);
-  }
-}
+};

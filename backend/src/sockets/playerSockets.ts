@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 import * as roomService from '../services/roomService';
 import { getReadyPlayersCount, getAllPlayers } from '@roomRepository';
+import { PlayerType } from '@shared/types';
 
 export const playerSockets = (socket: Socket) => {
   socket.on('toggle_player_ready', async () => {
@@ -29,4 +30,12 @@ export const playerSockets = (socket: Socket) => {
     const playersReady = await getReadyPlayersCount(roomCode);
     socket.nsp.to(roomCode).emit('fetched_ready_players', playersReady);
   });
+};
+
+export const sendAllPlayers = async (socket: Socket, roomCode: string, players?: PlayerType[]) => {
+  if (!players) {
+    players = await getAllPlayers(roomCode);
+  }
+
+  socket.nsp.to(roomCode).emit('got_players', players);
 };
