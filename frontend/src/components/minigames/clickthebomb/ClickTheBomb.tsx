@@ -17,7 +17,7 @@ export const ClickTheBomb = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState(15000);
   const [turnNickname, setTurnNickname] = useState<string>();
-  const [bombLock, setBombLock] = useState<boolean>(true);
+  const [bombLock, setBombLock] = useState<boolean>(false);
   //const { players } = usePlayersStore();
 
   const startTimeRef = useRef<number>();
@@ -60,7 +60,6 @@ export const ClickTheBomb = () => {
   const updateClickCount = () => {
     socket.emit('update_click_count');
     stopCountdown();
-    setLoading(false); // you can click again
   };
 
   useEffect(() => {
@@ -133,7 +132,7 @@ export const ClickTheBomb = () => {
         size="medium"
         isDisabled={!canSkipTurn}
         onClick={() => {
-          setBombLock(false);
+          setBombLock(true);
           setCanSkipTurn(false);
           switchTurn();
         }}
