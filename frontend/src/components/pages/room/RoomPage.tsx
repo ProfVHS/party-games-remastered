@@ -1,5 +1,4 @@
 import './RoomPage.scss';
-import { Lobby } from '@components/features/lobby/Lobby.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
 import { useEffect, useState } from 'react';
 import { socket } from '@socket';
@@ -34,7 +33,7 @@ export const RoomPage = () => {
   return (
     <div className="room-page">
       <div className="room-page__content">
-        <RoomLayout players={players}>{minigameName !== '' ? <Minigame minigameName={minigameName} /> : <Lobby />}</RoomLayout>
+        <RoomLayout players={players}>{minigameName !== '' ? <Minigame minigameName={minigameName} /> : <></>}</RoomLayout>
       </div>
     </div>
   );

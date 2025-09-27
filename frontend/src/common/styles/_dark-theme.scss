@@ -44,6 +44,8 @@ html[data-theme='dark'] {
 
   //== Lobby ==//
   --lobby-player-text: #{$primaryColor2};
+  --lobby-color-code: #{$darkerPrimaryColor};
+  --lobby-color-code-hover: #{color.adjust($darkerPrimaryColor, $lightness: 5%)};
 
   //== Minigame List ==//
   --minigame-list-bg: #{$darkBgColor};

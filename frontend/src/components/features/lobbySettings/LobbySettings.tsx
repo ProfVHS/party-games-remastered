@@ -11,20 +11,21 @@ import { useToast } from '@hooks/useToast.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { Badge } from '@components/ui/badge/Badge.tsx';
 
-export const LobbySettings = () => {
+type LobbySettingsProps = {
+  setLobbySettings: (settings: LobbySettingsType) => void;
+  lobbySettings: LobbySettingsType;
+}
+
+export const LobbySettings = ({ setLobbySettings, lobbySettings }: LobbySettingsProps) => {
   const [minigamesModal, setMinigamesModal] = useState(false);
-  const [lobbySettings, setLobbySettings] = useState<LobbySettingsType>({
-    isRandomMinigames: false,
-    isTutorialsEnabled: false,
-    minigames: [],
-    numberOfMinigames: 2
-  });
+  const [newLobbySettings, setNewLobbySettings] = useState<LobbySettingsType>(lobbySettings);
   const { currentPlayer } = usePlayersStore();
+
   const toast = useToast();
 
   const handleSave = () => {
-    if (!lobbySettings.isRandomMinigames) {
-      if (lobbySettings.minigames === null || lobbySettings.minigames!.length < 2) {
+    if (!newLobbySettings.isRandomMinigames) {
+      if (newLobbySettings.minigames === null || newLobbySettings.minigames!.length < 2) {
         toast.error({
           message: 'Please select at least two minigame',
           duration: 5
@@ -32,7 +33,7 @@ export const LobbySettings = () => {
         return;
       }
     }
-    setLobbySettings(lobbySettings);
+    setLobbySettings(newLobbySettings);
   };
 
   return (
@@ -41,26 +42,26 @@ export const LobbySettings = () => {
 
       <div className="lobby-settings__option">
         <span>Random Minigames?</span>
-        {currentPlayer?.isHost ? (
-          <Switch defaultIsChecked={lobbySettings.isRandomMinigames}
-                  onChange={(value) => setLobbySettings({ ...lobbySettings, isRandomMinigames: value })} />
+        {currentPlayer?.isHost === "true" ? (
+          <Switch defaultIsChecked={newLobbySettings.isRandomMinigames}
+                  onChange={(value) => setNewLobbySettings({ ...newLobbySettings, isRandomMinigames: value })} />
         ) : (
-          <Badge color={lobbySettings.isRandomMinigames ? "primary" : "red"}>
-            {lobbySettings.isRandomMinigames ? "Enabled" : "Disabled"}
+          <Badge color={newLobbySettings.isRandomMinigames ? 'primary' : 'red'}>
+            {newLobbySettings.isRandomMinigames ? 'Enabled' : 'Disabled'}
           </Badge>
         )}
       </div>
 
       <div className="lobby-settings__separator" />
 
-      {lobbySettings.isRandomMinigames ? (
+      {newLobbySettings.isRandomMinigames ? (
         <div className="lobby-settings__option">
           <span>Number of Minigames</span>
           <NumberPicker
-            defaultNumber={lobbySettings.numberOfMinigames || 2}
+            defaultNumber={newLobbySettings.numberOfMinigames || 2}
             min={2}
             max={25}
-            onchange={(value) => setLobbySettings({ ...lobbySettings, numberOfMinigames: value })}
+            onchange={(value) => setNewLobbySettings({ ...newLobbySettings, numberOfMinigames: value })}
           />
         </div>
       ) : (
@@ -76,12 +77,12 @@ export const LobbySettings = () => {
 
       <div className="lobby-settings__option">
         <span>Tutorials before minigame?</span>
-        {currentPlayer?.isHost ? (
-          <Switch defaultIsChecked={lobbySettings.isTutorialsEnabled}
-                  onChange={(value) => setLobbySettings({ ...lobbySettings, isTutorialsEnabled: value })} />
+        {currentPlayer?.isHost === "true" ? (
+          <Switch defaultIsChecked={newLobbySettings.isTutorialsEnabled}
+                  onChange={(value) => setNewLobbySettings({ ...newLobbySettings, isTutorialsEnabled: value })} />
         ) : (
-          <Badge color={lobbySettings.isTutorialsEnabled ? "primary" : "red"}>
-            {lobbySettings.isTutorialsEnabled ? "Enabled" : "Disabled"}
+          <Badge color={newLobbySettings.isTutorialsEnabled ? 'primary' : 'red'}>
+            {newLobbySettings.isTutorialsEnabled ? 'Enabled' : 'Disabled'}
           </Badge>
         )}
 
@@ -93,7 +94,7 @@ export const LobbySettings = () => {
         <Button style={{ width: '100%' }} size="small" onClick={handleSave}>
           Save
         </Button>
-        <Button style={{ width: '100%' }} size="small" >
+        <Button style={{ width: '100%' }} size="small">
           Cancel
         </Button>
       </div>
@@ -102,8 +103,8 @@ export const LobbySettings = () => {
           <Modal onClose={() => setMinigamesModal(false)} transparentBg>
             <MinigamesList
               onCancel={() => setMinigamesModal(false)}
-              onSave={(minigames: MinigameEntryType[]) => setLobbySettings({ ...lobbySettings, minigames })}
-              minigames={lobbySettings.minigames || []}
+              onSave={(minigames: MinigameEntryType[]) => setNewLobbySettings({ ...newLobbySettings, minigames })}
+              minigames={newLobbySettings.minigames || []}
             />
           </Modal>
         )}

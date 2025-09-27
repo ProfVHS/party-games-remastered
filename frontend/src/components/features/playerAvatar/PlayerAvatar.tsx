@@ -7,11 +7,12 @@ type avatars = keyof typeof avatarList;
 
 type PlayerAvatarProps = {
   player: PlayerType;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
   status: 'idle' | 'happy' | 'dead' | 'sleeping';
+  inLobby?: boolean;
 };
 
-export const PlayerAvatar = ({ player, style, status = 'idle' }: PlayerAvatarProps) => {
+export const PlayerAvatar = ({ player, style, status = 'idle', inLobby = false }: PlayerAvatarProps) => {
   const avatar = player.avatar as avatars
   return (
     <div className="player-avatar" style={style}>
@@ -19,7 +20,9 @@ export const PlayerAvatar = ({ player, style, status = 'idle' }: PlayerAvatarPro
       <div className="player-avatar__avatar">
         {avatarList[avatar] && createElement(avatarList[avatar][status])}
       </div>
-      <h2 className="player-avatar__score">Score: {player.score}</h2>
+      {!inLobby && (
+        <h2 className="player-avatar__score">Score: {player.score}</h2>
+      )}
     </div>
   );
 };
