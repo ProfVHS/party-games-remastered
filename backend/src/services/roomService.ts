@@ -158,7 +158,7 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
 
     switch (minigameName) {
       case MinigameNamesEnum.clickTheBomb:
-        const clickTheBombConfig = createClickTheBombConfig();
+        const clickTheBombConfig = createClickTheBombConfig(players.length);
         console.log(`Starting Click The Bomb minigame in room ${roomCode} with config:`, clickTheBombConfig);
         await roomRepository.setMinigameData(roomCode, clickTheBombConfig, multi);
         break;
@@ -187,4 +187,31 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
   }
 
   return { success: true, payload: { roomData, minigameData } }; // Minigame started
+};
+
+export const changeTurnService = async (roomCode: string): Promise<string | null> => {
+  const players = await roomRepository.getAllPlayers(roomCode);
+  const roomData = await roomRepository.getRoomData(roomCode);
+
+  if (!roomData) {
+    throw new Error(`Room data not found for room: ${roomCode}`);
+  }
+
+  if (!players) {
+    throw new Error(`Players not found for room: ${roomCode}`);
+  }
+
+  let currentTurn = parseInt(roomData.currentTurn);
+
+  for (let i = 1; i <= players.length; i++) {
+    const nextTurn = (currentTurn + i) % players.length;
+    const potentialPlayer = players[nextTurn];
+
+    if (potentialPlayer.isAlive === 'true' && potentialPlayer.status === PlayerStatusEnum.onilne) {
+      await roomRepository.updateRoomData(roomCode, { currentTurn: nextTurn.toString() });
+      return potentialPlayer.nickname;
+    }
+  }
+
+  throw new Error(`No suitable player found to change turn for room "${roomCode}".`);
 };

@@ -47,7 +47,12 @@
 
     cursor: pointer;
     transition: 0.05s ease-in-out;
-    &:active {
+
+    &.bomb__lock {
+      cursor: not-allowed;
+    }
+
+    &.bomb__active:active {
       transform: scale(0.95);
     }
   }

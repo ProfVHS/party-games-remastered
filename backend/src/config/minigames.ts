@@ -8,10 +8,10 @@ export const createRoomConfig = (playersLength: number, roomStatus: RoomStatusEn
   status: roomStatus,
 });
 
-export const createClickTheBombConfig = (): MinigameDataType => ({
+export const createClickTheBombConfig = (alivePlayersLength: number): MinigameDataType => ({
   minigameName: MinigameNamesEnum.clickTheBomb,
   clickCount: '0',
-  maxClicks: '10',
+  maxClicks: (Math.floor(Math.random() * (alivePlayersLength * 4)) + 1).toString(),
 });
 
 export const createCardsConfig = (): MinigameDataType => ({ minigameName: MinigameNamesEnum.cards });

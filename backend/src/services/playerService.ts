@@ -1,7 +1,7 @@
 import { updatePlayer, updatePlayerScore } from '@roomRepository';
-import { PlayerType, ReturnDataType } from '@shared/types';
+import { PlayerType } from '@shared/types';
 
-export const syncPlayerScore = async (roomCode: string, playerId: string, delta: number, players: PlayerType[]): Promise<PlayerType | null> => {
+export const syncPlayerScoreService = async (roomCode: string, playerId: string, delta: number, players: PlayerType[]): Promise<PlayerType | null> => {
   try {
     updatePlayerScore(roomCode, playerId, delta);
 
@@ -19,7 +19,12 @@ export const syncPlayerScore = async (roomCode: string, playerId: string, delta:
   }
 };
 
-export const syncPlayerUpdate = async (roomCode: string, playerId: string, updates: Partial<PlayerType>, players: PlayerType[]): Promise<PlayerType | null> => {
+export const syncPlayerUpdateService = async (
+  roomCode: string,
+  playerId: string,
+  updates: Partial<PlayerType>,
+  players: PlayerType[],
+): Promise<PlayerType | null> => {
   try {
     await updatePlayer(roomCode, playerId, updates);
 
@@ -37,7 +42,7 @@ export const syncPlayerUpdate = async (roomCode: string, playerId: string, updat
   }
 };
 
-export const findAlivePlayers = async (players: PlayerType[]): Promise<PlayerType[] | null> => {
+export const findAlivePlayersService = async (players: PlayerType[]): Promise<PlayerType[] | null> => {
   try {
     return players.filter((player) => player.isAlive == 'true');
   } catch (error) {

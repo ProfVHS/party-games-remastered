@@ -1,32 +1,21 @@
 import { Socket } from 'socket.io';
-import { getAllPlayers } from '../repositories/roomRepository/playersTable';
-import * as roomRepository from '../repositories/roomRepository/roomDataTable';
+import { changeTurnService } from 'services/roomService';
+import * as roomRepository from '@roomRepository';
 
 export const turnSockets = (socket: Socket) => {
-  socket.on('set_turn', async (turn: number) => {
+  socket.on('get_turn', async () => {
     const roomCode = socket.data.roomCode;
-    const players = await getAllPlayers(roomCode);
 
-    await roomRepository.updateRoomData(roomCode, { currentTurn: turn.toString() });
-    socket.nsp.to(roomCode).emit('setTurn', players[turn].nickname);
+    const roomData = await roomRepository.getRoomData(roomCode);
+
+    socket.nsp.to(roomCode).emit('got_turn', roomData?.currentTurn);
   });
 
   socket.on('change_turn', async () => {
     const roomCode = socket.data.roomCode;
-    const players = await getAllPlayers(roomCode);
-    const roomData = await roomRepository.getRoomData(roomCode);
 
-    if (!roomData) {
-      console.error(`Room data not found for room: ${roomCode}`);
-      return;
-    }
+    const currentTurnPlayerNickname = await changeTurnService(roomCode);
 
-    var nextTurn: number = Number(roomData.currentTurn) + 1;
-
-    roomData.currentTurn = nextTurn.toString();
-
-    await roomRepository.setRoomData(roomCode, roomData);
-
-    socket.nsp.to(roomCode).emit('nextTurn', players[nextTurn].nickname);
+    socket.nsp.to(roomCode).emit('changed_turn', currentTurnPlayerNickname);
   });
 };

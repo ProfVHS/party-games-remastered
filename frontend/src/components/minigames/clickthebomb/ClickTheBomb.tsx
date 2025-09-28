@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Button } from '@components/ui/button/Button.tsx';
 import Bomb from '@assets/textures/C4.svg?react';
 import { socket } from '@socket';
-//import { usePlayersStore } from '../../../stores/playersStore.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 const formatMilisecondsToTimer = (ms: number) => {
   const seconds = Math.floor(ms / 1000);
@@ -11,14 +11,18 @@ const formatMilisecondsToTimer = (ms: number) => {
   return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
 };
 
+//TODO: points aniamtion +30 apeearing and disapperaing next to bomb
+//TODO: Explosion animation
+//TODO: use coutdown hook
+
 export const ClickTheBomb = () => {
   const [canSkipTurn, setCanSkipTurn] = useState<boolean>(false);
   const [clicksCount, setClicksCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState(15000);
   const [turnNickname, setTurnNickname] = useState<string>();
-  const [bombLock, setBombLock] = useState<boolean>(false);
-  //const { players } = usePlayersStore();
+  const [bombLock, setBombLock] = useState<boolean>(true);
+  const { currentPlayer, players } = usePlayersStore();
 
   const startTimeRef = useRef<number>();
   const animationRef = useRef<number>();
@@ -57,54 +61,64 @@ export const ClickTheBomb = () => {
     }
   };
 
-  const updateClickCount = () => {
-    socket.emit('update_click_count');
-    stopCountdown();
-  };
-
   useEffect(() => {
-    socket.on('received_updated_clicks', (updatedClickCount: number) => {
+    socket.on('updated_click_count', (updatedClickCount: number) => {
       setLoading(false);
       setClicksCount(updatedClickCount);
       setTimeLeft(duration);
       startCountdown();
     });
 
+    socket.on('changed_turn', (data: string) => {
+      setTurnNickname(data);
+      setCanSkipTurn(false);
+      setTimeLeft(duration);
+      startCountdown();
+      if (data === currentPlayer?.nickname) {
+        setBombLock(false);
+      } else {
+        setBombLock(true);
+      }
+    });
+
+    socket.on('got_turn', (data) => {
+      const currentTurnPlayerNickname = players[parseInt(data)].nickname;
+
+      setTurnNickname(currentTurnPlayerNickname);
+      if (currentPlayer?.nickname === currentTurnPlayerNickname) {
+        setBombLock(false);
+      }
+    });
+
     return () => {
-      socket.off('received_updated_clicks');
+      socket.off('updated_click_count');
+      socket.off('changed_turn');
+      socket.off('got_turn');
       stopCountdown();
     };
   }, [socket]);
 
   useEffect(() => {
     startCountdown();
+    if (currentPlayer?.isHost === 'true') socket.emit('get_turn');
     return () => stopCountdown();
   }, []);
 
-  const switchTurn = () => {
-    socket.emit('change_turn');
-    setCanSkipTurn(false);
+  const handleClickBomb = () => {
+    if (loading || bombLock) return;
+
+    socket.emit('update_click_count');
     stopCountdown();
-    setBombLock(true);
+    setLoading(true);
+    setCanSkipTurn(true);
   };
 
-  useEffect(() => {
-    socket.on('nextTurn', (nickname: string) => {
-      setCanSkipTurn(false);
-      setTimeLeft(duration);
-      startCountdown();
-      setTurnNickname(nickname);
-    });
-
-    /* const playernickname = await getPlayerNickname(socket.id);
-    if (turnNickname === playernickname) {
-      setBombLock(false);
-    } */
-
-    return () => {
-      socket.off('nextTurn');
-    };
-  }, [socket]);
+  const handleChangeTurn = () => {
+    socket.emit('change_turn');
+    stopCountdown();
+    setCanSkipTurn(false);
+    setBombLock(true);
+  };
 
   return (
     <div className="click-the-bomb">
@@ -112,31 +126,12 @@ export const ClickTheBomb = () => {
         <span className="click-the-bomb__title">Click The Bomb</span>
         <span className="click-the-bomb__turn">{turnNickname} Turn</span>
       </div>
-      <div
-        className="click-the-bomb__bomb"
-        onClick={() => {
-          if (loading) return;
-          if (bombLock) return;
-          setLoading(true);
-          updateClickCount();
-          setCanSkipTurn(true);
-        }}
-      >
+      <div className={`click-the-bomb__bomb ${bombLock ? 'bomb__lock' : 'bomb__active'}`} onClick={handleClickBomb}>
         <Bomb />
         <span className="click-the-bomb__counter">{clicksCount! >= 10 ? clicksCount : '0' + clicksCount}</span>
         <span className="click-the-bomb__timer">{formatMilisecondsToTimer(timeLeft)}</span>
       </div>
-      <Button
-        className="click-the-bomb__button"
-        type="button"
-        size="medium"
-        isDisabled={!canSkipTurn}
-        onClick={() => {
-          setBombLock(true);
-          setCanSkipTurn(false);
-          switchTurn();
-        }}
-      >
+      <Button className="click-the-bomb__button" type="button" size="medium" isDisabled={!canSkipTurn} onClick={handleChangeTurn}>
         Next
       </Button>
     </div>

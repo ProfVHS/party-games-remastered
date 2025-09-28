@@ -1,9 +1,11 @@
-import { getAllPlayers, getMinigameData, updateMinigameData } from '@roomRepository';
-import { syncPlayerScore, syncPlayerUpdate, findAlivePlayers } from 'services/playerService';
-import { MinigameDataType, MinigameNamesEnum, PlayerType } from '@shared/types';
 import { Socket } from 'socket.io';
-import { sendAllPlayers } from './playerSockets';
 import { CLICK_THE_BOMB_RULES } from '@config/gameRules';
+import { sendAllPlayers } from './playerSockets';
+import { MinigameDataType, MinigameNamesEnum, PlayerType } from '@shared/types';
+import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData } from '@roomRepository';
+import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersService } from 'services/playerService';
+import { changeTurnService } from 'services/roomService';
+import { createClickTheBombConfig } from '@config/minigames';
 
 export const clickTheBombSockets = (socket: Socket) => {
   socket.on('update_click_count', async () => {
@@ -35,14 +37,14 @@ export const clickTheBombSockets = (socket: Socket) => {
       let scoreDelta = CLICK_THE_BOMB_RULES.BOMB_CLICK;
 
       if (minigame.maxClicks === newClickCount) {
-        const alivePlayers = await findAlivePlayers(players);
+        const alivePlayers = await findAlivePlayersService(players);
 
         if (alivePlayers && alivePlayers.length == 2) {
           const winner = alivePlayers.find((p) => p.id !== currentPlayer.id);
-          if (winner) syncPlayerScore(roomCode, winner.id, CLICK_THE_BOMB_RULES.WIN, players);
+          if (winner) await syncPlayerScoreService(roomCode, winner.id, CLICK_THE_BOMB_RULES.WIN, players);
 
-          syncPlayerUpdate(roomCode, currentPlayer.id, { isAlive: 'false' }, players);
-          syncPlayerScore(roomCode, currentPlayer.id, CLICK_THE_BOMB_RULES.LOSS, players);
+          await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false' }, players);
+          await syncPlayerScoreService(roomCode, currentPlayer.id, CLICK_THE_BOMB_RULES.LOSS, players);
 
           sendAllPlayers(socket, roomCode, players);
           console.log(`ClickTheBomb game ended in room ${roomCode}`);
@@ -50,16 +52,25 @@ export const clickTheBombSockets = (socket: Socket) => {
           return;
         }
 
-        syncPlayerUpdate(roomCode, currentPlayer.id, { isAlive: 'false' }, players);
+        await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false' }, players);
+        const currentTurnPlayerNickname = await changeTurnService(roomCode);
         scoreDelta = CLICK_THE_BOMB_RULES.LOSS;
-        //TODO: Change turn
+
+        socket.nsp.to(roomCode).emit('changed_turn', currentTurnPlayerNickname);
+
+        const newClickTheBombConfig = createClickTheBombConfig(alivePlayers!.length);
+        await setMinigameData(roomCode, newClickTheBombConfig);
+
+        console.log('Powinien zginać i przekazać turę', newClickCount);
       }
 
-      syncPlayerScore(roomCode, currentPlayer.id, scoreDelta, players);
+      // TODO: Change all console.error to throw new Error
+
+      await syncPlayerScoreService(roomCode, currentPlayer.id, scoreDelta, players);
       await updateMinigameData(roomCode, { clickCount: newClickCount });
 
       sendAllPlayers(socket, roomCode, players);
-      socket.nsp.to(roomCode).emit('received_updated_clicks', newClickCount);
+      socket.nsp.to(roomCode).emit('updated_click_count', newClickCount);
     } catch (error) {
       throw new Error(`clickTheBombSockets an error occurred: ${error}`);
     }
