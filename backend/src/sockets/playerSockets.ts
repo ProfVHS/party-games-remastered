@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import * as roomService from '../services/roomService';
+import * as roomService from '@roomService';
 import { getReadyPlayersCount, getAllPlayers } from '@roomRepository';
 import { PlayerType } from '@shared/types';
 

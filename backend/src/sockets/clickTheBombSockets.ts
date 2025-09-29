@@ -3,8 +3,8 @@ import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 import { sendAllPlayers } from './playerSockets';
 import { MinigameDataType, MinigameNamesEnum, PlayerType } from '@shared/types';
 import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData } from '@roomRepository';
-import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersService } from 'services/playerService';
-import { changeTurnService } from 'services/roomService';
+import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersService } from '@playerService';
+import { changeTurnService } from '@roomService';
 import { createClickTheBombConfig } from '@config/minigames';
 
 export const clickTheBombSockets = (socket: Socket) => {

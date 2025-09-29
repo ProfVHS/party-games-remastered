@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import { MinigameNamesEnum } from '@shared/types';
-import * as roomService from '../services/roomService';
+import * as roomService from '@roomService';
 import { setMinigames } from '@roomRepository';
 
 export const minigameSockets = (socket: Socket) => {

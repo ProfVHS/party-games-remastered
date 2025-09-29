@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import * as roomService from '../services/roomService';
+import * as roomService from '@roomService';
 import * as roomRepository from '@roomRepository';
 import { RoomStatusEnum } from '@shared/types';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
