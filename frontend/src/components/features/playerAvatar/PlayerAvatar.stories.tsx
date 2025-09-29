@@ -20,12 +20,11 @@ export const Monkey: Story = {
       id: 'abc',
       isHost: 'false',
       isDisconnected: 'false',
-      status: PlayerStatusEnum.idle,
+      status: PlayerStatusEnum.sleeping,
       selectedObjectId: '',
       avatar: 'monkey',
     },
     style: {},
-    status: 'idle',
   },
 };
 
@@ -38,12 +37,11 @@ export const Robot: Story = {
       id: 'abc',
       isHost: 'false',
       isDisconnected: 'false',
-      status: PlayerStatusEnum.idle,
+      status: PlayerStatusEnum.dead,
       selectedObjectId: '',
       avatar: 'robot',
     },
     style: {},
-    status: 'idle',
   },
 };
 
@@ -61,7 +59,6 @@ export const Carton: Story = {
       avatar: 'carton',
     },
     style: {},
-    status: 'idle',
   },
 };
 
@@ -79,7 +76,6 @@ export const Skeleton: Story = {
       avatar: 'skeleton',
     },
     style: {},
-    status: 'idle',
   },
 };
 
@@ -97,6 +93,5 @@ export const Clown: Story = {
       avatar: 'clown',
     },
     style: {},
-    status: 'idle',
   },
 };

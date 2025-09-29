@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 import { sendAllPlayers } from './playerSockets';
-import { MinigameDataType, MinigameNamesEnum, PlayerType } from '@shared/types';
+import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, PlayerType } from '@shared/types';
 import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData } from '@roomRepository';
 import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersService } from '@playerService';
 import { changeTurnService } from '@roomService';
@@ -46,7 +46,7 @@ export const clickTheBombSockets = (socket: Socket) => {
           const winner = alivePlayers.find((p) => p.id !== currentPlayer.id);
           if (winner) await syncPlayerScoreService(roomCode, winner.id, CLICK_THE_BOMB_RULES.WIN, players);
 
-          await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false' }, players);
+          await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
           await syncPlayerScoreService(roomCode, currentPlayer.id, CLICK_THE_BOMB_RULES.LOSS, players);
 
           sendAllPlayers(socket, roomCode, players);
@@ -55,7 +55,7 @@ export const clickTheBombSockets = (socket: Socket) => {
           return;
         }
 
-        await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false' }, players);
+        await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
         const newTurnNickname = await changeTurnService(roomCode);
 
         const newClickTheBombConfig = createClickTheBombConfig(alivePlayers!.length);
