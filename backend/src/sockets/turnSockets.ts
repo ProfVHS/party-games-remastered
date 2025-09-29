@@ -14,8 +14,8 @@ export const turnSockets = (socket: Socket) => {
   socket.on('change_turn', async () => {
     const roomCode = socket.data.roomCode;
 
-    const currentTurnPlayerNickname = await changeTurnService(roomCode);
+    const newTurnNickname = await changeTurnService(roomCode);
 
-    socket.nsp.to(roomCode).emit('changed_turn', currentTurnPlayerNickname);
+    socket.nsp.to(roomCode).emit('changed_turn', newTurnNickname);
   });
 };

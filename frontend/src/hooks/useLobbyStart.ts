@@ -3,7 +3,7 @@ import { socket } from '@socket';
 import { useToast } from '@hooks/useToast';
 import { MinigameNamesEnum } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore';
-import { MIN_PLAYERS_TO_START } from '@shared/constants/game';
+import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 
 type useLobbyStartProps = {
   playersReady: number;

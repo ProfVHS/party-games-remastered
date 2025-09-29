@@ -5,7 +5,7 @@ import { ChainableCommander } from 'ioredis';
 import { ReturnDataType } from '@shared/types';
 import { MinigameNamesEnum, RoomDataType, MinigameDataType, PlayerStatusEnum, RoomStatusEnum } from '@shared/types';
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '@config/minigames';
-import { MIN_PLAYERS_TO_START } from '@shared/constants/game';
+import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 import { avatars } from '@shared/constants/avatars';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {

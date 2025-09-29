@@ -5,6 +5,7 @@ import Bomb from '@assets/textures/C4.svg?react';
 import { socket } from '@socket';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useCountdownAnimation } from '@hooks/useCountdownAnimation';
+import { RandomScoreBox } from './RandomScoreBox';
 
 const formatMilisecondsToTimer = (ms: number) => {
   const seconds = Math.floor(ms / 1000);
@@ -12,7 +13,6 @@ const formatMilisecondsToTimer = (ms: number) => {
   return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
 };
 
-//TODO: points aniamtion +30 apeearing and disapperaing next to bomb
 //TODO: Explosion animation
 //TODO: End game
 
@@ -22,15 +22,16 @@ export const ClickTheBomb = () => {
   const [canSkipTurn, setCanSkipTurn] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [bombLock, setBombLock] = useState<boolean>(true);
+  const [scoreData, setScoreData] = useState<{ id: number; isPositive: boolean }>();
   const { currentPlayer, players } = usePlayersStore();
+  const countdownDuration = 15;
 
   const handlePlayerDeath = () => {
     if (currentPlayer?.nickname != turnNickname) return;
-
     socket.emit('update_click_count', true);
   };
 
-  const { animationTimeLeft, startCountdownAnimation, stopCountdownAnimation } = useCountdownAnimation(5, handlePlayerDeath);
+  const { animationTimeLeft, startCountdownAnimation, stopCountdownAnimation } = useCountdownAnimation(countdownDuration, handlePlayerDeath);
 
   const handleClickBomb = () => {
     if (loading || bombLock) return; // loading - waiting for response from server, bombLock - it's not your turn
@@ -55,28 +56,33 @@ export const ClickTheBomb = () => {
       startCountdownAnimation();
     });
 
-    socket.on('changed_turn', (data: string) => {
-      setTurnNickname(() => data);
+    socket.on('changed_turn', (newTurnNickname: string) => {
+      setTurnNickname(() => newTurnNickname);
       setCanSkipTurn(false);
       startCountdownAnimation();
 
-      data === currentPlayer?.nickname ? setBombLock(false) : setBombLock(true);
+      newTurnNickname === currentPlayer?.nickname ? setBombLock(false) : setBombLock(true);
     });
 
-    socket.on('got_turn', (data) => {
-      const currentTurnPlayerNickname = players[parseInt(data)].nickname;
+    socket.on('got_turn', (turnIndex: string) => {
+      const newTurnNickname = players[parseInt(turnIndex)].nickname;
 
-      setTurnNickname(() => currentTurnPlayerNickname);
+      setTurnNickname(() => newTurnNickname);
 
-      currentPlayer?.nickname === currentTurnPlayerNickname ? setBombLock(false) : setBombLock(true);
+      currentPlayer?.nickname === newTurnNickname ? setBombLock(false) : setBombLock(true);
+    });
+
+    socket.on('show_score', (playerExploded: boolean) => {
+      setScoreData((prev) => ({ id: (prev?.id ?? 0) + 1, isPositive: !playerExploded }));
     });
 
     return () => {
       socket.off('updated_click_count');
       socket.off('changed_turn');
       socket.off('got_turn');
+      socket.off('show_score');
     };
-  }, [socket]);
+  }, [turnNickname]);
 
   useEffect(() => {
     startCountdownAnimation();
@@ -88,6 +94,7 @@ export const ClickTheBomb = () => {
 
   return (
     <div className="click-the-bomb">
+      <RandomScoreBox id={scoreData?.id} isPositive={scoreData?.isPositive} />
       <div className="click-the-bomb__info">
         <span className="click-the-bomb__title">Click The Bomb</span>
         <span className="click-the-bomb__turn">{turnNickname} Turn</span>

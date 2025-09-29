@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { CLICK_THE_BOMB_RULES } from '@config/gameRules';
+import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 import { sendAllPlayers } from './playerSockets';
 import { MinigameDataType, MinigameNamesEnum, PlayerType } from '@shared/types';
 import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData } from '@roomRepository';
@@ -35,6 +35,7 @@ export const clickTheBombSockets = (socket: Socket) => {
       }
 
       let scoreDelta = CLICK_THE_BOMB_RULES.BOMB_CLICK;
+      let playerExploded = false;
 
       // Max number of clicks or countdown timer has ended
       if (minigame.maxClicks === newClickCount || countdownExpired) {
@@ -55,14 +56,16 @@ export const clickTheBombSockets = (socket: Socket) => {
         }
 
         await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false' }, players);
-        const currentTurnPlayerNickname = await changeTurnService(roomCode);
-        scoreDelta = CLICK_THE_BOMB_RULES.LOSS;
-
-        socket.nsp.to(roomCode).emit('changed_turn', currentTurnPlayerNickname);
+        const newTurnNickname = await changeTurnService(roomCode);
 
         const newClickTheBombConfig = createClickTheBombConfig(alivePlayers!.length);
         await setMinigameData(roomCode, newClickTheBombConfig);
+
+        socket.nsp.to(roomCode).emit('changed_turn', newTurnNickname);
+
         newClickCount = '0';
+        scoreDelta = CLICK_THE_BOMB_RULES.LOSS;
+        playerExploded = true;
       }
 
       // TODO: Change all console.error to throw new Error
@@ -72,6 +75,7 @@ export const clickTheBombSockets = (socket: Socket) => {
 
       sendAllPlayers(socket, roomCode, players);
       socket.nsp.to(roomCode).emit('updated_click_count', newClickCount);
+      socket.nsp.to(socket.id).emit('show_score', playerExploded);
     } catch (error) {
       throw new Error(`clickTheBombSockets an error occurred: ${error}`);
     }
