@@ -14,8 +14,6 @@ const formatMilisecondsToTimer = (ms: number) => {
 
 //TODO: points aniamtion +30 apeearing and disapperaing next to bomb
 //TODO: Explosion animation
-//TODO: use coutdown hook
-//TODO: explode player after time
 //TODO: End game
 
 export const ClickTheBomb = () => {
@@ -29,19 +27,18 @@ export const ClickTheBomb = () => {
   const handlePlayerDeath = () => {
     if (currentPlayer?.nickname != turnNickname) return;
 
-    console.log('Countdown animation has ended');
-    // socket.emit("")
+    socket.emit('update_click_count', true);
   };
 
   const { animationTimeLeft, startCountdownAnimation, stopCountdownAnimation } = useCountdownAnimation(5, handlePlayerDeath);
 
   const handleClickBomb = () => {
-    if (loading || bombLock) return;
+    if (loading || bombLock) return; // loading - waiting for response from server, bombLock - it's not your turn
 
-    socket.emit('update_click_count');
+    socket.emit('update_click_count', false);
     stopCountdownAnimation();
-    setLoading(true);
     setCanSkipTurn(true);
+    setLoading(true);
   };
 
   const handleChangeTurn = () => {
@@ -62,20 +59,16 @@ export const ClickTheBomb = () => {
       setTurnNickname(() => data);
       setCanSkipTurn(false);
       startCountdownAnimation();
-      if (data === currentPlayer?.nickname) {
-        setBombLock(false);
-      } else {
-        setBombLock(true);
-      }
+
+      data === currentPlayer?.nickname ? setBombLock(false) : setBombLock(true);
     });
 
     socket.on('got_turn', (data) => {
       const currentTurnPlayerNickname = players[parseInt(data)].nickname;
 
       setTurnNickname(() => currentTurnPlayerNickname);
-      if (currentPlayer?.nickname === currentTurnPlayerNickname) {
-        setBombLock(false);
-      }
+
+      currentPlayer?.nickname === currentTurnPlayerNickname ? setBombLock(false) : setBombLock(true);
     });
 
     return () => {
@@ -87,7 +80,9 @@ export const ClickTheBomb = () => {
 
   useEffect(() => {
     startCountdownAnimation();
+
     if (currentPlayer?.isHost === 'true') socket.emit('get_turn');
+
     return () => stopCountdownAnimation();
   }, []);
 

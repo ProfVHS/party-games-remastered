@@ -8,7 +8,7 @@ import { changeTurnService } from 'services/roomService';
 import { createClickTheBombConfig } from '@config/minigames';
 
 export const clickTheBombSockets = (socket: Socket) => {
-  socket.on('update_click_count', async () => {
+  socket.on('update_click_count', async (countdownExpired: boolean) => {
     const roomCode = socket.data.roomCode;
 
     try {
@@ -27,7 +27,7 @@ export const clickTheBombSockets = (socket: Socket) => {
         throw new Error(`No players found for room "${roomCode}"`);
       }
 
-      const newClickCount = (parseInt(minigame.clickCount) + 1).toString();
+      let newClickCount = (parseInt(minigame.clickCount) + 1).toString();
       const currentPlayer = players.find((p) => p.id === socket.id);
 
       if (!currentPlayer) {
@@ -36,9 +36,11 @@ export const clickTheBombSockets = (socket: Socket) => {
 
       let scoreDelta = CLICK_THE_BOMB_RULES.BOMB_CLICK;
 
-      if (minigame.maxClicks === newClickCount) {
+      // Max number of clicks or countdown timer has ended
+      if (minigame.maxClicks === newClickCount || countdownExpired) {
         const alivePlayers = await findAlivePlayersService(players);
 
+        // End game
         if (alivePlayers && alivePlayers.length == 2) {
           const winner = alivePlayers.find((p) => p.id !== currentPlayer.id);
           if (winner) await syncPlayerScoreService(roomCode, winner.id, CLICK_THE_BOMB_RULES.WIN, players);
@@ -60,8 +62,7 @@ export const clickTheBombSockets = (socket: Socket) => {
 
         const newClickTheBombConfig = createClickTheBombConfig(alivePlayers!.length);
         await setMinigameData(roomCode, newClickTheBombConfig);
-
-        console.log('Powinien zginać i przekazać turę', newClickCount);
+        newClickCount = '0';
       }
 
       // TODO: Change all console.error to throw new Error
