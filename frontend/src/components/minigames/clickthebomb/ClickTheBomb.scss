@@ -47,7 +47,12 @@
 
     cursor: pointer;
     transition: 0.05s ease-in-out;
-    &:active {
+
+    &.bomb__lock {
+      cursor: not-allowed;
+    }
+
+    &.bomb__active:active {
       transform: scale(0.95);
     }
   }
@@ -86,5 +91,35 @@
     bottom: 10%;
     width: 75%;
     max-width: 225px;
+  }
+
+  .random__score__box {
+    height: 100px;
+    width: 65%;
+
+    position: absolute;
+    margin-bottom: 50px;
+
+    pointer-events: none;
+
+    z-index: 5;
+
+    .score {
+      position: absolute;
+
+      font-size: 34px;
+      font-weight: bold;
+      transition:
+        opacity 0.3s ease-in-out,
+        transform 0.3s ease;
+
+      &.positive {
+        color: green; //TODO: Change it
+      }
+
+      &.negative {
+        color: red; //TODO: Change it
+      }
+    }
   }
 }

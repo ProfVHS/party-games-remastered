@@ -4,17 +4,20 @@ export enum MinigameNamesEnum {
   cards = "Cards",
 }
 
-export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType | CardsDataType;
+export type MinigameDataType =
+  | ClickTheBombDataType
+  | ColorsMemoryDataType
+  | CardsDataType;
 
-type ClickTheBombDataType = {
+export type ClickTheBombDataType = {
   minigameName: MinigameNamesEnum.clickTheBomb;
   clickCount: string; // number
   maxClicks: string; // number
 };
 
-type ColorsMemoryDataType = {
+export type ColorsMemoryDataType = {
   minigameName: MinigameNamesEnum.colorsMemory;
   sequence: string[];
 };
 
-type CardsDataType = { minigameName: MinigameNamesEnum.cards };
+export type CardsDataType = { minigameName: MinigameNamesEnum.cards };

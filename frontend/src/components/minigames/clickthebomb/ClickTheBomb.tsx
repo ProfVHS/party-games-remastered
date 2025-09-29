@@ -1,8 +1,11 @@
 import './ClickTheBomb.scss';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@components/ui/button/Button.tsx';
 import Bomb from '@assets/textures/C4.svg?react';
 import { socket } from '@socket';
+import { usePlayersStore } from '@stores/playersStore.ts';
+import { useCountdownAnimation } from '@hooks/useCountdownAnimation';
+import { RandomScoreBox } from './RandomScoreBox';
 
 const formatMilisecondsToTimer = (ms: number) => {
   const seconds = Math.floor(ms / 1000);
@@ -10,101 +13,98 @@ const formatMilisecondsToTimer = (ms: number) => {
   return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
 };
 
+//TODO: Explosion animation
+//TODO: End game
+
 export const ClickTheBomb = () => {
-  const [canSkipTurn, setCanSkipTurn] = useState<boolean>(false);
   const [clicksCount, setClicksCount] = useState<number>(0);
+  const [turnNickname, setTurnNickname] = useState<string>('');
+  const [canSkipTurn, setCanSkipTurn] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [timeLeft, setTimeLeft] = useState(15000);
+  const [bombLock, setBombLock] = useState<boolean>(true);
+  const [scoreData, setScoreData] = useState<{ id: number; isPositive: boolean }>();
+  const { currentPlayer, players } = usePlayersStore();
+  const countdownDuration = 15;
 
-  const startTimeRef = useRef<number>();
-  const animationRef = useRef<number>();
-  const duration = 15000;
-
-  const animate = (timestamp: number) => {
-    // Store the starting time
-    if (!startTimeRef.current) startTimeRef.current = timestamp;
-
-    // Calculate how much time has passed since the countdown started
-    const elapsed = timestamp - startTimeRef.current;
-
-    // Calculate the remaining time, making sure it doesn't go below 0.
-    const newTimeLeft = Math.max(duration - elapsed, 0);
-
-    // Update UI with the new time
-    setTimeLeft(newTimeLeft);
-
-    if (newTimeLeft > 0) {
-      animationRef.current = requestAnimationFrame(animate);
-    } else {
-      stopCountdown();
-    }
+  const handlePlayerDeath = () => {
+    if (currentPlayer?.nickname != turnNickname) return;
+    socket.emit('update_click_count', true);
   };
 
-  const startCountdown = () => {
-    stopCountdown();
-    startTimeRef.current = undefined; // Allow fresh start on next animate call
-    animationRef.current = requestAnimationFrame(animate);
+  const { animationTimeLeft, startCountdownAnimation, stopCountdownAnimation } = useCountdownAnimation(countdownDuration, handlePlayerDeath);
+
+  const handleClickBomb = () => {
+    if (loading || bombLock) return; // loading - waiting for response from server, bombLock - it's not your turn
+
+    socket.emit('update_click_count', false);
+    stopCountdownAnimation();
+    setCanSkipTurn(true);
+    setLoading(true);
   };
 
-  const stopCountdown = () => {
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = undefined;
-    }
-  };
-
-  const updateClickCount = () => {
-    socket.emit('update_click_count');
-    stopCountdown();
+  const handleChangeTurn = () => {
+    socket.emit('change_turn');
+    stopCountdownAnimation();
+    setCanSkipTurn(false);
+    setBombLock(true);
   };
 
   useEffect(() => {
-    socket.on('received_updated_clicks', (updatedClickCount: number) => {
+    socket.on('updated_click_count', (updatedClickCount: number) => {
       setLoading(false);
       setClicksCount(updatedClickCount);
-      setTimeLeft(duration);
-      startCountdown();
+      startCountdownAnimation();
+    });
+
+    socket.on('changed_turn', (newTurnNickname: string) => {
+      setTurnNickname(() => newTurnNickname);
+      setCanSkipTurn(false);
+      startCountdownAnimation();
+
+      newTurnNickname === currentPlayer?.nickname ? setBombLock(false) : setBombLock(true);
+    });
+
+    socket.on('got_turn', (turnIndex: string) => {
+      const newTurnNickname = players[parseInt(turnIndex)].nickname;
+
+      setTurnNickname(() => newTurnNickname);
+
+      currentPlayer?.nickname === newTurnNickname ? setBombLock(false) : setBombLock(true);
+    });
+
+    socket.on('show_score', (playerExploded: boolean) => {
+      setScoreData((prev) => ({ id: (prev?.id ?? 0) + 1, isPositive: !playerExploded }));
     });
 
     return () => {
-      socket.off('received_updated_clicks');
-      stopCountdown();
+      socket.off('updated_click_count');
+      socket.off('changed_turn');
+      socket.off('got_turn');
+      socket.off('show_score');
     };
-  }, [socket]);
+  }, [turnNickname]);
 
   useEffect(() => {
-    startCountdown();
-    return () => stopCountdown();
+    startCountdownAnimation();
+
+    if (currentPlayer?.isHost === 'true') socket.emit('get_turn');
+
+    return () => stopCountdownAnimation();
   }, []);
 
   return (
     <div className="click-the-bomb">
+      <RandomScoreBox id={scoreData?.id} isPositive={scoreData?.isPositive} />
       <div className="click-the-bomb__info">
         <span className="click-the-bomb__title">Click The Bomb</span>
-        <span className="click-the-bomb__turn">user's Turn</span>
+        <span className="click-the-bomb__turn">{turnNickname} Turn</span>
       </div>
-      <div
-        className="click-the-bomb__bomb"
-        onClick={() => {
-          if (loading) return;
-          setLoading(true);
-          updateClickCount();
-          setCanSkipTurn(true);
-        }}
-      >
+      <div className={`click-the-bomb__bomb ${bombLock ? 'bomb__lock' : 'bomb__active'}`} onClick={handleClickBomb}>
         <Bomb />
         <span className="click-the-bomb__counter">{clicksCount! >= 10 ? clicksCount : '0' + clicksCount}</span>
-        <span className="click-the-bomb__timer">{formatMilisecondsToTimer(timeLeft)}</span>
+        <span className="click-the-bomb__timer">{formatMilisecondsToTimer(animationTimeLeft)}</span>
       </div>
-      <Button
-        className="click-the-bomb__button"
-        type="button"
-        size="medium"
-        isDisabled={!canSkipTurn}
-        onClick={() => {
-          setCanSkipTurn(false);
-        }}
-      >
+      <Button className="click-the-bomb__button" type="button" size="medium" isDisabled={!canSkipTurn} onClick={handleChangeTurn}>
         Next
       </Button>
     </div>
