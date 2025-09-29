@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import './NumberPicker.scss';
+import React, { useState } from 'react';
 
 type NumberPickerProps = {
   min: number;

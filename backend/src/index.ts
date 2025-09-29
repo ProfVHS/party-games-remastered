@@ -4,8 +4,14 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
+
+import { connectionSockets } from './sockets/connectionSockets';
 import { roomSockets } from './sockets/roomSockets';
 import { turnSockets } from './sockets/turnSockets';
+import { playerSockets } from './sockets/playerSockets';
+import { minigameSockets } from './sockets/minigameSockets';
+import { clickTheBombSockets } from './sockets/clickTheBombSockets';
+import { cardsSockets } from './sockets/cardsSockets';
 
 const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
@@ -24,10 +30,13 @@ const io = new Server(socketServer, {
 });
 
 const handleModulesOnConnection = async (socket: Socket) => {
-  console.log(`New connection: ${socket.id}`);
-
+  connectionSockets(socket);
   roomSockets(socket);
   turnSockets(socket);
+  playerSockets(socket);
+  minigameSockets(socket);
+  clickTheBombSockets(socket);
+  cardsSockets(socket);
 
   socket.on('error', (err) => {
     console.error(`Socket error: ${err}`);

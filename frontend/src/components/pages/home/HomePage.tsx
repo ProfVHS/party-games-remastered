@@ -1,10 +1,11 @@
 import './HomePage.scss';
-import { Button } from '../../ui/button/Button.tsx';
-import { JoinForm } from '../../features/forms/JoinForm.tsx';
-import { CreateForm } from '../../features/forms/CreateForm.tsx';
+import { Button } from '@components/ui/button/Button.tsx';
+import { JoinForm } from '@components/features/forms/JoinForm.tsx';
+import { CreateForm } from '@components/features/forms/CreateForm.tsx';
 import { useEffect, useState } from 'react';
 import { useAnimate } from 'framer-motion';
-import { Icon } from '../../../assets/icon';
+import { Icon } from '@assets/icon';
+import { socket } from '@socket';
 
 export const HomePage = () => {
   const [scope, animate] = useAnimate();
@@ -19,10 +20,17 @@ export const HomePage = () => {
     animate(scope.current, { scale: [0.5, 1], opacity: [0, 1] }, { duration: 0.5, type: 'spring' });
   }, [animate, scope, status]);
 
+  useEffect(() => {
+    // Ensures the player is connected to the socket (Home page)
+    if (!socket.connected) {
+      socket.connect();
+    }
+  }, [location.pathname]);
+
   return (
     <div className="home-page">
       <div className="home-page__content">
-        <Icon icon={'Logo'} />
+        <Icon icon={'Logo'} className="home-page__logo" />
         <span className="home-page__title">Party Games</span>
         <div className="home-page__forms" ref={scope}>
           {status === 'selecting' && (

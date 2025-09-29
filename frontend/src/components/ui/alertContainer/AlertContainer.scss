@@ -1,0 +1,27 @@
+.alert-container {
+  position: absolute;
+  padding: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 500px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+
+  &__backdrop {
+    position: absolute;
+    top: 0;
+    z-index: 99;
+
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(1px);
+    width: 100vw;
+    height: 100vh;
+  }
+
+  &__alert{
+    z-index: 100;
+  }
+}

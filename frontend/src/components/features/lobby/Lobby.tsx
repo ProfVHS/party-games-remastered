@@ -1,21 +1,24 @@
 import './Lobby.scss';
-import { Button } from '../../ui/button/Button';
+import { Button } from '@components/ui/button/Button';
 import { useState } from 'react';
-import { LobbySettings } from '../lobbySettings/LobbySettings';
-import { socket } from '../../../socket.ts';
+import { LobbySettings } from '@components/features/lobbySettings/LobbySettings';
+import { socket } from '@socket';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { EPossibleMinigames, LobbySettingsType, MinigameEntryType } from '../../../types';
+import { LobbySettingsType, MinigameEntryType } from '@frontend-types/index';
+import { MinigameNamesEnum } from '@shared/types';
 
-import { SettingsButton } from '../../ui/settingsButton/SettingsButton.tsx';
-import { useToast } from '../../../hooks/useToast.ts';
-import { useLobbyToggle } from '../../../hooks/useLobbyToggle.ts';
-import { useLobbyFetch } from '../../../hooks/useLobbyFetch.ts';
-import { useLobbyStart } from '../../../hooks/useLobbyStart.ts';
+import { SettingsButton } from '@components/ui/settingsButton/SettingsButton.tsx';
+import { useToast } from '@hooks/useToast.ts';
+import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
+import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
+import { useLobbyStart } from '@hooks/useLobbyStart.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 export const Lobby = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { currentPlayer } = usePlayersStore();
 
   const [lobbySettings, setLobbySettings] = useState<LobbySettingsType>({
     isRandomMinigames: true,
@@ -25,21 +28,21 @@ export const Lobby = () => {
 
   /**
    * Converts a list of minigame entries (with string names)
-   * into a valid array of EPossibleMinigames enum values.
+   * into a valid array of PossibleMinigamesEnum enum values.
    *
    * Filters out any invalid or unrecognized names that don't exist in the enum.
    *
    * Example:
    * Input:  [{ name: 'Click the Bomb' }, { name: 'none' }, { name: 'invalid' }]
-   * Output: [EPossibleMinigames.clickTheBomb, EPossibleMinigames.none]
+   * Output: [PossibleMinigamesEnum.clickTheBomb, PossibleMinigamesEnum.none]
    */
-  const convertToMinigameEnums = (minigameList: MinigameEntryType[]): EPossibleMinigames[] => {
+  const convertToMinigameEnums = (minigameList: MinigameEntryType[]): MinigameNamesEnum[] => {
     return minigameList
       .map((minigame) => {
-        const match = Object.values(EPossibleMinigames).find((val) => val === minigame.name);
-        return match as EPossibleMinigames | undefined;
+        const match = Object.values(MinigameNamesEnum).find((val) => val === minigame.name);
+        return match as MinigameNamesEnum | undefined;
       })
-      .filter((val): val is EPossibleMinigames => val !== undefined);
+      .filter((val): val is MinigameNamesEnum => val !== undefined);
   };
 
   const toggleLobbySettings = () => setIsSettingsOpen((prev) => !prev);
@@ -68,7 +71,7 @@ export const Lobby = () => {
               transition={{ delay: 0.2, duration: 0.2 }}
             >
               <LobbyContent minigames={convertToMinigameEnums(lobbySettings.minigames)} numberOfMinigames={lobbySettings.numberOfMinigames} />
-              <SettingsButton className="lobby__settingsbutton" onClick={() => toggleLobbySettings()} />
+              {currentPlayer?.isHost === 'true' && <SettingsButton className="lobby__settingsbutton" onClick={() => toggleLobbySettings()} />}
             </motion.div>
           )}
         </AnimatePresence>
@@ -77,15 +80,15 @@ export const Lobby = () => {
   );
 };
 
-const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: EPossibleMinigames[]; numberOfMinigames?: number }) => {
+const LobbyContent = ({ minigames, numberOfMinigames }: { minigames: MinigameNamesEnum[]; numberOfMinigames?: number }) => {
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const roomCode = sessionStorage.getItem('roomCode');
+  const roomCode = localStorage.getItem('roomCode');
 
   useLobbyToggle({ setPlayersReady, setIsLoading });
   useLobbyFetch({ setPlayersReady });
-  const { countdown } = useLobbyStart({ playersReady, minigames, numberOfMinigames });
+  const { countdown } = useLobbyStart({ playersReady, minigames, numberOfMinigames, setReady });
 
   const toast = useToast();
 

@@ -4,7 +4,11 @@ import Info from './svgs/info.svg?react';
 import Success from './svgs/success.svg?react';
 import Logo from './svgs/logo.svg?react';
 import Settings from './svgs/settings.svg?react';
-import Bomb from './svgs/bomb.svg?react';
+import Mine from './svgs/mine.svg?react';
+
+import ClickTheBomb from './svgs/clickTheBomb.svg?react';
+import Cards from './svgs/cards.svg?react';
+import ColorsMemory from './svgs/colorsMemory.svg?react';
 
 export const icons = {
   Error,
@@ -13,5 +17,8 @@ export const icons = {
   Success,
   Logo,
   Settings,
-  Bomb,
+  Mine,
+  ClickTheBomb,
+  Cards,
+  ColorsMemory,
 };

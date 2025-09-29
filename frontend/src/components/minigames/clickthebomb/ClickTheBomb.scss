@@ -1,0 +1,125 @@
+@use '../../../common/styles/variables' as *;
+
+.click-the-bomb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  height: 100%;
+  max-height: 400px;
+  min-height: 380px;
+
+  width: 100%;
+  max-width: 400px;
+  min-width: 320px;
+
+  background-color: var(--click-the-bomb-bg);
+  border-radius: 4px;
+
+  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+
+  user-select: none;
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__title {
+    color: var(--click-the-bomb-title);
+    font-family: 'Spicy Rice', serif;
+    font-size: 32px;
+  }
+
+  &__turn {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--click-the-bomb-turn);
+  }
+
+  &__bomb {
+    position: relative;
+
+    cursor: pointer;
+    transition: 0.05s ease-in-out;
+
+    &.bomb__lock {
+      cursor: not-allowed;
+    }
+
+    &.bomb__active:active {
+      transform: scale(0.95);
+    }
+  }
+
+  &__counter {
+    position: absolute;
+
+    top: 47.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-family: 'Wallpoet', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 32px;
+
+    color: #fff;
+
+    user-select: none;
+  }
+
+  &__timer {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-family: 'Wallpoet', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 12spx;
+    color: #ff0505;
+  }
+
+  &__button {
+    bottom: 10%;
+    width: 75%;
+    max-width: 225px;
+  }
+
+  .random__score__box {
+    height: 100px;
+    width: 65%;
+
+    position: absolute;
+    margin-bottom: 50px;
+
+    pointer-events: none;
+
+    z-index: 5;
+
+    .score {
+      position: absolute;
+
+      font-size: 34px;
+      font-weight: bold;
+      transition:
+        opacity 0.3s ease-in-out,
+        transform 0.3s ease;
+
+      &.positive {
+        color: green; //TODO: Change it
+      }
+
+      &.negative {
+        color: red; //TODO: Change it
+      }
+    }
+  }
+}
