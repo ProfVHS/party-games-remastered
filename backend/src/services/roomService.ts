@@ -20,6 +20,7 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
       score: '0',
       isHost: 'true',
       isDisconnected: 'false',
+      status: PlayerStatusEnum.idle,
       selectedObjectId: '-100',
       avatar: avatars[Math.floor(Math.random() * avatars.length)],
     });
@@ -70,6 +71,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       score: '0',
       isHost: 'false',
       isDisconnected: 'false',
+      status: PlayerStatusEnum.idle,
       selectedObjectId: '-100',
       avatar: availableAvatars[Math.floor(Math.random() * availableAvatars.length)],
     });

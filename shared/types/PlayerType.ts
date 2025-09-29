@@ -5,6 +5,7 @@ export type PlayerType = {
   score: string; // number
   isHost: string; // boolean
   isDisconnected: string; // boolean
+  status: PlayerStatusEnum;
   selectedObjectId: string; // number
   avatar: string;
 };
