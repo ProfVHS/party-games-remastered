@@ -14,7 +14,7 @@ export const cardsSockets = async (socket: Socket) => {
 
     // For each player, if selectedObjectId is '-100', assign a random card from 0 to 8
     players.forEach((player) => {
-      if (player.selectedObjectId === '-100' && player.isAlive === 'true' && player.status !== 'offline') {
+      if (player.selectedObjectId === '-100' && player.isAlive === 'true' && player.isDisconnected === 'false') {
         player.selectedObjectId = Math.floor(Math.random() * 9).toString();
       }
     });

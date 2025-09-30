@@ -19,7 +19,8 @@ export const createRoomService = async (roomCode: string, socket: Socket, nickna
       isAlive: 'true',
       score: '0',
       isHost: 'true',
-      status: PlayerStatusEnum.onilne,
+      isDisconnected: 'false',
+      status: PlayerStatusEnum.idle,
       selectedObjectId: '-100',
       avatar: avatars[Math.floor(Math.random() * avatars.length)],
     });
@@ -69,7 +70,8 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
       isAlive: 'true',
       score: '0',
       isHost: 'false',
-      status: PlayerStatusEnum.onilne,
+      isDisconnected: 'false',
+      status: PlayerStatusEnum.idle,
       selectedObjectId: '-100',
       avatar: availableAvatars[Math.floor(Math.random() * availableAvatars.length)],
     });
@@ -207,7 +209,7 @@ export const changeTurnService = async (roomCode: string): Promise<string | null
     const nextTurn = (currentTurn + i) % players.length;
     const potentialPlayer = players[nextTurn];
 
-    if (potentialPlayer.isAlive === 'true' && potentialPlayer.status === PlayerStatusEnum.onilne) {
+    if (potentialPlayer.isAlive === 'true' && potentialPlayer.isDisconnected === 'false') {
       await roomRepository.updateRoomData(roomCode, { currentTurn: nextTurn.toString() });
       return potentialPlayer.nickname;
     }
