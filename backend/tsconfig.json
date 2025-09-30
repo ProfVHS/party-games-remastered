@@ -16,6 +16,7 @@
       "@roomRepository": ["repositories/roomRepository"],
       "@roomService": ["services/roomService.ts"],
       "@playerService": ["services/playerService.ts"],
+      "@minigameService": ["services/minigameService.ts"],
       "@backend-types": ["types"]
     }
   },

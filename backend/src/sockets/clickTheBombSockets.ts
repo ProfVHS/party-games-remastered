@@ -4,7 +4,7 @@ import { sendAllPlayers } from './playerSockets';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, PlayerType } from '@shared/types';
 import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData } from '@roomRepository';
 import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersService } from '@playerService';
-import { changeTurnService } from '@roomService';
+import { changeTurnService } from '@minigameService';
 import { createClickTheBombConfig } from '@config/minigames';
 
 export const clickTheBombSockets = (socket: Socket) => {

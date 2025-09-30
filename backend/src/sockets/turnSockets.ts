@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { changeTurnService } from '@roomService';
+import { changeTurnService } from '@minigameService';
 import * as roomRepository from '@roomRepository';
 
 export const turnSockets = (socket: Socket) => {

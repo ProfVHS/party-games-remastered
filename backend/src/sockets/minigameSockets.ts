@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import { MinigameNamesEnum } from '@shared/types';
-import * as roomService from '@roomService';
+import { startMinigameService } from '@minigameService';
 import { setMinigames } from '@roomRepository';
 
 export const minigameSockets = (socket: Socket) => {
@@ -12,7 +12,7 @@ export const minigameSockets = (socket: Socket) => {
   socket.on('start_minigame', async (minigame: MinigameNamesEnum) => {
     const playerID = socket.id;
     const roomCode = socket.data.roomCode;
-    const response = await roomService.startMinigameService(roomCode, minigame);
+    const response = await startMinigameService(roomCode, minigame);
 
     if (!response.success) {
       socket.nsp.to(playerID).emit('failed_to_start_minigame');
