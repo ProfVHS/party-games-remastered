@@ -41,6 +41,15 @@ html[data-theme='dark'] {
   //== Lobby ==//
   --lobby-player-text: #{$primaryColor2};
 
+  //== Leaderboard ==//
+  --leaderboard-bg: #{$darkBgColor};
+  --leaderboard-title: #{$darkerPrimaryColor};
+  --leaderboard-player-bg: #7d7b80;
+  --leaderboard-first-place: #ffd000;
+  --leaderboard-second-place: #cecad2;
+  --leaderboard-third-place: #d09351;
+  --leaderboard-player-opacity: 0.6;
+
   //== Minigame List ==//
   --minigame-list-bg: #{$darkBgColor};
   --minigame-list-title: rgba(#fff, 0.8);
