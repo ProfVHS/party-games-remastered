@@ -1,9 +1,12 @@
-import { updatePlayer, updatePlayerScore } from '@roomRepository';
-import { PlayerType } from '@shared/types';
+import { client } from '@config/db';
+import { Socket } from 'socket.io';
+import { ChainableCommander } from 'ioredis';
+import * as roomRepository from '@roomRepository';
+import { PlayerType, ReturnDataType } from '@shared/types';
 
 export const syncPlayerScoreService = async (roomCode: string, playerId: string, delta: number, players: PlayerType[]): Promise<PlayerType | null> => {
   try {
-    updatePlayerScore(roomCode, playerId, delta);
+    roomRepository.updatePlayerScore(roomCode, playerId, delta);
 
     const player = players.find((p) => p.id === playerId);
     if (player) {
@@ -26,7 +29,7 @@ export const syncPlayerUpdateService = async (
   players: PlayerType[],
 ): Promise<PlayerType | null> => {
   try {
-    await updatePlayer(roomCode, playerId, updates);
+    await roomRepository.updatePlayer(roomCode, playerId, updates);
 
     const player = players.find((p) => p.id === playerId);
     if (player) {
@@ -49,4 +52,27 @@ export const findAlivePlayersService = async (players: PlayerType[]): Promise<Pl
     console.error(`Finding all alive players failed for players: ${players}`);
     return null;
   }
+};
+
+export const deletePlayerService = async (socket: Socket): Promise<ReturnDataType> => {
+  const playerID = socket.id;
+  const roomCode = socket.data.roomCode;
+  let multi: ChainableCommander;
+
+  try {
+    multi = client.multi();
+
+    await roomRepository.deletePlayer(roomCode, playerID, multi);
+    await roomRepository.deletePlayerFromReadyTable(roomCode, playerID, multi);
+
+    await multi.exec();
+
+    const players = await roomRepository.getAllPlayers(roomCode);
+    if (players.length === 0) return { success: true, payload: 1 }; // Last player in room
+  } catch (error) {
+    console.error(`Player deletion failed for player: ${playerID}: ${error}`);
+    return { success: false }; // Player not deleted
+  }
+
+  return { success: true, payload: 0 }; // Player deleted
 };

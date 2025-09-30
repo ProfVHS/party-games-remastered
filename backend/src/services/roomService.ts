@@ -101,29 +101,6 @@ export const toggleReadyService = async (socket: Socket): Promise<ReturnDataType
   return { success: true, payload: playerReadyCount }; // Success and number of players ready
 };
 
-export const deletePlayerService = async (socket: Socket): Promise<ReturnDataType> => {
-  const playerID = socket.id;
-  const roomCode = socket.data.roomCode;
-  let multi: ChainableCommander;
-
-  try {
-    multi = client.multi();
-
-    await roomRepository.deletePlayer(roomCode, playerID, multi);
-    await roomRepository.deletePlayerFromReadyTable(roomCode, playerID, multi);
-
-    await multi.exec();
-
-    const players = await roomRepository.getAllPlayers(roomCode);
-    if (players.length === 0) return { success: true, payload: 1 }; // Last player in room
-  } catch (error) {
-    console.error(`Player deletion failed for player: ${playerID}: ${error}`);
-    return { success: false }; // Player not deleted
-  }
-
-  return { success: true, payload: 0 }; // Player deleted
-};
-
 export const deleteRoomService = async (socket: Socket): Promise<ReturnDataType> => {
   const roomCode = socket.data.roomCode;
   let multi: ChainableCommander;
