@@ -70,7 +70,7 @@ export const RoomLayout = ({ players, children }: RoomLayoutProps) => {
     return players.map((player, index) => {
       const { row, col } = relevantGridPositions[index];
 
-      return <PlayerAvatar key={index} player={player} style={{ gridColumn: col, gridRow: row }} status='idle' />;
+      return <PlayerAvatar key={index} player={player} style={{ gridColumn: col, gridRow: row }} />;
     });
   };
 
