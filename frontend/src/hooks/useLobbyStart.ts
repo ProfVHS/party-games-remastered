@@ -21,6 +21,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setR
   const getRandomMinigames = (numberOfMinigames: number = 2): MinigameNamesEnum[] => {
     const allMinigames = Object.values(MinigameNamesEnum);
 
+    //TODO: Uncomment
     // if (numberOfMinigames < 2 || numberOfMinigames > allMinigames.length) {
     //   throw new Error(`Number of minigames must be between 2 and ${allMinigames.length}, but received ${numberOfMinigames}`);
     // }
@@ -45,7 +46,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setR
           if (prev === 1 && !hasStarted.current) {
             if (currentPlayer?.isHost == 'true') {
               socket.emit('set_minigames', minigames);
-              socket.emit('start_minigame', minigames[0]);
+              socket.emit('start_minigame');
             }
             hasStarted.current = true;
             clearInterval(timer);

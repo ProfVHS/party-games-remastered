@@ -4,7 +4,7 @@ export type RoomDataType = {
   currentRound: string; // number
   currentTurn: string; // number
   status: RoomStatusEnum;
-  //minigameIndex: string; // number
+  minigameIndex: string; // number
 };
 
 export enum RoomStatusEnum {

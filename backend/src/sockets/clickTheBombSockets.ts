@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
-import { sendAllPlayers } from './playerSockets';
+import { sendAllPlayers } from '@sockets';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, PlayerType } from '@shared/types';
 import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData } from '@roomRepository';
 import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersService } from '@playerService';

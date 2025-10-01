@@ -1,14 +1,13 @@
 import { client } from '@config/db';
 import { Socket } from 'socket.io';
-import * as roomRepository from '@roomRepository';
 import { ChainableCommander } from 'ioredis';
-import { ReturnDataType } from '@shared/types';
-import { MinigameNamesEnum, RoomDataType, MinigameDataType, RoomStatusEnum } from '@shared/types';
+import * as roomRepository from '@roomRepository';
+import { PlayerStatusEnum, ReturnDataType, MinigameNamesEnum, MinigameDataType, RoomStatusEnum } from '@shared/types';
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '@config/minigames';
+import { sendAllPlayers } from '@sockets';
 
 //TODO: Remove minigameName prop and take from room data minigame index to start a game
-export const startMinigameService = async (roomCode: string, minigameName: MinigameNamesEnum): Promise<ReturnDataType> => {
-  let roomData: RoomDataType | null;
+export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
   let minigameData: MinigameDataType | null;
   let multi: ChainableCommander;
   const players = await roomRepository.getAllPlayers(roomCode);
@@ -18,11 +17,24 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
     return { success: false }; // No players to start the minigame
   }
 
+  const minigames = await roomRepository.getMinigames(roomCode);
+  const roomData = await roomRepository.getRoomData(roomCode);
+
+  if (!minigames) {
+    throw new Error(`Couldn't find minigames for room ${roomCode} when starting a game`);
+  }
+
+  if (!roomData) {
+    throw new Error(`Couldn't find roomData for room ${roomCode} when starting a game`);
+  }
+
+  const currentMinigameIndex = minigames[Number(roomData?.minigameIndex)];
+
   try {
     multi = client.multi();
-    await roomRepository.setRoomData(roomCode, createRoomConfig(players.length, RoomStatusEnum.game), multi);
+    await roomRepository.updateRoomData(roomCode, createRoomConfig(players.length, RoomStatusEnum.game), multi);
 
-    switch (minigameName) {
+    switch (currentMinigameIndex) {
       case MinigameNamesEnum.clickTheBomb:
         const clickTheBombConfig = createClickTheBombConfig(players.length);
         console.log(`Starting Click The Bomb minigame in room ${roomCode} with config:`, clickTheBombConfig);
@@ -44,7 +56,6 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
     }
     await multi.exec();
 
-    roomData = await roomRepository.getRoomData(roomCode);
     minigameData = await roomRepository.getMinigameData(roomCode);
     await roomRepository.deleteReadyTable(roomCode); // We don't need it after the game has started
   } catch (error) {
@@ -56,11 +67,29 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
 };
 
 export const endMinigameService = async (roomCode: string, socket: Socket) => {
-  //TODO: Set all connected players alive to true, status to idle, selectedObjectId to -100,
-  //TODO: Set curretn minigame index + 1, status to leaderboard, current round to 1
-  //TODO: Remove ready and started key
+  let multi: ChainableCommander;
 
-  socket.nsp.to(roomCode).emit('ended_minigame');
+  try {
+    multi = client.multi();
+
+    await roomRepository.updateFilteredPlayers(
+      roomCode,
+      { isDisconnected: 'false' },
+      { isAlive: 'true', status: PlayerStatusEnum.idle, selectedObjectId: '-100' },
+      multi,
+    );
+    await roomRepository.updateRoomData(roomCode, { status: RoomStatusEnum.leaderboard }, multi);
+    await roomRepository.incrementRoomDataMinigameIndex(roomCode, multi);
+    await roomRepository.deleteReadyTable(roomCode, multi);
+    await roomRepository.deleteMinigameStarted(roomCode, multi);
+
+    await multi.exec();
+
+    await sendAllPlayers(socket, roomCode);
+    socket.nsp.to(roomCode).emit('ended_minigame');
+  } catch (error) {
+    throw new Error(`Failed to end minigame for room ${roomCode}: ${error}`);
+  }
 };
 
 export const changeTurnService = async (roomCode: string): Promise<string | null> => {
