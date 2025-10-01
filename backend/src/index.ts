@@ -5,13 +5,13 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 
-import { connectionSockets } from './sockets/connectionSockets';
-import { roomSockets } from './sockets/roomSockets';
-import { turnSockets } from './sockets/turnSockets';
-import { playerSockets } from './sockets/playerSockets';
-import { minigameSockets } from './sockets/minigameSockets';
-import { clickTheBombSockets } from './sockets/clickTheBombSockets';
-import { cardsSockets } from './sockets/cardsSockets';
+import { connectionSockets } from '@sockets';
+import { roomSockets } from '@sockets';
+import { turnSockets } from '@sockets';
+import { playerSockets } from '@sockets';
+import { minigameSockets } from '@sockets';
+import { clickTheBombSockets } from '@sockets';
+import { cardsSockets } from '@sockets';
 
 const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 

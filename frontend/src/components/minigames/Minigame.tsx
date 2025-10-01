@@ -1,17 +1,50 @@
 import { MinigameNamesEnum } from '@shared/types';
 import { Cards } from '@components/minigames/cards/Cards';
 import { ClickTheBomb } from '@components/minigames/clickthebomb/ClickTheBomb';
+import { useEffect, useState } from 'react';
+import { socket } from '@socket';
+import { Leaderboard } from '@components/features/leaderboard/Leaderboard';
 
 type MinigameProps = {
   minigameName: string;
 };
 
 export const Minigame = ({ minigameName }: MinigameProps) => {
+  const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
+
+  useEffect(() => {
+    socket.on('ended_minigame', () => {
+      setTimeout(() => {
+        setShowLeaderboard(true);
+      }, 1500);
+
+      //TODO: At the end send to redis that you are ready for the next game
+      setTimeout(() => {
+        socket.emit('start_minigame_queue');
+      }, 3000);
+    });
+
+    return () => {
+      socket.off('ended_minigame');
+    };
+  }, [showLeaderboard]);
+
+  useEffect(() => {
+    if (!minigameName) return;
+    setShowLeaderboard(false);
+  }, [minigameName]);
+
   return (
-    <>
-      <div>{minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}</div>
-      <div>{minigameName == MinigameNamesEnum.cards && <Cards />}</div>
-      <div>{minigameName == MinigameNamesEnum.colorsMemory && <div>Colors Memory</div>}</div>
-    </>
+    <div>
+      {showLeaderboard ? (
+        <Leaderboard />
+      ) : (
+        <>
+          {minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}
+          {minigameName == MinigameNamesEnum.cards && <Cards />}
+          {minigameName == MinigameNamesEnum.colorsMemory && <div>Colors Memory</div>}
+        </>
+      )}
+    </div>
   );
 };

@@ -36,6 +36,37 @@ export const updateAllPlayers = async (roomCode: string, updates: Partial<Player
   }
 };
 
+export const updateFilteredPlayers = async (
+  roomCode: string,
+  filter: Partial<PlayerType>,
+  updates: Partial<PlayerType>,
+  multi?: ChainableCommander,
+): Promise<void> => {
+  const players = await getAllPlayers(roomCode);
+  // Object.entries -> From { isAlive: "true" } to [["isAlive", "true"]]
+  // every -> Checks if all provided conditions match the player
+  // player[key] === value -> Compares a specific field of the player with the given value
+  const filteredPlayers = players.filter((player) => Object.entries(filter).every(([key, value]) => player[key as keyof PlayerType] === value));
+
+  if (!players) {
+    throw new Error(`No players found for room: ${roomCode}`);
+  }
+
+  if (!filteredPlayers) {
+    throw new Error(`No alive players found for room: ${roomCode}`);
+  }
+
+  const playerKeys = filteredPlayers.map((p) => getKey(roomCode, keyName, p.id));
+
+  if (multi) {
+    playerKeys.forEach((key) => multi.hset(key, updates));
+  } else {
+    for (const key of playerKeys) {
+      await client.hset(key, updates);
+    }
+  }
+};
+
 export const updatePlayerScore = async (roomCode: string, id: string, score: number, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.hincrby(getKey(roomCode, keyName, id), 'score', score);

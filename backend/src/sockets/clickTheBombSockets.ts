@@ -1,10 +1,10 @@
 import { Socket } from 'socket.io';
 import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
-import { sendAllPlayers } from './playerSockets';
+import { sendAllPlayers } from '@sockets';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, PlayerType } from '@shared/types';
 import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData } from '@roomRepository';
 import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersService } from '@playerService';
-import { changeTurnService } from '@roomService';
+import { changeTurnService, endMinigameService } from '@minigameService';
 import { createClickTheBombConfig } from '@config/minigames';
 
 export const clickTheBombSockets = (socket: Socket) => {
@@ -42,7 +42,7 @@ export const clickTheBombSockets = (socket: Socket) => {
         const alivePlayers = await findAlivePlayersService(players);
 
         // End game
-        if (alivePlayers && alivePlayers.length == 2) {
+        if (alivePlayers && alivePlayers.length <= 2) {
           const winner = alivePlayers.find((p) => p.id !== currentPlayer.id);
           if (winner) await syncPlayerScoreService(roomCode, winner.id, CLICK_THE_BOMB_RULES.WIN, players);
 
@@ -50,7 +50,7 @@ export const clickTheBombSockets = (socket: Socket) => {
           await syncPlayerScoreService(roomCode, currentPlayer.id, CLICK_THE_BOMB_RULES.LOSS, players);
 
           sendAllPlayers(socket, roomCode, players);
-          console.log(`ClickTheBomb game ended in room ${roomCode}`);
+          endMinigameService(roomCode, socket);
           // TODO: End the game
           return;
         }

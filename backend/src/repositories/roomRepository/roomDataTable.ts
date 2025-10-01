@@ -45,3 +45,11 @@ export const deleteRoomData = async (roomCode: string, multi?: ChainableCommande
     await client.del(getKey(roomCode, keyName));
   }
 };
+
+export const incrementRoomDataMinigameIndex = async (roomCode: string, multi?: ChainableCommander) => {
+  if (multi) {
+    multi.hincrby(getKey(roomCode, keyName), 'minigameIndex', 1);
+  } else {
+    client.hincrby(getKey(roomCode, keyName), 'minigameIndex', 1);
+  }
+};

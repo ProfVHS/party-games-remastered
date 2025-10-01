@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import * as roomService from '@roomService';
+import * as playerService from '@playerService';
 import * as roomRepository from '@roomRepository';
 import { RoomStatusEnum } from '@shared/types';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
@@ -14,7 +15,7 @@ export const connectionSockets = (socket: Socket) => {
     socket.leave(roomCode);
     console.log(`Disconnected: ${socket.id} (Reason: ${reason})`);
 
-    const response = await roomService.deletePlayerService(socket);
+    const response = await playerService.deletePlayerService(socket);
     if (!response.success) return;
 
     // Payload: 1 - You are the last player in the room
