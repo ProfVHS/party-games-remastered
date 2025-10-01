@@ -14,8 +14,6 @@ export const Minigame = ({ minigameName }: MinigameProps) => {
 
   useEffect(() => {
     socket.on('ended_minigame', () => {
-      console.log('Leaderboard');
-
       setTimeout(() => {
         setShowLeaderboard(true);
       }, 1500);

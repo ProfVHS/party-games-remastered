@@ -6,19 +6,17 @@ import { PlayerStatusEnum, ReturnDataType, MinigameNamesEnum, MinigameDataType, 
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '@config/minigames';
 import { sendAllPlayers } from '@sockets';
 
-//TODO: Remove minigameName prop and take from room data minigame index to start a game
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
-  let minigameData: MinigameDataType | null;
+  let minigameData: MinigameDataType | null = null;
   let multi: ChainableCommander;
   const players = await roomRepository.getAllPlayers(roomCode);
+  const roomData = await roomRepository.getRoomData(roomCode);
+  const minigames = await roomRepository.getMinigames(roomCode);
 
   if (!players || players.length === 0) {
     console.error(`No players found in room ${roomCode} for starting minigame`);
     return { success: false }; // No players to start the minigame
   }
-
-  const minigames = await roomRepository.getMinigames(roomCode);
-  const roomData = await roomRepository.getRoomData(roomCode);
 
   if (!minigames) {
     throw new Error(`Couldn't find minigames for room ${roomCode} when starting a game`);
@@ -28,25 +26,28 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     throw new Error(`Couldn't find roomData for room ${roomCode} when starting a game`);
   }
 
-  const currentMinigameIndex = minigames[Number(roomData?.minigameIndex)];
+  const currentMinigame = minigames[Number(roomData?.minigameIndex)];
 
   try {
     multi = client.multi();
     await roomRepository.updateRoomData(roomCode, createRoomConfig(players.length, RoomStatusEnum.game), multi);
 
-    switch (currentMinigameIndex) {
+    switch (currentMinigame) {
       case MinigameNamesEnum.clickTheBomb:
         const clickTheBombConfig = createClickTheBombConfig(players.length);
+        minigameData = clickTheBombConfig;
         console.log(`Starting Click The Bomb minigame in room ${roomCode} with config:`, clickTheBombConfig);
         await roomRepository.setMinigameData(roomCode, clickTheBombConfig, multi);
         break;
       case MinigameNamesEnum.cards:
         const cardsConfig = createCardsConfig();
+        minigameData = cardsConfig;
         console.log(`Starting Cards minigame in room ${roomCode} with config:`, cardsConfig);
         await roomRepository.setMinigameData(roomCode, cardsConfig, multi);
         break;
       case MinigameNamesEnum.colorsMemory:
         const colorsMemoryConfig = createColorsMemoryConfig();
+        minigameData = colorsMemoryConfig;
         console.log(`Starting Colors Memory minigame in room ${roomCode} with config:`, colorsMemoryConfig);
         await roomRepository.setMinigameData(roomCode, colorsMemoryConfig, multi);
         break;
@@ -56,7 +57,6 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     }
     await multi.exec();
 
-    minigameData = await roomRepository.getMinigameData(roomCode);
     await roomRepository.deleteReadyTable(roomCode); // We don't need it after the game has started
   } catch (error) {
     console.error(`Minigame start failed for room ${roomCode}: ${error}`);

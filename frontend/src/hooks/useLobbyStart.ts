@@ -21,10 +21,9 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setR
   const getRandomMinigames = (numberOfMinigames: number = 2): MinigameNamesEnum[] => {
     const allMinigames = Object.values(MinigameNamesEnum);
 
-    //TODO: Uncomment
-    // if (numberOfMinigames < 2 || numberOfMinigames > allMinigames.length) {
-    //   throw new Error(`Number of minigames must be between 2 and ${allMinigames.length}, but received ${numberOfMinigames}`);
-    // }
+    if (numberOfMinigames < 2 || numberOfMinigames > allMinigames.length) {
+      throw new Error(`Number of minigames must be between 2 and ${allMinigames.length}, but received ${numberOfMinigames}`);
+    }
 
     const shuffled = [...allMinigames].sort(() => Math.random() - 0.5);
 
