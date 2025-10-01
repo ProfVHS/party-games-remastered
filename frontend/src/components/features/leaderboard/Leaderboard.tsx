@@ -19,7 +19,7 @@ export const Leaderboard = () => {
       <div className="leaderboard__title">Leaderboard</div>
       <div className="leaderboard__players__container">
         {sortedPlayers.map((player, index) => (
-          <div className={`leaderboard__player`}>
+          <div className={`leaderboard__player`} key={index}>
             <div className="leaderboard__player__nickname">{index + 1 + '.' + player.nickname}</div>
             <div className="leaderboard__player__score">{player.score}</div>
           </div>

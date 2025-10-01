@@ -1,10 +1,12 @@
 import { client } from '@config/db';
+import { Socket } from 'socket.io';
 import * as roomRepository from '@roomRepository';
 import { ChainableCommander } from 'ioredis';
 import { ReturnDataType } from '@shared/types';
 import { MinigameNamesEnum, RoomDataType, MinigameDataType, RoomStatusEnum } from '@shared/types';
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '@config/minigames';
 
+//TODO: Remove minigameName prop and take from room data minigame index to start a game
 export const startMinigameService = async (roomCode: string, minigameName: MinigameNamesEnum): Promise<ReturnDataType> => {
   let roomData: RoomDataType | null;
   let minigameData: MinigameDataType | null;
@@ -51,6 +53,14 @@ export const startMinigameService = async (roomCode: string, minigameName: Minig
   }
 
   return { success: true, payload: { roomData, minigameData } }; // Minigame started
+};
+
+export const endMinigameService = async (roomCode: string, socket: Socket) => {
+  //TODO: Set all connected players alive to true, status to idle, selectedObjectId to -100,
+  //TODO: Set curretn minigame index + 1, status to leaderboard, current round to 1
+  //TODO: Remove ready and started key
+
+  socket.nsp.to(roomCode).emit('ended_minigame');
 };
 
 export const changeTurnService = async (roomCode: string): Promise<string | null> => {
