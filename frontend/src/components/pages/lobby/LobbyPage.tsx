@@ -8,8 +8,8 @@ import { socket } from '@socket';
 import { useToast } from '@hooks/useToast.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar.tsx';
-import { MAX_PLAYERS } from '@shared/constants/game.ts';
 import { EmptySlot } from '@components/features/emptySlot/EmptySlot.tsx';
+import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
 
 export const LobbyPage = () => {
   const [lobbySettings, setLobbySettings] = useState<LobbySettingsType>({
@@ -48,7 +48,7 @@ export const LobbyPage = () => {
       </div>
       <div className="lobby-page__players">
         {slots.map((player, index) => player !== null ? (
-          <PlayerAvatar key={index} player={player} status='idle' inLobby={true} />
+          <PlayerAvatar key={index} player={player} inLobby={true} />
         ) : (
           <EmptySlot />
         ))}
