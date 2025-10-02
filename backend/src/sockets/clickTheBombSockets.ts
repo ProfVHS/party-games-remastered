@@ -51,17 +51,16 @@ export const clickTheBombSockets = (socket: Socket) => {
 
           sendAllPlayers(socket, roomCode, players);
           endMinigameService(roomCode, socket);
-          // TODO: End the game
           return;
         }
 
         await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
-        const newTurnNickname = await changeTurnService(roomCode);
+        const newTurnData = await changeTurnService(roomCode);
 
         const newClickTheBombConfig = createClickTheBombConfig(alivePlayers!.length);
         await setMinigameData(roomCode, newClickTheBombConfig);
 
-        socket.nsp.to(roomCode).emit('changed_turn', newTurnNickname);
+        socket.nsp.to(roomCode).emit('changed_turn', newTurnData);
 
         newClickCount = '0';
         scoreDelta = CLICK_THE_BOMB_RULES.LOSS;

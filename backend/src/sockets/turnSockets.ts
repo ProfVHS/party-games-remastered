@@ -8,14 +8,14 @@ export const turnSockets = (socket: Socket) => {
 
     const roomData = await roomRepository.getRoomData(roomCode);
 
-    socket.nsp.to(roomCode).emit('got_turn', roomData?.currentTurn);
+    socket.nsp.to(roomCode).emit('got_turn', Number(roomData?.currentTurn));
   });
 
   socket.on('change_turn', async () => {
     const roomCode = socket.data.roomCode;
 
-    const newTurnNickname = await changeTurnService(roomCode);
+    const newTurnData = await changeTurnService(roomCode);
 
-    socket.nsp.to(roomCode).emit('changed_turn', newTurnNickname);
+    socket.nsp.to(roomCode).emit('changed_turn', newTurnData);
   });
 };
