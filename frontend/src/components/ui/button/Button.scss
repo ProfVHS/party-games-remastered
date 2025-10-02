@@ -32,6 +32,16 @@
     border-radius: 2rem;
   }
 
+  &--icon{
+    padding: 0 !important;
+    border-radius: 6px;
+    width: 2.5rem;
+    height: 2.5rem;
+    .icon{
+      height: 1.5rem;
+    }
+  }
+
   //==== Sizes ====//
 
   &--small {

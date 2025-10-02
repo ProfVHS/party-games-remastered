@@ -1,5 +1,5 @@
 import './NumberPicker.scss';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type NumberPickerProps = {
   min: number;
@@ -7,9 +7,10 @@ type NumberPickerProps = {
   defaultNumber: number;
   onchange: (number: number) => void;
   style?: React.CSSProperties;
+  value?: number;
 };
 
-export const NumberPicker = ({ min, max, defaultNumber, onchange, style }: NumberPickerProps) => {
+export const NumberPicker = ({ min, max, defaultNumber, onchange, style, value }: NumberPickerProps) => {
   const [number, setNumber] = useState(defaultNumber || min || 0);
   const increment = () => {
     if (number >= max!) return;
@@ -21,6 +22,13 @@ export const NumberPicker = ({ min, max, defaultNumber, onchange, style }: Numbe
     setNumber((prevNumber) => prevNumber - 1);
     onchange && onchange(number - 1);
   };
+
+  useEffect(() => {
+    if(value && value !== number) {
+      setNumber(value);
+    }
+  }, [value])
+
   return (
     <div className="number-picker number-picker--smallSize" style={style}>
       <span className="number-picker__button" onClick={decrement}>

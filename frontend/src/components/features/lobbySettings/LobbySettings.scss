@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: space-evenly;
   gap: 8px;
-  width: 60%;
+  width: 40%;
   min-width: 350px;
   background-color: var(--background);
 
@@ -35,6 +35,14 @@
     gap: 8px;
     width: 100%;
     padding: 4px 0;
+  }
+
+  &__buttons{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 1rem;
+    height: 2.5rem;
   }
 
   &__separator {

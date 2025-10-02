@@ -6,6 +6,8 @@ import Logo from './svgs/logo.svg?react';
 import Settings from './svgs/settings.svg?react';
 import Mine from './svgs/mine.svg?react';
 import Person from './svgs/person.svg?react';
+import Save from './svgs/save.svg?react';
+import Trash from './svgs/trash.svg?react';
 
 import ClickTheBomb from './svgs/clickTheBomb.svg?react';
 import Cards from './svgs/cards.svg?react';
@@ -22,5 +24,7 @@ export const icons = {
   ClickTheBomb,
   Cards,
   ColorsMemory,
-  Person
+  Person,
+  Save,
+  Trash,
 };

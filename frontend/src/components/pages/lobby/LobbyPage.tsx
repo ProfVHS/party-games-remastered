@@ -16,7 +16,7 @@ export const LobbyPage = () => {
     isRandomMinigames: true,
     isTutorialsEnabled: true,
     minigames: [],
-    numberOfMinigames: 0
+    numberOfMinigames: 2
   });
   const toast = useToast();
 

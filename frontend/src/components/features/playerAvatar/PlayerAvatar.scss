@@ -41,6 +41,7 @@
     width: 175px;
     height: 125px;
 
+
     @media (min-width: 1921px) and (max-width: 2559px) {
       width: clamp(175px, 10vw, 316px);
       height: clamp(125px, 7vw, 190px);
