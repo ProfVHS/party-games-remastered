@@ -7,8 +7,20 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "exactOptionalPropertyTypes": true
+    "exactOptionalPropertyTypes": true,
+
+    "baseUrl": "./src",
+    "paths": {
+      "@shared/*": ["../../shared/*"],
+      "@config/*": ["config/*"],
+      "@roomRepository": ["repositories/roomRepository"],
+      "@roomService": ["services/roomService.ts"],
+      "@playerService": ["services/playerService.ts"],
+      "@minigameService": ["services/minigameService.ts"],
+      "@sockets": ["sockets"],
+      "@backend-types": ["types"]
+    }
   },
-  "include": ["src/**/*.ts", "../shared/**/*.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

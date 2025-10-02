@@ -1,17 +1,16 @@
-import { MinigameDataType, MinigameNamesEnum, RoomDataType, RoomStatusEnum } from '../../../shared/types';
+import { MinigameDataType, MinigameNamesEnum, RoomDataType, RoomStatusEnum } from '@shared/types';
 
-export const createRoomConfig = (playersLength: number, roomStatus: RoomStatusEnum): RoomDataType => ({
-  roomCode: '',
-  maxRounds: (playersLength - 1).toString(),
+export const createRoomConfig = (playersLength: number, roomStatus: RoomStatusEnum): Omit<RoomDataType, 'roomCode' | 'minigameIndex'> => ({
+  maxRounds: playersLength.toString(),
   currentRound: '1',
   currentTurn: Math.floor(Math.random() * playersLength).toString(), // Randomly select the first player to start
   status: roomStatus,
 });
 
-export const createClickTheBombConfig = (): MinigameDataType => ({
+export const createClickTheBombConfig = (alivePlayersLength: number): MinigameDataType => ({
   minigameName: MinigameNamesEnum.clickTheBomb,
   clickCount: '0',
-  maxClicks: '10',
+  maxClicks: (Math.floor(Math.random() * (alivePlayersLength * 4)) + 1).toString(),
 });
 
 export const createCardsConfig = (): MinigameDataType => ({ minigameName: MinigameNamesEnum.cards });

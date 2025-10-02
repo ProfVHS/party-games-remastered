@@ -45,6 +45,15 @@ html[data-theme='light'] {
   //== Lobby ==//
   --lobby-player-text: #{$secondaryColor};
 
+  //== Leaderboard ==//
+  --leaderboard-bg: #{$lightBgColor};
+  --leaderboard-title: #{$darkerPrimaryColor};
+  --leaderboard-player-bg: #f1eaf7;
+  --leaderboard-first-place: #ffd000;
+  --leaderboard-second-place: #cecad2;
+  --leaderboard-third-place: #d09351;
+  --leaderboard-player-opacity: 0.4;
+
   //== Minigame List ==//
   --minigame-list-bg: #{$lightBgColor};
   --minigame-list-title: rgba(#000000, 0.8);

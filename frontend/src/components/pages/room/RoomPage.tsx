@@ -28,7 +28,7 @@ export const RoomPage = () => {
       socket.off('player_join_toast');
       socket.off('started_minigame');
     };
-  }, [socket]);
+  }, [minigameName]);
 
   return (
     <div className="room-page">

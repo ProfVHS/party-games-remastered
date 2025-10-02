@@ -15,16 +15,16 @@ export const Monkey: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: "200",
-      isAlive: "false",
-      id: "abc",
-      isHost: "false",
-      status: PlayerStatusEnum.onilne,
-      selectedObjectId: "",
-      avatar: "monkey"
+      score: '200',
+      isAlive: 'false',
+      id: 'abc',
+      isHost: 'false',
+      isDisconnected: 'false',
+      status: PlayerStatusEnum.sleeping,
+      selectedObjectId: '',
+      avatar: 'monkey',
     },
     style: {},
-    status: 'idle',
   },
 };
 
@@ -32,16 +32,16 @@ export const Robot: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: "200",
-      isAlive: "false",
-      id: "abc",
-      isHost: "false",
-      status: PlayerStatusEnum.onilne,
-      selectedObjectId: "",
-      avatar: "robot"
+      score: '200',
+      isAlive: 'false',
+      id: 'abc',
+      isHost: 'false',
+      isDisconnected: 'false',
+      status: PlayerStatusEnum.dead,
+      selectedObjectId: '',
+      avatar: 'robot',
     },
     style: {},
-    status: 'idle',
   },
 };
 
@@ -49,16 +49,16 @@ export const Carton: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: "200",
-      isAlive: "false",
-      id: "abc",
-      isHost: "false",
-      status: PlayerStatusEnum.onilne,
-      selectedObjectId: "",
-      avatar: "carton"
+      score: '200',
+      isAlive: 'false',
+      id: 'abc',
+      isHost: 'false',
+      isDisconnected: 'false',
+      status: PlayerStatusEnum.idle,
+      selectedObjectId: '',
+      avatar: 'carton',
     },
     style: {},
-    status: 'idle',
   },
 };
 
@@ -66,16 +66,16 @@ export const Skeleton: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: "200",
-      isAlive: "false",
-      id: "abc",
-      isHost: "false",
-      status: PlayerStatusEnum.onilne,
-      selectedObjectId: "",
-      avatar: "skeleton"
+      score: '200',
+      isAlive: 'false',
+      id: 'abc',
+      isHost: 'false',
+      isDisconnected: 'false',
+      status: PlayerStatusEnum.idle,
+      selectedObjectId: '',
+      avatar: 'skeleton',
     },
     style: {},
-    status: 'idle',
   },
 };
 
@@ -83,15 +83,15 @@ export const Clown: Story = {
   args: {
     player: {
       nickname: 'Ultra Mango Guy',
-      score: "200",
-      isAlive: "false",
-      id: "abc",
-      isHost: "false",
-      status: PlayerStatusEnum.onilne,
-      selectedObjectId: "",
-      avatar: "clown"
+      score: '200',
+      isAlive: 'false',
+      id: 'abc',
+      isHost: 'false',
+      isDisconnected: 'false',
+      status: PlayerStatusEnum.idle,
+      selectedObjectId: '',
+      avatar: 'clown',
     },
     style: {},
-    status: 'idle',
   },
 };

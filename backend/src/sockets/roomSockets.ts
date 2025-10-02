@@ -1,8 +1,8 @@
 import { Socket } from 'socket.io';
-import * as roomService from '../services/roomService';
-import * as roomRepository from '../repositories/roomRepository/roomRepository';
-import { createRoomConfig } from '../config/minigames';
-import { RoomStatusEnum } from '../../../shared/types';
+import * as roomService from '@roomService';
+import { setRoomData, getRoomData } from '@roomRepository';
+import { createRoomConfig } from '@config/minigames';
+import { RoomDataType, RoomStatusEnum } from '@shared/types';
 
 export const roomSockets = (socket: Socket) => {
   socket.on('create_room', async (roomCode: string, nickname: string) => {
@@ -15,7 +15,10 @@ export const roomSockets = (socket: Socket) => {
 
     // Initialize room configuration to help with diconnect and reconnect events
     const roomConfig = createRoomConfig(1, RoomStatusEnum.lobby);
-    await roomRepository.setRoomData(roomCode, roomConfig);
+
+    const roomData: RoomDataType = { roomCode, minigameIndex: '0', ...roomConfig };
+
+    await setRoomData(roomCode, roomData);
 
     socket.join(roomCode);
     socket.nsp.to(socket.id).emit('created_room', { roomCode: roomCode, id: socket.id });
@@ -38,7 +41,7 @@ export const roomSockets = (socket: Socket) => {
 
   socket.on('get_room_data', async () => {
     const roomCode = socket.data.roomCode;
-    const gameData = await roomRepository.getRoomData(roomCode);
+    const gameData = await getRoomData(roomCode);
 
     if (gameData) {
       socket.nsp.to(socket.id).emit('got_room_data', gameData);

@@ -1,17 +1,21 @@
 import { Socket } from 'socket.io';
+import { changeTurnService } from '@minigameService';
+import * as roomRepository from '@roomRepository';
 
 export const turnSockets = (socket: Socket) => {
-  socket.on('set_turn', async (turn?: number) => {
+  socket.on('get_turn', async () => {
     const roomCode = socket.data.roomCode;
 
-    // socket to clients
-    // socket.nsp.to(roomCode).emit("", players[gameRoomData.currentTurn].nickname);
+    const roomData = await roomRepository.getRoomData(roomCode);
+
+    socket.nsp.to(roomCode).emit('got_turn', roomData?.currentTurn);
   });
 
   socket.on('change_turn', async () => {
     const roomCode = socket.data.roomCode;
 
-    // socket to clients
-    // socket.nsp.to(roomCode).emit("changed_turn", players[gameRoomData.currentTurn].nickname);
+    const newTurnNickname = await changeTurnService(roomCode);
+
+    socket.nsp.to(roomCode).emit('changed_turn', newTurnNickname);
   });
 };
