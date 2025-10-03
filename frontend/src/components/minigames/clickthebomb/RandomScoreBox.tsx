@@ -1,5 +1,5 @@
-import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 import { useEffect, useState, useRef } from 'react';
+import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType';
 
 type ScoreData = {
   id: number;
@@ -7,21 +7,17 @@ type ScoreData = {
   left: number;
   angle: number;
   visible: boolean;
-  isPositive?: boolean;
+  score: number;
+  isPositive: boolean;
 };
 
-type RandomScoreBoxProps = {
-  id?: number;
-  isPositive?: boolean;
-};
-
-export const RandomScoreBox = ({ id, isPositive }: RandomScoreBoxProps) => {
+export const RandomScoreBox = ({ id, score, isPositive }: RandomScoreBoxType) => {
   const [scores, setScores] = useState<ScoreData[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const idRef = useRef(0);
 
   useEffect(() => {
-    if (!id || !containerRef.current) return;
+    if (!id || !score || !isPositive || !containerRef.current) return;
 
     const container = containerRef.current;
     const { clientWidth, clientHeight } = container;
@@ -36,6 +32,7 @@ export const RandomScoreBox = ({ id, isPositive }: RandomScoreBoxProps) => {
       left,
       angle,
       visible: true,
+      score,
       isPositive,
     };
 
@@ -65,7 +62,7 @@ export const RandomScoreBox = ({ id, isPositive }: RandomScoreBoxProps) => {
             transform: `rotate(${score.angle}deg) scale(${score.visible ? 1 : 0.8})`,
           }}
         >
-          {score.isPositive ? '+' + CLICK_THE_BOMB_RULES.BOMB_CLICK : CLICK_THE_BOMB_RULES.LOSS}
+          {score.isPositive ? '+' + score.score : score.score}
         </span>
       ))}
     </div>

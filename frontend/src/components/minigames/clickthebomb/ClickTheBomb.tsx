@@ -5,10 +5,11 @@ import Bomb from '@assets/textures/C4.svg?react';
 import { socket } from '@socket';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useCountdownAnimation } from '@hooks/useCountdownAnimation';
-import { RandomScoreBox } from './RandomScoreBox';
 import { TurnType } from '@shared/types';
 import { useTurn } from '@hooks/useTurn';
 import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
+import { RandomScoreBox } from './RandomScoreBox';
+import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType';
 
 const formatMilisecondsToTimer = (ms: number) => {
   const seconds = Math.floor(ms / 1000);
@@ -24,7 +25,7 @@ export const ClickTheBomb = () => {
   const [canSkipTurn, setCanSkipTurn] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [bombLock, setBombLock] = useState<boolean>(true);
-  const [scoreData, setScoreData] = useState<{ id: number; isPositive: boolean }>();
+  const [scoreData, setScoreData] = useState<RandomScoreBoxType>({ id: 0, score: 0, isPositive: true });
 
   const handlePlayerDeath = () => {
     if (currentPlayer?.id != currentTurn?.player_id) return;
@@ -35,6 +36,7 @@ export const ClickTheBomb = () => {
     setCanSkipTurn(false);
     startCountdownAnimation();
     newTurn.player_id === currentPlayer?.id ? setBombLock(false) : setBombLock(true);
+    socket.emit('reset_click_count_streak');
   };
 
   const gotTurn = (newTurn: TurnType) => {
@@ -70,8 +72,8 @@ export const ClickTheBomb = () => {
       startCountdownAnimation();
     });
 
-    socket.on('show_score', (playerExploded: boolean) => {
-      setScoreData((prev) => ({ id: (prev?.id ?? 0) + 1, isPositive: !playerExploded }));
+    socket.on('show_score', (playerExploded: boolean, scoreDelta: number) => {
+      setScoreData((prev) => ({ id: (prev?.id ?? 0) + 1, score: scoreDelta, isPositive: !playerExploded }));
     });
 
     return () => {
@@ -83,7 +85,7 @@ export const ClickTheBomb = () => {
 
   return (
     <div className="click-the-bomb">
-      <RandomScoreBox id={scoreData?.id} isPositive={scoreData?.isPositive} />
+      <RandomScoreBox id={scoreData.id} score={scoreData.score} isPositive={scoreData.isPositive} />
       <div className="click-the-bomb__info">
         <span className="click-the-bomb__title">Click The Bomb</span>
         <span className="click-the-bomb__turn">{currentTurn?.nickname} Turn</span>

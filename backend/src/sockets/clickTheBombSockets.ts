@@ -7,7 +7,14 @@ import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersServic
 import { changeTurnService, endMinigameService } from '@minigameService';
 import { createClickTheBombConfig } from '@config/minigames';
 
+const POINTS = CLICK_THE_BOMB_RULES.POINTS;
+const LOSS = CLICK_THE_BOMB_RULES.LOSS;
+
 export const clickTheBombSockets = (socket: Socket) => {
+  const sumArrayNumbers = (array: number[], limit = array.length) => {
+    return array.slice(0, limit).reduce((sum, value) => sum + value, 0);
+  };
+
   socket.on('update_click_count', async (countdownExpired: boolean) => {
     const roomCode = socket.data.roomCode;
 
@@ -34,49 +41,65 @@ export const clickTheBombSockets = (socket: Socket) => {
         throw new Error(`Current player not found (id: ${socket.id})`);
       }
 
-      let scoreDelta = CLICK_THE_BOMB_RULES.BOMB_CLICK;
+      const clickCountStreak = Number(minigame.streak);
+      const POINTS_LENGTH = POINTS.length;
+      let scoreDelta = clickCountStreak > 6 ? POINTS[6] : POINTS[clickCountStreak];
       let playerExploded = false;
 
       // Max number of clicks or countdown timer has ended
       if (minigame.maxClicks === newClickCount || countdownExpired) {
         const alivePlayers = await findAlivePlayersService(players);
 
+        if (clickCountStreak >= POINTS_LENGTH) {
+          // All numbers from array + (streak - POINTS_LENGTH) * last number + bomb loss points
+          const arraySum = sumArrayNumbers(POINTS);
+          const streakSum = (clickCountStreak - POINTS_LENGTH) * POINTS[POINTS_LENGTH - 1];
+          scoreDelta = (arraySum + streakSum + LOSS) * -1;
+        } else {
+          // All numbers to index = clickCountStreak + bomb loss points
+          const arraySum = sumArrayNumbers(POINTS, clickCountStreak);
+          scoreDelta = (arraySum + LOSS) * -1;
+        }
+
         // End game
         if (alivePlayers && alivePlayers.length <= 2) {
-          const winner = alivePlayers.find((p) => p.id !== currentPlayer.id);
-          if (winner) await syncPlayerScoreService(roomCode, winner.id, CLICK_THE_BOMB_RULES.WIN, players);
-
           await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
-          await syncPlayerScoreService(roomCode, currentPlayer.id, CLICK_THE_BOMB_RULES.LOSS, players);
+          await syncPlayerScoreService(roomCode, currentPlayer.id, scoreDelta, players);
 
           sendAllPlayers(socket, roomCode, players);
           endMinigameService(roomCode, socket);
           return;
         }
 
-        await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
         const newTurnData = await changeTurnService(roomCode);
-
         const newClickTheBombConfig = createClickTheBombConfig(alivePlayers!.length);
+
         await setMinigameData(roomCode, newClickTheBombConfig);
+        await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
 
         socket.nsp.to(roomCode).emit('changed_turn', newTurnData);
 
         newClickCount = '0';
-        scoreDelta = CLICK_THE_BOMB_RULES.LOSS;
         playerExploded = true;
       }
 
       // TODO: Change all console.error to throw new Error
 
+      const newStreak = (Number(clickCountStreak) + 1).toString();
       await syncPlayerScoreService(roomCode, currentPlayer.id, scoreDelta, players);
-      await updateMinigameData(roomCode, { clickCount: newClickCount });
+      await updateMinigameData(roomCode, { clickCount: newClickCount, streak: newStreak });
 
       sendAllPlayers(socket, roomCode, players);
       socket.nsp.to(roomCode).emit('updated_click_count', newClickCount);
-      socket.nsp.to(socket.id).emit('show_score', playerExploded);
+      socket.nsp.to(socket.id).emit('show_score', playerExploded, scoreDelta);
     } catch (error) {
       throw new Error(`clickTheBombSockets an error occurred: ${error}`);
     }
+  });
+
+  socket.on('reset_click_count_streak', async () => {
+    const roomCode = socket.data.roomCode;
+
+    await updateMinigameData(roomCode, { streak: '0' });
   });
 };
