@@ -2,7 +2,7 @@ import { client } from '@config/db';
 import { Socket } from 'socket.io';
 import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
-import { PlayerStatusEnum, ReturnDataType, MinigameNamesEnum, MinigameDataType, RoomStatusEnum } from '@shared/types';
+import { PlayerStatusEnum, ReturnDataType, MinigameNamesEnum, MinigameDataType, RoomStatusEnum, TurnType } from '@shared/types';
 import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '@config/minigames';
 import { sendAllPlayers } from '@sockets';
 
@@ -92,7 +92,7 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
   }
 };
 
-export const changeTurnService = async (roomCode: string): Promise<string | null> => {
+export const changeTurnService = async (roomCode: string): Promise<TurnType | null> => {
   const players = await roomRepository.getAllPlayers(roomCode);
   const roomData = await roomRepository.getRoomData(roomCode);
 
@@ -112,7 +112,7 @@ export const changeTurnService = async (roomCode: string): Promise<string | null
 
     if (potentialPlayer.isAlive === 'true' && potentialPlayer.isDisconnected === 'false') {
       await roomRepository.updateRoomData(roomCode, { currentTurn: nextTurn.toString() });
-      return potentialPlayer.nickname;
+      return { id: nextTurn, player_id: potentialPlayer.id, nickname: potentialPlayer.nickname };
     }
   }
 
