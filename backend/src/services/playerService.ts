@@ -10,7 +10,7 @@ export const syncPlayerScoreService = async (roomCode: string, playerId: string,
 
     const player = players.find((p) => p.id === playerId);
     if (player) {
-      player.score = (parseInt(player.score) + delta).toString();
+      player.score = (Number(player.score) + delta).toString();
       return player;
     } else {
       console.error(`Player with id "${playerId}" not found in room "${roomCode}".`);

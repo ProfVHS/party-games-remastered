@@ -44,14 +44,14 @@ export const cardsSockets = async (socket: Socket) => {
 
         await Promise.all(
           selectedPlayers.map((player) => {
-            player.score = (parseInt(player.score) + points).toString();
+            player.score = (Number(player.score) + points).toString();
             return roomRepository.updatePlayerScore(roomCode, player.id, points);
           }),
         );
       }
     }
 
-    const nextRound = (parseInt(roomData!.currentRound) + 1).toString();
+    const nextRound = (Number(roomData!.currentRound) + 1).toString();
     await roomRepository.updateAllPlayers(roomCode, { selectedObjectId: '-100' });
     await roomRepository.updateRoomData(roomCode, { currentRound: nextRound });
 
