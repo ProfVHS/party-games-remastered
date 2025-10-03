@@ -22,7 +22,7 @@ export const clickTheBombSockets = (socket: Socket) => {
       const minigame: MinigameDataType | null = await getMinigameData(roomCode);
       const players: PlayerType[] | null = await getAllPlayers(roomCode);
 
-      if (!minigame || minigame == null) {
+      if (!minigame) {
         throw new Error(`No data found for room "${roomCode}".`);
       }
 
