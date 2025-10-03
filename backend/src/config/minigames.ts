@@ -11,6 +11,7 @@ export const createClickTheBombConfig = (alivePlayersLength: number): MinigameDa
   minigameName: MinigameNamesEnum.clickTheBomb,
   clickCount: '0',
   maxClicks: (Math.floor(Math.random() * (alivePlayersLength * 4)) + 1).toString(),
+  streak: '0',
 });
 
 export const createCardsConfig = (): MinigameDataType => ({ minigameName: MinigameNamesEnum.cards });
