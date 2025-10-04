@@ -31,7 +31,6 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   }, []);
 
   useEffect(() => {
-    console.log(minigameName);
     if (!minigameName) return;
     setShowLeaderboard(false);
   }, [minigameId]);
