@@ -12,6 +12,7 @@
   pointer-events: auto;
   color: var(--minigame-list-item-text);
   font-weight: 700;
+  margin-bottom: 8px;
 
   &__content {
     background-color: var(--minigame-list-item-bg);
@@ -41,14 +42,18 @@
     background-color: var(--minigame-list-item-icon);
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 
-    cursor: grab;
-    &:active {
-      cursor: grabbing;
-    }
-
     .icon {
       width: 25px;
       height: 25px;
+    }
+  }
+
+  &--draggable{
+    .minigame-item__icon{
+      cursor: grab;
+      &:active {
+        cursor: grabbing;
+      }
     }
   }
 }

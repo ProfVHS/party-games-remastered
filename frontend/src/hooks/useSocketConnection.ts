@@ -5,11 +5,13 @@ import { setSessionVariables } from '@utils';
 import { usePlayersStore } from '@stores/playersStore';
 import { useToast } from '@hooks/useToast';
 import { ReturnDataType } from '@shared/types';
+import { useRoomStore } from '@stores/roomStore.ts';
 
 export const useSocketConnection = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const { fetchPlayers } = usePlayersStore();
+  const { fetchRoomSettings } = useRoomStore();
 
   useEffect(() => {
     const roomCode = localStorage.getItem('roomCode');
@@ -18,6 +20,7 @@ export const useSocketConnection = () => {
     socket.emit('check_if_user_in_room', roomCode, playerId, (response: ReturnDataType) => {
       if (response.success) {
         //TODO: Fetch MinigameData I guess
+        fetchRoomSettings();
         fetchPlayers();
         setSessionVariables(roomCode!, socket.id!);
       } else {

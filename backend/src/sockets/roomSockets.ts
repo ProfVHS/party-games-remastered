@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import * as roomService from '@roomService';
-import { setRoomData, getRoomData } from '@roomRepository';
+import { getRoomData, setRoomData, updateRoomData } from '@roomRepository';
 import { createRoomConfig } from '@config/minigames';
 import { RoomDataType, RoomStatusEnum } from '@shared/types';
 
@@ -48,5 +48,22 @@ export const roomSockets = (socket: Socket) => {
     } else {
       socket.nsp.to(socket.id).emit('failed_to_get_room_data');
     }
+  });
+
+  socket.on('update_room_settings', async (roomSettings: string, callback: () => void) => {
+    if (!roomSettings) return;
+    const roomCode = socket.data.roomCode;
+
+    await updateRoomData(roomCode, { roomSettings });
+    socket.to(roomCode).emit('updated_room_settings', JSON.parse(roomSettings));
+    callback();
+  });
+
+  socket.on('get-room-settings', async () => {
+    const roomCode = socket.data.roomCode;
+    const response = await getRoomData(roomCode);
+    if (!response) return;
+
+    socket.to(socket.id).emit('got_players', JSON.parse(response.roomSettings));
   });
 };

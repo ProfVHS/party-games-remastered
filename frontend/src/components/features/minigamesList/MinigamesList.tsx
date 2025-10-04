@@ -10,40 +10,43 @@ import { DraggableMinigameItem } from '@components/features/minigamesList/Dragga
 type MinigamesListProps = {
   onCancel: () => void;
   onSave: (Minigames: MinigameListItemType[]) => void;
-  minigames?: MinigameListItemType[];
+  minigames: MinigameListItemType[];
+  isHost?: boolean;
 };
 
-export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProps) => {
-  const [minigamesList, setMinigamesList] = useState<MinigameListItemType[]>(minigames! || []);
+export const MinigamesList = ({ onCancel, onSave, minigames, isHost }: MinigamesListProps) => {
+  const [newMinigameList, setNewMinigameList] = useState<MinigameListItemType[]>(minigames! || []);
+  const minigameList = isHost ? newMinigameList : minigames;
 
   const handleSave = () => {
-    onSave && onSave(minigamesList);
+    onSave && onSave(newMinigameList);
     onCancel && onCancel();
   };
 
   const addMinigameToList = (minigame: MinigameListItemType) => {
-    const id = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now();
-    setMinigamesList((prevMinigames) => [...prevMinigames, { ...minigame, id }]);
+    const id = `${minigame.name}-${newMinigameList.length}`;
+    setNewMinigameList((prevMinigames) => [...prevMinigames, { ...minigame, id }]);
   };
 
   const removeMinigameFromList = (minigame: MinigameListItemType) => {
-    setMinigamesList((prevMinigamesList) => prevMinigamesList.filter((m) => m.id !== minigame.id));
+    setNewMinigameList((prevMinigamesList) => prevMinigamesList.filter((m) => m.id !== minigame.id));
   };
 
   return (
     <div className="minigames-list">
       <div className="minigames-list__table">
         <span className="minigames-list__title">Minigames</span>
-        <MinigameItem minigame={{ name: MinigameNamesEnum.clickTheBomb }} onClick={addMinigameToList} type="add" />
-        <MinigameItem minigame={{ name: MinigameNamesEnum.cards }} onClick={addMinigameToList} type="add" />
-        <MinigameItem minigame={{ name: MinigameNamesEnum.colorsMemory }} onClick={addMinigameToList} type="add" />
+        {Object.values(MinigameNamesEnum).map((name) => (
+          <MinigameItem minigame={{ name }} onClick={addMinigameToList} type="add" isHost={isHost} />
+        ))}
       </div>
       <div className="minigames-list__table">
         <span className="minigames-list__title">Your minigames queue</span>
         <Reorder.Group
           axis="y"
-          values={minigamesList}
-          onReorder={setMinigamesList}
+          values={minigameList}
+          onReorder={setNewMinigameList}
+          className="minigames-list__list"
           style={{
             listStyle: 'none',
             padding: '0',
@@ -51,21 +54,33 @@ export const MinigamesList = ({ onCancel, onSave, minigames }: MinigamesListProp
             width: '100%',
             height: '100%',
             overflowY: 'auto',
-            scrollbarWidth: 'none',
+            scrollbarWidth: 'thin',
           }}
         >
-          {minigamesList.map((minigame) => (
-            <DraggableMinigameItem key={minigame.id} minigame={minigame} onClick={removeMinigameFromList} />
-          ))}
+          {minigameList.map((minigame) =>
+            isHost ? (
+              <DraggableMinigameItem key={minigame.id} minigame={minigame} onClick={removeMinigameFromList} isHost={isHost} />
+            ) : (
+              <MinigameItem minigame={minigame} type="remove" />
+            ),
+          )}
         </Reorder.Group>
       </div>
       <div className="minigames-list__footer">
-        <Button style={{ width: '30%' }} onClick={handleSave}>
-          Save
-        </Button>
-        <Button style={{ width: '30%' }} onClick={onCancel}>
-          Cancel
-        </Button>
+        {isHost ? (
+          <>
+            <Button style={{ width: '30%' }} onClick={handleSave}>
+              Save
+            </Button>
+            <Button style={{ width: '30%' }} onClick={onCancel}>
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <Button style={{ width: '30%' }} onClick={onCancel}>
+            Close
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -34,6 +34,12 @@ html[data-theme='light'] {
   --number-picker-shadow: #5a189a;
   --number-picker-text: #{rgba(255, 255, 255, 0.8)};
 
+  //== Badge ==//
+  --badge-red-bg: #c81414;
+  --badge-green-bg: #99DD44;
+  --badge-text: #fff;
+  --badge-black-text: #{rgba(#000000, 0.4)};
+
   //== Alert Box ==//
   --alert-box-bg: #{$lightBgColor};
   --alert-box-text: #000;
@@ -54,6 +60,7 @@ html[data-theme='light'] {
   --minigame-list-bg: #{$lightBgColor};
   --minigame-list-title: rgba(#000000, 0.8);
   --minigame-list-hr: #{rgba(0, 0, 0, 0.1)};
+  --minigame-list-scrollbar: #{$darkerPrimaryColor};
 
   //== Minigame List Item ==//
   --minigame-list-item-bg: #{rgba($primaryColor, 0.06)};

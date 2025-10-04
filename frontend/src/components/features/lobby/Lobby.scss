@@ -2,16 +2,22 @@
 @use '../../../common/styles/themes' as *;
 
 .lobby {
-  gap: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+
   box-sizing: border-box;
-  height: auto;
-  width: 60%;
+  height: 25rem;
+  width: 40%;
   min-width: 350px;
 
   background-color: var(--background);
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
 
   border-radius: 8px;
+  padding: 1rem;
   font-size: 2rem;
 
   user-select: none;
@@ -28,15 +34,10 @@
 
   &__code {
     margin-left: 7px;
-
     cursor: pointer;
-
+    transition: 0.2s ease;
     &:hover {
-
-    }
-
-    &:active {
-      color: var(--header-color);
+      color: var(--lobby-color-code-hover);
     }
   }
 
@@ -74,24 +75,5 @@
     font-size: 1.5em;
     text-align: center;
     color: var(--header-color);
-  }
-
-  &__settingsbutton {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-  }
-
-  &__content {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    padding: 1rem;
-    box-sizing: border-box;
   }
 }
