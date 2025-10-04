@@ -32,7 +32,6 @@ export const cardsSockets = async (socket: Socket) => {
 
     if (!cards) {
       throw new Error(`No cards found for room: ${roomCode}`);
-      return;
     }
 
     // Update players' scores based on the selected cards
