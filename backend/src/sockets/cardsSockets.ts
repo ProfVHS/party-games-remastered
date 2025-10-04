@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 import { shuffle } from 'lodash';
 import * as roomRepository from '@roomRepository';
+import { endMinigameService } from '@minigameService';
 
 export const cardsSockets = async (socket: Socket) => {
   socket.on('card_select', async (cardId: number) => {
@@ -30,8 +31,7 @@ export const cardsSockets = async (socket: Socket) => {
     const cards = shuffle(roundsCards[roomData!.currentRound]);
 
     if (!cards) {
-      console.log('The End of the Cards Game');
-      return;
+      throw new Error(`No cards found for room: ${roomCode}`);
     }
 
     // Update players' scores based on the selected cards
@@ -44,17 +44,22 @@ export const cardsSockets = async (socket: Socket) => {
 
         await Promise.all(
           selectedPlayers.map((player) => {
-            player.score = (parseInt(player.score) + points).toString();
+            player.score = (Number(player.score) + points).toString();
             return roomRepository.updatePlayerScore(roomCode, player.id, points);
           }),
         );
       }
     }
 
-    const nextRound = (parseInt(roomData!.currentRound) + 1).toString();
+    const nextRound = (Number(roomData!.currentRound) + 1).toString();
     await roomRepository.updateAllPlayers(roomCode, { selectedObjectId: '-100' });
     await roomRepository.updateRoomData(roomCode, { currentRound: nextRound });
 
     socket.nsp.to(roomCode).emit('cards_round_ended', cards, players, nextRound);
   });
+
+  socket.on('cards_game_end', () => {
+    const roomCode = socket.data.roomCode;
+    endMinigameService(roomCode, socket)
+  })
 };

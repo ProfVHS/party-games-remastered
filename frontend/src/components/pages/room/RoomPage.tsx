@@ -14,10 +14,12 @@ import { MinigameDataType, RoomDataType } from '@shared/types';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
 import { defaultLobbySettings } from '@shared/constants/defaults.ts';
+import { v4 as uuidv4 } from 'uuid';
 
 export const RoomPage = () => {
   const [lobbySettings, setLobbySettings] = useState<RoomSettingsType>(defaultLobbySettings);
   const [minigameName, setMinigameName] = useState<string>('');
+  const [minigameId, setMinigameId] = useState<string>('');
 
   const toast = useToast();
 
@@ -30,6 +32,7 @@ export const RoomPage = () => {
 
     socket.on('started_minigame', (data: { roomData: RoomDataType; minigameData: MinigameDataType }) => {
       setMinigameName(() => data.minigameData.minigameName);
+      setMinigameId(() => uuidv4());
     });
 
     socket.on('updated_room_settings', (lobbySettings: RoomSettingsType) => {
@@ -54,7 +57,7 @@ export const RoomPage = () => {
   return (
     minigameName ? (
       <RoomLayout players={players}>{minigameName !== '' ?
-        <Minigame minigameName={minigameName} /> : <></>}</RoomLayout>
+        <Minigame minigameId={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
     ) : (
       <div className="lobby-page">
         <div className="lobby-page__content">

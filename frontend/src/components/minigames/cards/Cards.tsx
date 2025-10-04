@@ -43,7 +43,7 @@ export const Cards = () => {
 
   const startNewRound = async () => {
     if (currentRound.current === '4') {
-      console.log('Game Over');
+      socket.emit('cards_game_end');
       return;
     }
 

@@ -59,7 +59,6 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
     }
 
     if (playersIds.length === playersReady.length && playersIds.length >= MIN_PLAYERS_TO_START) {
-      console.log('Game is starting, cannot join now', playersIds.length, playersReady.length, MIN_PLAYERS_TO_START);
       return { success: false, payload: -4 }; // Room is starting the game
     }
 

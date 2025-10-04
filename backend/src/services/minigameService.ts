@@ -104,7 +104,7 @@ export const changeTurnService = async (roomCode: string): Promise<TurnType | nu
     throw new Error(`Players not found for room: ${roomCode}`);
   }
 
-  let currentTurn = parseInt(roomData.currentTurn);
+  let currentTurn = Number(roomData.currentTurn);
 
   for (let i = 1; i <= players.length; i++) {
     const nextTurn = (currentTurn + i) % players.length;
