@@ -14,4 +14,9 @@
     background-color: var(--badge-red-bg);
     color: var(--badge-text);
   }
+
+  &--green {
+    background-color: var(--badge-green-bg);
+    color: var(--badge-black-text);
+  }
 }

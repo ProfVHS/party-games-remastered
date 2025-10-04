@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import * as roomService from '@roomService';
-import { setRoomData, getRoomData } from '@roomRepository';
+import { getRoomData, setRoomData, updateRoomData } from '@roomRepository';
 import { createRoomConfig } from '@config/minigames';
 import { RoomDataType, RoomStatusEnum } from '@shared/types';
 
@@ -48,5 +48,13 @@ export const roomSockets = (socket: Socket) => {
     } else {
       socket.nsp.to(socket.id).emit('failed_to_get_room_data');
     }
+  });
+
+  socket.on('update_room_settings', async (lobbySettings: string) => {
+    if (!lobbySettings) return;
+    const roomCode = socket.data.roomCode;
+
+    await updateRoomData(roomCode, { lobbySettings });
+    socket.to(roomCode).emit('updated_room_settings', JSON.parse(lobbySettings));
   });
 };

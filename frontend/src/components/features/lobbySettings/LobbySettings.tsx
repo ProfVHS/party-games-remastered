@@ -2,32 +2,35 @@ import './LobbySettings.scss';
 import { useState } from 'react';
 import { Button } from '@components/ui/button/Button';
 import { AnimatePresence } from 'framer-motion';
-import { LobbySettingsType, MinigameEntryType } from '@frontend-types/index';
-import { NumberPicker } from '@components/ui/numberPicker/NumberPicker.tsx';
-import { Switch } from '@components/ui/switch/Switch.tsx';
+import { MinigameEntryType, RoomSettingsType } from '@frontend-types/index';
 import { Modal } from '@components/ui/modal/Modal.tsx';
 import { MinigamesList } from '@components/features/minigamesList/MinigamesList.tsx';
 import { useToast } from '@hooks/useToast.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
-import { Badge } from '@components/ui/badge/Badge.tsx';
 import * as _ from 'lodash';
 import { Icon } from '@assets/icon';
+import { socket } from '@socket';
+import { SettingRow } from '@components/features/lobbySettings/SettingRow.tsx';
 
 type LobbySettingsProps = {
-  setLobbySettings: (settings: LobbySettingsType) => void;
-  lobbySettings: LobbySettingsType;
+  setLobbySettings: (settings: RoomSettingsType) => void;
+  currentRoomSettings: RoomSettingsType;
 }
 
-export const LobbySettings = ({ setLobbySettings, lobbySettings }: LobbySettingsProps) => {
+export const LobbySettings = ({ setLobbySettings, currentRoomSettings }: LobbySettingsProps) => {
   const [minigamesModal, setMinigamesModal] = useState(false);
-  const [newLobbySettings, setNewLobbySettings] = useState<LobbySettingsType>(lobbySettings);
+  const [newRoomSettings, setNewRoomSettings] = useState<RoomSettingsType>(currentRoomSettings);
+
   const { currentPlayer } = usePlayersStore();
+
+  const isHost = currentPlayer?.isHost === 'true';
+  const roomSettings = isHost ? newRoomSettings : currentRoomSettings;
 
   const toast = useToast();
 
   const handleSave = () => {
-    if (!newLobbySettings.isRandomMinigames) {
-      if (newLobbySettings.minigames === null || newLobbySettings.minigames!.length < 2) {
+    if (!newRoomSettings.isRandomMinigames) {
+      if (newRoomSettings.minigames === null || newRoomSettings.minigames!.length < 2) {
         toast.error({
           message: 'Please select at least two minigame',
           duration: 5
@@ -35,70 +38,38 @@ export const LobbySettings = ({ setLobbySettings, lobbySettings }: LobbySettings
         return;
       }
     }
-    setLobbySettings(newLobbySettings);
+    setLobbySettings(newRoomSettings);
+    socket.emit('update_room_settings', JSON.stringify(newRoomSettings));
   };
 
   const resetLobbySettings = () => {
-    setNewLobbySettings(lobbySettings);
+    setNewRoomSettings(currentRoomSettings);
   };
 
   return (
     <div className="lobby-settings">
-      <span className="lobby-settings__title">Room Settings</span>
+      <span className="lobby-settings__title">Minigames Settings</span>
 
-      <div className="lobby-settings__option">
-        <span>Random Minigames?</span>
-        {currentPlayer?.isHost === 'true' ? (
-          <Switch value={newLobbySettings.isRandomMinigames}
-                  onChange={(value) => setNewLobbySettings(prev => ({ ...prev, isRandomMinigames: value }))} />
-        ) : (
-          <Badge color={newLobbySettings.isRandomMinigames ? 'primary' : 'red'}>
-            {newLobbySettings.isRandomMinigames ? 'Enabled' : 'Disabled'}
-          </Badge>
-        )}
-      </div>
+      <SettingRow isHost={isHost} label="Random mode" value={roomSettings.isRandomMinigames}
+                  onChange={(value) => setNewRoomSettings(prev => ({ ...prev, isRandomMinigames: value as boolean }))}
+                  type="Switch" />
 
-      <div className="lobby-settings__separator" />
-
-      {newLobbySettings.isRandomMinigames ? (
-        <div className="lobby-settings__option">
-          <span>Number of Minigames</span>
-          <NumberPicker
-            defaultNumber={newLobbySettings.numberOfMinigames || 2}
-            value={newLobbySettings.numberOfMinigames}
-            min={2}
-            max={25}
-            onchange={(value) => setNewLobbySettings(prev => ({ ...prev, numberOfMinigames: value }))}
-          />
-        </div>
+      {roomSettings.isRandomMinigames ? (
+        <SettingRow isHost={isHost} label="Number of games" value={roomSettings.numberOfMinigames}
+                    onChange={(value) => setNewRoomSettings(prev => ({ ...prev, numberOfMinigames: value as number }))}
+                    type="NumberPicker" />
       ) : (
-        <div className="lobby-settings__option">
-          <span>Minigames</span>
-          <Button color="primary" size="small" onClick={() => setMinigamesModal(true)}>
-            Open List
-          </Button>
-        </div>
+        <SettingRow isHost={isHost} label="Minigames" value={roomSettings.numberOfMinigames}
+                    onChange={() => setMinigamesModal(true)}
+                    type="Button" text="Open List" />
       )}
 
-      <div className="lobby-settings__separator"></div>
-
-      <div className="lobby-settings__option">
-        <span>Tutorials before minigame?</span>
-        {currentPlayer?.isHost === 'true' ? (
-          <Switch value={newLobbySettings.isTutorialsEnabled}
-                  onChange={(value) => setNewLobbySettings(prev => ({ ...prev, isTutorialsEnabled: value }))} />
-        ) : (
-          <Badge color={newLobbySettings.isTutorialsEnabled ? 'primary' : 'red'}>
-            {newLobbySettings.isTutorialsEnabled ? 'Enabled' : 'Disabled'}
-          </Badge>
-        )}
-
-      </div>
-
-      <div className="lobby-settings__separator"></div>
+      <SettingRow isHost={isHost} label="Tutorial before minigames?" value={roomSettings.isTutorialsEnabled}
+                  onChange={(value) => setNewRoomSettings(prev => ({ ...prev, isTutorialsEnabled: value as boolean }))}
+                  type="Switch" />
 
       <div className="lobby-settings__buttons">
-        {!_.isEqual(lobbySettings, newLobbySettings) && (
+        {currentPlayer?.isHost === 'true' && !_.isEqual(currentRoomSettings, newRoomSettings) && (
           <>
             <Button variant="icon" size="small" onClick={handleSave}>
               <Icon icon="Save" />
@@ -114,8 +85,8 @@ export const LobbySettings = ({ setLobbySettings, lobbySettings }: LobbySettings
           <Modal onClose={() => setMinigamesModal(false)} transparentBg>
             <MinigamesList
               onCancel={() => setMinigamesModal(false)}
-              onSave={(minigames: MinigameEntryType[]) => setNewLobbySettings(prev => ({ ...prev, minigames }))}
-              minigames={newLobbySettings.minigames || []}
+              onSave={(minigames: MinigameEntryType[]) => setNewRoomSettings(prev => ({ ...prev, minigames }))}
+              minigames={newRoomSettings.minigames || []}
             />
           </Modal>
         )}

@@ -5,7 +5,7 @@ import { HomePage } from '@components/pages/home/HomePage.tsx';
 import { NotFound } from '@components/pages/notFound/NotFound.tsx';
 import { UserSettings } from '@components/features/userSettings/UserSettings.tsx';
 import { Icon } from '@assets/icon';
-import { LobbyPage } from '@components/pages/lobby/LobbyPage.tsx';
+import { RoomPage } from '@components/pages/room/RoomPage.tsx';
 
 export const AppRoutes = () => {
   const [showUserSettings, setShowUserSettings] = useState(false);
@@ -13,7 +13,7 @@ export const AppRoutes = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/room" element={<LobbyPage />} />
+        <Route path="/:roomCode" element={<RoomPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <motion.div className="user-settings-button" whileHover={{ scale: 1.2, rotate: 180 }} onClick={() => setShowUserSettings(true)}>

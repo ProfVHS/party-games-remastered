@@ -36,7 +36,9 @@ html[data-theme='dark'] {
 
   //== Badge ==//
   --badge-red-bg: #971010;
-  --badge-text: #{rgba(#fff, 0.4)};
+  --badge-green-bg: #99DD44;
+  --badge-white-text: #{rgba(#ffffff, 0.4)};
+  --badge-black-text: #{rgba(#000000, 0.4)};
 
   //== Alert Box ==//
   --alert-box-bg: #{$darkBgColor};
