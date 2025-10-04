@@ -1,24 +1,23 @@
-import './LobbyContent.scss';
+import './Lobby.scss';
 import { Button } from '@components/ui/button/Button';
 import { useState } from 'react';
 import { socket } from '@socket';
 
-import { LobbySettingsType, MinigameEntryType } from '@frontend-types/index';
+import { MinigameEntryType } from '@frontend-types/index';
 import { MinigameNamesEnum } from '@shared/types';
 import { useToast } from '@hooks/useToast.ts';
 import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
 import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
 import { useLobbyStart } from '@hooks/useLobbyStart.ts';
+import { useRoomStore } from '@stores/roomStore.ts';
 
-type LobbyContentProps = {
-  lobbySettings: LobbySettingsType
-}
-
-export const LobbyContent = ({ lobbySettings }: LobbyContentProps) => {
+export const Lobby = () => {
   const [ready, setReady] = useState(false);
   const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = localStorage.getItem('roomCode');
+
+  const { roomSettings } = useRoomStore();
 
   const convertToMinigameEnums = (minigameList: MinigameEntryType[]): MinigameNamesEnum[] => {
     return minigameList
@@ -33,9 +32,9 @@ export const LobbyContent = ({ lobbySettings }: LobbyContentProps) => {
   useLobbyFetch({ setPlayersReady });
   const { countdown } = useLobbyStart({
     playersReady,
-    minigames: convertToMinigameEnums(lobbySettings.minigames),
-    numberOfMinigames: lobbySettings.numberOfMinigames,
-    setReady
+    minigames: convertToMinigameEnums(roomSettings.minigames),
+    numberOfMinigames: roomSettings.numberOfMinigames,
+    setReady,
   });
 
   const toast = useToast();
@@ -52,24 +51,23 @@ export const LobbyContent = ({ lobbySettings }: LobbyContentProps) => {
 
   const handleCopyRoomCode = () => {
     if (roomCode) {
-      navigator.clipboard.writeText(roomCode).then(() =>
-        toast.info({ message: 'Room code copied!', duration: 5 }));
+      navigator.clipboard.writeText(roomCode).then(() => toast.info({ message: 'Room code copied!', duration: 5 }));
     }
   };
 
   return (
-    <div className="lobby-content">
+    <div className="lobby">
       {countdown === null ? (
         <>
-          <span className="lobby-content__title">
+          <span className="lobby__title">
             Room Code:
-            <span className="lobby-content__code" onClick={handleCopyRoomCode}>
+            <span className="lobby__code" onClick={handleCopyRoomCode}>
               {roomCode}
             </span>
           </span>
-          <div className="lobby-content__info">
-            <span className="lobby-content__players">{playersReady}</span>
-            <span className="lobby-content__text">Players ready</span>
+          <div className="lobby__info">
+            <span className="lobby__players">{playersReady}</span>
+            <span className="lobby__text">Players ready</span>
           </div>
           <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
             {ready ? 'Unready' : 'Ready'}
@@ -77,8 +75,8 @@ export const LobbyContent = ({ lobbySettings }: LobbyContentProps) => {
         </>
       ) : (
         <>
-          <span className="lobby-content__countdown">{countdown}</span>
-          <span className="lobby-content__countdown-text">Get ready to rumble!</span>
+          <span className="lobby__countdown">{countdown}</span>
+          <span className="lobby__countdown-text">Get ready to rumble!</span>
         </>
       )}
     </div>

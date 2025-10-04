@@ -62,6 +62,7 @@ html[data-theme='dark'] {
   --minigame-list-bg: #{$darkBgColor};
   --minigame-list-title: rgba(#fff, 0.8);
   --minigame-list-hr: #{rgba(255, 255, 255, 0.1)};
+  --minigame-list-scrollbar: #{$darkerPrimaryColor};
 
   //== Minigame List Item ==//
   --minigame-list-item-bg: #{rgba($primaryColor, 0.4)};

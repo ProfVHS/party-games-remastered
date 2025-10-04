@@ -1,4 +1,4 @@
-export const defaultLobbySettings = {
+export const defaultRoomSettings = {
   isRandomMinigames: true,
   isTutorialsEnabled: true,
   minigames: [],

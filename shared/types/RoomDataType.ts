@@ -5,7 +5,7 @@ export type RoomDataType = {
   currentTurn: string; // number
   status: RoomStatusEnum;
   minigameIndex: string; // number
-  lobbySettings: string;
+  roomSettings: string;
 };
 
 export enum RoomStatusEnum {

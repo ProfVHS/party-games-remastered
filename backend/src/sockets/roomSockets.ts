@@ -50,11 +50,20 @@ export const roomSockets = (socket: Socket) => {
     }
   });
 
-  socket.on('update_room_settings', async (lobbySettings: string) => {
-    if (!lobbySettings) return;
+  socket.on('update_room_settings', async (roomSettings: string, callback: () => void) => {
+    if (!roomSettings) return;
     const roomCode = socket.data.roomCode;
 
-    await updateRoomData(roomCode, { lobbySettings });
-    socket.to(roomCode).emit('updated_room_settings', JSON.parse(lobbySettings));
+    await updateRoomData(roomCode, { roomSettings });
+    socket.to(roomCode).emit('updated_room_settings', JSON.parse(roomSettings));
+    callback();
+  });
+
+  socket.on('get-room-settings', async () => {
+    const roomCode = socket.data.roomCode;
+    const response = await getRoomData(roomCode);
+    if (!response) return;
+
+    socket.to(socket.id).emit('got_players', JSON.parse(response.roomSettings));
   });
 };

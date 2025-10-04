@@ -8,31 +8,24 @@ type SettingRow = {
   label: string;
   value: number | string | boolean;
   onChange: (value?: number | string | boolean) => void;
-  type: 'NumberPicker' | 'Switch' | 'Button';
+  type: 'number-picker' | 'switch' | 'button';
   text?: string;
-}
+};
 
 export const SettingRow = ({ isHost, label, value, type, onChange, text }: SettingRow) => {
-
   const renderUserValue = () => {
     switch (type) {
-      case 'NumberPicker':
-        return (
-          <span>{value}</span>
-        );
-      case 'Switch':
-        return (
-          <Badge color={value ? 'green' : 'red'}>
-            {value ? 'Enabled' : 'Disabled'}
-          </Badge>
-        );
-      case 'Button':
+      case 'number-picker':
+        return <span>{value}</span>;
+      case 'switch':
+        return <Badge color={value ? 'green' : 'red'}>{value ? 'Enabled' : 'Disabled'}</Badge>;
+      case 'button':
         if (!text) throw new Error('SettingRow with button type required text prop');
         return (
           <Button color="primary" size="small" onClick={onChange}>
             {text}
           </Button>
-        )
+        );
       default:
         break;
     }
@@ -40,25 +33,17 @@ export const SettingRow = ({ isHost, label, value, type, onChange, text }: Setti
 
   const renderHostInput = () => {
     switch (type) {
-      case 'Switch':
+      case 'switch':
         return <Switch value={value as boolean} onChange={onChange} />;
-      case 'Button':
+      case 'button':
         if (!text) throw new Error('SettingRow with button type required text prop');
         return (
           <Button color="primary" size="small" onClick={onChange}>
             {text}
           </Button>
-        )
-      case 'NumberPicker':
-        return (
-          <NumberPicker
-            value={value as number}
-            defaultNumber={value as number}
-            min={2}
-            max={25}
-            onChange={onChange}
-          />
         );
+      case 'number-picker':
+        return <NumberPicker value={value as number} defaultNumber={value as number} min={2} max={25} onChange={onChange} />;
     }
   };
 

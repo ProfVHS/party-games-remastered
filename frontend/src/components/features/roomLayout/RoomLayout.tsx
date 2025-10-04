@@ -8,7 +8,7 @@ type RoomLayoutProps = {
 };
 
 const possibleAvatarLayouts: Record<number, { row: number; col: number }[]> = {
-  // All positions comments are relative to the lobbyContent e.g. Top means Above/Top of the lobbyContent
+  // All positions comments are relative to the lobby e.g. Top means Above/Top of the lobby
   1: [{ row: 1, col: 2 }], // Top
   2: [
     { row: 2, col: 1 }, // Left
