@@ -22,7 +22,7 @@ export const clickTheBombSockets = (socket: Socket) => {
       const minigame: MinigameDataType | null = await getMinigameData(roomCode);
       const players: PlayerType[] | null = await getAllPlayers(roomCode);
 
-      if (!minigame || minigame == null) {
+      if (!minigame) {
         throw new Error(`No data found for room "${roomCode}".`);
       }
 
@@ -34,7 +34,7 @@ export const clickTheBombSockets = (socket: Socket) => {
         throw new Error(`No players found for room "${roomCode}"`);
       }
 
-      let newClickCount = (parseInt(minigame.clickCount) + 1).toString();
+      let newClickCount = (Number(minigame.clickCount) + 1).toString();
       const currentPlayer = players.find((p) => p.id === socket.id);
 
       if (!currentPlayer) {

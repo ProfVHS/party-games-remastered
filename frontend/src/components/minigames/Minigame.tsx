@@ -6,10 +6,11 @@ import { socket } from '@socket';
 import { Leaderboard } from '@components/features/leaderboard/Leaderboard';
 
 type MinigameProps = {
+  minigameId: string;
   minigameName: string;
 };
 
-export const Minigame = ({ minigameName }: MinigameProps) => {
+export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
 
   useEffect(() => {
@@ -27,12 +28,12 @@ export const Minigame = ({ minigameName }: MinigameProps) => {
     return () => {
       socket.off('ended_minigame');
     };
-  }, [showLeaderboard]);
+  }, []);
 
   useEffect(() => {
     if (!minigameName) return;
     setShowLeaderboard(false);
-  }, [minigameName]);
+  }, [minigameId]);
 
   return (
     <div>
