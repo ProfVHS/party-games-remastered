@@ -15,8 +15,8 @@ export const useRoomStore = create<RoomStoreProps>((set) => ({
     set({ roomSettings });
   },
   fetchRoomSettings: () => {
-    socket.emit('get-room-settings');
+    socket.emit('get_room_settings');
 
-    socket.on('got-room-settings', (roomSettings: RoomSettingsType) => set({ roomSettings }));
+    socket.on('got_room_settings', (roomSettings: RoomSettingsType) => set({ roomSettings }));
   },
 }));

@@ -2,7 +2,7 @@ import './RoomSettings.scss';
 import { useState } from 'react';
 import { Button } from '@components/ui/button/Button';
 import { AnimatePresence } from 'framer-motion';
-import { MinigameEntryType, RoomSettingsType } from '@frontend-types/index';
+import { RoomSettingsType } from '@frontend-types/index';
 import { Modal } from '@components/ui/modal/Modal.tsx';
 import { MinigamesList } from '@components/features/minigamesList/MinigamesList.tsx';
 import { useToast } from '@hooks/useToast.ts';
@@ -12,6 +12,7 @@ import { Icon } from '@assets/icon';
 import { socket } from '@socket';
 import { SettingRow } from '@components/features/roomSettings/SettingRow.tsx';
 import { useRoomStore } from '@stores/roomStore.ts';
+import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
 
 export const RoomSettings = () => {
   const { roomSettings, setRoomSettings } = useRoomStore();
@@ -37,7 +38,7 @@ export const RoomSettings = () => {
       }
     }
     setRoomSettings(newRoomSettings);
-    socket.emit('update_room_settings', JSON.stringify(newRoomSettings), () => {
+    socket.emit('update_room_settings', newRoomSettings, () => {
       toast.success({ message: 'Successfully updated room settings', duration: 3 });
     });
   };
