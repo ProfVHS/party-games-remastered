@@ -3,13 +3,13 @@ import { Button } from '@components/ui/button/Button';
 import { useState } from 'react';
 import { socket } from '@socket';
 
-import { MinigameEntryType } from '@frontend-types/index';
 import { MinigameNamesEnum } from '@shared/types';
 import { useToast } from '@hooks/useToast.ts';
 import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
 import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
 import { useLobbyStart } from '@hooks/useLobbyStart.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
+import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
 
 export const Lobby = () => {
   const [ready, setReady] = useState(false);

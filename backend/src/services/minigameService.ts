@@ -2,8 +2,8 @@ import { client } from '@config/db';
 import { Socket } from 'socket.io';
 import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
-import { PlayerStatusEnum, ReturnDataType, MinigameNamesEnum, MinigameDataType, RoomStatusEnum, TurnType } from '@shared/types';
-import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '@config/minigames';
+import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
+import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig } from '@config/minigames';
 import { sendAllPlayers } from '@sockets';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
@@ -11,7 +11,8 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
   let multi: ChainableCommander;
   const players = await roomRepository.getAllPlayers(roomCode);
   const roomData = await roomRepository.getRoomData(roomCode);
-  const minigames = await roomRepository.getMinigames(roomCode);
+  const roomSettings = await roomRepository.getRoomSettings(roomCode);
+  const minigames = roomSettings?.minigames ?? [];
 
   if (!players || players.length === 0) {
     console.error(`No players found in room ${roomCode} for starting minigame`);
@@ -32,7 +33,7 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     multi = client.multi();
     await roomRepository.updateRoomData(roomCode, createRoomConfig(players.length, RoomStatusEnum.game), multi);
 
-    switch (currentMinigame) {
+    switch (currentMinigame.name) {
       case MinigameNamesEnum.clickTheBomb:
         const clickTheBombConfig = createClickTheBombConfig(players.length);
         minigameData = clickTheBombConfig;

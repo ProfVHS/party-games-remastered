@@ -2,7 +2,6 @@ export * from './roomDataTable';
 export * from './playersTable';
 export * from './minigameDataTable';
 export * from './readyTable';
-export * from './minigamesTable';
 export * from './minigameStarted';
 export * from './roomSettingsTable'
 
