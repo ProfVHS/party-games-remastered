@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { MinigameNamesEnum, RoomStatusEnum } from '@shared/types';
 import { startMinigameService } from '@minigameService';
 import * as roomRepository from '@roomRepository';
+import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 
 const startMinigame = async (roomCode: string, socket: Socket) => {
   const response = await startMinigameService(roomCode);
@@ -11,8 +12,7 @@ const startMinigame = async (roomCode: string, socket: Socket) => {
     return;
   }
 
-  //TODO: Is it necessary to send roomData?
-  // Payload: { roomData, minigameData }
+  // Payload: { minigameData }
   socket.nsp.to(roomCode).emit('started_minigame', response.payload);
 };
 
@@ -35,8 +35,8 @@ export const minigameSockets = async (socket: Socket) => {
     const players = await roomRepository.getAllPlayers(roomCode);
 
     //TODO: Maybe merge this two sockets start_minigame and start_minigame_queue
-    //TODO: Instead all players have to be ready reduce it to min players needed to play the game for example 4
-    if (playersReady == players.length) {
+    //TODO: Timer (5s) after min players needed
+    if (playersReady == MIN_PLAYERS_TO_START) {
       const started = await roomRepository.isMinigameStarted(roomCode);
 
       if (started) {

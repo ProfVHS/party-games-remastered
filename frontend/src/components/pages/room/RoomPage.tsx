@@ -7,7 +7,7 @@ import { useToast } from '@hooks/useToast.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { useSocketConnection } from '@hooks/useSocketConnection.ts';
-import { RoomDataType, MinigameDataType } from '@shared/types';
+import { MinigameDataType } from '@shared/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export const RoomPage = () => {
@@ -23,7 +23,7 @@ export const RoomPage = () => {
       toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
     });
 
-    socket.on('started_minigame', (data: { roomData: RoomDataType; minigameData: MinigameDataType }) => {
+    socket.on('started_minigame', (data: { minigameData: MinigameDataType }) => {
       setMinigameName(() => data.minigameData.minigameName);
       setMinigameId(() => uuidv4());
     });

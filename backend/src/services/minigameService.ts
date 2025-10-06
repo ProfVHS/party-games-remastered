@@ -2,8 +2,8 @@ import { client } from '@config/db';
 import { Socket } from 'socket.io';
 import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
-import { PlayerStatusEnum, ReturnDataType, MinigameNamesEnum, MinigameDataType, RoomStatusEnum, TurnType } from '@shared/types';
-import { createRoomConfig, createClickTheBombConfig, createCardsConfig, createColorsMemoryConfig } from '@config/minigames';
+import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
+import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig } from '@config/minigames';
 import { sendAllPlayers } from '@sockets';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
@@ -63,7 +63,7 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     return { success: false }; // Minigame not started
   }
 
-  return { success: true, payload: { roomData, minigameData } }; // Minigame started
+  return { success: true, payload: { minigameData } }; // Minigame started
 };
 
 export const endMinigameService = async (roomCode: string, socket: Socket) => {
