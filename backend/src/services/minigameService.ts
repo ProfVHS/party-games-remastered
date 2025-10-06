@@ -27,13 +27,13 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     throw new Error(`Couldn't find roomData for room ${roomCode} when starting a game`);
   }
 
-  const currentMinigame = minigames[Number(roomData?.minigameIndex)];
+  const currentMinigame = minigames[Number(roomData?.minigameIndex)]?.name;
 
   try {
     multi = client.multi();
     await roomRepository.updateRoomData(roomCode, createRoomConfig(players.length, RoomStatusEnum.game), multi);
 
-    switch (currentMinigame.name) {
+    switch (currentMinigame) {
       case MinigameNamesEnum.clickTheBomb:
         const clickTheBombConfig = createClickTheBombConfig(players.length);
         minigameData = clickTheBombConfig;

@@ -1,17 +1,12 @@
 import dotenv from 'dotenv';
-dotenv.config();
 import express from 'express';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 
-import { connectionSockets } from '@sockets';
-import { roomSockets } from '@sockets';
-import { turnSockets } from '@sockets';
-import { playerSockets } from '@sockets';
-import { minigameSockets } from '@sockets';
-import { clickTheBombSockets } from '@sockets';
-import { cardsSockets } from '@sockets';
+import { cardsSockets, clickTheBombSockets, connectionSockets, minigameSockets, playerSockets, roomSockets, turnSockets } from '@sockets';
+
+dotenv.config();
 
 const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
@@ -34,9 +29,9 @@ const handleModulesOnConnection = async (socket: Socket) => {
   roomSockets(socket);
   turnSockets(socket);
   playerSockets(socket);
-  minigameSockets(socket);
+  await minigameSockets(socket);
   clickTheBombSockets(socket);
-  cardsSockets(socket);
+  await cardsSockets(socket);
 
   socket.on('error', (err) => {
     console.error(`Socket error: ${err}`);

@@ -3,13 +3,10 @@ import { Button } from '@components/ui/button/Button';
 import { useState } from 'react';
 import { socket } from '@socket';
 
-import { MinigameNamesEnum } from '@shared/types';
 import { useToast } from '@hooks/useToast.ts';
 import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
 import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
 import { useLobbyStart } from '@hooks/useLobbyStart.ts';
-import { useRoomStore } from '@stores/roomStore.ts';
-import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
 
 export const Lobby = () => {
   const [ready, setReady] = useState(false);
@@ -17,23 +14,10 @@ export const Lobby = () => {
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = localStorage.getItem('roomCode');
 
-  const { roomSettings } = useRoomStore();
-
-  const convertToMinigameEnums = (minigameList: MinigameEntryType[]): MinigameNamesEnum[] => {
-    return minigameList
-      .map((minigame) => {
-        const match = Object.values(MinigameNamesEnum).find((val) => val === minigame.name);
-        return match as MinigameNamesEnum | undefined;
-      })
-      .filter((val): val is MinigameNamesEnum => val !== undefined);
-  };
-
   useLobbyToggle({ setPlayersReady, setIsLoading });
   useLobbyFetch({ setPlayersReady });
   const { countdown } = useLobbyStart({
     playersReady,
-    minigames: convertToMinigameEnums(roomSettings.minigames),
-    numberOfMinigames: roomSettings.numberOfMinigames,
     setReady,
   });
 

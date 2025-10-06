@@ -27,13 +27,13 @@ const getRandomMinigames = (numberOfMinigames: number = 2): MinigameEntryType[] 
   const minigames: MinigameEntryType[] = [];
 
   for (let i = 0; i < numberOfMinigames; i++) {
-    const index = Math.random() * allMinigames.length;
+    const index = Math.floor(Math.random() * allMinigames.length);
     minigames.push({ name: allMinigames[index] });
 
     if (allMinigames.length === 1) {
       allMinigames = Object.values(MinigameNamesEnum);
     } else {
-      allMinigames.slice(index, 1);
+      allMinigames.splice(index, 1);
     }
   }
 
@@ -41,16 +41,19 @@ const getRandomMinigames = (numberOfMinigames: number = 2): MinigameEntryType[] 
 };
 
 export const minigameSockets = async (socket: Socket) => {
-  socket.on('start_minigame', async () => {
+  socket.on('verify_minigames', async () => {
     const roomCode = socket.data.roomCode;
     const roomSettings = await roomRepository.getRoomSettings(roomCode);
 
-    if (roomSettings && roomSettings.isRandomMinigames) {
+    if (roomSettings && roomSettings.isRandomMinigames && roomSettings.minigames.length === 0) {
       await roomRepository.updateRoomSettings(roomCode, { minigames: getRandomMinigames(roomSettings.numberOfMinigames) });
     } else if (roomSettings && roomSettings.minigames.length < 2) {
       throw new Error(`Minimum number of minigames is 2`);
     }
+  });
 
+  socket.on('start_minigame', async () => {
+    const roomCode = socket.data.roomCode;
     await startMinigame(roomCode, socket);
   });
 

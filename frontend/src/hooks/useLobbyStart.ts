@@ -1,34 +1,19 @@
-import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { socket } from '@socket';
 import { useToast } from '@hooks/useToast';
-import { MinigameNamesEnum } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 
 type useLobbyStartProps = {
   playersReady: number;
-  minigames: MinigameNamesEnum[];
-  numberOfMinigames?: number | 2;
   setReady: Dispatch<SetStateAction<boolean>>;
 };
 
-export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setReady }: useLobbyStartProps) => {
+export const useLobbyStart = ({ playersReady, setReady }: useLobbyStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
   const { currentPlayer, players } = usePlayersStore();
   const hasStarted = useRef<boolean>(false);
-
-  const getRandomMinigames = (numberOfMinigames: number = 2): MinigameNamesEnum[] => {
-    const allMinigames = Object.values(MinigameNamesEnum);
-
-    if (numberOfMinigames < 2 || numberOfMinigames > allMinigames.length) {
-      throw new Error(`Number of minigames must be between 2 and ${allMinigames.length}, but received ${numberOfMinigames}`);
-    }
-
-    const shuffled = [...allMinigames].sort(() => Math.random() - 0.5);
-
-    return shuffled.slice(0, numberOfMinigames);
-  };
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
@@ -36,15 +21,11 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setR
     if (playersReady === players.length && players.length >= MIN_PLAYERS_TO_START) {
       setCountdown(() => 3);
 
-      if ((!minigames || minigames.length === 0) && currentPlayer?.isHost === 'true') {
-        minigames = getRandomMinigames(numberOfMinigames);
-      }
-
       timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1 && !hasStarted.current) {
             if (currentPlayer?.isHost == 'true') {
-              socket.emit('set_minigames', minigames);
+              socket.emit('verify_minigames');
               socket.emit('start_minigame');
             }
             hasStarted.current = true;
