@@ -60,6 +60,6 @@ export const cardsSockets = async (socket: Socket) => {
 
   socket.on('cards_game_end', () => {
     const roomCode = socket.data.roomCode;
-    endMinigameService(roomCode, socket)
-  })
+    endMinigameService(roomCode, socket);
+  });
 };

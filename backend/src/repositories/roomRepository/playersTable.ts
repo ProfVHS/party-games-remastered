@@ -117,7 +117,5 @@ export const getAllPlayers = async (roomCode: string): Promise<PlayerType[]> => 
 };
 
 export const getAllPlayerIds = async (roomCode: string): Promise<string[]> => {
-  const playerIds = await client.lrange(getKey(roomCode, keyName), 0, -1);
-
-  return playerIds;
+  return client.lrange(getKey(roomCode, keyName), 0, -1);
 };

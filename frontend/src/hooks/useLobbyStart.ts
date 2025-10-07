@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { socket } from '@socket';
 import { useToast } from '@hooks/useToast';
 import { MinigameNamesEnum } from '@shared/types';
@@ -45,7 +45,7 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames, setR
           if (prev === 1 && !hasStarted.current) {
             if (currentPlayer?.isHost == 'true') {
               socket.emit('set_minigames', minigames);
-              socket.emit('start_minigame');
+              socket.emit('start_minigame_queue', true);
             }
             hasStarted.current = true;
             clearInterval(timer);

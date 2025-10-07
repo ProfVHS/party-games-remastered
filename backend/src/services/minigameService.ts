@@ -5,6 +5,7 @@ import * as roomRepository from '@roomRepository';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
 import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig } from '@config/minigames';
 import { sendAllPlayers } from '@sockets';
+import { LockName } from '@backend-types';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
   let minigameData: MinigameDataType | null = null;
@@ -81,7 +82,7 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
     await roomRepository.updateRoomData(roomCode, { status: RoomStatusEnum.leaderboard }, multi);
     await roomRepository.incrementRoomDataMinigameIndex(roomCode, multi);
     await roomRepository.deleteReadyTable(roomCode, multi);
-    await roomRepository.deleteMinigameStarted(roomCode, multi);
+    await roomRepository.deleteLock(roomCode, LockName.minigame, multi);
 
     await multi.exec();
 
