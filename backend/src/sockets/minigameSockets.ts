@@ -40,7 +40,7 @@ const getRandomMinigames = (numberOfMinigames: number = 2): MinigameEntryType[] 
   return minigames;
 };
 
-export const minigameSockets = async (socket: Socket) => {
+export const minigameSockets = (socket: Socket) => {
   socket.on('verify_minigames', async () => {
     const roomCode = socket.data.roomCode;
     const roomSettings = await roomRepository.getRoomSettings(roomCode);

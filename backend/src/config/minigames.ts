@@ -1,12 +1,10 @@
 import { MinigameDataType, MinigameNamesEnum, RoomDataType, RoomStatusEnum } from '@shared/types';
-import { defaultRoomSettings } from '@shared/constants/defaults';
 
 export const createRoomConfig = (playersLength: number, roomStatus: RoomStatusEnum): Omit<RoomDataType, 'roomCode' | 'minigameIndex'> => ({
   maxRounds: playersLength.toString(),
   currentRound: '1',
   currentTurn: Math.floor(Math.random() * playersLength).toString(), // Randomly select the first player to start
   status: roomStatus,
-  roomSettings: JSON.stringify(defaultRoomSettings),
 });
 
 export const createClickTheBombConfig = (alivePlayersLength: number): MinigameDataType => ({

@@ -3,7 +3,7 @@ import { shuffle } from 'lodash';
 import * as roomRepository from '@roomRepository';
 import { endMinigameService } from '@minigameService';
 
-export const cardsSockets = async (socket: Socket) => {
+export const cardsSockets = (socket: Socket) => {
   socket.on('card_select', async (cardId: number) => {
     await roomRepository.updatePlayer(socket.data.roomCode, socket.id, { selectedObjectId: cardId.toString() });
   });
@@ -60,6 +60,6 @@ export const cardsSockets = async (socket: Socket) => {
 
   socket.on('cards_game_end', () => {
     const roomCode = socket.data.roomCode;
-    endMinigameService(roomCode, socket)
-  })
+    endMinigameService(roomCode, socket);
+  });
 };

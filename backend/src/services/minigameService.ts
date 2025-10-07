@@ -19,7 +19,7 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     return { success: false }; // No players to start the minigame
   }
 
-  if (!minigames) {
+  if (minigames.length === 0) {
     throw new Error(`Couldn't find minigames for room ${roomCode} when starting a game`);
   }
 

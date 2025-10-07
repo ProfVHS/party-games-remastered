@@ -29,9 +29,9 @@ const handleModulesOnConnection = async (socket: Socket) => {
   roomSockets(socket);
   turnSockets(socket);
   playerSockets(socket);
-  await minigameSockets(socket);
+  minigameSockets(socket);
   clickTheBombSockets(socket);
-  await cardsSockets(socket);
+  cardsSockets(socket);
 
   socket.on('error', (err) => {
     console.error(`Socket error: ${err}`);
