@@ -1,15 +1,15 @@
-import { MinigameListItemType } from '@frontend-types/index';
 import { MinigameNamesEnum } from '@shared/types';
 import { ClassNames } from '@utils';
 import { Icon } from '@assets/icon';
 import { Button } from '@components/ui/button/Button.tsx';
 
 import './MinigameItem.scss';
+import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
 
 type MinigameItemProps = {
-  minigame: MinigameListItemType;
+  minigame: MinigameEntryType;
   type: 'add' | 'remove';
-  onClick?: (minigame: MinigameListItemType) => void;
+  onClick?: (minigame: MinigameEntryType) => void;
   onDrag?: (e: React.PointerEvent<HTMLDivElement>) => void;
   isHost?: boolean;
 };
