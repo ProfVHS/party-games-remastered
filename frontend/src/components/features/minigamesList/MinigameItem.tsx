@@ -11,11 +11,12 @@ type MinigameItemProps = {
   type: 'add' | 'remove';
   onClick?: (minigame: MinigameListItemType) => void;
   onDrag?: (e: React.PointerEvent<HTMLDivElement>) => void;
+  isHost?: boolean;
 };
 
-export const MinigameItem = ({ minigame, type, onClick, onDrag }: MinigameItemProps) => {
+export const MinigameItem = ({ minigame, type, onClick, onDrag, isHost }: MinigameItemProps) => {
   return (
-    <div className={ClassNames('minigame-item', { draggable: type === 'remove' })}>
+    <div className={ClassNames('minigame-item', { draggable: !!onDrag })}>
       <div className="minigame-item__icon" onPointerDown={(e) => onDrag && onDrag(e)}>
         {minigame.name === MinigameNamesEnum.clickTheBomb && <Icon icon="ClickTheBomb" />}
         {minigame.name === MinigameNamesEnum.cards && <Icon icon="Cards" />}
@@ -23,9 +24,11 @@ export const MinigameItem = ({ minigame, type, onClick, onDrag }: MinigameItemPr
       </div>
       <div className="minigame-item__content">
         <span>{minigame.name}</span>
-        <Button onClick={() => onClick && onClick(minigame)} variant="round" color={{ remove: type === 'remove' }} size="small">
-          {type}
-        </Button>
+        {isHost && (
+          <Button onClick={() => onClick && onClick(minigame)} variant="round" color={{ remove: type === 'remove' }} size="small">
+            {type}
+          </Button>
+        )}
       </div>
     </div>
   );

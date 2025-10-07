@@ -34,12 +34,20 @@ html[data-theme='dark'] {
   --number-picker-shadow: #39135d;
   --number-picker-text: #{rgba(255, 255, 255, 0.4)};
 
+  //== Badge ==//
+  --badge-red-bg: #971010;
+  --badge-green-bg: #99DD44;
+  --badge-white-text: #{rgba(#ffffff, 0.4)};
+  --badge-black-text: #{rgba(#000000, 0.4)};
+
   //== Alert Box ==//
   --alert-box-bg: #{$darkBgColor};
   --alert-box-text: rgba(255, 255, 255, 0.6);
 
   //== Lobby ==//
   --lobby-player-text: #{$primaryColor2};
+  --lobby-color-code: #{$darkerPrimaryColor};
+  --lobby-color-code-hover: #{color.adjust($darkerPrimaryColor, $lightness: 5%)};
 
   //== Leaderboard ==//
   --leaderboard-bg: #{$darkBgColor};
@@ -54,6 +62,7 @@ html[data-theme='dark'] {
   --minigame-list-bg: #{$darkBgColor};
   --minigame-list-title: rgba(#fff, 0.8);
   --minigame-list-hr: #{rgba(255, 255, 255, 0.1)};
+  --minigame-list-scrollbar: #{$darkerPrimaryColor};
 
   //== Minigame List Item ==//
   --minigame-list-item-bg: #{rgba($primaryColor, 0.4)};

@@ -1,14 +1,11 @@
-export type LobbySettingsType = {
+export type RoomSettingsType = {
   isRandomMinigames: boolean;
   isTutorialsEnabled: boolean;
-  numberOfMinigames?: number;
+  numberOfMinigames: number;
   minigames: MinigameEntryType[];
 };
 
 export type MinigameEntryType = {
   name: string;
-};
-
-export type MinigameListItemType = MinigameEntryType & {
   id?: string;
 };

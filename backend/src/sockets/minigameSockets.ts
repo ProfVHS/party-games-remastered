@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { MinigameNamesEnum, RoomStatusEnum } from '@shared/types';
 import { startMinigameService } from '@minigameService';
 import * as roomRepository from '@roomRepository';
+import { MinigameEntryType } from '@shared/types/RoomSettingsType';
 
 const startMinigame = async (roomCode: string, socket: Socket) => {
   const response = await startMinigameService(roomCode);
@@ -16,10 +17,39 @@ const startMinigame = async (roomCode: string, socket: Socket) => {
   socket.nsp.to(roomCode).emit('started_minigame', response.payload);
 };
 
-export const minigameSockets = async (socket: Socket) => {
-  socket.on('set_minigames', async (minigames: MinigameNamesEnum[]) => {
+const getRandomMinigames = (numberOfMinigames: number = 2): MinigameEntryType[] => {
+  let allMinigames = Object.values(MinigameNamesEnum);
+
+  if (numberOfMinigames < 2 || numberOfMinigames > allMinigames.length) {
+    throw new Error(`Number of minigames must be between 2 and ${allMinigames.length}, but received ${numberOfMinigames}`);
+  }
+
+  const minigames: MinigameEntryType[] = [];
+
+  for (let i = 0; i < numberOfMinigames; i++) {
+    const index = Math.floor(Math.random() * allMinigames.length);
+    minigames.push({ name: allMinigames[index] });
+
+    if (allMinigames.length === 1) {
+      allMinigames = Object.values(MinigameNamesEnum);
+    } else {
+      allMinigames.splice(index, 1);
+    }
+  }
+
+  return minigames;
+};
+
+export const minigameSockets = (socket: Socket) => {
+  socket.on('verify_minigames', async () => {
     const roomCode = socket.data.roomCode;
-    await roomRepository.setMinigames(roomCode, minigames);
+    const roomSettings = await roomRepository.getRoomSettings(roomCode);
+
+    if (roomSettings && roomSettings.isRandomMinigames && roomSettings.minigames.length === 0) {
+      await roomRepository.updateRoomSettings(roomCode, { minigames: getRandomMinigames(roomSettings.numberOfMinigames) });
+    } else if (roomSettings && roomSettings.minigames.length < 2) {
+      throw new Error(`Minimum number of minigames is 2`);
+    }
   });
 
   socket.on('start_minigame', async () => {

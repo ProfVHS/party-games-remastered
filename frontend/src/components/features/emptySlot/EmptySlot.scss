@@ -1,46 +1,35 @@
-@use '../../../common/styles/themes' as *;
-
-.player-avatar {
+.empty-slot {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-
   height: fit-content;
   width: fit-content;
-
-  padding: 0.25rem 0.5rem;
-
+  padding: 1.75rem 0.5rem 0.25rem 0.5rem;
   border-radius: 0.5rem;
+
   background-color: var(--player-avatar-bg);
   box-shadow: var(--cartoon-shadow);
 
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
+  opacity: 0.35;
 
   h2 {
     padding: 0;
     margin: 0;
-  }
-
-  &__username {
     color: var(--player-avatar-username);
     font-size: 1rem;
+    user-select: none;
   }
 
-  &__score {
-    color: var(--player-avatar-score);
-    font-size: 1.3rem;
-  }
-
-  &__avatar {
+  &__box {
     display: flex;
-    align-items: flex-end;
-    background: url('../../../assets/textures/character-bg.svg');
-    background-size: cover;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #1E1E1E;
     width: 175px;
     height: 125px;
-
+    color: rgba(255, 255, 255, 0.2);
 
     @media (min-width: 1921px) and (max-width: 2559px) {
       width: clamp(175px, 10vw, 316px);
@@ -51,5 +40,6 @@
       width: 275px;
       height: 190px;
     }
+
   }
 }

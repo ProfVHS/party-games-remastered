@@ -2,8 +2,7 @@ import { client } from '@config/db';
 import { Socket } from 'socket.io';
 import * as roomRepository from '@roomRepository';
 import { ChainableCommander } from 'ioredis';
-import { ReturnDataType } from '@shared/types';
-import { RoomDataType, PlayerStatusEnum, RoomStatusEnum } from '@shared/types';
+import { PlayerStatusEnum, ReturnDataType, RoomDataType, RoomStatusEnum } from '@shared/types';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 import { avatars } from '@shared/constants/avatars';
 
@@ -108,6 +107,7 @@ export const deleteRoomService = async (socket: Socket): Promise<ReturnDataType>
     await roomRepository.deleteAllPlayers(roomCode, multi);
     await roomRepository.deleteReadyTable(roomCode, multi); // In case room gets deleted before first minigame starts
     await roomRepository.deleteRoomData(roomCode, multi);
+    await roomRepository.deleteRoomSettings(roomCode, multi);
 
     await multi.exec();
   } catch (error) {
