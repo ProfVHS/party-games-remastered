@@ -2,20 +2,20 @@ import { useState } from 'react';
 import './MinigamesList.scss';
 import { Reorder } from 'framer-motion';
 import { Button } from '@components/ui/button/Button.tsx';
-import { MinigameListItemType } from '@frontend-types/index';
 import { MinigameNamesEnum } from '@shared/types';
 import { MinigameItem } from '@components/features/minigamesList/MinigameItem';
 import { DraggableMinigameItem } from '@components/features/minigamesList/DraggableMinigameItem';
+import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
 
 type MinigamesListProps = {
   onCancel: () => void;
-  onSave: (Minigames: MinigameListItemType[]) => void;
-  minigames: MinigameListItemType[];
+  onSave: (Minigames: MinigameEntryType[]) => void;
+  minigames: MinigameEntryType[];
   isHost?: boolean;
 };
 
 export const MinigamesList = ({ onCancel, onSave, minigames, isHost }: MinigamesListProps) => {
-  const [newMinigameList, setNewMinigameList] = useState<MinigameListItemType[]>(minigames! || []);
+  const [newMinigameList, setNewMinigameList] = useState<MinigameEntryType[]>(minigames! || []);
   const minigameList = isHost ? newMinigameList : minigames;
 
   const handleSave = () => {
@@ -23,12 +23,12 @@ export const MinigamesList = ({ onCancel, onSave, minigames, isHost }: Minigames
     onCancel && onCancel();
   };
 
-  const addMinigameToList = (minigame: MinigameListItemType) => {
+  const addMinigameToList = (minigame: MinigameEntryType) => {
     const id = `${minigame.name}-${newMinigameList.length}`;
     setNewMinigameList((prevMinigames) => [...prevMinigames, { ...minigame, id }]);
   };
 
-  const removeMinigameFromList = (minigame: MinigameListItemType) => {
+  const removeMinigameFromList = (minigame: MinigameEntryType) => {
     setNewMinigameList((prevMinigamesList) => prevMinigamesList.filter((m) => m.id !== minigame.id));
   };
 

@@ -20,10 +20,10 @@ export const Default: Story = {
     min: 1,
     max: 10,
     defaultNumber: 2,
-    onchange: () => {},
+    onChange: () => {},
     style: {},
   },
   parameters: {
-    theme: "dark"
-  }
+    theme: 'dark',
+  },
 };
