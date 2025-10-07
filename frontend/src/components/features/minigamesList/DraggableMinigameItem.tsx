@@ -1,10 +1,10 @@
 import { Reorder, useDragControls } from 'framer-motion';
 import { MinigameItem } from '@components/features/minigamesList/MinigameItem';
-import { MinigameListItemType } from '@frontend-types/index';
+import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
 
 type DraggableMinigameItemProps = {
-  minigame: MinigameListItemType;
-  onClick?: (minigame: MinigameListItemType) => void;
+  minigame: MinigameEntryType;
+  onClick?: (minigame: MinigameEntryType) => void;
   isHost?: boolean;
 };
 
