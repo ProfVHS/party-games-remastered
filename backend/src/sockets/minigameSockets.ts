@@ -3,7 +3,7 @@ import { MinigameNamesEnum, RoomStatusEnum } from '@shared/types';
 import { startMinigameService } from '@minigameService';
 import * as roomRepository from '@roomRepository';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
-import { LockName } from '@backend-types';
+import { LockName, ReadyNameEnum } from '@backend-types';
 
 const startMinigame = async (roomCode: string, socket: Socket) => {
   await roomRepository.deleteScheduledMinigames(roomCode);
@@ -19,7 +19,7 @@ const startMinigame = async (roomCode: string, socket: Socket) => {
   socket.nsp.to(roomCode).emit('started_minigame', response.payload);
 };
 
-export const minigameSockets = async (socket: Socket) => {
+export const minigameSockets = (socket: Socket) => {
   socket.on('set_minigames', async (minigames: MinigameNamesEnum[]) => {
     const roomCode = socket.data.roomCode;
     await roomRepository.setMinigames(roomCode, minigames);
@@ -39,9 +39,11 @@ export const minigameSockets = async (socket: Socket) => {
       return;
     }
 
-    await roomRepository.toggleReady(roomCode, socket.id);
-    const playersReady = await roomRepository.getReadyPlayersCount(roomCode);
+    await roomRepository.toggleReady(roomCode, socket.id, ReadyNameEnum.minigame);
+    const playersReady = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.minigame);
     const playersIds = await roomRepository.getAllPlayerIds(roomCode);
+
+    //TODO: Change all player to only connected players
 
     // Start the minigame immediately
     if (playersReady === playersIds.length) {

@@ -2,10 +2,10 @@ import { client } from '@config/db';
 import { Socket } from 'socket.io';
 import * as roomRepository from '@roomRepository';
 import { ChainableCommander } from 'ioredis';
-import { ReturnDataType } from '@shared/types';
-import { RoomDataType, PlayerStatusEnum, RoomStatusEnum } from '@shared/types';
+import { PlayerStatusEnum, ReturnDataType, RoomDataType, RoomStatusEnum } from '@shared/types';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 import { avatars } from '@shared/constants/avatars';
+import { ReadyNameEnum } from '@backend-types';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
@@ -40,7 +40,7 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
   try {
     playersIds = await roomRepository.getAllPlayerIds(roomCode);
     roomData = await roomRepository.getRoomData(roomCode);
-    playersReady = await roomRepository.getReadyPlayers(roomCode);
+    playersReady = await roomRepository.getReadyPlayers(roomCode, ReadyNameEnum.minigame);
 
     const players = await roomRepository.getAllPlayers(roomCode);
     const existingAvatars = players.map((p) => p.avatar);
@@ -88,9 +88,9 @@ export const toggleReadyService = async (socket: Socket): Promise<ReturnDataType
   let playerReadyCount: number;
 
   try {
-    await roomRepository.toggleReady(roomCode, playerID);
+    await roomRepository.toggleReady(roomCode, playerID, ReadyNameEnum.minigame);
 
-    playerReadyCount = await roomRepository.getReadyPlayersCount(roomCode);
+    playerReadyCount = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.minigame);
   } catch (error) {
     console.error(`Player ready status toggle failed for room ${roomCode} and player: ${playerID}: ${error}`);
     return { success: false }; // Ready status not
@@ -106,7 +106,7 @@ export const deleteRoomService = async (socket: Socket): Promise<ReturnDataType>
   try {
     multi = client.multi();
     await roomRepository.deleteAllPlayers(roomCode, multi);
-    await roomRepository.deleteReadyTable(roomCode, multi); // In case room gets deleted before first minigame starts
+    await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.minigame, multi); // In case room gets deleted before first minigame starts
     await roomRepository.deleteRoomData(roomCode, multi);
 
     await multi.exec();

@@ -1,5 +1,5 @@
 import './Cards.scss';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card } from './Card';
 import { socket } from '@socket';
 import { usePlayersStore } from '@stores/playersStore';
@@ -47,8 +47,7 @@ export const Cards = () => {
       return;
     }
 
-    showRoundIntro();
-    await delay(roundIntroDuration);
+    await showRoundIntro();
 
     setIsFlipping(false);
     await delay(cardFlipHalfDuration);

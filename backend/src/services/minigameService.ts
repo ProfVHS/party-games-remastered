@@ -5,7 +5,7 @@ import * as roomRepository from '@roomRepository';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
 import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig } from '@config/minigames';
 import { sendAllPlayers } from '@sockets';
-import { LockName } from '@backend-types';
+import { LockName, ReadyNameEnum } from '@backend-types';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
   let minigameData: MinigameDataType | null = null;
@@ -58,7 +58,7 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     }
     await multi.exec();
 
-    await roomRepository.deleteReadyTable(roomCode); // We don't need it after the game has started
+    await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.minigame); // We don't need it after the game has started
   } catch (error) {
     console.error(`Minigame start failed for room ${roomCode}: ${error}`);
     return { success: false }; // Minigame not started
@@ -81,7 +81,7 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
     );
     await roomRepository.updateRoomData(roomCode, { status: RoomStatusEnum.leaderboard }, multi);
     await roomRepository.incrementRoomDataMinigameIndex(roomCode, multi);
-    await roomRepository.deleteReadyTable(roomCode, multi);
+    await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.minigame, multi);
     await roomRepository.deleteLock(roomCode, LockName.minigame, multi);
 
     await multi.exec();
