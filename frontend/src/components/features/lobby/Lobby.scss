@@ -1,20 +1,23 @@
 @use 'sass:color';
-@use '../../../common/styles/_variables.scss' as *;
+@use '../../../common/styles/themes' as *;
 
 .lobby {
-  gap: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+
   box-sizing: border-box;
-  height: 360px;
+  height: 25rem;
+  width: 40%;
+  min-width: 350px;
 
-  width: 75%;
-  min-width: 325px;
-
-  max-width: 450px;
-
-  background-color: #fff;
+  background-color: var(--background);
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
 
   border-radius: 8px;
+  padding: 1rem;
   font-size: 2rem;
 
   user-select: none;
@@ -26,20 +29,15 @@
 
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
-    color: $darkerPrimaryColor;
+    color: var(--header-color);
   }
 
   &__code {
     margin-left: 7px;
-
     cursor: pointer;
-
+    transition: 0.2s ease;
     &:hover {
-      color: color.adjust($darkerPrimaryColor, $lightness: 10%);
-    }
-
-    &:active {
-      color: $darkerPrimaryColor;
+      color: var(--lobby-color-code-hover);
     }
   }
 
@@ -48,14 +46,14 @@
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    gap: 8px;
+    gap: 0.5rem;
     width: 100%;
   }
 
   &__players {
     font-family: 'Spicy Rice', cursive;
     font-size: 3em;
-    color: $darkerPrimaryColor;
+    color: var(--header-color);
   }
 
   &__text {
@@ -63,36 +61,19 @@
     width: 3em;
     font-size: 0.7em;
     font-family: 'Spicy Rice', cursive;
-    color: $secondaryColor;
+    color: var(--lobby-player-text);
   }
 
   &__countdown {
     font-family: 'Spicy Rice', cursive;
     font-size: 4em;
-    color: $darkerPrimaryColor;
+    color: var(--header-color);
   }
 
   &__countdown-text {
     font-family: 'Spicy Rice', cursive;
     font-size: 1.5em;
     text-align: center;
-    color: $darkerPrimaryColor;
-  }
-
-  &__settingsbutton {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-  }
-
-  &__content {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    gap: 8px;
+    color: var(--header-color);
   }
 }

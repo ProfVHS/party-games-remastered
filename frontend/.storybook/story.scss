@@ -3,3 +3,9 @@
 body {
   background-color: #f5f5f5;
 }
+
+html[data-theme="dark"]{
+  body{
+    background-color: #282828;
+  }
+}

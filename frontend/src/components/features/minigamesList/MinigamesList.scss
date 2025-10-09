@@ -1,5 +1,5 @@
 @use 'sass:color';
-@use '../../../common/styles/_variables.scss' as *;
+@use '../../../common/styles/themes' as *;
 
 .minigames-list {
   display: grid;
@@ -14,11 +14,9 @@
     flex-direction: column;
     align-items: center;
 
-    gap: 8px;
-
     border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+    background-color: var(--minigame-list-bg);
+    box-shadow: var(--cartoon-shadow);
 
     width: 350px;
     height: 100%;
@@ -30,16 +28,20 @@
   }
 
   &__title {
-    color: rgba($color: #000000, $alpha: 0.8);
+    color: var(--minigame-list-title);
     text-align: center;
     font-size: 1.5em;
     font-weight: 700;
 
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid var(--minigame-list-hr);
     padding-bottom: 8px;
     margin-bottom: 16px;
 
     width: 100%;
+  }
+
+  &__list{
+    scrollbar-color: var(--minigame-list-scrollbar) transparent;
   }
 
   &__footer {
@@ -53,7 +55,7 @@
     padding: 16px;
     box-sizing: border-box;
 
-    background-color: #fff;
+    background-color: var(--minigame-list-bg);
     border-radius: 4px;
     box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
 

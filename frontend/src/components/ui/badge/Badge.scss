@@ -1,0 +1,22 @@
+@use '../../../common/styles/variables' as *;
+
+.badge {
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  &--primary {
+    background-color: #{$primaryColor};
+  }
+
+  &--red {
+    background-color: var(--badge-red-bg);
+    color: var(--badge-text);
+  }
+
+  &--green {
+    background-color: var(--badge-green-bg);
+    color: var(--badge-black-text);
+  }
+}

@@ -1,3 +1,5 @@
+@use "../../../common/styles/themes" as *;
+
 .modal {
   position: fixed;
   top: 0;
@@ -7,6 +9,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
+
+  color: var(--text-color);
 
   &__content {
     position: relative;
@@ -16,6 +21,17 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    padding: 16px;
+    background-color: var(--background);
+    border-radius: 4px;
+    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+
+    &--transparent-bg{
+      background-color: transparent;
+    }
   }
 
   &__backdrop {
