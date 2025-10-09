@@ -8,6 +8,7 @@ const keyName = 'roomSettings';
 export const setRoomSettings = async (roomCode: string, roomSettings: RoomSettingsType, multi?: ChainableCommander): Promise<void> => {
   const data = {
     ...roomSettings,
+    minigames: JSON.stringify(roomSettings.minigames),
     roomCode,
   };
 
@@ -35,6 +36,8 @@ export const getRoomSettings = async (roomCode: string): Promise<RoomSettingsTyp
   const data = await client.hgetall(getKey(roomCode, keyName));
 
   if (!data || Object.keys(data).length === 0) return null;
+
+  console.log(data);
 
   return {
     isRandomMinigames: data.isRandomMinigames === 'true',
