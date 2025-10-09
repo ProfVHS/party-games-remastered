@@ -1,9 +1,8 @@
 import { client } from '@config/db';
 import { ChainableCommander } from 'ioredis';
+import { ScheduledNameEnum } from '../../types/ScheduledNameEnum';
 
-const keyName = 'scheduled:minigames';
-
-export const addScheduledMinigames = async (roomCode: string, startAt: number, multi?: ChainableCommander): Promise<void> => {
+export const addScheduled = async (roomCode: string, startAt: number, keyName: ScheduledNameEnum, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.zadd(keyName, startAt, roomCode);
   } else {
@@ -11,17 +10,17 @@ export const addScheduledMinigames = async (roomCode: string, startAt: number, m
   }
 };
 
-export const getScheduledMinigames = async (): Promise<number> => {
+export const getScheduled = async (keyName: ScheduledNameEnum): Promise<number> => {
   return client.zcard(keyName);
 };
 
-export const getReadyScheduledMinigames = async (): Promise<string[]> => {
+export const getReadyScheduled = async (keyName: ScheduledNameEnum): Promise<string[]> => {
   const now = Date.now();
 
-  return client.zrangebyscore('scheduled:minigames', 0, now);
+  return client.zrangebyscore(keyName, 0, now);
 };
 
-export const deleteScheduledMinigames = async (roomCode: string, multi?: ChainableCommander): Promise<void> => {
+export const deleteScheduled = async (roomCode: string, keyName: ScheduledNameEnum, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.zrem(keyName, roomCode);
   } else {

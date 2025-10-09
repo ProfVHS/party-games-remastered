@@ -1,5 +1,6 @@
 export enum LockName {
-  minigame = 'minigameStarted',
-  round = 'roundStarted',
-  watch = 'watchMinigameStarted',
+  minigame = 'started:minigame',
+  round = 'started:round',
+  watchMinigame = 'watch:minigame',
+  watchRound = 'watch:round',
 }

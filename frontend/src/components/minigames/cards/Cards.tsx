@@ -61,6 +61,7 @@ export const Cards = () => {
   };
 
   const endRound = () => {
+    socket.emit('start_round_queue');
     if (currentPlayer?.isHost === 'true' && !hasStarted.current) socket.emit('cards_round_end');
     hasStarted.current = true;
   };
