@@ -3,12 +3,9 @@ import { MinigameNamesEnum, RoomStatusEnum } from '@shared/types';
 import { startMinigameService } from '@minigameService';
 import * as roomRepository from '@roomRepository';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
-import { LockName, ReadyNameEnum } from '@backend-types';
-import { ScheduledNameEnum } from '../types/ScheduledNameEnum';
+import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
 
 const startMinigame = async (roomCode: string, socket: Socket) => {
-  await roomRepository.deleteScheduled(roomCode, ScheduledNameEnum.minigames);
-  await roomRepository.updateRoomData(roomCode, { status: RoomStatusEnum.game });
   const response = await startMinigameService(roomCode);
 
   if (!response.success) {
@@ -20,8 +17,17 @@ const startMinigame = async (roomCode: string, socket: Socket) => {
   socket.nsp.to(roomCode).emit('started_minigame', response.payload);
 };
 
-const startRound = async (roomCode: string, socket: Socket) => {
+const startRound = async (roomCode: string) => {
   const minigameData = await roomRepository.getMinigameData(roomCode);
+
+  switch (minigameData?.minigameName) {
+    case MinigameNamesEnum.cards:
+      console.log('Starting next cards round');
+      break;
+    default:
+      console.error('Tried start round for non existing game: ', minigameData?.minigameName);
+      break;
+  }
 
   console.log('Starting round for game - ', minigameData?.minigameName);
 };
@@ -48,12 +54,10 @@ export const minigameSockets = (socket: Socket) => {
 
     await roomRepository.toggleReady(roomCode, socket.id, ReadyNameEnum.minigame);
     const playersReady = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.minigame);
-    const playersIds = await roomRepository.getAllPlayerIds(roomCode);
-
-    //TODO: Change all player to only connected players
+    const connectedPlayers = await roomRepository.getFilteredPlayers(roomCode, { isDisconnected: 'false' });
 
     // Start the minigame immediately
-    if (playersReady === playersIds.length) {
+    if (playersReady === connectedPlayers.length) {
       const started = await roomRepository.acquireLock(roomCode, LockName.minigame, 10);
 
       if (!started) {
@@ -78,7 +82,7 @@ export const minigameSockets = (socket: Socket) => {
 
       const startAt = Date.now() + 5000;
       await roomRepository.addScheduled(roomCode, startAt, ScheduledNameEnum.minigames);
-      await startMinigameScheduler(socket);
+      await startScheduler(socket, ScheduledNameEnum.minigames);
       return;
     }
   });
@@ -86,14 +90,12 @@ export const minigameSockets = (socket: Socket) => {
   socket.on('start_round_queue', async () => {
     const roomCode = socket.data.roomCode;
 
-    //TODO: Change all player to only connected players
-
     await roomRepository.toggleReady(roomCode, socket.id, ReadyNameEnum.round);
     const playersReady = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.round);
-    const playersIds = await roomRepository.getAllPlayerIds(roomCode);
+    const connectedPlayers = await roomRepository.getFilteredPlayers(roomCode, { isDisconnected: 'false' });
 
     // Start round immediately
-    if (playersReady === playersIds.length) {
+    if (playersReady === connectedPlayers.length) {
       const started = await roomRepository.acquireLock(roomCode, LockName.round, 10);
 
       if (!started) {
@@ -101,7 +103,7 @@ export const minigameSockets = (socket: Socket) => {
         return;
       }
 
-      await startRound(roomCode, socket);
+      await startRound(roomCode);
       return;
     }
 
@@ -116,23 +118,23 @@ export const minigameSockets = (socket: Socket) => {
 
       const startAt = Date.now() + 5000;
       await roomRepository.addScheduled(roomCode, startAt, ScheduledNameEnum.rounds);
-      await startRoundScheduler(socket);
+      await startScheduler(socket, ScheduledNameEnum.rounds);
       return;
     }
   });
 };
 
-//TODO: Merge these two functions
+const startScheduler = async (socket: Socket, scheduledName: ScheduledNameEnum) => {
+  const watchKey = scheduledName === ScheduledNameEnum.minigames ? LockName.watchMinigame : LockName.watchRound;
 
-const startRoundScheduler = async (socket: Socket) => {
   while (true) {
-    const ready = await roomRepository.getReadyScheduled(ScheduledNameEnum.rounds);
+    const ready = await roomRepository.getReadyScheduled(scheduledName);
 
     if (ready.length === 0) {
-      const futureRounds = await roomRepository.getScheduled(ScheduledNameEnum.rounds);
+      const futureRoundsOrGames = await roomRepository.getScheduled(scheduledName);
 
-      if (futureRounds === 0) {
-        console.log('No more scheduled rounds, stopping worker');
+      if (futureRoundsOrGames === 0) {
+        console.log(`No more scheduled for key: ${scheduledName}, stopping worker`);
         return;
       }
 
@@ -141,7 +143,7 @@ const startRoundScheduler = async (socket: Socket) => {
     }
 
     for (const roomCode of ready) {
-      const gotLock = await roomRepository.acquireLock(roomCode, LockName.watchRound, 10);
+      const gotLock = await roomRepository.acquireLock(roomCode, watchKey, 10);
 
       if (!gotLock) {
         console.log(`Skipping worker for room: ${roomCode}, already being processed`);
@@ -149,48 +151,15 @@ const startRoundScheduler = async (socket: Socket) => {
       }
 
       try {
-        await startRound(roomCode, socket);
+        if (scheduledName === ScheduledNameEnum.minigames) {
+          await startMinigame(roomCode, socket);
+        } else {
+          await startRound(roomCode);
+        }
       } catch (err) {
-        console.error('Failed to start round', err);
+        console.error(`Failed to start: ${scheduledName}`, err);
       } finally {
-        await roomRepository.deleteLock(roomCode, LockName.watchRound);
-      }
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-};
-
-const startMinigameScheduler = async (socket: Socket) => {
-  while (true) {
-    const ready = await roomRepository.getReadyScheduled(ScheduledNameEnum.minigames);
-
-    if (ready.length === 0) {
-      const futureGames = await roomRepository.getScheduled(ScheduledNameEnum.minigames);
-
-      if (futureGames === 0) {
-        console.log('No more scheduled minigames, stopping worker');
-        return;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      continue;
-    }
-
-    for (const roomCode of ready) {
-      const gotLock = await roomRepository.acquireLock(roomCode, LockName.watchMinigame, 10);
-
-      if (!gotLock) {
-        console.log(`Skipping worker for room: ${roomCode}, already being processed`);
-        continue;
-      }
-
-      try {
-        await startMinigame(roomCode, socket);
-      } catch (err) {
-        console.error('Failed to start minigame', err);
-      } finally {
-        await roomRepository.deleteLock(roomCode, LockName.watchMinigame);
+        await roomRepository.deleteLock(roomCode, watchKey);
       }
     }
 

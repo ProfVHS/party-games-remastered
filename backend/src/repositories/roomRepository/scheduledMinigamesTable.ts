@@ -1,6 +1,6 @@
 import { client } from '@config/db';
 import { ChainableCommander } from 'ioredis';
-import { ScheduledNameEnum } from '../../types/ScheduledNameEnum';
+import { ScheduledNameEnum } from '@backend-types';
 
 export const addScheduled = async (roomCode: string, startAt: number, keyName: ScheduledNameEnum, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
