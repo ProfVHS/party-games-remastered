@@ -10,6 +10,7 @@ import { useTurn } from '@hooks/useTurn';
 import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 import { RandomScoreBox } from './RandomScoreBox';
 import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType';
+import { TurnNotification } from '@components/features/turnNotification/TurnNotification.tsx';
 
 const formatMilisecondsToTimer = (ms: number) => {
   const seconds = Math.floor(ms / 1000);
@@ -84,20 +85,23 @@ export const ClickTheBomb = () => {
   }, []);
 
   return (
-    <div className="click-the-bomb">
-      <RandomScoreBox id={scoreData.id} score={scoreData.score} isPositive={scoreData.isPositive} />
-      <div className="click-the-bomb__info">
-        <span className="click-the-bomb__title">Click The Bomb</span>
-        <span className="click-the-bomb__turn">{currentTurn?.nickname} Turn</span>
+    <>
+      <TurnNotification />
+      <div className="click-the-bomb">
+        <RandomScoreBox id={scoreData.id} score={scoreData.score} isPositive={scoreData.isPositive} />
+        <div className="click-the-bomb__info">
+          <span className="click-the-bomb__title">Click The Bomb</span>
+          <span className="click-the-bomb__turn">{currentTurn?.nickname} Turn</span>
+        </div>
+        <div className={`click-the-bomb__bomb ${bombLock ? 'bomb__lock' : 'bomb__active'}`} onClick={handleClickBomb}>
+          <Bomb />
+          <span className="click-the-bomb__counter">{clicksCount! >= 10 ? clicksCount : '0' + clicksCount}</span>
+          <span className="click-the-bomb__timer">{formatMilisecondsToTimer(animationTimeLeft)}</span>
+        </div>
+        <Button className="click-the-bomb__button" type="button" size="medium" isDisabled={!canSkipTurn} onClick={handleChangeTurn}>
+          Next
+        </Button>
       </div>
-      <div className={`click-the-bomb__bomb ${bombLock ? 'bomb__lock' : 'bomb__active'}`} onClick={handleClickBomb}>
-        <Bomb />
-        <span className="click-the-bomb__counter">{clicksCount! >= 10 ? clicksCount : '0' + clicksCount}</span>
-        <span className="click-the-bomb__timer">{formatMilisecondsToTimer(animationTimeLeft)}</span>
-      </div>
-      <Button className="click-the-bomb__button" type="button" size="medium" isDisabled={!canSkipTurn} onClick={handleChangeTurn}>
-        Next
-      </Button>
-    </div>
+    </>
   );
 };

@@ -44,6 +44,10 @@ html[data-theme='dark'] {
   --alert-box-bg: #{$darkBgColor};
   --alert-box-text: rgba(255, 255, 255, 0.6);
 
+  //== Info indicator ==//
+  --info-notice-bg: #6f359e;
+  --info-notice-color: rgba(255, 255, 255, 0.4);
+
   //== Lobby ==//
   --lobby-player-text: #{$primaryColor2};
   --lobby-color-code: #{$darkerPrimaryColor};

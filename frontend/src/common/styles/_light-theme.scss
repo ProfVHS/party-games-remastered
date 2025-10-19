@@ -44,6 +44,10 @@ html[data-theme='light'] {
   --alert-box-bg: #{$lightBgColor};
   --alert-box-text: #000;
 
+  //== Info indicator ==//
+  --info-notice-bg: #{$darkerPrimaryColor};
+  --info-notice-color: #fff;
+
   //== Lobby ==//
   --lobby-player-text: #{$secondaryColor};
 
