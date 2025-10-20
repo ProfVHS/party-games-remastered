@@ -2,9 +2,21 @@ import { client } from '@config/db';
 import { Socket } from 'socket.io';
 import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
-import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
-import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig } from '@config/minigames';
-import { sendAllPlayers } from '@sockets';
+import {
+  MinigameDataType,
+  MinigameNamesEnum,
+  PlayerStatusEnum,
+  ReturnDataType,
+  RoomStatusEnum,
+  TurnType
+} from '@shared/types';
+import {
+  createCardsConfig,
+  createClickTheBombConfig,
+  createColorsMemoryConfig,
+  createRoomConfig
+} from '@config/minigames';
+import { cardsRound, sendAllPlayers } from '@sockets';
 import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
@@ -27,7 +39,7 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     throw new Error(`Couldn't find roomData for room ${roomCode} when starting a game`);
   }
 
-  const currentMinigame = minigames[Number(roomData?.minigameIndex)];
+  const currentMinigame = minigames[Number(roomData.minigameIndex)];
 
   try {
     multi = client.multi();
@@ -91,6 +103,35 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
     socket.nsp.to(roomCode).emit('ended_minigame');
   } catch (error) {
     throw new Error(`Failed to end minigame for room ${roomCode}: ${error}`);
+  }
+};
+
+export const startRoundService = async (roomCode: string, socket: Socket) => {
+  const minigameData = await roomRepository.getMinigameData(roomCode);
+  let multi: ChainableCommander;
+
+  if (!minigameData) {
+    console.error("Couldn't find minigame data.");
+  }
+
+  try {
+    multi = client.multi();
+    await roomRepository.deleteScheduled(roomCode, ScheduledNameEnum.rounds);
+    await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.round);
+
+    switch (minigameData?.minigameName) {
+      case MinigameNamesEnum.cards:
+        await cardsRound(socket);
+        break;
+      default:
+        console.error('Tried start round for non existing game: ', minigameData?.minigameName);
+        break;
+    }
+
+    await multi.exec();
+  } catch (error) {
+    console.error(`Round start failed for room ${roomCode}: ${error}`);
+    return { success: false }; // Minigame not started
   }
 };
 
