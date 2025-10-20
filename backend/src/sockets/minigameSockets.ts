@@ -2,8 +2,10 @@ import { Socket } from 'socket.io';
 import { MinigameNamesEnum, RoomStatusEnum } from '@shared/types';
 import { startMinigameService } from '@minigameService';
 import * as roomRepository from '@roomRepository';
+import { deleteScheduled } from '@roomRepository';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
+import { cardsRound } from './cardsSockets';
 
 const startMinigame = async (roomCode: string, socket: Socket) => {
   const response = await startMinigameService(roomCode);
@@ -17,12 +19,16 @@ const startMinigame = async (roomCode: string, socket: Socket) => {
   socket.nsp.to(roomCode).emit('started_minigame', response.payload);
 };
 
-const startRound = async (roomCode: string) => {
+const startRound = async (roomCode: string, socket: Socket) => {
   const minigameData = await roomRepository.getMinigameData(roomCode);
+  await deleteScheduled(roomCode, ScheduledNameEnum.rounds);
+  //TODO: Reset ready table
+  //TODO: make it roundservice
 
   switch (minigameData?.minigameName) {
     case MinigameNamesEnum.cards:
-      console.log('Starting next cards round');
+      console.log('Starintg cards round');
+      await cardsRound(socket);
       break;
     default:
       console.error('Tried start round for non existing game: ', minigameData?.minigameName);
@@ -73,10 +79,10 @@ export const minigameSockets = (socket: Socket) => {
 
     // The minigame will start in 5 seconds
     if (playersReady >= MIN_PLAYERS_TO_START) {
-      const started = await roomRepository.acquireLock(roomCode, LockName.minigame, 10);
+      const startedCountdown = await roomRepository.acquireLock(roomCode, LockName.countdownMinigame, 10);
 
-      if (!started) {
-        console.log('Minigame already started or scheduled');
+      if (!startedCountdown) {
+        console.log('Minigame countdown already started or scheduled');
         return;
       }
 
@@ -94,8 +100,12 @@ export const minigameSockets = (socket: Socket) => {
     const playersReady = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.round);
     const connectedPlayers = await roomRepository.getFilteredPlayers(roomCode, { isDisconnected: 'false' });
 
+    console.log('Players ready - ', playersReady);
+    console.log('Players connected - ', connectedPlayers.length);
+
     // Start round immediately
     if (playersReady === connectedPlayers.length) {
+      console.log('Started od razu');
       const started = await roomRepository.acquireLock(roomCode, LockName.round, 10);
 
       if (!started) {
@@ -103,16 +113,18 @@ export const minigameSockets = (socket: Socket) => {
         return;
       }
 
-      await startRound(roomCode);
+      await startRound(roomCode, socket);
       return;
     }
 
     // Round will start in 5 seconds
     if (playersReady >= MIN_PLAYERS_TO_START) {
-      const started = await roomRepository.acquireLock(roomCode, LockName.round, 10);
+      console.log('Zaczynam za 5 sekund');
+      const startedCountdown = await roomRepository.acquireLock(roomCode, LockName.countdownRound, 10);
 
-      if (!started) {
-        console.log('Round already started or scheduled');
+      //TODO: Change it e.g. to another key, it will stop because there is queue and we want to stop it and start the game immediately
+      if (!startedCountdown) {
+        console.log('Round countdown already started or scheduled');
         return;
       }
 
@@ -138,6 +150,7 @@ const startScheduler = async (socket: Socket, scheduledName: ScheduledNameEnum) 
         return;
       }
 
+      console.log("Future games - ", futureRoundsOrGames);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       continue;
     }
@@ -154,7 +167,7 @@ const startScheduler = async (socket: Socket, scheduledName: ScheduledNameEnum) 
         if (scheduledName === ScheduledNameEnum.minigames) {
           await startMinigame(roomCode, socket);
         } else {
-          await startRound(roomCode);
+          await startRound(roomCode, socket);
         }
       } catch (err) {
         console.error(`Failed to start: ${scheduledName}`, err);

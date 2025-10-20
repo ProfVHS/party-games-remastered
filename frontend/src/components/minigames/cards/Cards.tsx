@@ -20,7 +20,7 @@ export const Cards = () => {
   const [newPlayersPoints, setNewPlayerPoints] = useState<PlayerType[]>([]);
 
   const { timeLeft, startCountdown } = useCountdown(countdownDuration, 1, () => endRound());
-  const { currentPlayer } = usePlayersStore();
+  const { currentPlayer, players } = usePlayersStore();
 
   const currentRound = useRef<string>('1');
   const hasStarted = useRef<boolean>(false);
@@ -61,8 +61,13 @@ export const Cards = () => {
   };
 
   const endRound = () => {
-    socket.emit('start_round_queue');
-    if (currentPlayer?.isHost === 'true' && !hasStarted.current) socket.emit('cards_round_end');
+    if (hasStarted.current) return;
+    const yourIndex = players.findIndex(player => player.id === currentPlayer?.id);
+    setTimeout(() => {
+      console.log("Wysyłam socketa z ms: ", yourIndex * 2000);
+      socket.emit('start_round_queue');
+    }, yourIndex * 2000)
+
     hasStarted.current = true;
   };
 
