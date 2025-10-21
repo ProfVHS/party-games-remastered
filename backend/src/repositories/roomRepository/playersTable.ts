@@ -117,7 +117,11 @@ export const getAllPlayers = async (roomCode: string): Promise<PlayerType[]> => 
 };
 
 export const getAllPlayerIds = async (roomCode: string): Promise<string[]> => {
-  const playerIds = await client.lrange(getKey(roomCode, keyName), 0, -1);
+  return client.lrange(getKey(roomCode, keyName), 0, -1);
+};
 
-  return playerIds;
+export const getFilteredPlayers = async (roomCode: string, filter: Partial<PlayerType>): Promise<PlayerType[]> => {
+  const players = await getAllPlayers(roomCode);
+
+  return players.filter((player) => Object.entries(filter).every(([key, value]) => player[key as keyof PlayerType] === value));
 };

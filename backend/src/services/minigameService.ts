@@ -4,7 +4,8 @@ import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
 import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig } from '@config/minigames';
-import { sendAllPlayers } from '@sockets';
+import { cardsRound, sendAllPlayers } from '@sockets';
+import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
   let minigameData: MinigameDataType | null = null;
@@ -32,6 +33,7 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
   try {
     multi = client.multi();
     await roomRepository.updateRoomData(roomCode, createRoomConfig(players.length, RoomStatusEnum.game), multi);
+    await roomRepository.deleteScheduled(roomCode, ScheduledNameEnum.minigames);
 
     switch (currentMinigame) {
       case MinigameNamesEnum.clickTheBomb:
@@ -58,13 +60,13 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     }
     await multi.exec();
 
-    await roomRepository.deleteReadyTable(roomCode); // We don't need it after the game has started
+    await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.minigame); // We don't need it after the game has started
   } catch (error) {
     console.error(`Minigame start failed for room ${roomCode}: ${error}`);
     return { success: false }; // Minigame not started
   }
 
-  return { success: true, payload: { roomData, minigameData } }; // Minigame started
+  return { success: true, payload: { minigameData } }; // Minigame started
 };
 
 export const endMinigameService = async (roomCode: string, socket: Socket) => {
@@ -81,8 +83,8 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
     );
     await roomRepository.updateRoomData(roomCode, { status: RoomStatusEnum.leaderboard }, multi);
     await roomRepository.incrementRoomDataMinigameIndex(roomCode, multi);
-    await roomRepository.deleteReadyTable(roomCode, multi);
-    await roomRepository.deleteMinigameStarted(roomCode, multi);
+    await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.minigame, multi);
+    await roomRepository.deleteLock(roomCode, LockName.minigame, multi);
 
     await multi.exec();
 
@@ -90,6 +92,35 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
     socket.nsp.to(roomCode).emit('ended_minigame');
   } catch (error) {
     throw new Error(`Failed to end minigame for room ${roomCode}: ${error}`);
+  }
+};
+
+export const startRoundService = async (roomCode: string, socket: Socket) => {
+  const minigameData = await roomRepository.getMinigameData(roomCode);
+  let multi: ChainableCommander;
+
+  if (!minigameData) {
+    console.error("Couldn't find minigame data.");
+  }
+
+  try {
+    multi = client.multi();
+    await roomRepository.deleteScheduled(roomCode, ScheduledNameEnum.rounds);
+    await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.round);
+
+    switch (minigameData?.minigameName) {
+      case MinigameNamesEnum.cards:
+        await cardsRound(socket);
+        break;
+      default:
+        console.error('Tried start round for non existing game: ', minigameData?.minigameName);
+        break;
+    }
+
+    await multi.exec();
+  } catch (error) {
+    console.error(`Round start failed for room ${roomCode}: ${error}`);
+    return { success: false }; // Minigame not started
   }
 };
 

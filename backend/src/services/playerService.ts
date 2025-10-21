@@ -3,10 +3,11 @@ import { Socket } from 'socket.io';
 import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
 import { PlayerType, ReturnDataType } from '@shared/types';
+import { ReadyNameEnum } from '@backend-types';
 
 export const syncPlayerScoreService = async (roomCode: string, playerId: string, delta: number, players: PlayerType[]): Promise<PlayerType | null> => {
   try {
-    roomRepository.updatePlayerScore(roomCode, playerId, delta);
+    await roomRepository.updatePlayerScore(roomCode, playerId, delta);
 
     const player = players.find((p) => p.id === playerId);
     if (player) {
@@ -63,7 +64,7 @@ export const deletePlayerService = async (socket: Socket): Promise<ReturnDataTyp
     multi = client.multi();
 
     await roomRepository.deletePlayer(roomCode, playerID, multi);
-    await roomRepository.deletePlayerFromReadyTable(roomCode, playerID, multi);
+    await roomRepository.deletePlayerFromReadyTable(roomCode, playerID, ReadyNameEnum.minigame, multi);
 
     await multi.exec();
 

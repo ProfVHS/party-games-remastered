@@ -2,18 +2,18 @@ import './RoomPage.scss';
 import { RoomSettings } from '@components/features/roomSettings/RoomSettings.tsx';
 import { Lobby } from '@components/features/lobby/Lobby.tsx';
 import { useEffect, useState } from 'react';
-import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
-import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { socket } from '@socket';
+import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
 import { useToast } from '@hooks/useToast.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar.tsx';
 import { EmptySlot } from '@components/features/emptySlot/EmptySlot.tsx';
 import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
-import { MinigameDataType, RoomDataType } from '@shared/types';
+import { MinigameDataType } from '@shared/types';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
 import { useRoomStore } from '@stores/roomStore.ts';
+import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { v4 as uuidv4 } from 'uuid';
 
 export const RoomPage = () => {
@@ -30,7 +30,7 @@ export const RoomPage = () => {
       toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
     });
 
-    socket.on('started_minigame', (data: { roomData: RoomDataType; minigameData: MinigameDataType }) => {
+    socket.on('started_minigame', (data: { minigameData: MinigameDataType }) => {
       setMinigameName(() => data.minigameData.minigameName);
       setMinigameId(() => uuidv4());
     });

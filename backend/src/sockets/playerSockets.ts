@@ -1,7 +1,8 @@
 import { Socket } from 'socket.io';
 import * as roomService from '@roomService';
-import { getReadyPlayersCount, getAllPlayers } from '@roomRepository';
+import { getAllPlayers, getReadyPlayersCount } from '@roomRepository';
 import { PlayerType } from '@shared/types';
+import { ReadyNameEnum } from '@backend-types';
 
 export const playerSockets = (socket: Socket) => {
   socket.on('toggle_player_ready', async () => {
@@ -27,7 +28,7 @@ export const playerSockets = (socket: Socket) => {
   socket.on('fetch_ready_players', async () => {
     const roomCode = socket.data.roomCode;
 
-    const playersReady = await getReadyPlayersCount(roomCode);
+    const playersReady = await getReadyPlayersCount(roomCode, ReadyNameEnum.minigame);
     socket.nsp.to(roomCode).emit('fetched_ready_players', playersReady);
   });
 };
