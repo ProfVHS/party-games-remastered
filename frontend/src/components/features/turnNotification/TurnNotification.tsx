@@ -1,26 +1,13 @@
 import { Indicator } from '@components/ui/indicator/Indicator.tsx';
 import './TurnNotification.scss';
-import { usePlayersStore } from '@stores/playersStore.ts';
 import { useTurn } from '@hooks/useTurn.ts';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { TurnType } from '@shared/types';
 
 export const TurnNotification = () => {
-  const [currentTurnPlayerId, setCurrentTurnPlayerId] = useState<string>('');
-  const { currentPlayer } = usePlayersStore();
-
-  const handleTurnChange = (newTurn: TurnType) => {
-    setCurrentTurnPlayerId(newTurn.player_id);
-  };
-
-  useTurn({
-    onChangedTurn: handleTurnChange,
-    onGotTurn: handleTurnChange,
-  });
+  const { isMyTurn } = useTurn();
 
   return (
-    currentTurnPlayerId === currentPlayer?.id && (
+    isMyTurn && (
       <motion.div
         className="turn-notification"
         initial={{ scale: 0, opacity: 0, x: '-50%' }}

@@ -5,7 +5,6 @@ import Bomb from '@assets/textures/C4.svg?react';
 import { socket } from '@socket';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useCountdownAnimation } from '@hooks/useCountdownAnimation';
-import { TurnType } from '@shared/types';
 import { useTurn } from '@hooks/useTurn';
 import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 import { RandomScoreBox } from './RandomScoreBox';
@@ -25,31 +24,25 @@ export const ClickTheBomb = () => {
   const [clicksCount, setClicksCount] = useState<number>(0);
   const [canSkipTurn, setCanSkipTurn] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [bombLock, setBombLock] = useState<boolean>(true);
   const [scoreData, setScoreData] = useState<RandomScoreBoxType>({ id: 0, score: 0, isPositive: true });
+
+  const changedTurn = () => {
+    setCanSkipTurn(false);
+    startCountdownAnimation();
+    socket.emit('reset_click_count_streak');
+  };
 
   const handlePlayerDeath = () => {
     if (currentPlayer?.id != currentTurn?.player_id) return;
     socket.emit('update_click_count', true);
   };
 
-  const changedTurn = (newTurn: TurnType) => {
-    setCanSkipTurn(false);
-    startCountdownAnimation();
-    newTurn.player_id === currentPlayer?.id ? setBombLock(false) : setBombLock(true);
-    socket.emit('reset_click_count_streak');
-  };
-
-  const gotTurn = (newTurn: TurnType) => {
-    currentPlayer?.nickname === newTurn.nickname ? setBombLock(false) : setBombLock(true);
-  };
-
+  const { currentTurn, isMyTurn } = useTurn({ onChangedTurn: changedTurn });
   const { currentPlayer } = usePlayersStore();
   const { animationTimeLeft, startCountdownAnimation, stopCountdownAnimation } = useCountdownAnimation(CLICK_THE_BOMB_RULES.COUNTDOWN, handlePlayerDeath);
-  const currentTurn = useTurn({ onChangedTurn: changedTurn, onGotTurn: gotTurn });
 
   const handleClickBomb = () => {
-    if (loading || bombLock) return; // loading - waiting for response from server, bombLock - it's not your turn
+    if (loading || !isMyTurn) return; // loading - waiting for response from server, bombLock - it's not your turn
 
     socket.emit('update_click_count', false);
     stopCountdownAnimation();
@@ -61,7 +54,6 @@ export const ClickTheBomb = () => {
     socket.emit('change_turn');
     stopCountdownAnimation();
     setCanSkipTurn(false);
-    setBombLock(true);
   };
 
   useEffect(() => {
@@ -93,7 +85,7 @@ export const ClickTheBomb = () => {
           <span className="click-the-bomb__title">Click The Bomb</span>
           <span className="click-the-bomb__turn">{currentTurn?.nickname} Turn</span>
         </div>
-        <div className={`click-the-bomb__bomb ${bombLock ? 'bomb__lock' : 'bomb__active'}`} onClick={handleClickBomb}>
+        <div className={`click-the-bomb__bomb ${!isMyTurn ? 'bomb__lock' : 'bomb__active'}`} onClick={handleClickBomb}>
           <Bomb />
           <span className="click-the-bomb__counter">{clicksCount! >= 10 ? clicksCount : '0' + clicksCount}</span>
           <span className="click-the-bomb__timer">{formatMilisecondsToTimer(animationTimeLeft)}</span>

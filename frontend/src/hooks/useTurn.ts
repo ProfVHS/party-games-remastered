@@ -8,30 +8,33 @@ type useTurnProps = {
   onGotTurn?: (newTurn: TurnType) => void;
 };
 
-export const useTurn = ({ onChangedTurn, onGotTurn }: useTurnProps) => {
+export const useTurn = ({ onChangedTurn, onGotTurn }: useTurnProps = {}) => {
   const [currentTurn, setCurrentTurn] = useState<TurnType | null>(null);
   const { currentPlayer, players } = usePlayersStore();
 
+  const handleTurnChanged = (turn: TurnType) => {
+    setCurrentTurn(turn);
+    onChangedTurn?.(turn);
+  };
+
+  const handleGotTurn = (turnIndex: number) => {
+    const playerNickname = players[turnIndex].nickname;
+    const playerId = players[turnIndex].id;
+    const turn: TurnType = { id: turnIndex, player_id: playerId, nickname: playerNickname };
+
+    setCurrentTurn(turn);
+    onGotTurn?.(turn);
+  };
+
   useEffect(() => {
-    socket.on('changed_turn', (newTurnData: TurnType) => {
-      setCurrentTurn(() => newTurnData);
-      onChangedTurn?.(newTurnData);
-    });
-
-    socket.on('got_turn', (turnIndex: number) => {
-      const playerNickname = players[turnIndex].nickname;
-      const playerId = players[turnIndex].id;
-      const newTurnData = { id: turnIndex, player_id: playerId, nickname: playerNickname };
-
-      setCurrentTurn(() => newTurnData);
-      onGotTurn?.(newTurnData);
-    });
+    socket.on('changed_turn', handleTurnChanged);
+    socket.on('got_turn', handleGotTurn);
 
     return () => {
-      socket.off('changed_turn');
-      socket.off('got_turn');
+      socket.off('changed_turn', handleTurnChanged);
+      socket.off('got_turn', handleGotTurn);
     };
-  }, [players, onChangedTurn, onGotTurn]);
+  }, [players]);
 
   useEffect(() => {
     if (currentPlayer?.isHost === 'true') {
@@ -39,5 +42,7 @@ export const useTurn = ({ onChangedTurn, onGotTurn }: useTurnProps) => {
     }
   }, []);
 
-  return currentTurn;
+  const isMyTurn = currentTurn?.player_id === currentPlayer?.id;
+
+  return { currentTurn, isMyTurn };
 };
