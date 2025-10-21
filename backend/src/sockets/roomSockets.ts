@@ -1,8 +1,10 @@
 import { Socket } from 'socket.io';
 import * as roomService from '@roomService';
-import { setRoomData, getRoomData } from '@roomRepository';
+import { getRoomData, getRoomSettings, setRoomData, setRoomSettings } from '@roomRepository';
 import { createRoomConfig } from '@config/minigames';
 import { RoomDataType, RoomStatusEnum } from '@shared/types';
+import { defaultRoomSettings } from '@shared/constants/defaults';
+import { RoomSettingsType } from '@shared/types/RoomSettingsType';
 
 export const roomSockets = (socket: Socket) => {
   socket.on('create_room', async (roomCode: string, nickname: string) => {
@@ -19,6 +21,7 @@ export const roomSockets = (socket: Socket) => {
     const roomData: RoomDataType = { roomCode, minigameIndex: '0', ...roomConfig };
 
     await setRoomData(roomCode, roomData);
+    await setRoomSettings(roomCode, defaultRoomSettings);
 
     socket.join(roomCode);
     socket.nsp.to(socket.id).emit('created_room', { roomCode: roomCode, id: socket.id });
@@ -48,5 +51,22 @@ export const roomSockets = (socket: Socket) => {
     } else {
       socket.nsp.to(socket.id).emit('failed_to_get_room_data');
     }
+  });
+
+  socket.on('update_room_settings', async (roomSettings: RoomSettingsType, callback: () => void) => {
+    if (!roomSettings) return;
+    const roomCode = socket.data.roomCode;
+
+    await setRoomSettings(roomCode, roomSettings);
+    socket.to(roomCode).emit('updated_room_settings', roomSettings);
+    callback();
+  });
+
+  socket.on('get_room_settings', async () => {
+    const roomCode = socket.data.roomCode;
+    const response = await getRoomSettings(roomCode);
+    if (!response) return;
+
+    socket.nsp.to(socket.id).emit('got_room_settings', response);
   });
 };

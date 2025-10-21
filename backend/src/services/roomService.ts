@@ -108,6 +108,7 @@ export const deleteRoomService = async (socket: Socket): Promise<ReturnDataType>
     await roomRepository.deleteAllPlayers(roomCode, multi);
     await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.minigame, multi); // In case room gets deleted before first minigame starts
     await roomRepository.deleteRoomData(roomCode, multi);
+    await roomRepository.deleteRoomSettings(roomCode, multi);
 
     await multi.exec();
   } catch (error) {

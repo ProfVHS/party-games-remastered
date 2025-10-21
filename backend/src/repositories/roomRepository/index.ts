@@ -2,7 +2,7 @@ export * from './roomDataTable';
 export * from './playersTable';
 export * from './minigameDataTable';
 export * from './readyTable';
-export * from './minigamesTable';
+export * from './roomSettingsTable';
 export * from './lockManager';
 export * from './scheduledMinigamesTable';
 

@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import { shuffle } from 'lodash';
 import * as roomRepository from '@roomRepository';
 
-export const cardsSockets = async (socket: Socket) => {
+export const cardsSockets = (socket: Socket) => {
   socket.on('card_select', async (cardId: number) => {
     await roomRepository.updatePlayer(socket.data.roomCode, socket.id, { selectedObjectId: cardId.toString() });
   });
