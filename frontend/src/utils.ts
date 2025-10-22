@@ -1,5 +1,7 @@
 import classNames from 'classnames';
 
+export const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 export function setSessionVariables(roomCode: string, id: string) {
   localStorage.setItem('roomCode', roomCode);
   localStorage.setItem('id', id);

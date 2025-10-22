@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // Simple hook for smooth millisecond-based countdown animation (Progressbar, Timers with milliseconds)
 export const useCountdownAnimation = (initialTime: number, onComplete: () => void) => {
@@ -6,6 +6,7 @@ export const useCountdownAnimation = (initialTime: number, onComplete: () => voi
   const [animationTimeLeft, setAnimationTimeLeft] = useState<number>(initialTimeMs);
   const startTimeRef = useRef<number>();
   const animationRef = useRef<number>();
+  const lastUpdateRef = useRef<number>(0);
   const callbackRef = useRef(onComplete); // Keep the latest version of the callback in a ref
 
   const startCountdownAnimation = useCallback(() => {
@@ -21,7 +22,7 @@ export const useCountdownAnimation = (initialTime: number, onComplete: () => voi
     }
   }, []);
 
-  const animate = (timestamp: number) => {
+  const animate = async (timestamp: number) => {
     // Store the starting time
     if (!startTimeRef.current) startTimeRef.current = timestamp;
 
@@ -31,8 +32,11 @@ export const useCountdownAnimation = (initialTime: number, onComplete: () => voi
     // Calculate the remaining time, making sure it doesn't go below 0.
     const newTimeLeft = Math.max(initialTimeMs - elapsed, 0);
 
-    // Update UI with the new time
-    setAnimationTimeLeft(newTimeLeft);
+    // Update UI with the new time only every 50ms
+    if (timestamp - lastUpdateRef.current > 50) {
+      setAnimationTimeLeft(newTimeLeft);
+      lastUpdateRef.current = timestamp;
+    }
 
     if (newTimeLeft > 0) {
       animationRef.current = requestAnimationFrame(animate);

@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Card } from './Card';
 import { socket } from '@socket';
 import { PlayerType } from '@shared/types';
-import { useCountdown } from '@hooks/useCountdown';
 import { usePlayersStore } from '@stores/playersStore.ts';
+import { Stopwatch } from '@components/ui/countdown/Stopwatch.tsx';
+import { useCountdownAnimation } from '@hooks/useCountdownAnimation.ts';
+import { CARDS_RULES } from '@shared/constants/gameRules.ts';
+import { delay } from '@utils';
 
 export const Cards = () => {
-  const countdownDuration = 5;
   const roundIntroDuration = 2000;
   const cardFlipHalfDuration = 400;
 
@@ -19,17 +21,15 @@ export const Cards = () => {
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [newPlayersPoints, setNewPlayerPoints] = useState<PlayerType[]>([]);
 
-  const { timeLeft, startCountdown } = useCountdown(countdownDuration, 1, () => endRound());
+  const { animationTimeLeft, startCountdownAnimation } = useCountdownAnimation(CARDS_RULES.COUNTDOWN, () => endRound());
   const { currentPlayer } = usePlayersStore();
 
   const currentRound = useRef<string>('1');
   const hasStarted = useRef<boolean>(false);
 
-  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
   const handleCardSelect = (id: number) => {
     // Player can only select a card if the countdown is running
-    if (timeLeft <= 0 || hasStarted.current) return;
+    if (animationTimeLeft <= 0 || hasStarted.current) return;
 
     socket.emit('card_select', id);
     setSelectedCard(() => id);
@@ -53,10 +53,10 @@ export const Cards = () => {
     await delay(cardFlipHalfDuration);
 
     // Reset the game state for a new round
-    startCountdown();
     setCards([0, 0, 0, 0, 0, 0, 0, 0, 0]);
     setNewPlayerPoints([]);
     setGameStatus('Choose a card');
+    startCountdownAnimation();
     hasStarted.current = false;
   };
 
@@ -88,7 +88,9 @@ export const Cards = () => {
   return (
     <div className="cards">
       <div className={`cards__round ${isRoundIntroVisible ? 'visible' : ''}`}>Round {currentRound.current}</div>
-      <div className="cards__countdown">{timeLeft}</div>
+      <div className="cards__countdown">
+        <Stopwatch timeLeft={animationTimeLeft} duration={CARDS_RULES.COUNTDOWN} />
+      </div>
       <div className="cards__status">{gameStatus}</div>
       <div className="cards__content">
         {cards.map((card, index) => (
