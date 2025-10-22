@@ -20,6 +20,7 @@ export const RoomPage = () => {
   const { setRoomSettings } = useRoomStore();
   const [minigameName, setMinigameName] = useState<string>('');
   const [minigameId, setMinigameId] = useState<string>('');
+  const [roomData, setRoomData] = useState<RoomDataType>();
 
   const toast = useToast();
 
@@ -32,6 +33,7 @@ export const RoomPage = () => {
 
     socket.on('started_minigame', (data: { roomData: RoomDataType; minigameData: MinigameDataType }) => {
       setMinigameName(() => data.minigameData.minigameName);
+      setRoomData(data.roomData);
       setMinigameId(() => uuidv4());
     });
 
@@ -52,7 +54,9 @@ export const RoomPage = () => {
   const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
 
   return minigameName ? (
-    <RoomLayout players={players}>{minigameName !== '' ? <Minigame minigameId={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
+    <RoomLayout players={players} roomData={roomData}>
+      {minigameName !== '' ? <Minigame minigameId={minigameId} minigameName={minigameName} /> : <></>}
+    </RoomLayout>
   ) : (
     <div className="lobby-page">
       <div className="lobby-page__content">
@@ -60,7 +64,7 @@ export const RoomPage = () => {
         <Lobby />
       </div>
       <div className="lobby-page__players">
-        {slots.map((player, index) => (player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} /> : <EmptySlot />))}
+        {slots.map((player, index) => (player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} /> : <EmptySlot key={index} />))}
       </div>
     </div>
   );

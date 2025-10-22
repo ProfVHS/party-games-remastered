@@ -64,7 +64,7 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     return { success: false }; // Minigame not started
   }
 
-  return { success: true, payload: { roomData, minigameData } }; // Minigame started
+  return { success: true, payload: { roomData: { ...roomData, status: RoomStatusEnum.game }, minigameData } }; // Minigame started
 };
 
 export const endMinigameService = async (roomCode: string, socket: Socket) => {

@@ -13,6 +13,7 @@ export const TurnNotification = () => {
         initial={{ scale: 0, opacity: 0, x: '-50%' }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', duration: 0.5, ease: 'ease-in' }}
+        style={{ zIndex: 100 }}
       >
         <Indicator message="Your Turn" />
       </motion.div>

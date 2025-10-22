@@ -17,7 +17,7 @@ export const UserSettings = ({ onClose }: UserSettingsProps) => {
       <div className="user-settings__content">
         <Row align="center" gap={10}>
           <span>Dark mode: </span>
-          <Switch defaultIsChecked={darkMode} onChange={toggleDarkMode} />
+          <Switch value={darkMode} onChange={toggleDarkMode} />
         </Row>
         <Row align="center" gap={10}>
           <span>Volume:</span>

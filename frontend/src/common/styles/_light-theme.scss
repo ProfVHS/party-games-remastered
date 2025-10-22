@@ -14,6 +14,7 @@ html[data-theme='light'] {
   --player-avatar-username: #{$darkerPrimaryColor};
   --player-avatar-score: #{$darkerPrimaryColor};
   --player-avatar-bg: #{$lightBgColor};
+  --player-avatar-turn-indicator: #994CE4;
 
   //== Button ==//
   --button-primary-bg: #{$primaryColor};
