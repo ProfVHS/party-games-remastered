@@ -77,8 +77,12 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
 
     await roomRepository.updateFilteredPlayers(
       roomCode,
-      { isDisconnected: 'false' },
-      { isAlive: 'true', status: PlayerStatusEnum.idle, selectedObjectId: '-100' },
+      { isDisconnected: false },
+      {
+        isAlive: true,
+        status: PlayerStatusEnum.idle,
+        selectedObjectId: -100,
+      },
       multi,
     );
     await roomRepository.updateRoomData(roomCode, { status: RoomStatusEnum.leaderboard }, multi);
@@ -142,8 +146,8 @@ export const changeTurnService = async (roomCode: string): Promise<TurnType | nu
     const nextTurn = (currentTurn + i) % players.length;
     const potentialPlayer = players[nextTurn];
 
-    if (potentialPlayer.isAlive === 'true' && potentialPlayer.isDisconnected === 'false') {
-      await roomRepository.updateRoomData(roomCode, { currentTurn: nextTurn.toString() });
+    if (potentialPlayer.isAlive && potentialPlayer.isDisconnected) {
+      await roomRepository.updateRoomData(roomCode, { currentTurn: nextTurn });
       return { id: nextTurn, player_id: potentialPlayer.id, nickname: potentialPlayer.nickname };
     }
   }

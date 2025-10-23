@@ -11,7 +11,7 @@ export const syncPlayerScoreService = async (roomCode: string, playerId: string,
 
     const player = players.find((p) => p.id === playerId);
     if (player) {
-      player.score = (Number(player.score) + delta).toString();
+      player.score = Number(player.score) + delta;
       return player;
     } else {
       console.error(`Player with id "${playerId}" not found in room "${roomCode}".`);
@@ -48,7 +48,7 @@ export const syncPlayerUpdateService = async (
 
 export const findAlivePlayersService = async (players: PlayerType[]): Promise<PlayerType[] | null> => {
   try {
-    return players.filter((player) => player.isAlive == 'true');
+    return players.filter((player) => player.isAlive);
   } catch (error) {
     console.error(`Finding all alive players failed for players: ${players}`);
     return null;

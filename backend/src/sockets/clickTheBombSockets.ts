@@ -3,7 +3,7 @@ import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 import { sendAllPlayers } from '@sockets';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, PlayerType } from '@shared/types';
 import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData } from '@roomRepository';
-import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersService } from '@playerService';
+import { findAlivePlayersService, syncPlayerScoreService, syncPlayerUpdateService } from '@playerService';
 import { changeTurnService, endMinigameService } from '@minigameService';
 import { createClickTheBombConfig } from '@config/minigames';
 
@@ -63,7 +63,7 @@ export const clickTheBombSockets = (socket: Socket) => {
 
         // End game
         if (alivePlayers && alivePlayers.length <= 2) {
-          await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
+          await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: false, status: PlayerStatusEnum.dead }, players);
           await syncPlayerScoreService(roomCode, currentPlayer.id, scoreDelta, players);
 
           sendAllPlayers(socket, roomCode, players);
@@ -75,7 +75,7 @@ export const clickTheBombSockets = (socket: Socket) => {
         const newClickTheBombConfig = createClickTheBombConfig(alivePlayers!.length);
 
         await setMinigameData(roomCode, newClickTheBombConfig);
-        await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
+        await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: false, status: PlayerStatusEnum.dead }, players);
 
         socket.nsp.to(roomCode).emit('changed_turn', newTurnData);
 

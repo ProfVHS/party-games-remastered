@@ -1,9 +1,9 @@
 import { MinigameDataType, MinigameNamesEnum, RoomDataType, RoomStatusEnum } from '@shared/types';
 
 export const createRoomConfig = (playersLength: number, roomStatus: RoomStatusEnum): Omit<RoomDataType, 'roomCode' | 'minigameIndex'> => ({
-  maxRounds: playersLength.toString(),
-  currentRound: '1',
-  currentTurn: Math.floor(Math.random() * playersLength).toString(), // Randomly select the first player to start
+  maxRounds: playersLength,
+  currentRound: 1,
+  currentTurn: Math.floor(Math.random() * playersLength), // Randomly select the first player to start
   status: roomStatus,
 });
 
