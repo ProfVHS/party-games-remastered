@@ -25,7 +25,7 @@ export const Stopwatch = ({ timeLeft, duration }: StopwatchProps) => {
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
         />
-        <circle cx="38.1574" cy="42.1052" r="30.8947" stroke="#3C096C" stroke-width="4" />
+        <circle cx="38.1574" cy="42.1052" r="30.8947" stroke="#3C096C" strokeWidth="4" />
         <rect x="3.07031" y="21.1149" width="8.77193" height="8.77193" transform="rotate(-45 3.07031 21.1149)" fill="#3C096C" />
         <rect y="21.1462" width="13.1579" height="6.57895" transform="rotate(-45 0 21.1462)" fill="#5A189A" />
         <rect x="33.7715" y="2.19299" width="8.77193" height="8.77193" fill="#3C096C" />
