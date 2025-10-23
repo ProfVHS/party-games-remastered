@@ -14,6 +14,7 @@ html[data-theme='light'] {
   --player-avatar-username: #{$darkerPrimaryColor};
   --player-avatar-score: #{$darkerPrimaryColor};
   --player-avatar-bg: #{$lightBgColor};
+  --player-avatar-turn-indicator: #994CE4;
 
   //== Button ==//
   --button-primary-bg: #{$primaryColor};
@@ -43,6 +44,10 @@ html[data-theme='light'] {
   //== Alert Box ==//
   --alert-box-bg: #{$lightBgColor};
   --alert-box-text: #000;
+
+  //== Info indicator ==//
+  --info-notice-bg: #{$darkerPrimaryColor};
+  --info-notice-color: #fff;
 
   //== Lobby ==//
   --lobby-player-text: #{$secondaryColor};

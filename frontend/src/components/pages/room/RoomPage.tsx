@@ -17,7 +17,7 @@ import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { v4 as uuidv4 } from 'uuid';
 
 export const RoomPage = () => {
-  const { setRoomSettings } = useRoomStore();
+  const { setRoomSettings, fetchRoomData } = useRoomStore();
   const [minigameName, setMinigameName] = useState<string>('');
   const [minigameId, setMinigameId] = useState<string>('');
 
@@ -32,6 +32,7 @@ export const RoomPage = () => {
 
     socket.on('started_minigame', (data: { minigameData: MinigameDataType }) => {
       setMinigameName(() => data.minigameData.minigameName);
+      fetchRoomData();
       setMinigameId(() => uuidv4());
     });
 
@@ -60,7 +61,7 @@ export const RoomPage = () => {
         <Lobby />
       </div>
       <div className="lobby-page__players">
-        {slots.map((player, index) => (player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} /> : <EmptySlot />))}
+        {slots.map((player, index) => (player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} /> : <EmptySlot key={index} />))}
       </div>
     </div>
   );
