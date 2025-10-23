@@ -28,7 +28,7 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     throw new Error(`Couldn't find roomData for room ${roomCode} when starting a game`);
   }
 
-  const currentMinigame = minigames[Number(roomData?.minigameIndex)]?.name;
+  const currentMinigame = minigames[roomData?.minigameIndex]?.name;
 
   try {
     multi = client.multi();
@@ -140,13 +140,13 @@ export const changeTurnService = async (roomCode: string): Promise<TurnType | nu
     throw new Error(`Players not found for room: ${roomCode}`);
   }
 
-  let currentTurn = Number(roomData.currentTurn);
+  let currentTurn = roomData.currentTurn;
 
   for (let i = 1; i <= players.length; i++) {
     const nextTurn = (currentTurn + i) % players.length;
     const potentialPlayer = players[nextTurn];
 
-    if (potentialPlayer.isAlive && potentialPlayer.isDisconnected) {
+    if (potentialPlayer.isAlive && !potentialPlayer.isDisconnected) {
       await roomRepository.updateRoomData(roomCode, { currentTurn: nextTurn });
       return { id: nextTurn, player_id: potentialPlayer.id, nickname: potentialPlayer.nickname };
     }

@@ -11,7 +11,7 @@ export const Leaderboard = () => {
 
   useEffect(() => {
     if (!players) return;
-    setSortedPlayers([...players].sort((a, b) => Number(b.score) - Number(a.score)));
+    setSortedPlayers([...players].sort((a, b) => b.score - a.score));
   }, [players]);
 
   return (

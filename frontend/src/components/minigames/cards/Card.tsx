@@ -55,7 +55,7 @@ export const Card = ({ id, points, isPositive, isFlipping, selected, newPlayersP
         newPlayersPointsCard.forEach((player) => {
           players.forEach((p) => {
             if (p.id === player.id) {
-              p.score = (Number(p.score) + pointsToAdd).toString();
+              p.score = p.score + pointsToAdd;
               playerNicknames = [...playerNicknames, p.nickname];
             }
           });

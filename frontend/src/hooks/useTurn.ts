@@ -37,7 +37,7 @@ export const useTurn = ({ onChangedTurn, onGotTurn }: useTurnProps = {}) => {
   }, [players]);
 
   useEffect(() => {
-    if (currentPlayer?.isHost === 'true') {
+    if (currentPlayer?.isHost) {
       socket.emit('get_turn');
     }
   }, []);
