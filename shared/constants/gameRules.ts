@@ -6,3 +6,7 @@ export const CLICK_THE_BOMB_RULES = {
   POINTS: [15, 17, 20, 23, 26, 30, 35],
   COUNTDOWN: 15, // Seconds
 };
+
+export const CARDS_RULES = {
+ COUNTDOWN: 10,
+}
