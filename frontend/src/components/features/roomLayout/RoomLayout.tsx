@@ -1,12 +1,12 @@
 import './RoomLayout.scss';
-import { PlayerType, RoomDataType, RoomStatusEnum } from '@shared/types';
+import { PlayerType, RoomStatusEnum } from '@shared/types';
 import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar';
 import { useTurn } from '@hooks/useTurn.ts';
+import { useRoomStore } from '@stores/roomStore.ts';
 
 type RoomLayoutProps = {
   players: PlayerType[];
   children: React.ReactNode;
-  roomData?: RoomDataType;
 };
 
 const possibleAvatarLayouts: Record<number, { row: number; col: number }[]> = {
@@ -63,8 +63,9 @@ const possibleAvatarLayouts: Record<number, { row: number; col: number }[]> = {
   ],
 };
 
-export const RoomLayout = ({ players, children, roomData }: RoomLayoutProps) => {
+export const RoomLayout = ({ players, children }: RoomLayoutProps) => {
   const { currentTurn } = useTurn();
+  const { roomData } = useRoomStore();
 
   const renderPlayers = () => {
     const relevantGridPositions = possibleAvatarLayouts[players.length];
