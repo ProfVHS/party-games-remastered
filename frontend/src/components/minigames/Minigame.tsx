@@ -19,7 +19,6 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
         setShowLeaderboard(true);
       }, 1500);
 
-      //TODO: At the end send to redis that you are ready for the next game
       setTimeout(() => {
         socket.emit('start_minigame_queue');
       }, 3000);

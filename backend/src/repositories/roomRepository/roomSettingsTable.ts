@@ -37,8 +37,6 @@ export const getRoomSettings = async (roomCode: string): Promise<RoomSettingsTyp
 
   if (!data || Object.keys(data).length === 0) return null;
 
-  console.log(data);
-
   return {
     isRandomMinigames: data.isRandomMinigames === 'true',
     isTutorialsEnabled: data.isTutorialsEnabled === 'true',

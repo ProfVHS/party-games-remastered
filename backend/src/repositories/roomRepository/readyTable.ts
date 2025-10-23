@@ -1,10 +1,9 @@
 import { ChainableCommander } from 'ioredis';
 import { client } from '@config/db';
 import { getKey } from '@roomRepository';
+import { ReadyNameEnum } from '@backend-types';
 
-const keyName = 'ready';
-
-export const toggleReady = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
+export const toggleReady = async (roomCode: string, id: string, keyName: ReadyNameEnum, multi?: ChainableCommander): Promise<void> => {
   const isReady = await client.sismember(getKey(roomCode, keyName), id);
   const command = isReady ? 'srem' : 'sadd';
 
@@ -15,17 +14,15 @@ export const toggleReady = async (roomCode: string, id: string, multi?: Chainabl
   }
 };
 
-export const getReadyPlayersCount = async (roomCode: string): Promise<number> => {
-  const count = await client.scard(getKey(roomCode, keyName));
-  return count;
+export const getReadyPlayersCount = async (roomCode: string, keyName: ReadyNameEnum): Promise<number> => {
+  return client.scard(getKey(roomCode, keyName));
 };
 
-export const getReadyPlayers = async (roomCode: string): Promise<string[]> => {
-  const players = await client.smembers(getKey(roomCode, keyName));
-  return players;
+export const getReadyPlayers = async (roomCode: string, keyName: ReadyNameEnum): Promise<string[]> => {
+  return client.smembers(getKey(roomCode, keyName));
 };
 
-export const deleteReadyTable = async (roomCode: string, multi?: ChainableCommander): Promise<void> => {
+export const deleteReadyTable = async (roomCode: string, keyName: ReadyNameEnum, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.del(getKey(roomCode, keyName));
   } else {
@@ -33,7 +30,7 @@ export const deleteReadyTable = async (roomCode: string, multi?: ChainableComman
   }
 };
 
-export const deletePlayerFromReadyTable = async (roomCode: string, id: string, multi?: ChainableCommander): Promise<void> => {
+export const deletePlayerFromReadyTable = async (roomCode: string, id: string, keyName: ReadyNameEnum, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
     multi.srem(getKey(roomCode, keyName), id);
   } else {

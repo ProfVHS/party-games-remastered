@@ -4,6 +4,7 @@ import * as playerService from '@playerService';
 import * as roomRepository from '@roomRepository';
 import { RoomStatusEnum } from '@shared/types';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
+import { ReadyNameEnum } from '@backend-types';
 
 export const connectionSockets = (socket: Socket) => {
   console.log(`New connection: ${socket.id}`);
@@ -26,13 +27,13 @@ export const connectionSockets = (socket: Socket) => {
 
     // Lobby
     if (roomData?.status === RoomStatusEnum.lobby) {
-      let playersReady = await roomRepository.getReadyPlayersCount(roomCode);
+      let playersReady = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.minigame);
       const playerIds = await roomRepository.getAllPlayerIds(roomCode);
 
       // Prevents the minigame from starting if a player disconnects
       // but the required number of players to start still appears ready
       if (playersReady === playerIds.length && playersReady >= MIN_PLAYERS_TO_START) {
-        await roomRepository.deleteReadyTable(roomCode);
+        await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.minigame);
         socket.to(roomCode).emit('failed_to_start_minigame');
         playersReady = 0;
       }

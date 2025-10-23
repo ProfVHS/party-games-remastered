@@ -16,7 +16,6 @@ type PlayerAvatarProps = {
 
 export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn }: PlayerAvatarProps) => {
   const avatar = player.avatar as avatars;
-
   return (
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.player_id === player.id })} style={style}>
       <h2 className="player-avatar__username">{player.nickname}</h2>

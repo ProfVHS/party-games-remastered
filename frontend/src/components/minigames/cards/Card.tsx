@@ -4,9 +4,8 @@ import { PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore';
 import { Icon } from '@assets/icon';
 
-// TODO:
-// Responsive design
-// Add sound effects
+// TODO: Responsive design
+// TODO: Add sound effects
 
 interface CardProps {
   id: number;

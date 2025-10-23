@@ -1,10 +1,10 @@
 import './Cards.scss';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card } from './Card';
 import { socket } from '@socket';
-import { usePlayersStore } from '@stores/playersStore';
 import { PlayerType } from '@shared/types';
 import { useCountdown } from '@hooks/useCountdown';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 export const Cards = () => {
   const countdownDuration = 5;
@@ -43,12 +43,11 @@ export const Cards = () => {
 
   const startNewRound = async () => {
     if (currentRound.current === '4') {
-      socket.emit('cards_game_end');
+      if (currentPlayer?.isHost === 'true') socket.emit('end_minigame');
       return;
     }
 
-    showRoundIntro();
-    await delay(roundIntroDuration);
+    await showRoundIntro();
 
     setIsFlipping(false);
     await delay(cardFlipHalfDuration);
@@ -62,30 +61,27 @@ export const Cards = () => {
   };
 
   const endRound = () => {
-    if (currentPlayer?.isHost === 'true' && !hasStarted.current) socket.emit('cards_round_end');
+    if (hasStarted.current) return;
+    socket.emit('start_round_queue');
     hasStarted.current = true;
   };
 
-  // Start the first round on component mount
-  useEffect(() => {
-    startNewRound();
-  }, []);
-
   // Socket listener for card selection
   useEffect(() => {
-    const handleCardsRoundEnded = (newCards: number[], newPlayersPoints: PlayerType[], round: string) => {
+    // Start the first round on component mount
+    startNewRound();
+
+    socket.on('cards_round_ended', (newCards: number[], newPlayersPoints: PlayerType[], round: string) => {
       currentRound.current = round;
       setCards(() => newCards);
       setNewPlayerPoints(() => newPlayersPoints);
       setSelectedCard(() => null);
       setIsFlipping(() => true);
       setGameStatus('Cards reveal');
-    };
-
-    socket.on('cards_round_ended', handleCardsRoundEnded);
+    });
 
     return () => {
-      socket.off('cards_round_ended', handleCardsRoundEnded);
+      socket.off('cards_round_ended');
     };
   }, []);
 

@@ -19,7 +19,6 @@ export const NumberPicker = ({ min, max, defaultNumber, onChange, style, value }
       onChange && onChange(prevNumber + 1);
       return prevNumber + 1;
     });
-
   };
   const decrement = () => {
     if (number <= min!) return;
@@ -30,10 +29,10 @@ export const NumberPicker = ({ min, max, defaultNumber, onChange, style, value }
   };
 
   useEffect(() => {
-    if(value && value !== number) {
+    if (value && value !== number) {
       setNumber(value);
     }
-  }, [value])
+  }, [value]);
 
   return (
     <div className="number-picker number-picker--smallSize" style={style}>
