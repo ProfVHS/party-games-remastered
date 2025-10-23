@@ -6,8 +6,8 @@ type StopwatchProps = {
 };
 
 export const Stopwatch = ({ timeLeft, duration }: StopwatchProps) => {
-  const radius = 25; // Radius
-  const circumference = 2 * Math.PI * radius; // Circuit - obwód
+  const radius = 25;
+  const circumference = 2 * Math.PI * radius;
 
   // Offset
   const progress = timeLeft / duration / 1000;

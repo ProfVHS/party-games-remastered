@@ -23,13 +23,10 @@ export const useCountdownAnimation = (initialTime: number, onComplete: () => voi
   }, []);
 
   const animate = async (timestamp: number) => {
-    // Store the starting time
     if (!startTimeRef.current) startTimeRef.current = timestamp;
 
-    // Calculate how much time has passed since the countdown started
     const elapsed = timestamp - startTimeRef.current;
 
-    // Calculate the remaining time, making sure it doesn't go below 0.
     const newTimeLeft = Math.max(initialTimeMs - elapsed, 0);
 
     // Update UI with the new time only every 50ms
