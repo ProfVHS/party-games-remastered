@@ -1,12 +1,12 @@
 import { create } from 'zustand';
-import { defaultRoomData, defaultRoomSettings } from '@shared/constants/defaults.ts';
+import { defaultRoomSettings } from '@shared/constants/defaults.ts';
 import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
 import { socket } from '@socket';
 import { RoomDataType } from '@shared/types';
 
 type RoomStoreProps = {
   roomSettings: RoomSettingsType;
-  roomData: RoomDataType;
+  roomData: RoomDataType | null;
   setRoomSettings: (roomSettings: RoomSettingsType) => void;
   fetchRoomSettings: () => void;
   fetchRoomData: () => void;
@@ -14,7 +14,7 @@ type RoomStoreProps = {
 
 export const useRoomStore = create<RoomStoreProps>((set) => ({
   roomSettings: defaultRoomSettings,
-  roomData: defaultRoomData,
+  roomData: null,
   setRoomSettings: (roomSettings: RoomSettingsType) => {
     set({ roomSettings });
   },
