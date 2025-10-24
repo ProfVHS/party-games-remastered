@@ -69,7 +69,7 @@ export const minigameSockets = (socket: Socket) => {
 
     await roomRepository.toggleReady(roomCode, socket.id, ReadyNameEnum.minigame);
     const playersReady = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.minigame);
-    const connectedPlayers = await roomRepository.getFilteredPlayers(roomCode, { isDisconnected: 'false' });
+    const connectedPlayers = await roomRepository.getFilteredPlayers(roomCode, { isDisconnected: false });
 
     // Start the minigame immediately
     if (playersReady === connectedPlayers.length) {
@@ -107,7 +107,7 @@ export const minigameSockets = (socket: Socket) => {
 
     await roomRepository.toggleReady(roomCode, socket.id, ReadyNameEnum.round);
     const playersReady = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.round);
-    const connectedPlayers = await roomRepository.getFilteredPlayers(roomCode, { isDisconnected: 'false' });
+    const connectedPlayers = await roomRepository.getFilteredPlayers(roomCode, { isDisconnected: false });
 
     // Start round immediately
     if (playersReady === connectedPlayers.length) {

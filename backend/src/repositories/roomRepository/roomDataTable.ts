@@ -1,6 +1,6 @@
 import { client } from '@config/db';
 import { ChainableCommander } from 'ioredis';
-import { RoomDataType } from '@shared/types';
+import { RoomDataType, RoomStatusEnum } from '@shared/types';
 import { getKey } from '@roomRepository';
 
 const keyName = 'roomData';
@@ -35,7 +35,14 @@ export const getRoomData = async (roomCode: string): Promise<RoomDataType | null
 
   if (!roomData || Object.keys(roomData).length === 0) return null;
 
-  return roomData as RoomDataType;
+  return {
+    currentRound: Number(roomData.currentRound),
+    currentTurn: Number(roomData.currentTurn),
+    maxRounds: Number(roomData.maxRounds),
+    minigameIndex: Number(roomData.minigameIndex),
+    roomCode: roomData.roomCode,
+    status: roomData.status as RoomStatusEnum,
+  };
 };
 
 export const deleteRoomData = async (roomCode: string, multi?: ChainableCommander) => {

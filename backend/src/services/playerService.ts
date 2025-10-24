@@ -10,13 +10,8 @@ export const syncPlayerScoreService = async (roomCode: string, player: PlayerTyp
     await roomRepository.updatePlayerScore(roomCode, player.id, delta);
 
     if (player) {
-      const newScore = Number(player.score) + delta;
-
-      if (newScore < 0) {
-        player.score = '0';
-      } else {
-        player.score = newScore.toString();
-      }
+      const newScore = player.score + delta;
+      player.score = newScore < 0 ? 0 : newScore
 
       return player;
     } else {
@@ -48,7 +43,7 @@ export const syncPlayerUpdateService = async (roomCode: string, player: PlayerTy
 
 export const findAlivePlayersService = async (players: PlayerType[]): Promise<PlayerType[] | null> => {
   try {
-    return players.filter((player) => player.isAlive == 'true');
+    return players.filter((player) => player.isAlive);
   } catch (error) {
     console.error(`Finding all alive players failed for players: ${players}`);
     return null;

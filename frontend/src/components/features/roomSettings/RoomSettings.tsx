@@ -22,7 +22,7 @@ export const RoomSettings = () => {
 
   const { currentPlayer } = usePlayersStore();
 
-  const isHost = currentPlayer?.isHost === 'true';
+  const isHost = currentPlayer?.isHost || false;
   const currentRoomSettings = isHost ? newRoomSettings : roomSettings;
 
   const toast = useToast();

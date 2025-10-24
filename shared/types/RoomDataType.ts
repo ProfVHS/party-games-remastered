@@ -1,14 +1,14 @@
 export type RoomDataType = {
   roomCode: string;
-  maxRounds: string; // number
-  currentRound: string; // number
-  currentTurn: string; // number
+  maxRounds: number;
+  currentRound: number;
+  currentTurn: number;
   status: RoomStatusEnum;
-  minigameIndex: string; // number
+  minigameIndex: number;
 };
 
 export enum RoomStatusEnum {
-  lobby = "lobby",
-  game = "game",
-  leaderboard = "leaderboard",
+  lobby = 'lobby',
+  game = 'game',
+  leaderboard = 'leaderboard',
 }

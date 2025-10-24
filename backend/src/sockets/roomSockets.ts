@@ -18,7 +18,7 @@ export const roomSockets = (socket: Socket) => {
     // Initialize room configuration to help with diconnect and reconnect events
     const roomConfig = createRoomConfig(1, RoomStatusEnum.lobby);
 
-    const roomData: RoomDataType = { roomCode, minigameIndex: '0', ...roomConfig };
+    const roomData: RoomDataType = { roomCode, minigameIndex: 0, ...roomConfig };
 
     await setRoomData(roomCode, roomData);
     await setRoomSettings(roomCode, defaultRoomSettings);

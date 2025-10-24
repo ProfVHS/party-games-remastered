@@ -1,12 +1,12 @@
 export type PlayerType = {
   id: string;
   nickname: string;
-  isAlive: string; // boolean
-  score: string; // number
-  isHost: string; // boolean
-  isDisconnected: string; // boolean
+  isAlive: boolean;
+  score: number;
+  isHost: boolean;
+  isDisconnected: boolean;
   status: PlayerStatusEnum;
-  selectedObjectId: string; // number
+  selectedObjectId: number;
   avatar: string;
 };
 
