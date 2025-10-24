@@ -1,49 +1,34 @@
-import { useEffect, useState } from 'react';
-import { socket } from '../socket';
-import { useToast } from './useToast';
-import { EPossibleMinigames, MinigameDataType } from '../types';
-import { usePlayersStore } from '../stores/playersStore';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { socket } from '@socket';
+import { useToast } from '@hooks/useToast';
+import { usePlayersStore } from '@stores/playersStore';
+import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 
 type useLobbyStartProps = {
   playersReady: number;
-  minigames: EPossibleMinigames[];
-  numberOfMinigames?: number | 2;
+  setReady: Dispatch<SetStateAction<boolean>>;
 };
 
-export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: useLobbyStartProps) => {
+export const useLobbyStart = ({ playersReady, setReady }: useLobbyStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
-  const { players } = usePlayersStore();
-  const minPlayersToStart = 1;
-
-  const getRandomMinigames = (numberOfMinigames: number = 2): EPossibleMinigames[] => {
-    const allMinigames = Object.values(EPossibleMinigames).filter((val) => val !== EPossibleMinigames.none);
-
-    // if (numberOfMinigames < 2 || numberOfMinigames > allMinigames.length) {
-    //   throw new Error(`Number of minigames must be between 2 and ${allMinigames.length}, but received ${numberOfMinigames}`);
-    // }
-
-    const shuffled = [...allMinigames].sort(() => Math.random() - 0.5);
-
-    return shuffled.slice(0, numberOfMinigames);
-  };
+  const { currentPlayer, players } = usePlayersStore();
+  const hasStarted = useRef<boolean>(false);
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
 
-    if (playersReady === players.length && players.length >= minPlayersToStart) {
+    if (playersReady === players.length && players.length >= MIN_PLAYERS_TO_START) {
       setCountdown(() => 3);
-
-      if (!minigames || minigames.length === 0) {
-        minigames = getRandomMinigames(numberOfMinigames);
-      }
 
       timer = setInterval(() => {
         setCountdown((prev) => {
-          if (prev === 1) {
-            // TODO: Only host can start the minigame
-            socket.emit('set_game_plan', minigames);
-            socket.emit('start_minigame', minigames[0]);
+          if (prev === 1 && !hasStarted.current) {
+            if (currentPlayer?.isHost == 'true') {
+              socket.emit('verify_minigames');
+              socket.emit('start_minigame_queue', true);
+            }
+            hasStarted.current = true;
             clearInterval(timer);
             return null;
           }
@@ -58,20 +43,15 @@ export const useLobbyStart = ({ playersReady, minigames, numberOfMinigames }: us
   }, [playersReady]);
 
   useEffect(() => {
-    socket.on('started_minigame', (minigameData: MinigameDataType) => {
-      // TODO: Display Minigame / Navigate to minigame / Start minigame on client idk
-      console.log(minigameData); // TODO: remove this later
-    });
-
     socket.on('failed_to_start_minigame', () => {
       toast.error({ message: 'Failed to start the game', duration: 5 });
+      setReady(false);
     });
 
     return () => {
-      socket.off('started_minigame');
       socket.off('failed_to_start_minigame');
     };
-  }, []);
+  }, [socket]);
 
   return { countdown };
 };

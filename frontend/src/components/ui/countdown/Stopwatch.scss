@@ -1,0 +1,31 @@
+.countdown {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  &__progress {
+    fill: none;
+    stroke: #9d4edd;
+    stroke-width: 10;
+    transition: stroke-dashoffset 0.05s linear;
+  }
+
+  &__text {
+    position: absolute;
+    top: 53%;
+    left: 48%;
+
+    color: white;
+
+    transform: translate(-50%, -50%);
+
+    font-size: 1.5rem;
+    font-family: 'Spicy Rice', cursive;
+  }
+}

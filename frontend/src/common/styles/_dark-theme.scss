@@ -1,0 +1,95 @@
+@use 'sass:color';
+@use './variables' as *;
+
+html[data-theme='dark'] {
+  //== Global ==//
+  --background: #{$darkBgColor};
+  --logo-background: #272629;
+  --text-color: #fff;
+  --header-color: #{$darkerPrimaryColor};
+  --party-games-fill: #{$darkerPrimaryColor};
+  --cartoon-shadow: 0 4px rgba(0, 0, 0, 0.3);
+
+  //== Player Avatar ==//
+  --player-avatar-username: #{$darkerPrimaryColor};
+  --player-avatar-score: #{$darkerPrimaryColor};
+  --player-avatar-bg: #{$darkBgColor};
+  --player-avatar-turn-indicator: #994CE4;
+
+  //== Button ==//
+  --button-primary-bg: #6f359e;
+  --button-primary-shadow: #39135d;
+  --button-text: #{rgba(#fff, 0.4)};
+  --button-remove-bg: #971010;
+  --button-remove-shadow: #{color.adjust(#971010, $lightness: -20%)};
+
+  //== Switch ==//
+  --switch-bg: #{$primaryColor};
+  --switch-track: #505050;
+  --switch-track-checked: #{$darkerPrimaryColor};
+  --switch-thumb: #{$primaryColor};
+
+  //== Number Picker ==//
+  --number-picker-bg: #6f359e;
+  --number-picker-bg-active: #{color.adjust(#6f359e, $lightness: -10%)};
+  --number-picker-shadow: #39135d;
+  --number-picker-text: #{rgba(255, 255, 255, 0.4)};
+
+  //== Badge ==//
+  --badge-red-bg: #971010;
+  --badge-green-bg: #99DD44;
+  --badge-white-text: #{rgba(#ffffff, 0.4)};
+  --badge-black-text: #{rgba(#000000, 0.4)};
+
+  //== Alert Box ==//
+  --alert-box-bg: #{$darkBgColor};
+  --alert-box-text: rgba(255, 255, 255, 0.6);
+
+  //== Info indicator ==//
+  --info-notice-bg: #6f359e;
+  --info-notice-color: rgba(255, 255, 255, 0.4);
+
+  //== Lobby ==//
+  --lobby-player-text: #{$primaryColor2};
+  --lobby-color-code: #{$darkerPrimaryColor};
+  --lobby-color-code-hover: #{color.adjust($darkerPrimaryColor, $lightness: 5%)};
+
+  //== Leaderboard ==//
+  --leaderboard-bg: #{$darkBgColor};
+  --leaderboard-title: #{$darkerPrimaryColor};
+  --leaderboard-player-bg: #7d7b80;
+  --leaderboard-first-place: #ffd000;
+  --leaderboard-second-place: #cecad2;
+  --leaderboard-third-place: #d09351;
+  --leaderboard-player-opacity: 0.6;
+
+  //== Minigame List ==//
+  --minigame-list-bg: #{$darkBgColor};
+  --minigame-list-title: rgba(#fff, 0.8);
+  --minigame-list-hr: #{rgba(255, 255, 255, 0.1)};
+  --minigame-list-scrollbar: #{$darkerPrimaryColor};
+
+  //== Minigame List Item ==//
+  --minigame-list-item-bg: #{rgba($primaryColor, 0.4)};
+  --minigame-list-item-border: color.adjust($primaryColor, $lightness: -10%);
+  --minigame-list-item-icon: #{$darkerPrimaryColor};
+  --minigame-list-item-text: #{rgba(#fff, 0.4)};
+
+  //== Click The Bomb ==//
+  --click-the-bomb-bg: #{$darkBgColor};
+  --click-the-bomb-turn: #fff;
+  --click-the-bomb-title: #{$darkerPrimaryColor};
+
+  //== Cards ==//
+  --cards-bg: #{$darkBgColor};
+  --cards-title: #{$darkerPrimaryColor};
+  --cards-round-bg: #{$darkBgColor};
+  --cards-text: #fff;
+  --cards-back-img: url('../../assets/textures/card-back-dark.svg');
+  --cards-back-bg: #3c3c3c;
+  --cards-back-border: #{$darkerPrimaryColor};
+  --cards-positive-bg: #{$darkerPrimaryColor};
+  --cards-positive-border: #{$secondaryColor};
+  --cards-negative-bg: #9d1133;
+  --cards-negative-border: #000;
+}

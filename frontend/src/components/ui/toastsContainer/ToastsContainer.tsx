@@ -1,6 +1,6 @@
-import { ToastsType } from '../../../types';
-import { Toast } from '../toast/Toast.tsx';
 import './ToastsContainer.scss';
+import { ToastsType } from '@frontend-types/index';
+import { Toast } from '@components/ui/toast/Toast.tsx';
 
 export const ToastsContainer = ({ toasts }: { toasts: ToastsType[] }) => {
   return (

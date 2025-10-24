@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { NumberPicker } from './NumberPicker';
 
@@ -20,7 +20,10 @@ export const Default: Story = {
     min: 1,
     max: 10,
     defaultNumber: 2,
-    onchange: () => {},
+    onChange: () => {},
     style: {},
+  },
+  parameters: {
+    theme: 'dark',
   },
 };

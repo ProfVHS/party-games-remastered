@@ -1,4 +1,5 @@
-import { ToastsType } from '../types';
+import React from 'react';
+import { ToastsType } from '@frontend-types/index';
 
 type ToastsState = {
   toasts: ToastsType[];

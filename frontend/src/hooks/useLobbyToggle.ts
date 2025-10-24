@@ -1,6 +1,6 @@
 import { useEffect, Dispatch, SetStateAction } from 'react';
-import { socket } from '../socket';
-import { useToast } from './useToast';
+import { socket } from '@socket';
+import { useToast } from '@hooks/useToast';
 
 type useLobbyToggleProps = {
   setPlayersReady: Dispatch<SetStateAction<number>>;

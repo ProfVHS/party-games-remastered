@@ -1,6 +1,6 @@
-import React from 'react';
 import './Button.scss';
-import { ClassNames } from '../../../utils.ts';
+import React from 'react';
+import { ClassNames } from '@utils';
 
 type ButtonColors = 'primary' | 'remove';
 
@@ -10,7 +10,7 @@ type ButtonProps = {
   children: React.ReactNode;
   style?: React.CSSProperties;
   type?: 'button' | 'submit' | 'reset';
-  variant?: 'square' | 'round';
+  variant?: 'square' | 'round' | 'icon';
   color?: ButtonColors | { [K in ButtonColors]?: boolean };
   size?: 'small' | 'medium' | 'large';
   isDisabled?: boolean;

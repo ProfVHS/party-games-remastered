@@ -1,12 +1,13 @@
 @use 'sass:color';
 @use '../../../common/styles/_variables.scss' as *;
+@use '../../../common/styles/themes' as *;
 
 .button {
   display: flex;
   justify-content: center;
   align-items: center;
 
-  color: #fff;
+  color: var(--button-text);
   font-size: 1.5rem;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
@@ -24,61 +25,71 @@
   }
 
   &--square {
-    border-radius: 4px;
+    border-radius: 0.25rem;
   }
 
   &--round {
-    border-radius: 32px;
+    border-radius: 2rem;
+  }
+
+  &--icon{
+    padding: 0 !important;
+    border-radius: 6px;
+    width: 2.5rem;
+    height: 2.5rem;
+    .icon{
+      height: 1.5rem;
+    }
   }
 
   //==== Sizes ====//
 
   &--small {
-    padding: 2px 16px;
     font-size: 1rem;
+    padding: 0.1rem 1rem;
   }
 
   &--medium {
     font-size: 1.5rem;
-    padding: 2px 16px;
+    padding: 0.1rem 1rem;
   }
 
   &--large {
     font-size: 2rem;
-    padding: 4px 16px;
+    padding: 0.25rem 1rem;
   }
 
   //==== Colors ====//
 
   &--primary {
-    background-color: $primaryColor;
-    box-shadow: 0 4px 0 0 color.adjust($primaryColor, $lightness: -30%);
+    background-color: var(--button-primary-bg);
+    box-shadow: 0 0.25rem 0 0 var(--button-primary-shadow);
 
     &:active {
-      box-shadow: 0 2px 0 0 color.adjust($primaryColor, $lightness: -30%);
+      box-shadow: 0 0.1rem 0 0 var(--button-primary-shadow);
     }
 
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
       transform: translateY(1px);
-      box-shadow: 0 2px 0 0 color.adjust($primaryColor, $lightness: -30%);
+      box-shadow: 0 0.1rem 0 0 var(--button-primary-shadow);
     }
   }
 
   &--remove {
-    background-color: #c81414;
-    box-shadow: 0 4px 0 0 color.adjust(#c81414, $lightness: -30%);
+    background-color: var(--button-remove-bg);
+    box-shadow: 0 0.25rem 0 0 var(--button-remove-shadow);
 
     &:active {
-      box-shadow: 0 2px 0 0 color.adjust($primaryColor, $lightness: -30%);
+      box-shadow: 0 2px 0 0 var(--button-remove-shadow);
     }
 
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
       transform: translateY(1px);
-      box-shadow: 0 2px 0 0 color.adjust($primaryColor, $lightness: -30%);
+      box-shadow: 0 0.1rem 0 0 var(--button-remove-shadow);
     }
   }
 }

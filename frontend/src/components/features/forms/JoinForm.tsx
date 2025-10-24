@@ -1,11 +1,12 @@
 import './Form.scss';
 
 import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
-import { Button } from '../../ui/button/Button.tsx';
-import { socket } from '../../../socket.ts';
-import { generateRandomUserName, setSessionVariables } from '../../../utils.ts';
-import { useToast } from '../../../hooks/useToast.ts';
-import { useRoomJoin } from '../../../hooks/useRoomJoin.ts';
+import { Button } from '@components/ui/button/Button.tsx';
+import { socket } from '@socket';
+import { generateRandomUserName } from '@utils';
+import { useToast } from '@hooks/useToast.ts';
+import { useRoomJoin } from '@hooks/useRoomJoin.ts';
+import { Input } from '@components/ui/input/Input.tsx';
 
 type FormInputs = {
   nickname: string;
@@ -23,11 +24,10 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
 
   const handleJoin: SubmitHandler<FormInputs> = (data) => {
     const nickname = data.nickname || generateRandomUserName();
+    const storageId = localStorage.getItem('id');
 
     if (socket.id && nickname) {
-      setSessionVariables(data.room, socket.id);
-
-      socket.emit('join_room', data.room, nickname);
+      socket.emit('join_room', data.room, nickname, storageId);
 
       setValue('room', '');
     } else {
@@ -45,19 +45,18 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
 
   return (
     <form className="form" onSubmit={handleSubmit(handleJoin, handleShowToast)} onReset={onCancel}>
-      <input className="form-input" style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" {...register('nickname')} />
+      <Input style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" register={register('nickname')} />
 
       <div className="form__row">
         <Button style={{ width: '50%' }} type="submit">
           Join
         </Button>
-        <input
-          className="form-input"
+        <Input
           style={{ width: '50%' }}
           type="text"
           id="room"
           placeholder="Room Code"
-          {...register('room', {
+          register={register('room', {
             required: 'You have to enter a room code!',
             minLength: { value: 5, message: 'The room code must have 5 characters' },
             maxLength: { value: 5, message: 'The room code must have 5 characters' },

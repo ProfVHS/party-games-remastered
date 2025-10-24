@@ -1,0 +1,223 @@
+@use '../../../common/styles/variables' as *;
+
+.cards {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  height: 100%;
+  max-height: 400px;
+  min-height: 380px;
+
+  width: 100%;
+  max-width: 550px;
+  min-width: 320px;
+
+  background-color: var(--cards-bg);
+  border-radius: 4px;
+
+  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+
+  user-select: none;
+
+  &__round {
+    position: absolute;
+    width: 280px;
+    height: 120px;
+    background-color: var(--cards-round-bg);
+    color: var(--cards-title);
+    top: 130px;
+    font-family: 'Spicy Rice', serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 60px;
+    border-radius: 5px;
+    display: none;
+    z-index: -100;
+
+    &.visible {
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation:
+        fadeIn 0.5s ease-out forwards,
+        fadeOut 0.5s ease-out 1.5s forwards;
+    }
+  }
+
+  &__countdown {
+    width: 4rem;
+    height: 4rem;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    font-size: 50px;
+
+    margin: 10px 0 0 10px;
+  }
+
+  &__status {
+    font-family: 'Spicy Rice', serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 50px;
+    color: var(--cards-title);
+
+    text-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+
+    margin-bottom: 15px;
+  }
+
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .card {
+    width: 90px;
+    height: 130px;
+    margin: 5px;
+
+    border-radius: 5px;
+
+    transition: transform 0.4s ease;
+    transform-origin: center;
+
+    font-family: 'Spicy Rice', serif;
+    font-weight: 400;
+    font-style: normal;
+    text-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+
+    // TODO: Temporary code
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 150%;
+
+    border: 3px solid;
+    color: var(--cards-text);
+
+    transform: rotateY(0deg);
+
+    &__content {
+      width: 80%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+
+      &__top {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        font-size: 16px;
+      }
+
+      &__bottom {
+        position: absolute;
+        bottom: 3px;
+        right: 3px;
+        font-size: 16px;
+        transform: rotate(180deg);
+      }
+    }
+
+    &.back {
+      background-color: var(--cards-back-bg);
+      border-color: var(--cards-back-border);
+      background-image: var(--cards-back-img);
+    }
+
+    &.back:hover {
+      cursor: pointer;
+      box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+    }
+
+    &.positive {
+      background-color: var(--cards-positive-bg);
+      border-color: var(--cards-positive-border);
+      background-image: url('./../../../assets/textures/card-front.svg');
+    }
+
+    &.negative {
+      background-color: var(--cards-negative-bg);
+      border-color: var(--cards-negative-border);
+      background-image: url('./../../../assets/textures/card-front.svg');
+    }
+
+    .svg {
+      width: 60px;
+      height: 60px;
+    }
+  }
+
+  .flipping {
+    transform: rotateY(90deg);
+    pointer-events: none;
+  }
+
+  .selected {
+    animation: blink 1s linear infinite;
+  }
+
+  .players__list {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: var(--cards-text);
+    border-radius: 2px;
+    font-size: 12px;
+    z-index: 10;
+    animation: fadeIn 0.8s ease-out forwards;
+
+    div {
+      white-space: nowrap;
+      overflow: hidden; // hide extra text
+      text-overflow: ellipsis; // add "..."
+      max-width: 80px;
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.02);
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}

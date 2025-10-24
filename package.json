@@ -1,0 +1,19 @@
+{
+  "name": "party-games-remastered",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProfVHS/party-games-remastered.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ProfVHS/party-games-remastered/issues"
+  },
+  "homepage": "https://github.com/ProfVHS/party-games-remastered#readme",
+  "description": ""
+}
