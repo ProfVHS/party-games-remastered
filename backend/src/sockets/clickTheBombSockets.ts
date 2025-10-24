@@ -3,7 +3,7 @@ import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 import { sendAllPlayers } from '@sockets';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, PlayerType } from '@shared/types';
 import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData } from '@roomRepository';
-import { syncPlayerScoreService, syncPlayerUpdateService, findAlivePlayersService } from '@playerService';
+import { findAlivePlayersService, syncPlayerScoreService, syncPlayerUpdateService } from '@playerService';
 import { changeTurnService, endMinigameService } from '@minigameService';
 import { createClickTheBombConfig } from '@config/minigames';
 
@@ -63,11 +63,11 @@ export const clickTheBombSockets = (socket: Socket) => {
 
         // End game
         if (alivePlayers && alivePlayers.length <= 2) {
-          await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
-          await syncPlayerScoreService(roomCode, currentPlayer.id, scoreDelta, players);
+          await syncPlayerUpdateService(roomCode, currentPlayer, { isAlive: 'false', status: PlayerStatusEnum.dead });
+          await syncPlayerScoreService(roomCode, currentPlayer, scoreDelta);
 
-          sendAllPlayers(socket, roomCode, players);
-          endMinigameService(roomCode, socket);
+          await sendAllPlayers(socket, roomCode, players);
+          await endMinigameService(roomCode, socket);
           return;
         }
 
@@ -75,7 +75,7 @@ export const clickTheBombSockets = (socket: Socket) => {
         const newClickTheBombConfig = createClickTheBombConfig(alivePlayers!.length);
 
         await setMinigameData(roomCode, newClickTheBombConfig);
-        await syncPlayerUpdateService(roomCode, currentPlayer.id, { isAlive: 'false', status: PlayerStatusEnum.dead }, players);
+        await syncPlayerUpdateService(roomCode, currentPlayer, { isAlive: 'false', status: PlayerStatusEnum.dead });
 
         socket.nsp.to(roomCode).emit('changed_turn', newTurnData);
 
@@ -83,13 +83,11 @@ export const clickTheBombSockets = (socket: Socket) => {
         playerExploded = true;
       }
 
-      // TODO: Change all console.error to throw new Error
-
       const newStreak = (Number(clickCountStreak) + 1).toString();
-      await syncPlayerScoreService(roomCode, currentPlayer.id, scoreDelta, players);
+      await syncPlayerScoreService(roomCode, currentPlayer, scoreDelta);
       await updateMinigameData(roomCode, { clickCount: newClickCount, streak: newStreak });
 
-      sendAllPlayers(socket, roomCode, players);
+      await sendAllPlayers(socket, roomCode, players);
       socket.nsp.to(roomCode).emit('updated_click_count', newClickCount);
       socket.nsp.to(socket.id).emit('show_score', playerExploded, scoreDelta);
     } catch (error) {

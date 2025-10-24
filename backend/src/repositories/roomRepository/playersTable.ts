@@ -44,7 +44,7 @@ export const updateFilteredPlayers = async (
 ): Promise<void> => {
   const players = await getAllPlayers(roomCode);
   // Object.entries -> From { isAlive: "true" } to [["isAlive", "true"]]
-  // every -> Checks if all provided conditions match the player
+  // every -> Checks if all provided conditions match the player,
   // player[key] === value -> Compares a specific field of the player with the given value
   const filteredPlayers = players.filter((player) => Object.entries(filter).every(([key, value]) => player[key as keyof PlayerType] === value));
 
@@ -67,11 +67,11 @@ export const updateFilteredPlayers = async (
   }
 };
 
-export const updatePlayerScore = async (roomCode: string, id: string, score: number, multi?: ChainableCommander): Promise<void> => {
-  if (multi) {
-    multi.hincrby(getKey(roomCode, keyName, id), 'score', score);
-  } else {
-    await client.hincrby(getKey(roomCode, keyName, id), 'score', score);
+export const updatePlayerScore = async (roomCode: string, id: string, score: number): Promise<void> => {
+  const newScore = await client.hincrby(getKey(roomCode, keyName, id), 'score', score);
+
+  if (newScore < 0) {
+    await updatePlayer(roomCode, id, { score: '0' });
   }
 };
 
