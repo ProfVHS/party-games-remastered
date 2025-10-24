@@ -5,43 +5,38 @@ import * as roomRepository from '@roomRepository';
 import { PlayerType, ReturnDataType } from '@shared/types';
 import { ReadyNameEnum } from '@backend-types';
 
-export const syncPlayerScoreService = async (roomCode: string, playerId: string, delta: number, players: PlayerType[]): Promise<PlayerType | null> => {
+export const syncPlayerScoreService = async (roomCode: string, player: PlayerType, delta: number): Promise<PlayerType | null> => {
   try {
-    await roomRepository.updatePlayerScore(roomCode, playerId, delta);
+    await roomRepository.updatePlayerScore(roomCode, player.id, delta);
 
-    const player = players.find((p) => p.id === playerId);
     if (player) {
-      player.score = Number(player.score) + delta;
+      const newScore = player.score + delta;
+      player.score = newScore < 0 ? 0 : newScore
+
       return player;
     } else {
-      console.error(`Player with id "${playerId}" not found in room "${roomCode}".`);
+      console.error(`Player "${player}" not found in room "${roomCode}".`);
       return null;
     }
   } catch (error) {
-    console.error(`Player update score failed for player: ${playerId}: ${error}`);
+    console.error(`Player update score failed for player: ${player}: ${error}`);
     return null;
   }
 };
 
-export const syncPlayerUpdateService = async (
-  roomCode: string,
-  playerId: string,
-  updates: Partial<PlayerType>,
-  players: PlayerType[],
-): Promise<PlayerType | null> => {
+export const syncPlayerUpdateService = async (roomCode: string, player: PlayerType, updates: Partial<PlayerType>): Promise<PlayerType | null> => {
   try {
-    await roomRepository.updatePlayer(roomCode, playerId, updates);
+    await roomRepository.updatePlayer(roomCode, player.id, updates);
 
-    const player = players.find((p) => p.id === playerId);
     if (player) {
       Object.assign(player, updates);
       return player;
     } else {
-      console.error(`Player with id "${playerId}" not found in room "${roomCode}".`);
+      console.error(`Player with id "${player}" not found in room "${roomCode}".`);
       return null;
     }
   } catch (error) {
-    console.error(`Player update failed for player: ${playerId}: ${error}`);
+    console.error(`Player update failed for player: ${player}: ${error}`);
     return null;
   }
 };

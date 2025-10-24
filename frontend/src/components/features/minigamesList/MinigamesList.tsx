@@ -36,8 +36,8 @@ export const MinigamesList = ({ onCancel, onSave, minigames, isHost }: Minigames
     <div className="minigames-list">
       <div className="minigames-list__table">
         <span className="minigames-list__title">Minigames</span>
-        {Object.values(MinigameNamesEnum).map((name) => (
-          <MinigameItem minigame={{ name }} onClick={addMinigameToList} type="add" isHost={isHost} />
+        {Object.values(MinigameNamesEnum).map((name, index) => (
+          <MinigameItem key={index} minigame={{ name }} onClick={addMinigameToList} type="add" isHost={isHost} />
         ))}
       </div>
       <div className="minigames-list__table">

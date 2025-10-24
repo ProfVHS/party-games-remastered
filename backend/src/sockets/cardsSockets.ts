@@ -1,6 +1,8 @@
 import { Socket } from 'socket.io';
 import { shuffle } from 'lodash';
 import * as roomRepository from '@roomRepository';
+import { syncPlayerScoreService } from '@playerService';
+import { CARDS_RULES } from '@shared/constants/gameRules';
 
 export const cardsSockets = (socket: Socket) => {
   socket.on('card_select', async (cardId: number) => {
@@ -22,9 +24,9 @@ export const cardsRound = async (socket: Socket) => {
 
   // Determine cards based on the current round
   const roundsCards: Record<string, number[]> = {
-    '1': [25, 25, 30, 50, 50, 60, -15, -15, -30],
-    '2': [50, 50, 50, 70, 90, -15, -30, -30, -50],
-    '3': [50, 90, 90, 120, -40, -40, -70, -70, -90],
+    '1': CARDS_RULES.ROUND_1,
+    '2': CARDS_RULES.ROUND_2,
+    '3': CARDS_RULES.ROUND_3,
   };
 
   // Shuffle the cards array
@@ -44,8 +46,7 @@ export const cardsRound = async (socket: Socket) => {
 
       await Promise.all(
         selectedPlayers.map((player) => {
-          player.score = player.score + points;
-          return roomRepository.updatePlayerScore(roomCode, player.id, points);
+          syncPlayerScoreService(roomCode, player, points);
         }),
       );
     }
