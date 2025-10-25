@@ -23,7 +23,6 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 const app = express();
 app.use(cors());
-app.use(express.static(path.join(process.cwd(), '..', 'frontend', 'dist')));
 app.use('/public', express.static(path.join(process.cwd(), 'public')));
 
 const socketServer = createServer(app);
@@ -101,6 +100,8 @@ app.get('/:roomCode', async (req, res) => {
       </html>
     `);
 });
+
+app.use(express.static(path.join(process.cwd(), '..', 'frontend', 'dist')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), '..', 'frontend', 'dist', 'index.html'));
