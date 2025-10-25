@@ -71,7 +71,7 @@ app.get('/room-image/:roomCode.png', async (req, res) => {
   ctx.drawImage(baseImage, 0, 0, width, height);
 
   // Add roomCode text on the image
-  ctx.font = 'bold 80px';
+  ctx.font = 'bold 80px Arial';
   ctx.fillStyle = '#5A189A';
   ctx.textAlign = 'center';
   ctx.fillText(`${roomCode}`, width / 2, height - 130);
