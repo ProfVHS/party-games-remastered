@@ -35,7 +35,8 @@ export const Lobby = () => {
 
   const handleCopyRoomCode = () => {
     if (roomCode) {
-      navigator.clipboard.writeText(roomCode).then(() => toast.info({ message: 'Room code copied!', duration: 5 }));
+      const inviteLink = `${window.location.origin}/${roomCode}`;
+      navigator.clipboard.writeText(inviteLink).then(() => toast.info({ message: 'Room code copied!', duration: 5 }));
     }
   };
 

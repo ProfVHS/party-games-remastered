@@ -10,7 +10,7 @@ export const useRoomJoin = () => {
   useEffect(() => {
     socket.on('joined_room', (data: { roomCode: string; id: string }) => {
       setSessionVariables(data.roomCode, data.id);
-      navigate(`/${data.roomCode}`);
+      navigate(`/room/${data.roomCode}`);
     });
 
     socket.on('failed_to_join_room', (playersReadyCount: number) => {
