@@ -6,12 +6,20 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 
-import { cardsSockets, clickTheBombSockets, connectionSockets, minigameSockets, playerSockets, roomSockets, turnSockets } from '@sockets';
+import {
+  cardsSockets,
+  clickTheBombSockets,
+  connectionSockets,
+  minigameSockets,
+  playerSockets,
+  roomSockets,
+  turnSockets
+} from '@sockets';
 
 dotenv.config();
 
 const SOCKET_PORT = process.env.SOCKET_PORT || 3000;
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://test-party-games.up.railway.app';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 const app = express();
 app.use(cors());
