@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import path from 'path';
-import { createCanvas, loadImage } from 'canvas';
+import { createCanvas, loadImage, registerFont } from 'canvas';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
@@ -56,6 +56,7 @@ socketServer.listen(SOCKET_PORT, () => {
 });
 
 app.use('/public', express.static(path.join(process.cwd(), 'public')));
+registerFont(path.join(process.cwd(), 'public', 'SpicyRice-Regular.ttf'), { family: 'SpicyRice' });
 
 // Generate roomCode on image
 app.get('/room-image/:roomCode.png', async (req, res) => {
@@ -71,7 +72,7 @@ app.get('/room-image/:roomCode.png', async (req, res) => {
   ctx.drawImage(baseImage, 0, 0, width, height);
 
   // Add roomCode text on the image
-  ctx.font = 'bold 80px Arial';
+  ctx.font = 'bold 80px SpicyRice';
   ctx.fillStyle = '#5A189A';
   ctx.textAlign = 'center';
   ctx.fillText(`${roomCode}`, width / 2, height - 130);
