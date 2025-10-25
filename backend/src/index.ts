@@ -23,8 +23,6 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 const app = express();
 app.use(cors());
-app.use(express.static(path.join(process.cwd(), '..', 'frontend', 'dist')));
-app.use('/public', express.static(path.join(process.cwd(), 'public')));
 
 const socketServer = createServer(app);
 
@@ -57,6 +55,8 @@ socketServer.listen(SOCKET_PORT, () => {
   console.log(`Socket server is running on port ${SOCKET_PORT}`);
 });
 
+app.use('/public', express.static(path.join(process.cwd(), 'public')));
+
 // Generate roomCode on image
 app.get('/room-image/:roomCode.png', async (req, res) => {
   const { roomCode } = req.params;
@@ -82,11 +82,14 @@ app.get('/room-image/:roomCode.png', async (req, res) => {
 });
 
 // Dynamic meta tags for room
-app.get('/:roomCode', async (req, res) => {
+app.get('/:roomCode', async (req, res, next) => {
   const { roomCode } = req.params;
   const backendUrl = `${req.protocol}://${req.get('host')}`;
+  const ua = req.get('user-agent') || '';
+  const isBot = /facebookexternalhit|Twiitterbot|Discordbot/i.test(ua);
 
-  res.send(`
+  if (isBot) {
+    res.send(`
       <!doctype html>
       <html lang="en">
         <head>
@@ -94,13 +97,25 @@ app.get('/:roomCode', async (req, res) => {
           <meta property="og:title" content="PartyGames" />
           <meta property="og:description" content="Join to the room and play with your friends!" />
           <meta property="og:image" content="${backendUrl}/room-image/${roomCode}.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
           <meta property="og:url" content="${FRONTEND_URL}/${roomCode}" />
           <meta property="og:type" content="website" />
+          
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="PartyGames" />
+          <meta name="twitter:description" content="Join to the room and play with your friends!" />
+          <meta name="twitter:image" content="${backendUrl}/room-image/${roomCode}.png" />
         </head>
         <body></body>
       </html>
     `);
+  } else {
+    next();
+  }
 });
+
+app.use(express.static(path.join(process.cwd(), '..', 'frontend', 'dist')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), '..', 'frontend', 'dist', 'index.html'));
