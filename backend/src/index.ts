@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import fs from 'fs';
 import path from 'path';
 import { createCanvas, loadImage, registerFont } from 'canvas';
 import { createServer } from 'http';
@@ -75,7 +76,7 @@ app.get('/room-image/:roomCode.png', async (req, res) => {
   ctx.font = 'bold 80px SpicyRice';
   ctx.fillStyle = '#5A189A';
   ctx.textAlign = 'center';
-  ctx.fillText(`${roomCode}`, width / 2, height - 130);
+  ctx.fillText(`${roomCode}`, width / 2, height - 70);
 
   const buffer = canvas.toBuffer('image/png');
   res.setHeader('Content-Type', 'image/png');
@@ -86,13 +87,22 @@ app.get('/room-image/:roomCode.png', async (req, res) => {
 app.get('/:roomCode', async (req, res, next) => {
   const { roomCode } = req.params;
   const backendUrl = `${req.protocol}://${req.get('host')}`;
-  const ua = req.get('user-agent') || '';
-  const isBot = /facebookexternalhit|Twiitterbot|Discordbot/i.test(ua);
+  const filePath = path.join(process.cwd(), '..', 'frontend', 'dist', 'index.html');
 
-  if (isBot) {
-    res.send(`
-      <!doctype html>
-      <html lang="en">
+  const ua = req.get('user-agent') || '';
+  const isBot = /facebookexternalhit|Twitterbot|Discordbot|Slackbot|LinkedInBot|TelegramBot|WhatsApp|Googlebot/i.test(ua);
+
+  if (!isBot) {
+    return next();
+  }
+
+  fs.readFile(filePath, 'utf8', (err, htmlData) => {
+    if (err) {
+      console.error('Could not read index.html', err);
+      return res.status(500).send('Server error');
+    }
+
+    const dynamicMetaTags = `
         <head>
           <title>PartyGames - Room ${roomCode}</title>
           <meta property="og:title" content="PartyGames" />
@@ -108,12 +118,12 @@ app.get('/:roomCode', async (req, res, next) => {
           <meta name="twitter:description" content="Join to the room and play with your friends!" />
           <meta name="twitter:image" content="${backendUrl}/room-image/${roomCode}.png" />
         </head>
-        <body></body>
-      </html>
-    `);
-  } else {
-    next();
-  }
+    `;
+
+    const updatedHtml = htmlData.replace(/<head>[\s\S]*?<\/head>/, dynamicMetaTags);
+
+    res.send(updatedHtml);
+  });
 });
 
 app.use(express.static(path.join(process.cwd(), '..', 'frontend', 'dist')));
