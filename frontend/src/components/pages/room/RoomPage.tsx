@@ -20,6 +20,7 @@ export const RoomPage = () => {
   const { setRoomSettings, fetchRoomData } = useRoomStore();
   const [minigameName, setMinigameName] = useState<string>('');
   const [minigameId, setMinigameId] = useState<string>('');
+  const [playerIdsReady, setPlayerIdsReady] = useState<string[]>([]);
 
   const toast = useToast();
 
@@ -58,10 +59,12 @@ export const RoomPage = () => {
     <div className="lobby-page">
       <div className="lobby-page__content">
         <RoomSettings />
-        <Lobby />
+        <Lobby playerIdsReady={playerIdsReady} setPlayerIdsReady={setPlayerIdsReady} />
       </div>
       <div className="lobby-page__players">
-        {slots.map((player, index) => (player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} /> : <EmptySlot key={index} />))}
+        {slots.map((player, index) =>
+          player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} ready={playerIdsReady.includes(player.id)} /> : <EmptySlot key={index} />,
+        )}
       </div>
     </div>
   );

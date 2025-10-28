@@ -1,6 +1,6 @@
 import './Lobby.scss';
 import { Button } from '@components/ui/button/Button';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { socket } from '@socket';
 
 import { useToast } from '@hooks/useToast.ts';
@@ -8,18 +8,19 @@ import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
 import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
 import { useLobbyStart } from '@hooks/useLobbyStart.ts';
 
-export const Lobby = () => {
+type LobbyProps = {
+  playerIdsReady: string[];
+  setPlayerIdsReady: Dispatch<SetStateAction<string[]>>;
+};
+
+export const Lobby = ({ playerIdsReady, setPlayerIdsReady }: LobbyProps) => {
   const [ready, setReady] = useState(false);
-  const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = localStorage.getItem('roomCode');
 
-  useLobbyToggle({ setPlayersReady, setIsLoading });
-  useLobbyFetch({ setPlayersReady });
-  const { countdown } = useLobbyStart({
-    playersReady,
-    setReady,
-  });
+  useLobbyToggle({ setPlayerIdsReady, setIsLoading });
+  useLobbyFetch({ setPlayerIdsReady });
+  const { countdown } = useLobbyStart({ playerIdsReady, setReady });
 
   const toast = useToast();
 
@@ -51,7 +52,7 @@ export const Lobby = () => {
             </span>
           </span>
           <div className="lobby__info">
-            <span className="lobby__players">{playersReady}</span>
+            <span className="lobby__players">{playerIdsReady.length}</span>
             <span className="lobby__text">Players ready</span>
           </div>
           <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>

@@ -1,16 +1,16 @@
-import { useEffect, Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { socket } from '@socket';
 
 type useLobbyFetchProps = {
-  setPlayersReady: Dispatch<SetStateAction<number>>;
+  setPlayerIdsReady: Dispatch<SetStateAction<string[]>>;
 };
 
-export const useLobbyFetch = ({ setPlayersReady }: useLobbyFetchProps) => {
+export const useLobbyFetch = ({ setPlayerIdsReady }: useLobbyFetchProps) => {
   useEffect(() => {
     socket.emit('fetch_ready_players');
 
-    socket.on('fetched_ready_players', (playersReadyCount: number) => {
-      setPlayersReady(playersReadyCount);
+    socket.on('fetched_ready_players', (playersReadyCount: string[]) => {
+      setPlayerIdsReady(playersReadyCount);
     });
 
     return () => {

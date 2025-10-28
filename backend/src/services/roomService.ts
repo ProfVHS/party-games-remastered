@@ -85,18 +85,18 @@ export const joinRoomService = async (roomCode: string, socket: Socket, nickname
 export const toggleReadyService = async (socket: Socket): Promise<ReturnDataType> => {
   const playerID = socket.id;
   const roomCode = socket.data.roomCode;
-  let playerReadyCount: number;
+  let playersReady: string[];
 
   try {
     await roomRepository.toggleReady(roomCode, playerID, ReadyNameEnum.minigame);
 
-    playerReadyCount = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.minigame);
+    playersReady = await roomRepository.getReadyPlayers(roomCode, ReadyNameEnum.minigame);
   } catch (error) {
     console.error(`Player ready status toggle failed for room ${roomCode} and player: ${playerID}: ${error}`);
     return { success: false }; // Ready status not
   }
 
-  return { success: true, payload: playerReadyCount }; // Success and number of players ready
+  return { success: true, payload: playersReady }; // Success and ids array of players ready
 };
 
 export const deleteRoomService = async (socket: Socket): Promise<ReturnDataType> => {
