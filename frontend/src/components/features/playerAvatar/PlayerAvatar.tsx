@@ -22,7 +22,7 @@ export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn }: Pl
       <div className="player-avatar__avatar">{avatarList[avatar] && createElement(avatarList[avatar][player.status])}</div>
       {!inLobby && (
         <h2 className="player-avatar__score">
-          Score: <Counter count={parseInt(player.score)} duration={1} />
+          Score: <Counter count={player.score} duration={1} />
         </h2>
       )}
     </div>

@@ -85,7 +85,7 @@ export const updatePlayerScore = async (roomCode: string, id: string, score: num
   const newScore = await client.hincrby(getKey(roomCode, keyName, id), 'score', score);
 
   if (newScore < 0) {
-    await updatePlayer(roomCode, id, { score: '0' });
+    await updatePlayer(roomCode, id, { score: 0 });
   }
 };
 
