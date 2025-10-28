@@ -10,7 +10,7 @@ export const useRoomCreate = () => {
   useEffect(() => {
     socket.on('created_room', (data: { roomCode: string; id: string }) => {
       setSessionVariables(data.roomCode, data.id);
-      navigate(`/${data.roomCode}`);
+      navigate(`/room/${data.roomCode}`);
     });
 
     socket.on('failed_to_create_room', () => {

@@ -12,8 +12,8 @@ export const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/:roomCode" element={<RoomPage />} />
+        <Route path="/:roomCode?" element={<HomePage />} />
+        <Route path="/room/:roomCode" element={<RoomPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <motion.div className="user-settings-button" whileHover={{ scale: 1.2, rotate: 180 }} onClick={() => setShowUserSettings(true)}>

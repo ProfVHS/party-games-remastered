@@ -6,10 +6,13 @@ import { useEffect, useState } from 'react';
 import { useAnimate } from 'framer-motion';
 import { Icon } from '@assets/icon';
 import { socket } from '@socket';
+import { useParams } from 'react-router-dom';
 
 export const HomePage = () => {
   const [scope, animate] = useAnimate();
   const [status, setStatus] = useState<'selecting' | 'join' | 'create'>('selecting');
+  const { roomCode } = useParams();
+  const [code, setCode] = useState<string>('');
 
   const changeStatus = async (status: 'join' | 'create') => {
     animate(scope.current, { scale: [1, 0.5], opacity: [1, 0] }, { duration: 0.5, type: 'spring' });
@@ -27,6 +30,13 @@ export const HomePage = () => {
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (!roomCode) return;
+
+    setCode(roomCode);
+    setStatus('join');
+  }, [roomCode]);
+
   return (
     <div className="home-page">
       <div className="home-page__content">
@@ -43,7 +53,7 @@ export const HomePage = () => {
               </Button>
             </>
           )}
-          {status === 'join' && <JoinForm onCancel={() => setStatus('selecting')} />}
+          {status === 'join' && <JoinForm roomCode={code} onCancel={() => setStatus('selecting')} />}
           {status === 'create' && <CreateForm onCancel={() => setStatus('selecting')} />}
         </div>
       </div>

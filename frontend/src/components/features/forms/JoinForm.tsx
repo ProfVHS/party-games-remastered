@@ -7,6 +7,7 @@ import { generateRandomUserName } from '@utils';
 import { useToast } from '@hooks/useToast.ts';
 import { useRoomJoin } from '@hooks/useRoomJoin.ts';
 import { Input } from '@components/ui/input/Input.tsx';
+import { useEffect } from 'react';
 
 type FormInputs = {
   nickname: string;
@@ -14,10 +15,11 @@ type FormInputs = {
 };
 
 type JoinFormProps = {
+  roomCode: string;
   onCancel: () => void;
 };
 
-export const JoinForm = ({ onCancel }: JoinFormProps) => {
+export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
   const { register, handleSubmit, setValue } = useForm<FormInputs>();
 
   const toast = useToast();
@@ -42,6 +44,10 @@ export const JoinForm = ({ onCancel }: JoinFormProps) => {
   };
 
   useRoomJoin();
+
+  useEffect(() => {
+    setValue('room', roomCode);
+  }, [roomCode]);
 
   return (
     <form className="form" onSubmit={handleSubmit(handleJoin, handleShowToast)} onReset={onCancel}>
