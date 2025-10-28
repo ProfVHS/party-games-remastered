@@ -75,8 +75,6 @@ export const ClickTheBomb = () => {
     };
   }, []);
 
-  console.log(clicksCount);
-
   return (
     <>
       <TurnNotification />
