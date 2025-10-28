@@ -8,9 +8,9 @@ export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType | Car
 
 export type ClickTheBombDataType = {
   minigameName: MinigameNamesEnum.clickTheBomb;
-  clickCount: string; // number
-  maxClicks: string; // number
-  streak: string; // number
+  clickCount: number;
+  maxClicks: number;
+  streak: number;
 };
 
 export type ColorsMemoryDataType = {

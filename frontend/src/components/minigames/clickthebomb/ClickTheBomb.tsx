@@ -18,7 +18,6 @@ const formatMilisecondsToTimer = (ms: number) => {
 };
 
 //TODO: Explosion animation
-//TODO: End game
 
 export const ClickTheBomb = () => {
   const [clicksCount, setClicksCount] = useState<number>(0);

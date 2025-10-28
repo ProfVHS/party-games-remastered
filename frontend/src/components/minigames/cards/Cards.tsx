@@ -28,8 +28,7 @@ export const Cards = () => {
   const hasStarted = useRef<boolean>(false);
 
   const handleCardSelect = (id: number) => {
-    // Player can only select a card if the countdown is running
-    if (animationTimeLeft <= 0 || hasStarted.current) return;
+    if (animationTimeLeft <= 0 || hasStarted.current) return; // Player can only select a card if the countdown is running
 
     socket.emit('card_select', id);
     setSelectedCard(() => id);
@@ -43,7 +42,7 @@ export const Cards = () => {
 
   const startNewRound = async () => {
     if (currentRound.current === '4') {
-      if (currentPlayer?.isHost === 'true') socket.emit('end_minigame');
+      if (currentPlayer?.isHost) socket.emit('end_minigame');
       return;
     }
 
@@ -66,10 +65,8 @@ export const Cards = () => {
     hasStarted.current = true;
   };
 
-  // Socket listener for card selection
   useEffect(() => {
-    // Start the first round on component mount
-    startNewRound();
+    startNewRound(); // Start the first round on component mount
 
     socket.on('cards_round_ended', (newCards: number[], newPlayersPoints: PlayerType[], round: string) => {
       currentRound.current = round;
@@ -101,7 +98,7 @@ export const Cards = () => {
             isPositive={card >= 0}
             isFlipping={isFlipping}
             selected={selectedCard === index}
-            newPlayersPointsCard={newPlayersPoints.filter((player) => player.selectedObjectId == index.toString())}
+            newPlayersPointsCard={newPlayersPoints.filter((player) => player.selectedObjectId == index)}
             onClick={handleCardSelect}
             startNewRound={index === 8 ? startNewRound : undefined}
           />
