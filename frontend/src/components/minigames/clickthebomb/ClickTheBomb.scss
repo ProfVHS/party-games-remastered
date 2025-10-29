@@ -93,6 +93,41 @@
     max-width: 225px;
   }
 
+  &__prize {
+    height: 100px;
+    width: 100px;
+
+    background-color: var(--background);
+
+    position: absolute;
+    left: 103%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+
+    &__text {
+      width: 100%;
+      text-align: center;
+      color: var(--click-the-bomb-prize-text);
+
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    &__value {
+      width: 100%;
+      text-align: center;
+      color: var(--click-the-bomb-prize-value);
+
+      font-weight: 700;
+      font-size: 2rem;
+    }
+  }
+
   .random__score__box {
     height: 100px;
     width: 65%;

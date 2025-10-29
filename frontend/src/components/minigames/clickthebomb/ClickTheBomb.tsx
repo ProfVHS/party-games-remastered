@@ -92,6 +92,10 @@ export const ClickTheBomb = () => {
         <Button className="click-the-bomb__button" type="button" size="medium" isDisabled={!canSkipTurn} onClick={handleChangeTurn}>
           Next
         </Button>
+        <div className={`click-the-bomb__prize`}>
+          <div className="click-the-bomb__prize__text">Prize Pool:</div>
+          <div className="click-the-bomb__prize__value">+137</div>
+        </div>
       </div>
     </>
   );

@@ -79,6 +79,8 @@ html[data-theme='light'] {
   --click-the-bomb-bg: #{$lightBgColor};
   --click-the-bomb-turn: #000;
   --click-the-bomb-title: #{$secondaryColor};
+  --click-the-bomb-prize-text: #000;
+  --click-the-bomb-prize-value: #{$darkerPrimaryColor};
 
   //== Cards ==//
   --cards-bg: #{$lightBgColor};
