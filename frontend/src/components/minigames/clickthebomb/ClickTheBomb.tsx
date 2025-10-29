@@ -24,11 +24,13 @@ export const ClickTheBomb = () => {
   const [canSkipTurn, setCanSkipTurn] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [scoreData, setScoreData] = useState<RandomScoreBoxType>({ id: 0, score: 0, isPositive: true });
+  const [prizePool, setPrizePool] = useState<number>(0);
 
   const changedTurn = () => {
     setCanSkipTurn(false);
     startCountdownAnimation();
-    socket.emit('reset_click_count_streak');
+    if (currentPlayer?.isHost) socket.emit('streak_reset');
+    setPrizePool(0);
   };
 
   const handlePlayerDeath = () => {
@@ -51,6 +53,7 @@ export const ClickTheBomb = () => {
 
   const handleChangeTurn = () => {
     socket.emit('change_turn');
+    socket.emit('grant_prize_pool');
     stopCountdownAnimation();
     setCanSkipTurn(false);
   };
@@ -58,9 +61,10 @@ export const ClickTheBomb = () => {
   useEffect(() => {
     startCountdownAnimation();
 
-    socket.on('updated_click_count', (updatedClickCount: number) => {
+    socket.on('updated_click_count', (updatedClickCount: number, updatedPrizePool: number) => {
       setLoading(false);
       setClicksCount(updatedClickCount);
+      setPrizePool(updatedPrizePool);
       startCountdownAnimation();
     });
 
@@ -94,7 +98,7 @@ export const ClickTheBomb = () => {
         </Button>
         <div className={`click-the-bomb__prize`}>
           <div className="click-the-bomb__prize__text">Prize Pool:</div>
-          <div className="click-the-bomb__prize__value">+137</div>
+          <div className="click-the-bomb__prize__value">+{prizePool}</div>
         </div>
       </div>
     </>

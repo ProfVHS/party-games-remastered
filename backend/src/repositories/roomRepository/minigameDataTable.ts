@@ -33,6 +33,7 @@ export const getMinigameData = async (roomCode: string): Promise<MinigameDataTyp
         maxClicks: Number(minigameData.maxClicks),
         minigameName: MinigameNamesEnum.clickTheBomb,
         streak: Number(minigameData.streak),
+        prizePool: Number(minigameData.prizePool),
       };
     case MinigameNamesEnum.cards:
       return {
