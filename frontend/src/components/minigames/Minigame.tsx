@@ -13,7 +13,7 @@ type MinigameProps = {
 
 export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
-  const { players, setPlayers, currentPlayer } = usePlayersStore();
+  const { setPlayers } = usePlayersStore();
 
   useEffect(() => {
     socket.on('ended_minigame', (newPlayers: PlayerType[]) => {
@@ -31,10 +31,6 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
       socket.off('ended_minigame');
     };
   }, []);
-
-  useEffect(() => {
-    console.log(currentPlayer);
-  }, [players]);
 
   useEffect(() => {
     if (!minigameName) return;

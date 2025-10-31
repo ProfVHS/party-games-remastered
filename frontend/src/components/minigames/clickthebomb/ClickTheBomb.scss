@@ -174,7 +174,13 @@
       transform: scale(1);
     }
   }
-  
+
+  &__explode {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+  }
+
   .random__score__box {
     height: 100px;
     width: 65%;

@@ -12,14 +12,13 @@ import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType';
 import { TurnNotification } from '@components/features/turnNotification/TurnNotification.tsx';
 import { PrizePoolEffect } from '@components/minigames/clickthebomb/PrizePoolEffect.tsx';
 import { useToast } from '@hooks/useToast.ts';
+import Explosion from '@components/minigames/clickthebomb/Explosion.tsx';
 
 const formatMillisecondsToTimer = (ms: number) => {
   const seconds = Math.floor(ms / 1000);
   const milliseconds = Math.floor((ms % 1000) / 10); // two-digit ms
   return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
 };
-
-//TODO: Explosion animation
 
 export const ClickTheBomb = () => {
   const [clicksCount, setClicksCount] = useState<number>(0);
@@ -52,7 +51,6 @@ export const ClickTheBomb = () => {
     if (loading || !isMyTurn || !currentPlayer?.isAlive) return; // loading - waiting for response from server, or it's not your turn
 
     setLoading(true);
-    setCanSkipTurn(true);
     stopCountdownAnimation();
     socket.emit('update_click_count', false);
   };
@@ -76,6 +74,7 @@ export const ClickTheBomb = () => {
       setLoading(false);
       setClicksCount(updatedClickCount);
       setPrizePool(updatedPrizePool);
+      if (isMyTurn) setCanSkipTurn(true);
       startCountdownAnimation();
     });
 
@@ -101,7 +100,7 @@ export const ClickTheBomb = () => {
       socket.off('show_score');
       socket.off('click_the_bomb_error');
     };
-  }, []);
+  }, [isMyTurn]);
 
   useEffect(() => {
     startCountdownAnimation();
@@ -132,6 +131,11 @@ export const ClickTheBomb = () => {
           <div className="click-the-bomb__prize__text">Prize Pool:</div>
           <PrizePoolEffect points={prizePool} playerExploded={exploded} setExploded={setExploded} />
         </div>
+        {exploded && (
+          <div className={'click-the-bomb__explode'}>
+            <Explosion />
+          </div>
+        )}
       </div>
     </>
   );
