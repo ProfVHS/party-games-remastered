@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType';
 
 type ScoreData = {
@@ -8,16 +8,15 @@ type ScoreData = {
   angle: number;
   visible: boolean;
   score: number;
-  isPositive: boolean;
 };
 
-export const RandomScoreBox = ({ id, score, isPositive }: RandomScoreBoxType) => {
+export const RandomScoreBox = ({ id, score }: RandomScoreBoxType) => {
   const [scores, setScores] = useState<ScoreData[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const idRef = useRef(0);
 
   useEffect(() => {
-    if (!id || !score || !isPositive || !containerRef.current) return;
+    if (!id || !score || !containerRef.current) return;
 
     const container = containerRef.current;
     const { clientWidth, clientHeight } = container;
@@ -33,7 +32,6 @@ export const RandomScoreBox = ({ id, score, isPositive }: RandomScoreBoxType) =>
       angle,
       visible: true,
       score,
-      isPositive,
     };
 
     setScores((prev) => [...prev, newScore]);
@@ -54,7 +52,7 @@ export const RandomScoreBox = ({ id, score, isPositive }: RandomScoreBoxType) =>
       {scores.map((score) => (
         <span
           key={score.id}
-          className={`score ${score.isPositive ? 'positive' : 'negative'}`}
+          className={`score`}
           style={{
             top: score.top,
             left: score.left,
@@ -62,7 +60,7 @@ export const RandomScoreBox = ({ id, score, isPositive }: RandomScoreBoxType) =>
             transform: `rotate(${score.angle}deg) scale(${score.visible ? 1 : 0.8})`,
           }}
         >
-          {score.isPositive ? '+' + score.score : score.score}
+          {`+${score.score}`}
         </span>
       ))}
     </div>

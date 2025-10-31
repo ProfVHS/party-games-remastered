@@ -1,9 +1,10 @@
-import { MinigameNamesEnum } from '@shared/types';
+import { MinigameNamesEnum, PlayerType } from '@shared/types';
 import { Cards } from '@components/minigames/cards/Cards';
 import { ClickTheBomb } from '@components/minigames/clickthebomb/ClickTheBomb';
 import { useEffect, useState } from 'react';
 import { socket } from '@socket';
 import { Leaderboard } from '@components/features/leaderboard/Leaderboard';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 type MinigameProps = {
   minigameId: string;
@@ -12,10 +13,12 @@ type MinigameProps = {
 
 export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
+  const { players, setPlayers, currentPlayer } = usePlayersStore();
 
   useEffect(() => {
-    socket.on('ended_minigame', () => {
+    socket.on('ended_minigame', (newPlayers: PlayerType[]) => {
       setTimeout(() => {
+        setPlayers(newPlayers);
         setShowLeaderboard(true);
       }, 1500);
 
@@ -28,6 +31,10 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
       socket.off('ended_minigame');
     };
   }, []);
+
+  useEffect(() => {
+    console.log(currentPlayer);
+  }, [players]);
 
   useEffect(() => {
     if (!minigameName) return;

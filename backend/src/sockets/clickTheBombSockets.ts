@@ -37,21 +37,13 @@ export const clickTheBombSockets = (socket: Socket) => {
         throw new Error(`Current player not found (id: ${socket.id})`);
       }
 
-      let newStreak = minigame.streak;
-      let playerExploded = false;
-      const prizePoolDelta = newStreak > POINTS.length ? POINTS[POINTS.length - 1] : POINTS[newStreak];
-      let newPrizePool = minigame.prizePool + prizePoolDelta;
-
-      console.log('Prize pool - ', minigame.prizePool);
+      let newStreak = minigame.streak + 1;
+      const prizePoolDelta = newStreak > POINTS.length - 1 ? POINTS.at(-1) || 0 : POINTS[newStreak - 1];
+      const newPrizePool = minigame.prizePool + prizePoolDelta;
 
       // Player Exploded
       if (minigame.maxClicks === newClickCount || countdownExpired) {
         const alivePlayers = await findAlivePlayersService(players);
-
-        newClickCount = 0;
-        playerExploded = true;
-        newPrizePool = 0;
-        newStreak = 0;
 
         await syncPlayerUpdateService(roomCode, currentPlayer, { isAlive: false, status: PlayerStatusEnum.dead });
         await syncPlayerScoreService(roomCode, currentPlayer, LOSS);
@@ -59,6 +51,7 @@ export const clickTheBombSockets = (socket: Socket) => {
         // End game
         if (alivePlayers && alivePlayers.length <= 2) {
           await sendAllPlayers(socket, roomCode, players);
+          socket.nsp.to(roomCode).emit('end_game_click_the_bomb');
           await endMinigameService(roomCode, socket);
           return;
         }
@@ -67,19 +60,22 @@ export const clickTheBombSockets = (socket: Socket) => {
         const newClickTheBombConfig = createClickTheBombConfig(alivePlayers!.length);
 
         await setMinigameData(roomCode, newClickTheBombConfig);
+        await sendAllPlayers(socket, roomCode, players);
 
         socket.nsp.to(roomCode).emit('changed_turn', newTurnData);
+        socket.nsp.to(roomCode).emit('player_exploded');
       }
+      // Update click count by 1
+      else {
+        await updateMinigameData(roomCode, { clickCount: newClickCount, streak: newStreak, prizePool: newPrizePool });
+        socket.nsp.to(socket.id).emit('show_score', prizePoolDelta);
 
-      if (!playerExploded) {
-        await updateMinigameData(roomCode, { clickCount: newClickCount, streak: newStreak + 1, prizePool: newPrizePool });
-        socket.nsp.to(socket.id).emit('show_score', playerExploded, prizePoolDelta);
+        await sendAllPlayers(socket, roomCode, players);
+        socket.nsp.to(roomCode).emit('updated_click_count', newClickCount, newPrizePool);
       }
-
-      await sendAllPlayers(socket, roomCode, players);
-      socket.nsp.to(roomCode).emit('updated_click_count', newClickCount, newPrizePool);
     } catch (error) {
-      throw new Error(`clickTheBombSockets an error occurred: ${error}`);
+      console.error(`clickTheBombSockets an error occurred: ${error}`);
+      socket.nsp.to(roomCode).emit('click_the_bomb_error', error);
     }
   });
 
