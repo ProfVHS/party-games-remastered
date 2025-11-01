@@ -81,6 +81,10 @@ html[data-theme='dark'] {
   --click-the-bomb-bg: #{$darkBgColor};
   --click-the-bomb-turn: #fff;
   --click-the-bomb-title: #{$darkerPrimaryColor};
+  --click-the-bomb-prize-text: #E1C1FF;
+  --click-the-bomb-prize-value: #{$darkerPrimaryColor};
+  --click-the-bomb-score-positive: #99DD44;
+  --click-the-bomb-score-negative: #c81414;
 
   //== Cards ==//
   --cards-bg: #{$darkBgColor};

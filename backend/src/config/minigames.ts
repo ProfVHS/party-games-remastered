@@ -12,6 +12,7 @@ export const createClickTheBombConfig = (alivePlayersLength: number): MinigameDa
   clickCount: 0,
   maxClicks: Math.floor(Math.random() * (alivePlayersLength * 4)) + 1,
   streak: 0,
+  prizePool: 0,
 });
 
 export const createCardsConfig = (): MinigameDataType => ({ minigameName: MinigameNamesEnum.cards });
