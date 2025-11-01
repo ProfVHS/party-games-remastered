@@ -11,7 +11,7 @@ const POINTS = CLICK_THE_BOMB_RULES.POINTS;
 const LOSS = CLICK_THE_BOMB_RULES.LOSS;
 
 export const clickTheBombSockets = (socket: Socket) => {
-  socket.on('update_click_count', async (countdownExpired: boolean) => {
+  socket.on('bomb_click', async (countdownExpired: boolean) => {
     const roomCode = socket.data.roomCode;
 
     try {

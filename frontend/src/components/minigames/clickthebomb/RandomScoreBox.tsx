@@ -52,7 +52,7 @@ export const RandomScoreBox = ({ id, score }: RandomScoreBoxType) => {
       {scores.map((score) => (
         <span
           key={score.id}
-          className={`score`}
+          className="score"
           style={{
             top: score.top,
             left: score.left,

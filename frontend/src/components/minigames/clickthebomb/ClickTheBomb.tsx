@@ -38,9 +38,7 @@ export const ClickTheBomb = () => {
   };
 
   const handlePlayerDeath = () => {
-    if (currentPlayer?.id != currentTurn?.player_id) return;
-    setExploded(true);
-    socket.emit('update_click_count', true);
+    if (currentPlayer?.id === currentTurn?.player_id) socket.emit('bomb_click', true);
   };
 
   const { currentTurn, isMyTurn } = useTurn({ onChangedTurn: changedTurn });
@@ -52,7 +50,7 @@ export const ClickTheBomb = () => {
 
     setLoading(true);
     stopCountdownAnimation();
-    socket.emit('update_click_count', false);
+    socket.emit('bomb_click', false);
   };
 
   const handleChangeTurn = () => {
@@ -63,7 +61,7 @@ export const ClickTheBomb = () => {
   };
 
   useEffect(() => {
-    const resetValues = () => {
+    const bombExploded = () => {
       setLoading(false);
       setExploded(true);
       setClicksCount(0);
@@ -79,11 +77,11 @@ export const ClickTheBomb = () => {
     });
 
     socket.on('player_exploded', () => {
-      resetValues();
+      bombExploded();
       startCountdownAnimation();
     });
 
-    socket.on('end_game_click_the_bomb', resetValues);
+    socket.on('end_game_click_the_bomb', bombExploded);
 
     socket.on('show_score', (scoreDelta: number) => {
       setScoreData((prev) => ({ id: (prev?.id ?? 0) + 1, score: scoreDelta }));

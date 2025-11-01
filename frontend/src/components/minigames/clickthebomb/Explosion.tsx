@@ -34,14 +34,7 @@ const rects = [
 ];
 
 const Explosion = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    // width={500}
-    // height={500}
-    viewBox="0 0 500 500"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
+  <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <g id="rects">
       {rects.map((rect, index) => (
         <motion.rect
