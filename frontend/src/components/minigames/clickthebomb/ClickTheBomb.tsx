@@ -13,6 +13,7 @@ import { TurnNotification } from '@components/features/turnNotification/TurnNoti
 import { PrizePoolEffect } from '@components/minigames/clickthebomb/PrizePoolEffect.tsx';
 import { useToast } from '@hooks/useToast.ts';
 import Explosion from '@components/minigames/clickthebomb/Explosion.tsx';
+import { ErrorType } from '@shared/types/ErrorType.ts';
 
 const formatMillisecondsToTimer = (ms: number) => {
   const seconds = Math.floor(ms / 1000);
@@ -87,8 +88,8 @@ export const ClickTheBomb = () => {
       setScoreData((prev) => ({ id: (prev?.id ?? 0) + 1, score: scoreDelta }));
     });
 
-    socket.on('click_the_bomb_error', (err) => {
-      toast.error({ message: err.message, duration: 5 });
+    socket.on('click_the_bomb_error', (error: ErrorType) => {
+      toast.error({ status: error.status, message: error.message, duration: 5 });
     });
 
     return () => {
