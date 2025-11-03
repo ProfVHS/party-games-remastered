@@ -22,8 +22,6 @@ export const Toast = ({ id, type, message, status, duration = 5, autoDismiss = t
   const toast = useToast();
 
   useEffect(() => {
-    console.log('w toast status - ', status);
-    console.log('w toast - ', toastMessage);
     animate(scope.current, { opacity: [0, 1], scale: [0, 1] }, { type: 'spring', duration: 0.5 });
   }, []);
 
