@@ -6,9 +6,7 @@ import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData, up
 import { findAlivePlayersService, syncPlayerScoreService, syncPlayerUpdateService } from '@playerService';
 import { changeTurnService, endMinigameService } from '@minigameService';
 import { createClickTheBombConfig } from '@config/minigames';
-import { NotFoundError } from '../errors/NotFoundError';
-import { handleSocketError } from '../errors/AppError';
-import { UnprocessableEntityError } from '../errors/UnprocessableEntityError';
+import { handleSocketError, NotFoundError, UnprocessableEntityError } from '@errors';
 import { ErrorEventNameEnum } from '@backend-types';
 
 const POINTS = CLICK_THE_BOMB_RULES.POINTS;
