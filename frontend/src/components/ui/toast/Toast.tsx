@@ -9,13 +9,14 @@ type ToastType = {
   id: number;
   message: string;
   type: 'error' | 'info' | 'warning' | 'success';
+  status?: number;
   duration?: number;
   autoDismiss?: boolean;
 };
 
-export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: ToastType) => {
+export const Toast = ({ id, type, message, status, duration = 5, autoDismiss = true }: ToastType) => {
   const [scope, animate] = useAnimate();
-
+  const toastMessage = status ? status + ': ' + message : message;
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const toast = useToast();
@@ -54,7 +55,7 @@ export const Toast = ({ id, type, message, duration = 5, autoDismiss = true }: T
         {type === 'warning' && <Icon icon="Warning" />}
         {type === 'info' && <Icon icon="Info" />}
       </div>
-      <div className="alert__message">{message}</div>
+      <div className="alert__message">{toastMessage}</div>
     </motion.div>
   );
 };

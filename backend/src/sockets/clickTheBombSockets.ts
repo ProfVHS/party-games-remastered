@@ -6,6 +6,8 @@ import { getAllPlayers, getMinigameData, setMinigameData, updateMinigameData, up
 import { findAlivePlayersService, syncPlayerScoreService, syncPlayerUpdateService } from '@playerService';
 import { changeTurnService, endMinigameService } from '@minigameService';
 import { createClickTheBombConfig } from '@config/minigames';
+import { handleSocketError, NotFoundError, UnprocessableEntityError } from '@errors';
+import { ErrorEventNameEnum } from '@backend-types';
 
 const POINTS = CLICK_THE_BOMB_RULES.POINTS;
 const LOSS = CLICK_THE_BOMB_RULES.LOSS;
@@ -19,22 +21,22 @@ export const clickTheBombSockets = (socket: Socket) => {
       const players: PlayerType[] | null = await getAllPlayers(roomCode);
 
       if (!minigame) {
-        throw new Error(`No data found for room "${roomCode}".`);
+        throw new NotFoundError('Minigame', roomCode);
       }
 
       if (minigame.minigameName != MinigameNamesEnum.clickTheBomb) {
-        throw new Error(`Data is not of type ClickTheBombDataType: ${minigame}`);
+        throw new UnprocessableEntityError('minigame type', 'Click the Bomb', minigame.minigameName);
       }
 
       if (!players) {
-        throw new Error(`No players found for room "${roomCode}"`);
+        throw new NotFoundError('Players', roomCode);
       }
 
       let newClickCount = minigame.clickCount + 1;
       const currentPlayer = players.find((p) => p.id === socket.id);
 
       if (!currentPlayer) {
-        throw new Error(`Current player not found (id: ${socket.id})`);
+        throw new NotFoundError('Player', roomCode);
       }
 
       let newStreak = minigame.streak + 1;
@@ -73,9 +75,8 @@ export const clickTheBombSockets = (socket: Socket) => {
         await sendAllPlayers(socket, roomCode, players);
         socket.nsp.to(roomCode).emit('updated_click_count', newClickCount, newPrizePool);
       }
-    } catch (error) {
-      console.error(`clickTheBombSockets an error occurred: ${error}`);
-      socket.nsp.to(roomCode).emit('click_the_bomb_error', error);
+    } catch (error: unknown) {
+      handleSocketError(socket, roomCode, error, ErrorEventNameEnum.clickTheBomb);
     }
   });
 
@@ -88,17 +89,21 @@ export const clickTheBombSockets = (socket: Socket) => {
   socket.on('grant_prize_pool', async () => {
     const roomCode = socket.data.roomCode;
 
-    const minigame = await getMinigameData(roomCode);
+    try {
+      const minigame = await getMinigameData(roomCode);
 
-    if (!minigame) {
-      throw new Error(`No data found for room "${roomCode}".`);
+      if (!minigame) {
+        throw new NotFoundError('Minigame', roomCode);
+      }
+
+      if (minigame.minigameName != MinigameNamesEnum.clickTheBomb) {
+        throw new UnprocessableEntityError('minigame type', 'Click the Bomb', minigame.minigameName);
+      }
+
+      await updatePlayerScore(roomCode, socket.id, minigame.prizePool);
+      await sendAllPlayers(socket, roomCode);
+    } catch (error: unknown) {
+      handleSocketError(socket, roomCode, error, ErrorEventNameEnum.clickTheBomb);
     }
-
-    if (minigame.minigameName != MinigameNamesEnum.clickTheBomb) {
-      throw new Error(`Data is not of type ClickTheBombDataType: ${minigame}`);
-    }
-
-    await updatePlayerScore(roomCode, socket.id, minigame.prizePool);
-    await sendAllPlayers(socket, roomCode);
   });
 };
