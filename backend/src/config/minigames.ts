@@ -18,3 +18,5 @@ export const createClickTheBombConfig = (alivePlayersLength: number): MinigameDa
 export const createCardsConfig = (): MinigameDataType => ({ minigameName: MinigameNamesEnum.cards });
 
 export const createColorsMemoryConfig = (): MinigameDataType => ({ minigameName: MinigameNamesEnum.colorsMemory, sequence: [] });
+
+export const createTrickyDiamondsConfig = (): MinigameDataType => ({ minigameName: MinigameNamesEnum.trickyDiamonds });

@@ -2,8 +2,21 @@ import { client } from '@config/db';
 import { Socket } from 'socket.io';
 import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
-import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
-import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig } from '@config/minigames';
+import {
+  MinigameDataType,
+  MinigameNamesEnum,
+  PlayerStatusEnum,
+  ReturnDataType,
+  RoomStatusEnum,
+  TurnType
+} from '@shared/types';
+import {
+  createCardsConfig,
+  createClickTheBombConfig,
+  createColorsMemoryConfig,
+  createRoomConfig,
+  createTrickyDiamondsConfig
+} from '@config/minigames';
 import { cardsRound } from '@sockets';
 import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
 
@@ -30,6 +43,8 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
 
   const currentMinigame = minigames[roomData?.minigameIndex]?.name;
 
+  console.log(`Current minigame: ${currentMinigame}`);
+
   try {
     multi = client.multi();
     await roomRepository.updateRoomData(roomCode, createRoomConfig(players.length, RoomStatusEnum.game), multi);
@@ -53,6 +68,12 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
         minigameData = colorsMemoryConfig;
         console.log(`Starting Colors Memory minigame in room ${roomCode} with config:`, colorsMemoryConfig);
         await roomRepository.setMinigameData(roomCode, colorsMemoryConfig, multi);
+        break;
+      case MinigameNamesEnum.trickyDiamonds:
+        const trickyDiamondConfig = createTrickyDiamondsConfig();
+        minigameData = trickyDiamondConfig;
+        console.log(`Starting Tricky Diamonds minigame in room ${roomCode} with config:`, trickyDiamondConfig);
+        await roomRepository.setMinigameData(roomCode, trickyDiamondConfig, multi);
         break;
       default:
         console.error("Tried setting game which doesn't exist");

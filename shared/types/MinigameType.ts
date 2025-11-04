@@ -2,9 +2,10 @@ export enum MinigameNamesEnum {
   clickTheBomb = "Click the Bomb",
   colorsMemory = "Colors Memory",
   cards = "Cards",
+  trickyDiamonds = "Tricky Diamonds",
 }
 
-export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType | CardsDataType;
+export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType | CardsDataType | TrickyDiamondsDataType;
 
 export type ClickTheBombDataType = {
   minigameName: MinigameNamesEnum.clickTheBomb;
@@ -20,3 +21,5 @@ export type ColorsMemoryDataType = {
 };
 
 export type CardsDataType = { minigameName: MinigameNamesEnum.cards };
+
+export type TrickyDiamondsDataType = { minigameName: MinigameNamesEnum.trickyDiamonds };
