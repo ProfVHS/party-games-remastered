@@ -98,4 +98,9 @@ html[data-theme='dark'] {
   --cards-positive-border: #{$secondaryColor};
   --cards-negative-bg: #9d1133;
   --cards-negative-border: #000;
+
+  //== Tricky Diamonds ==//
+  --tricky-diamonds-bg: #{$darkBgColor};
+  --tricky-diamonds-title: #{$darkerPrimaryColor};
+  --tricky-diamonds-value: #C287F1;
 }
