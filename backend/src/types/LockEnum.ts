@@ -6,3 +6,12 @@ export enum LockName {
   watchMinigame = 'watch:minigame',
   watchRound = 'watch:round',
 }
+
+export enum LockDuration {
+  minigame = 10,
+  round = 3,
+  countdownMinigame = 10,
+  countdownRound = 3,
+  watchMinigame = 10,
+  watchRound = 10,
+}

@@ -2,22 +2,9 @@ import { client } from '@config/db';
 import { Socket } from 'socket.io';
 import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
-import {
-  MinigameDataType,
-  MinigameNamesEnum,
-  PlayerStatusEnum,
-  ReturnDataType,
-  RoomStatusEnum,
-  TurnType
-} from '@shared/types';
-import {
-  createCardsConfig,
-  createClickTheBombConfig,
-  createColorsMemoryConfig,
-  createRoomConfig,
-  createTrickyDiamondsConfig
-} from '@config/minigames';
-import { cardsRound } from '@sockets';
+import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
+import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig, createTrickyDiamondsConfig } from '@config/minigames';
+import { cardsRound, trickyDiamondsRound } from '@sockets';
 import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
@@ -136,6 +123,9 @@ export const startRoundService = async (roomCode: string, socket: Socket) => {
     switch (minigameData?.minigameName) {
       case MinigameNamesEnum.cards:
         await cardsRound(socket);
+        break;
+      case MinigameNamesEnum.trickyDiamonds:
+        await trickyDiamondsRound(socket);
         break;
       default:
         console.error('Tried start round for non existing game: ', minigameData?.minigameName);

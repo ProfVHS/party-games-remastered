@@ -3,7 +3,7 @@ import { MinigameNamesEnum, RoomStatusEnum } from '@shared/types';
 import { endMinigameService, startMinigameService, startRoundService } from '@minigameService';
 import * as roomRepository from '@roomRepository';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
-import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
+import { LockDuration, LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
 import { MinigameEntryType } from '@shared/types/RoomSettingsType';
 
 const startMinigame = async (roomCode: string, socket: Socket) => {
@@ -73,7 +73,7 @@ export const minigameSockets = (socket: Socket) => {
 
     // Start the minigame immediately
     if (playersReady === connectedPlayers.length) {
-      const started = await roomRepository.acquireLock(roomCode, LockName.minigame, 10);
+      const started = await roomRepository.acquireLock(roomCode, LockName.minigame, LockDuration.minigame);
 
       if (!started) {
         console.log('Minigame already started or scheduled');
@@ -88,7 +88,7 @@ export const minigameSockets = (socket: Socket) => {
 
     // The minigame will start in 5 seconds
     if (playersReady >= MIN_PLAYERS_TO_START) {
-      const startedCountdown = await roomRepository.acquireLock(roomCode, LockName.countdownMinigame, 10);
+      const startedCountdown = await roomRepository.acquireLock(roomCode, LockName.countdownMinigame, LockDuration.countdownMinigame);
 
       if (!startedCountdown) {
         console.log('Minigame countdown already started or scheduled');
@@ -111,7 +111,9 @@ export const minigameSockets = (socket: Socket) => {
 
     // Start round immediately
     if (playersReady === connectedPlayers.length) {
-      const started = await roomRepository.acquireLock(roomCode, LockName.round, 10);
+      const started = await roomRepository.acquireLock(roomCode, LockName.round, LockDuration.round);
+
+      console.log(started);
 
       if (!started) {
         console.log('Round already started or scheduled');
@@ -124,7 +126,7 @@ export const minigameSockets = (socket: Socket) => {
 
     // Round will start in 5 seconds
     if (playersReady >= MIN_PLAYERS_TO_START) {
-      const startedCountdown = await roomRepository.acquireLock(roomCode, LockName.countdownRound, 10);
+      const startedCountdown = await roomRepository.acquireLock(roomCode, LockName.countdownRound, LockDuration.countdownRound);
 
       if (!startedCountdown) {
         console.log('Round countdown already started or scheduled');
@@ -146,6 +148,7 @@ export const minigameSockets = (socket: Socket) => {
 
 const startScheduler = async (socket: Socket, scheduledName: ScheduledNameEnum) => {
   const watchKey = scheduledName === ScheduledNameEnum.minigames ? LockName.watchMinigame : LockName.watchRound;
+  const keyDuration = scheduledName === ScheduledNameEnum.minigames ? LockDuration.watchMinigame : LockDuration.watchRound;
 
   while (true) {
     const ready = await roomRepository.getReadyScheduled(scheduledName);
@@ -163,7 +166,7 @@ const startScheduler = async (socket: Socket, scheduledName: ScheduledNameEnum) 
     }
 
     for (const roomCode of ready) {
-      const gotLock = await roomRepository.acquireLock(roomCode, watchKey, 10);
+      const gotLock = await roomRepository.acquireLock(roomCode, watchKey, keyDuration);
 
       if (!gotLock) {
         console.log(`Skipping worker for room: ${roomCode}, already being processed`);
