@@ -6,6 +6,7 @@ import { socket } from '@socket';
 import { useCountdown } from '@hooks/useCountdown.ts';
 import { useEffect, useState } from 'react';
 import { TRICKY_DIAMONDS_RULES } from '@shared/constants/gameRules.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 type Stats = {
   id: number;
@@ -20,9 +21,10 @@ export const TrickyDiamonds = () => {
   const [reveal, setReveal] = useState<boolean>(false);
   const roundsDiamonds = [TRICKY_DIAMONDS_RULES.ROUND_1, TRICKY_DIAMONDS_RULES.ROUND_2, TRICKY_DIAMONDS_RULES.ROUND_3];
   const countdownDuration = TRICKY_DIAMONDS_RULES.COUNTDOWN;
+  const { currentPlayer } = usePlayersStore();
 
   const endRound = () => {
-    socket.emit('start_round_queue');
+    socket.emit('end_round_queue');
   };
 
   const { timeLeft, startCountdown, stopCountdown } = useCountdown(countdownDuration, 1, endRound);
@@ -41,6 +43,7 @@ export const TrickyDiamonds = () => {
 
       setTimeout(() => {
         if (nextRound === 3) {
+          if (currentPlayer?.isHost) socket.emit('end_minigame');
           return;
         }
 

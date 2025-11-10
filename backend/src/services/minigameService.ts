@@ -107,7 +107,7 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
   }
 };
 
-export const startRoundService = async (roomCode: string, socket: Socket) => {
+export const endRoundService = async (roomCode: string, socket: Socket) => {
   const minigameData = await roomRepository.getMinigameData(roomCode);
   let multi: ChainableCommander;
 

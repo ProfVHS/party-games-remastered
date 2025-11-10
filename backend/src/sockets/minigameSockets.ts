@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import { MinigameNamesEnum, RoomStatusEnum } from '@shared/types';
-import { endMinigameService, startMinigameService, startRoundService } from '@minigameService';
+import { endMinigameService, endRoundService, startMinigameService } from '@minigameService';
 import * as roomRepository from '@roomRepository';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 import { LockDuration, LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
@@ -102,7 +102,7 @@ export const minigameSockets = (socket: Socket) => {
     }
   });
 
-  socket.on('start_round_queue', async () => {
+  socket.on('end_round_queue', async () => {
     const roomCode = socket.data.roomCode;
 
     await roomRepository.toggleReady(roomCode, socket.id, ReadyNameEnum.round);
@@ -113,14 +113,12 @@ export const minigameSockets = (socket: Socket) => {
     if (playersReady === connectedPlayers.length) {
       const started = await roomRepository.acquireLock(roomCode, LockName.round, LockDuration.round);
 
-      console.log(started);
-
       if (!started) {
         console.log('Round already started or scheduled');
         return;
       }
 
-      await startRoundService(roomCode, socket);
+      await endRoundService(roomCode, socket);
       return;
     }
 
@@ -177,7 +175,7 @@ const startScheduler = async (socket: Socket, scheduledName: ScheduledNameEnum) 
         if (scheduledName === ScheduledNameEnum.minigames) {
           await startMinigame(roomCode, socket);
         } else {
-          await startRoundService(roomCode, socket);
+          await endRoundService(roomCode, socket);
         }
       } catch (err) {
         console.error(`Failed to start: ${scheduledName}`, err);
