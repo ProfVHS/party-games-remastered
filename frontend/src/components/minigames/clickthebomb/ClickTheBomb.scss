@@ -15,7 +15,7 @@
   max-width: 400px;
   min-width: 320px;
 
-  background-color: var(--click-the-bomb-bg);
+  background-color: var(--minigame-background);
   border-radius: 4px;
 
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
@@ -30,7 +30,7 @@
   }
 
   &__title {
-    color: var(--click-the-bomb-title);
+    color: var(--minigame-title-color);
     font-family: 'Spicy Rice', serif;
     font-size: 32px;
   }

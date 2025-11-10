@@ -1,0 +1,17 @@
+.buddies {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 1rem;
+
+  padding: 1rem;
+  background: var(--minigame-background);
+  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+
+  &__title{
+    font-family: "Spicy Rice", cursive;
+    font-size: 2rem;
+    color: var(--minigame-title-color);
+  }
+}

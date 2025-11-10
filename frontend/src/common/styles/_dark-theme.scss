@@ -75,10 +75,12 @@ html[data-theme='dark'] {
   --minigame-list-item-icon: #{$darkerPrimaryColor};
   --minigame-list-item-text: #{rgba(#fff, 0.4)};
 
+  //== GLOBAL MINIGAMES VARIABLES ==//
+  --minigame-title-color: #{$darkerPrimaryColor};
+  --minigame-background: #{$darkBgColor};
+
   //== Click The Bomb ==//
-  --click-the-bomb-bg: #{$darkBgColor};
   --click-the-bomb-turn: #fff;
-  --click-the-bomb-title: #{$darkerPrimaryColor};
 
   //== Cards ==//
   --cards-bg: #{$darkBgColor};
