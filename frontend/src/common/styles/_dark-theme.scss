@@ -39,7 +39,7 @@ html[data-theme='dark'] {
 
   //== Progress Bar ==//
   --progress-bg: #BD8CF8;
-  --progress-bg-fill: url('../../assets/textures/background-loading-dark.svg');
+  --progress-bg-fill: url('@assets/textures/background-loading-dark.svg');
 
   //== Badge ==//
   --badge-red-bg: #971010;
@@ -95,7 +95,7 @@ html[data-theme='dark'] {
   --cards-title: #{$darkerPrimaryColor};
   --cards-round-bg: #{$darkBgColor};
   --cards-text: #fff;
-  --cards-back-img: url('../../assets/textures/card-back-dark.svg');
+  --cards-back-img: url('@assets/textures/card-back-dark.svg');
   --cards-back-bg: #3c3c3c;
   --cards-back-border: #{$darkerPrimaryColor};
   --cards-positive-bg: #{$darkerPrimaryColor};
