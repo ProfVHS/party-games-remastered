@@ -8,6 +8,7 @@ import { TRICKY_DIAMONDS_RULES } from '@shared/constants/gameRules.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { ProgressBar } from '@components/ui/progressBar/ProgressBar.tsx';
 import { useCountdownAnimation } from '@hooks/useCountdownAnimation.ts';
+import Trophy from '@assets/textures/trophy.svg?react';
 
 type Stats = {
   id: number;
@@ -16,7 +17,11 @@ type Stats = {
 };
 
 export const TrickyDiamonds = () => {
-  const [diamondsStats, setDiamondsStats] = useState<Stats[]>();
+  const [diamondsStats, setDiamondsStats] = useState<Stats[]>([
+    { id: 0, count: 0, players: [] },
+    { id: 1, count: 0, players: [] },
+    { id: 2, count: 0, players: [] },
+  ]);
   const [diamondIdWinner, setDiamondIdWinner] = useState<number | null>(null);
   const [round, setRound] = useState<number>(0);
   const [reveal, setReveal] = useState<boolean>(false);
@@ -38,9 +43,7 @@ export const TrickyDiamonds = () => {
     socket.on('tricky_diamonds_round_ended', (diamondStats, diamondIdWinner, nextRound) => {
       setReveal(true);
       setDiamondsStats(diamondStats);
-      setTimeout(() => {
-        setDiamondIdWinner(diamondIdWinner);
-      }, 1000);
+      setDiamondIdWinner(diamondIdWinner);
 
       setTimeout(() => {
         if (nextRound === 3) {
@@ -66,53 +69,40 @@ export const TrickyDiamonds = () => {
 
   return (
     <div className="tricky-diamonds">
-      <div className="tricky-diamonds__title">Choose Wisely</div>
+      <div className="tricky-diamonds__title">{reveal ? 'Judgment Time' : 'Choose Wisely'}</div>
       <div className="tricky-diamonds__timer">
         <ProgressBar timeLeft={animationTimeLeft} duration={countdownDuration} />
       </div>
       <div className="tricky-diamonds__container">
-        <div className="tricky-diamonds__diamond" onClick={() => handleDiamondSelect(0)}>
-          {reveal && diamondsStats && (
-            <div className={`tricky-diamonds__players__list`}>
-              {diamondsStats
-                .filter((stat) => stat.id === 0)
-                .flatMap((stat) => stat.players)
-                .map((nickname, i) => (
-                  <div key={i}>{nickname}</div>
-                ))}
+        {diamondsStats &&
+          diamondsStats.map((diamond) => (
+            <div className="tricky-diamonds__diamond" onClick={() => handleDiamondSelect(diamond.id)}>
+              {reveal && (
+                <div className={`tricky-diamonds__players__list ${diamond.id === diamondIdWinner ? 'win' : 'lost'}`}>
+                  {diamond.id === diamondIdWinner ? (
+                    <div className="win__background">
+                      <span className="score">+{roundsDiamonds[round][2]}</span>
+                      <Trophy />
+                    </div>
+                  ) : (
+                    <div className="lost__background">
+                      <div className="cross part__one"></div>
+                      <div className="cross part__two"></div>
+                    </div>
+                  )}
+                  {diamond.players.map((nickname, i) => (
+                    <div key={i} className="player">
+                      {nickname}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {diamond.id === 0 && <HighDiamond />}
+              {diamond.id === 1 && <MediumDiamond />}
+              {diamond.id === 2 && <LowDiamond />}
+              <span className="tricky-diamonds__diamond__value">+{roundsDiamonds[round][diamond.id]}</span>
             </div>
-          )}
-          <HighDiamond />
-          <span className="tricky-diamonds__diamond__value">+{roundsDiamonds[round][0]}</span>
-        </div>
-        <div className="tricky-diamonds__diamond" onClick={() => handleDiamondSelect(1)}>
-          {reveal && diamondsStats && (
-            <div className={`tricky-diamonds__players__list`}>
-              {diamondsStats
-                .filter((stat) => stat.id === 1)
-                .flatMap((stat) => stat.players)
-                .map((nickname, i) => (
-                  <div key={i}>{nickname}</div>
-                ))}
-            </div>
-          )}
-          <MediumDiamond />
-          <span className="tricky-diamonds__diamond__value">+{roundsDiamonds[round][1]}</span>
-        </div>
-        <div className="tricky-diamonds__diamond" onClick={() => handleDiamondSelect(2)}>
-          {reveal && diamondsStats && (
-            <div className={`tricky-diamonds__players__list`}>
-              {diamondsStats
-                .filter((stat) => stat.id === 2)
-                .flatMap((stat) => stat.players)
-                .map((nickname, i) => (
-                  <div key={i}>{nickname}</div>
-                ))}
-            </div>
-          )}
-          <LowDiamond />
-          <span className="tricky-diamonds__diamond__value">+{roundsDiamonds[round][2]}</span>
-        </div>
+          ))}
       </div>
     </div>
   );
