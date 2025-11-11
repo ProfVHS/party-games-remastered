@@ -3,10 +3,11 @@ import HighDiamond from '@assets/textures/highDiamond.svg?react';
 import MediumDiamond from '@assets/textures/mediumDiamond.svg?react';
 import LowDiamond from '@assets/textures/lowDiamond.svg?react';
 import { socket } from '@socket';
-import { useCountdown } from '@hooks/useCountdown.ts';
 import { useEffect, useState } from 'react';
 import { TRICKY_DIAMONDS_RULES } from '@shared/constants/gameRules.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
+import { ProgressBar } from '@components/ui/progressBar/ProgressBar.tsx';
+import { useCountdownAnimation } from '@hooks/useCountdownAnimation.ts';
 
 type Stats = {
   id: number;
@@ -27,7 +28,7 @@ export const TrickyDiamonds = () => {
     socket.emit('end_round_queue');
   };
 
-  const { timeLeft, startCountdown, stopCountdown } = useCountdown(countdownDuration, 1, endRound);
+  const { animationTimeLeft, startCountdownAnimation, stopCountdownAnimation } = useCountdownAnimation(countdownDuration, endRound);
 
   const handleDiamondSelect = (id: number) => {
     socket.emit('diamond_select', id);
@@ -50,23 +51,25 @@ export const TrickyDiamonds = () => {
         setRound(nextRound);
         setReveal(false);
         setDiamondIdWinner(null);
-        startCountdown();
+        startCountdownAnimation();
       }, 3000);
     });
   }, [diamondIdWinner]);
 
   useEffect(() => {
-    startCountdown();
+    startCountdownAnimation();
 
     return () => {
-      stopCountdown();
+      stopCountdownAnimation();
     };
   }, []);
 
   return (
     <div className="tricky-diamonds">
-      <div className="tricky-diamonds__timer">{timeLeft}</div>
       <div className="tricky-diamonds__title">Choose Wisely</div>
+      <div className="tricky-diamonds__timer">
+        <ProgressBar timeLeft={animationTimeLeft} duration={countdownDuration} />
+      </div>
       <div className="tricky-diamonds__container">
         <div className="tricky-diamonds__diamond" onClick={() => handleDiamondSelect(0)}>
           {reveal && diamondsStats && (

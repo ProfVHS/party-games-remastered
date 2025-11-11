@@ -37,6 +37,10 @@ html[data-theme='light'] {
   --number-picker-shadow: #5a189a;
   --number-picker-text: #{rgba(255, 255, 255, 0.8)};
 
+  //== Progress Bar ==//
+  --progress-bg: #D5B5FF;
+  --progress-bg-fill: url('../../assets/textures/background-loading.svg');
+
   //== Badge ==//
   --badge-red-bg: #c81414;
   --badge-green-bg: #99DD44;
