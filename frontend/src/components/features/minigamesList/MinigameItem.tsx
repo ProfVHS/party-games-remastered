@@ -1,3 +1,4 @@
+import { PointerEvent } from 'react';
 import { MinigameNamesEnum } from '@shared/types';
 import { ClassNames } from '@utils';
 import { Icon } from '@assets/icon';
@@ -10,7 +11,7 @@ type MinigameItemProps = {
   minigame: MinigameEntryType;
   type: 'add' | 'remove';
   onClick?: (minigame: MinigameEntryType) => void;
-  onDrag?: (e: React.PointerEvent<HTMLDivElement>) => void;
+  onDrag?: (e: PointerEvent<HTMLDivElement>) => void;
   isHost?: boolean;
 };
 
@@ -21,6 +22,7 @@ export const MinigameItem = ({ minigame, type, onClick, onDrag, isHost }: Miniga
         {minigame.name === MinigameNamesEnum.clickTheBomb && <Icon icon="ClickTheBomb" />}
         {minigame.name === MinigameNamesEnum.cards && <Icon icon="Cards" />}
         {minigame.name === MinigameNamesEnum.colorsMemory && <Icon icon="ColorsMemory" />}
+        {minigame.name === MinigameNamesEnum.trickyDiamonds && <Icon icon="TrickyDiamonds" />}
       </div>
       <div className="minigame-item__content">
         <span>{minigame.name}</span>

@@ -14,7 +14,8 @@ import {
   minigameSockets,
   playerSockets,
   roomSockets,
-  turnSockets
+  trickyDiamondsSockets,
+  turnSockets,
 } from '@sockets';
 
 dotenv.config();
@@ -44,6 +45,7 @@ const handleModulesOnConnection = async (socket: Socket) => {
   minigameSockets(socket);
   clickTheBombSockets(socket);
   cardsSockets(socket);
+  trickyDiamondsSockets(socket);
 
   socket.on('error', (err) => {
     console.error(`Socket error: ${err}`);

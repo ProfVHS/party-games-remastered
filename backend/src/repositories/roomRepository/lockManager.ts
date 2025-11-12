@@ -1,9 +1,9 @@
 import { client } from '@config/db';
 import { ChainableCommander } from 'ioredis';
 import { getKey } from '@roomRepository';
-import { LockName } from '@backend-types';
+import { LockDuration, LockName } from '@backend-types';
 
-export const acquireLock = async (roomCode: string, lockName: LockName, ttlSec: number): Promise<boolean> => {
+export const acquireLock = async (roomCode: string, lockName: LockName, ttlSec: LockDuration): Promise<boolean> => {
   const response = await client.set(getKey(roomCode, lockName), '1', 'EX', ttlSec, 'NX');
   return response === 'OK';
 };

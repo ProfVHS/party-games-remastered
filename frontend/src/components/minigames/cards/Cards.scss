@@ -143,13 +143,13 @@
     &.positive {
       background-color: var(--cards-positive-bg);
       border-color: var(--cards-positive-border);
-      background-image: url('./../../../assets/textures/card-front.svg');
+      background-image: url('@assets/textures/card-front.svg');
     }
 
     &.negative {
       background-color: var(--cards-negative-bg);
       border-color: var(--cards-negative-border);
-      background-image: url('./../../../assets/textures/card-front.svg');
+      background-image: url('@assets/textures/card-front.svg');
     }
 
     .svg {
