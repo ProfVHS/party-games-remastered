@@ -53,6 +53,7 @@ export const TrickyDiamonds = () => {
           return;
         }
 
+        setSelectedId(null);
         setRound(nextRound - 1);
         setReveal(false);
         setDiamondIdWinner(null);
