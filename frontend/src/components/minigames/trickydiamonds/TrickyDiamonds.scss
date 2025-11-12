@@ -60,6 +60,21 @@
       font-family: "Poppins", sans-serif;
       font-weight: bold;
     }
+
+    .selected {
+      svg {
+        animation: float 2s infinite ease-in-out;
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(10px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
   }
 
   svg {
@@ -77,7 +92,7 @@
     align-items: center;
     pointer-events: none;
     background-color: rgba(0, 0, 0, 0.5);
-    color: var(--cards-text);
+    color: #fff;
     border-radius: 10px;
     font-size: 1rem;
     z-index: 10;

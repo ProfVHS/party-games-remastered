@@ -56,17 +56,13 @@ export const trickyDiamondsRound = async (socket: Socket) => {
     const minCount = Math.min(...valid.map((v) => v.count));
     const maxCount = Math.max(...valid.map((v) => v.count));
 
-    if (minCount === maxCount) {
-      const nextRound = roomData.currentRound + 1;
-      await roomRepository.updateAllPlayers(roomCode, { selectedObjectId: -100 });
-      await roomRepository.updateRoomData(roomCode, { currentRound: nextRound });
-      socket.nsp.to(roomCode).emit('tricky_diamonds_round_ended', diamondStats, null, roomData.currentRound);
-      return;
-    }
-
+    // Diamonds with min player count
     const minDiamonds = valid.filter((v) => v.count === minCount);
+    let diamondWinnerId: number | null = null;
 
-    if (minDiamonds.length === 1) {
+    // There is diamond with unique minimum value (players with this selected id gets points)
+    if (minDiamonds.length === 1 && minCount !== maxCount) {
+      diamondWinnerId = minDiamonds[0].id;
       players.map(async (player) => {
         if (player.selectedObjectId === minDiamonds[0].id) {
           await roomRepository.updatePlayerScore(roomCode, player.id, diamonds[minDiamonds[0].id]);
@@ -78,7 +74,7 @@ export const trickyDiamondsRound = async (socket: Socket) => {
     await roomRepository.updateAllPlayers(roomCode, { selectedObjectId: -100 });
     await roomRepository.updateRoomData(roomCode, { currentRound: nextRound });
     await sendAllPlayers(socket, roomCode);
-    socket.nsp.to(roomCode).emit('tricky_diamonds_round_ended', diamondStats, minDiamonds[0].id, nextRound);
+    socket.nsp.to(roomCode).emit('tricky_diamonds_round_ended', diamondStats, diamondWinnerId, nextRound);
   } catch (error: unknown) {
     handleSocketError(socket, roomCode, error, ErrorEventNameEnum.trickyDiamonds);
   }

@@ -25,6 +25,7 @@ export const TrickyDiamonds = () => {
   const [diamondIdWinner, setDiamondIdWinner] = useState<number | null>(null);
   const [round, setRound] = useState<number>(0);
   const [reveal, setReveal] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const roundsDiamonds = [TRICKY_DIAMONDS_RULES.ROUND_1, TRICKY_DIAMONDS_RULES.ROUND_2, TRICKY_DIAMONDS_RULES.ROUND_3];
   const countdownDuration = TRICKY_DIAMONDS_RULES.COUNTDOWN;
   const { currentPlayer } = usePlayersStore();
@@ -37,6 +38,7 @@ export const TrickyDiamonds = () => {
 
   const handleDiamondSelect = (id: number) => {
     socket.emit('diamond_select', id);
+    setSelectedId(id);
   };
 
   useEffect(() => {
@@ -46,12 +48,12 @@ export const TrickyDiamonds = () => {
       setDiamondIdWinner(diamondIdWinner);
 
       setTimeout(() => {
-        if (nextRound === 3) {
+        if (nextRound === 4) {
           if (currentPlayer?.isHost) socket.emit('end_minigame');
           return;
         }
 
-        setRound(nextRound);
+        setRound(nextRound - 1);
         setReveal(false);
         setDiamondIdWinner(null);
         startCountdownAnimation();
@@ -73,15 +75,15 @@ export const TrickyDiamonds = () => {
       <div className="tricky-diamonds__timer">
         <ProgressBar timeLeft={animationTimeLeft} duration={countdownDuration} />
       </div>
-      <div className="tricky-diamonds__container">
+      <div className="tricky-diamonds__container tricky-diamonds__selected">
         {diamondsStats &&
-          diamondsStats.map((diamond) => (
-            <div className="tricky-diamonds__diamond" onClick={() => handleDiamondSelect(diamond.id)}>
+          diamondsStats.map((diamond, index) => (
+            <div key={index} className="tricky-diamonds__diamond" onClick={() => handleDiamondSelect(diamond.id)}>
               {reveal && (
                 <div className={`tricky-diamonds__players__list ${diamond.id === diamondIdWinner ? 'win' : 'lost'}`}>
                   {diamond.id === diamondIdWinner ? (
                     <div className="win__background">
-                      <span className="score">+{roundsDiamonds[round][2]}</span>
+                      <span className="score">+{roundsDiamonds[round][diamond.id]}</span>
                       <Trophy />
                     </div>
                   ) : (
@@ -97,9 +99,11 @@ export const TrickyDiamonds = () => {
                   ))}
                 </div>
               )}
-              {diamond.id === 0 && <HighDiamond />}
-              {diamond.id === 1 && <MediumDiamond />}
-              {diamond.id === 2 && <LowDiamond />}
+              <span className={`${!reveal && selectedId === diamond.id ? 'selected' : ''}`}>
+                {diamond.id === 0 && <HighDiamond />}
+                {diamond.id === 1 && <MediumDiamond />}
+                {diamond.id === 2 && <LowDiamond />}
+              </span>
               <span className="tricky-diamonds__diamond__value">+{roundsDiamonds[round][diamond.id]}</span>
             </div>
           ))}
