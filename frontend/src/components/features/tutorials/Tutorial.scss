@@ -1,11 +1,108 @@
 .tutorial {
-  height: 600px;
-  width: 500px;
+  height: 70vh;
+  min-height: 550px;
+  max-height: 600px;
+
+  width: 50%;
+  min-width: 500px;
+  max-width: 700px;
 
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  //top: 50%;
+  //left: 50%;
+  //transform: translate(-50%, -50%);
 
-  background-color: aquamarine;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: #444444;
+}
+
+.tutorial__content {
+  flex: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+
+  margin-bottom: 30px;
+
+  background-color: #d83e3e;
+
+  pointer-events: none;
+}
+
+.tutorial__text {
+  font-family: 'Spicy Rice', serif;
+  width: 80%;
+  text-align: center;
+
+  &--normal {
+    font-size: 1.5rem;
+    margin: 10px;
+  }
+
+  &--title {
+    font-size: 3rem;
+    margin: 30px;
+  }
+
+}
+
+.tutorial__image {
+  margin: 20px;
+
+  &--large {
+    width: 60%;
+    height: 50%;
+  }
+
+  &--medium {
+    width: 35%;
+    height: 30%;
+  }
+
+  &--small {
+    width: 25%;
+    height: 20%;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.tutorial__pagination {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: auto;
+  margin-bottom: 30px;
+
+  .indicator {
+    font-family: 'Spicy Rice', serif;
+    font-size: 1.5rem;
+    color: #C287F1;
+    margin: 0 40px 0 40px;
+  }
+
+  .arrow {
+    &.right {
+      transform: rotate(90deg);
+    }
+
+    &.left {
+      transform: rotate(-90deg);
+    }
+
+    &--disabled {
+      opacity: 0.4;
+    }
+  }
+
 }
