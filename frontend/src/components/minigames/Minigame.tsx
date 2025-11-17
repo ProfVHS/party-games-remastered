@@ -13,18 +13,28 @@ type MinigameProps = {
 
 export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
-  const { setPlayers } = usePlayersStore();
+  const [leaderboardPlayers, setLeaderboardPlayers] = useState<PlayerType[]>([]);
+  const { setPlayers, setOldPlayers, oldPlayers } = usePlayersStore();
 
   useEffect(() => {
     socket.on('ended_minigame', (newPlayers: PlayerType[]) => {
+      // Show Leaderboard
       setTimeout(() => {
-        setPlayers(newPlayers);
+        setLeaderboardPlayers(oldPlayers);
         setShowLeaderboard(true);
-      }, 1500);
+      }, 2000);
 
+      // Change for new players
       setTimeout(() => {
+        setLeaderboardPlayers(newPlayers);
+      }, 5000);
+
+      // Start next game
+      setTimeout(() => {
+        setOldPlayers(newPlayers);
+        setPlayers(newPlayers);
         socket.emit('start_minigame_queue');
-      }, 3000);
+      }, 8000);
     });
 
     return () => {
@@ -40,7 +50,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   return (
     <div>
       {showLeaderboard ? (
-        <Leaderboard />
+        <Leaderboard leaderboardPlayers={leaderboardPlayers} />
       ) : (
         <>
           {minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}

@@ -14,12 +14,12 @@
   align-items: center;
 
   font-weight: bold;
-  font-family: 'Poppins';
+  font-family: 'Poppins', sans-serif;
 
   &__title {
     font-size: 34px;
     color: var(--leaderboard-title);
-    margin: 10px 0px 10px 0px;
+    margin: 10px 0 10px 0;
   }
 
   &__players__container {
@@ -43,9 +43,7 @@
     align-items: center;
 
     margin-top: 7px;
-
     font-size: 18px;
-
     border-radius: 5px;
 
     &:nth-child(1) {
