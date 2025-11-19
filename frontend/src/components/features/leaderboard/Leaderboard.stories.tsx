@@ -12,12 +12,12 @@ type Story = StoryObj<typeof meta>;
 
 export const LeaderboardScore: Story = {
   args: {
-    style: {},
+    leaderboardPlayers: [],
   },
 };
 
 export const LeaderboardGameScore: Story = {
   args: {
-    style: {},
+    leaderboardPlayers: [],
   },
 };

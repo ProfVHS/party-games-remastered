@@ -12,8 +12,6 @@ export const Leaderboard = ({ leaderboardPlayers }: LeaderboardProps) => {
   //TODO: Second leaderboard for game (how many points did you get, extra stats )
 
   useEffect(() => {
-    console.log('leaderboardPlayers - ', leaderboardPlayers);
-
     if (!leaderboardPlayers) return;
 
     setSortedPlayers([...leaderboardPlayers].sort((a, b) => b.score - a.score));
@@ -24,7 +22,7 @@ export const Leaderboard = ({ leaderboardPlayers }: LeaderboardProps) => {
       <div className="leaderboard__title">Leaderboard</div>
       <div className="leaderboard__players__container">
         {sortedPlayers.map((player, index) => (
-          <LeaderboardItem index={index} nickname={player.nickname} score={player.score} />
+          <LeaderboardItem key={index} index={index} nickname={player.nickname} score={player.score} />
         ))}
       </div>
     </div>

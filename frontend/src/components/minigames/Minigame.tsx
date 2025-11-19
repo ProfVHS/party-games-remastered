@@ -5,16 +5,28 @@ import { useEffect, useState } from 'react';
 import { socket } from '@socket';
 import { Leaderboard } from '@components/features/leaderboard/Leaderboard';
 import { usePlayersStore } from '@stores/playersStore.ts';
+import { Tutorial } from '@components/features/tutorials/Tutorial.tsx';
+import { useRoomStore } from '@stores/roomStore.ts';
 
 type MinigameProps = {
   minigameId: string;
-  minigameName: string;
+  minigameName: MinigameNamesEnum;
 };
 
 export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
+  const [showTutorial, setShowTutorial] = useState<boolean>(false);
   const [leaderboardPlayers, setLeaderboardPlayers] = useState<PlayerType[]>([]);
   const { setPlayers, setOldPlayers, oldPlayers } = usePlayersStore();
+  const { roomSettings } = useRoomStore();
+
+  const handleStartNewGame = () => {
+    if (roomSettings.isTutorialsEnabled) {
+      setShowTutorial(true);
+    } else {
+      socket.emit('start_minigame_queue');
+    }
+  };
 
   useEffect(() => {
     socket.on('ended_minigame', (newPlayers: PlayerType[]) => {
@@ -33,7 +45,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
       setTimeout(() => {
         setOldPlayers(newPlayers);
         setPlayers(newPlayers);
-        socket.emit('start_minigame_queue');
+        handleStartNewGame();
       }, 8000);
     });
 
@@ -47,6 +59,12 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
     setShowLeaderboard(false);
   }, [minigameId]);
 
+  useEffect(() => {
+    if (roomSettings.isTutorialsEnabled) {
+      handleStartNewGame();
+    }
+  }, [minigameId]);
+
   return (
     <div>
       {showLeaderboard ? (
@@ -58,6 +76,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
           {minigameName == MinigameNamesEnum.colorsMemory && <div>Colors Memory</div>}
         </>
       )}
+      {showTutorial && <Tutorial minigameName={minigameName} />}
     </div>
   );
 };

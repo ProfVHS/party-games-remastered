@@ -12,7 +12,7 @@ type useLobbyStartProps = {
 export const useLobbyStart = ({ playerIdsReady, setReady }: useLobbyStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
-  const { currentPlayer, players, setOldPlayers } = usePlayersStore();
+  const { currentPlayer, players } = usePlayersStore();
   const hasStarted = useRef<boolean>(false);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export const useLobbyStart = ({ playerIdsReady, setReady }: useLobbyStartProps) 
               socket.emit('verify_minigames');
               socket.emit('start_minigame_queue', true);
             }
-            setOldPlayers(players);
+            //setOldPlayers(players); //TODO: Error? Check website console
             hasStarted.current = true;
             clearInterval(timer);
             return null;
