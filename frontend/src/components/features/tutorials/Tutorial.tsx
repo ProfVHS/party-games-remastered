@@ -60,7 +60,7 @@ export const Tutorial = ({ minigameName }: TutorialProps) => {
             </div>
             <Pagination page={page} maxPages={maxPage} onClick={handleChangePage} />
           </div>
-          <div className="tutorial__ready">
+          <div className="tutorial__ready--button">
             <Button onClick={handleReady}>Ready</Button>
           </div>
         </>
@@ -68,7 +68,12 @@ export const Tutorial = ({ minigameName }: TutorialProps) => {
         <>
           <div className="tutorial">
             <Text variant="title">Waiting for other players</Text>
-            <Text>
+            <div className="tutorial__ready">
+              {[...Array(maxPlayers)].map((_, i) => (
+                <div className={`tutorial__ready--dot ${i < readyPlayers ? 'active' : ''}`} key={i}></div>
+              ))}
+            </div>
+            <Text variant="title" color="highlight">
               {readyPlayers} / {maxPlayers}
             </Text>
           </div>
