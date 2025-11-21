@@ -13,7 +13,7 @@ export const Pagination = ({ page, maxPages, onClick }: PaginatedProps) => {
       <div className={ClassNames('arrow', 'left', { disabled: page === 1 })} onClick={() => onClick(-1)}>
         <Arrow />
       </div>
-      <span className="indicator">
+      <span className="tutorial__pagination__indicator">
         {page} / {maxPages}
       </span>
       <div className={ClassNames('arrow', 'right', { disabled: page === maxPages })} onClick={() => onClick(1)}>
