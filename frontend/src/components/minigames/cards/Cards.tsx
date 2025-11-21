@@ -9,7 +9,11 @@ import { useCountdownAnimation } from '@hooks/useCountdownAnimation.ts';
 import { CARDS_RULES } from '@shared/constants/gameRules.ts';
 import { delay } from '@utils';
 
-export const Cards = () => {
+type CardsProps = {
+  startGame: boolean;
+};
+
+export const Cards = ({ startGame }: CardsProps) => {
   const roundIntroDuration = 2000;
   const cardFlipHalfDuration = 400;
 
@@ -24,7 +28,7 @@ export const Cards = () => {
   const { animationTimeLeft, startCountdownAnimation } = useCountdownAnimation(CARDS_RULES.COUNTDOWN, () => endRound());
   const { currentPlayer } = usePlayersStore();
 
-  const currentRound = useRef<string>('1');
+  const currentRound = useRef<number>(1);
   const hasStarted = useRef<boolean>(false);
 
   const handleCardSelect = (id: number) => {
@@ -41,7 +45,7 @@ export const Cards = () => {
   };
 
   const startNewRound = async () => {
-    if (currentRound.current === '4') {
+    if (currentRound.current === 4) {
       if (currentPlayer?.isHost) socket.emit('end_minigame');
       return;
     }
@@ -66,9 +70,7 @@ export const Cards = () => {
   };
 
   useEffect(() => {
-    startNewRound(); // Start the first round on component mount
-
-    socket.on('cards_round_ended', (newCards: number[], newPlayersPoints: PlayerType[], round: string) => {
+    socket.on('cards_round_ended', (newCards: number[], newPlayersPoints: PlayerType[], round: number) => {
       currentRound.current = round;
       setCards(() => newCards);
       setNewPlayerPoints(() => newPlayersPoints);
@@ -81,6 +83,11 @@ export const Cards = () => {
       socket.off('cards_round_ended');
     };
   }, []);
+
+  useEffect(() => {
+    if (!startGame) return;
+    startNewRound();
+  }, [startGame]);
 
   return (
     <div className="cards">

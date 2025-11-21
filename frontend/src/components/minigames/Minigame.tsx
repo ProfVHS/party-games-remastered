@@ -17,6 +17,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(false);
   const [leaderboardPlayers, setLeaderboardPlayers] = useState<PlayerType[]>([]);
+  const [startGame, setStartGame] = useState<boolean>(false);
   const { setPlayers, setOldPlayers, oldPlayers } = usePlayersStore();
   const { roomSettings } = useRoomStore();
 
@@ -24,7 +25,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
     if (roomSettings.isTutorialsEnabled) {
       setShowTutorial(true);
     } else {
-      socket.emit('start_minigame_queue');
+      setStartGame(true);
     }
   };
 
@@ -39,30 +40,35 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
       // Change for new players
       setTimeout(() => {
         setLeaderboardPlayers(newPlayers);
+        setStartGame(false);
       }, 5000);
 
       // Start next game
       setTimeout(() => {
         setOldPlayers(newPlayers);
         setPlayers(newPlayers);
-        handleStartNewGame();
+        socket.emit('start_minigame_queue');
+        //handleStartNewGame();
       }, 8000);
+    });
+
+    socket.on('ended_tutorial_queue', () => {
+      setShowTutorial(false);
+      setShowLeaderboard(false);
+      setStartGame(true);
     });
 
     return () => {
       socket.off('ended_minigame');
+      socket.off('ended_tutorial_queue');
     };
-  }, []);
+  }, [showTutorial, startGame, showLeaderboard]);
 
   useEffect(() => {
     if (!minigameName) return;
-    setShowLeaderboard(false);
-  }, [minigameId]);
 
-  useEffect(() => {
-    if (roomSettings.isTutorialsEnabled) {
-      handleStartNewGame();
-    }
+    setShowLeaderboard(false);
+    handleStartNewGame();
   }, [minigameId]);
 
   return (
@@ -71,8 +77,8 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
         <Leaderboard leaderboardPlayers={leaderboardPlayers} />
       ) : (
         <>
-          {minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}
-          {minigameName == MinigameNamesEnum.cards && <Cards />}
+          {minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb startGame={startGame} />}
+          {minigameName == MinigameNamesEnum.cards && <Cards startGame={startGame} />}
           {minigameName == MinigameNamesEnum.colorsMemory && <div>Colors Memory</div>}
         </>
       )}
