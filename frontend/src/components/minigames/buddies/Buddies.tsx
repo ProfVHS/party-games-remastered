@@ -5,28 +5,18 @@ import { AnswerStage } from '@components/minigames/buddies/stages/AnswerStage.ts
 import { WaitingForAnswersStage } from '@components/minigames/buddies/stages/WaitingForAnswersStage.tsx';
 import { SelectBestAnswerStage } from '@components/minigames/buddies/stages/SelectBestAnswerStage.tsx';
 import { ShowBestAnswerStage } from '@components/minigames/buddies/stages/ShowBestAnswerStage.tsx';
-import { useState } from 'react';
+import { useBuddiesSocket } from '@components/minigames/buddies/useBuddiesSocket.ts';
 
 export const Buddies = () => {
-  const [stage, setStage] = useState<
-    'creating_questions' | 'waiting_for_players' | 'waiting_for_answers' | 'answer' | 'select_best_answer' | 'show_best_answer'
-  >('creating_questions');
-
-  const handleQuestionCreated = () => {
-    setStage('answer');
-  };
-
-  const handleAnswerCreated = () => {
-    setStage('select_best_answer');
-  };
+  const { stage, sendQuestion, sendAnswer, selectBestAnswer } = useBuddiesSocket();
 
   return (
     <div className="buddies">
-      {stage === 'creating_questions' && <CreatingQuestionStage onSubmit={() => handleQuestionCreated()} />}
+      {stage === 'creating_questions' && <CreatingQuestionStage onSubmit={() => sendQuestion()} />}
       {stage === 'waiting_for_players' && <WaitingForPlayersStage />}
-      {stage === 'answer' && <AnswerStage onSubmit={() => handleAnswerCreated()} />}
+      {stage === 'answer' && <AnswerStage onSubmit={() => sendAnswer()} />}
       {stage === 'waiting_for_answers' && <WaitingForAnswersStage />}
-      {stage === 'select_best_answer' && <SelectBestAnswerStage />}
+      {stage === 'select_best_answer' && <SelectBestAnswerStage onSelectAnswer={selectBestAnswer} />}
       {stage === 'show_best_answer' && <ShowBestAnswerStage />}
     </div>
   );

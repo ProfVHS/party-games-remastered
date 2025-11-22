@@ -1,8 +1,13 @@
 import { Answer } from '@components/minigames/buddies/components/Answer.tsx';
 import { useState } from 'react';
+import { Button } from '@components/ui/button/Button.tsx';
 
-export const SelectBestAnswerStage = () => {
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+type SelectBestAnswerStageProps = {
+  onSelectAnswer: (answerId: string) => void;
+};
+
+export const SelectBestAnswerStage = ({ onSelectAnswer }: SelectBestAnswerStageProps) => {
+  const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null);
 
   return (
     <>
@@ -18,9 +23,10 @@ export const SelectBestAnswerStage = () => {
             content: 'Sniper',
           },
         ].map((answer) => (
-          <Answer key={answer.id} answer={answer.content} isSelected={selectedAnswer === answer.id} onClick={() => setSelectedAnswer(answer.id)} />
+          <Answer key={answer.id} answer={answer.content} isSelected={selectedAnswerId === answer.id} onClick={() => setSelectedAnswerId(answer.id)} />
         ))}
       </div>
+      <Button onClick={() => selectedAnswerId && onSelectAnswer(selectedAnswerId)}>Confirm</Button>
     </>
   );
 };
