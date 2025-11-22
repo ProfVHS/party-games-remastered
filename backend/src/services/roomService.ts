@@ -5,7 +5,8 @@ import { ChainableCommander } from 'ioredis';
 import { PlayerStatusEnum, ReturnDataType, RoomDataType, RoomStatusEnum } from '@shared/types';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 import { avatars } from '@shared/constants/avatars';
-import { ReadyNameEnum } from '@backend-types';
+import { ErrorEventNameEnum, LockName, ReadyNameEnum } from '@backend-types';
+import { handleSocketError, NotFoundError } from '@errors';
 
 export const createRoomService = async (roomCode: string, socket: Socket, nickname: string): Promise<ReturnDataType> => {
   const playerID = socket.id;
@@ -117,4 +118,26 @@ export const deleteRoomService = async (socket: Socket): Promise<ReturnDataType>
   }
 
   return { success: true }; // Room deleted
+};
+
+export const cleanupRoundService = async (roomCode: string, socket: Socket): Promise<void> => {
+  const roomData = await roomRepository.getRoomData(roomCode);
+  let multi: ChainableCommander;
+
+  if (!roomData) {
+    throw new NotFoundError('Room data', roomCode);
+  }
+
+  try {
+    multi = client.multi();
+
+    await roomRepository.updateAllPlayers(roomCode, { selectedObjectId: -100 });
+    await roomRepository.updateRoomData(roomCode, { currentRound: roomData.currentRound + 1 });
+    await roomRepository.deleteLock(roomCode, LockName.round);
+    await roomRepository.deleteLock(roomCode, LockName.countdownRound);
+
+    await multi.exec();
+  } catch (error: unknown) {
+    handleSocketError(socket, roomCode, error, ErrorEventNameEnum.roomService);
+  }
 };

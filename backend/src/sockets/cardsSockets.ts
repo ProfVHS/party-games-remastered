@@ -4,6 +4,7 @@ import * as roomRepository from '@roomRepository';
 import { syncPlayerScoreService } from '@playerService';
 import { CARDS_RULES } from '@shared/constants/gameRules';
 import { handleSocketError, NotFoundError } from '@errors';
+import { cleanupRoundService } from '@roomService';
 import { ErrorEventNameEnum } from '@backend-types';
 
 export const cardsSockets = (socket: Socket) => {
@@ -68,11 +69,8 @@ export const cardsRound = async (socket: Socket) => {
       }
     }
 
-    const nextRound = roomData!.currentRound + 1;
-    await roomRepository.updateAllPlayers(roomCode, { selectedObjectId: -100 });
-    await roomRepository.updateRoomData(roomCode, { currentRound: nextRound });
-
-    socket.nsp.to(roomCode).emit('cards_round_ended', cards, players, nextRound);
+    await cleanupRoundService(roomCode, socket);
+    socket.nsp.to(roomCode).emit('cards_round_ended', cards, players, roomData.currentRound + 1);
   } catch (error: unknown) {
     handleSocketError(socket, roomCode, error, ErrorEventNameEnum.cards);
   }

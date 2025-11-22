@@ -1,10 +1,14 @@
 import { client } from '@config/db';
 import { ChainableCommander } from 'ioredis';
 import { getKey } from '@roomRepository';
-import { LockDuration, LockName } from '@backend-types';
+import { LockName } from '@backend-types';
 
-export const acquireLock = async (roomCode: string, lockName: LockName, ttlSec: LockDuration): Promise<boolean> => {
-  const response = await client.set(getKey(roomCode, lockName), '1', 'EX', ttlSec, 'NX');
+// These locks are used to ensure that certain room operations
+// (e.g., ending a round, running schedulers)
+// are executed only once at a time
+
+export const acquireLock = async (roomCode: string, lockName: LockName): Promise<boolean> => {
+  const response = await client.set(getKey(roomCode, lockName), '1', 'NX');
   return response === 'OK';
 };
 
