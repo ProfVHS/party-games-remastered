@@ -8,6 +8,8 @@ import Mine from './svgs/mine.svg?react';
 import Person from './svgs/person.svg?react';
 import Save from './svgs/save.svg?react';
 import Trash from './svgs/trash.svg?react';
+import Hourglass from './svgs/hourglass.svg?react';
+import Checkmark from './svgs/checkmark.svg?react';
 
 import ClickTheBomb from './svgs/clickTheBomb.svg?react';
 import Cards from './svgs/cards.svg?react';
@@ -27,4 +29,6 @@ export const icons = {
   Person,
   Save,
   Trash,
+  Hourglass,
+  Checkmark,
 };

@@ -75,10 +75,8 @@ html[data-theme='light'] {
 
   //=== GLOBAL MINIGAMES VARIABLES
   --minigame-title-color: #{$secondaryColor};
+  --minigame-subtitle-color: rgba(0, 0, 0, 0.8);
   --minigame-background: #{$lightBgColor};
-
-  //== Click The Bomb ==//
-  --click-the-bomb-turn: #000;
 
   //== Cards ==//
   --cards-bg: #{$lightBgColor};

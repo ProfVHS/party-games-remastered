@@ -1,0 +1,37 @@
+.answer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  background-color: rgba(#AC67E4, 0.1);
+  border: 2px solid #9D4EDD;
+  border-bottom: 4px solid #9D4EDD;
+  padding: 0.25rem 1rem;
+  border-radius: 0.25rem;
+
+  color: #B87DE8;
+  font-weight: 600;
+
+  user-select: none;
+
+  &--clickable{
+    cursor: pointer;
+  }
+
+  &__checkmark{
+    width: 1.5rem;
+  }
+
+  &__icon{
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: draw 1s ease forwards;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
