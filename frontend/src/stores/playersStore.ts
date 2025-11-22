@@ -13,7 +13,8 @@ export const usePlayersStore = create<PlayersStoreProps>((set) => ({
   currentPlayer: null,
   players: [],
   setPlayers: (data: PlayerType[]) => {
-    set({ players: data });
+    const currentPlayerData = data.find((player) => player.id === socket.id);
+    set({ players: data, currentPlayer: currentPlayerData });
   },
   fetchPlayers: () => {
     socket.emit('get_players');

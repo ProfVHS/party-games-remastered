@@ -15,6 +15,8 @@ html[data-theme='light'] {
   --player-avatar-score: #{$darkerPrimaryColor};
   --player-avatar-bg: #{$lightBgColor};
   --player-avatar-turn-indicator: #994CE4;
+  --player-avatar-status: #c81414;
+  --player-avatar-status-ready: #99DD44;
 
   //== Button ==//
   --button-primary-bg: #{$primaryColor};
@@ -77,6 +79,12 @@ html[data-theme='light'] {
   --minigame-title-color: #{$secondaryColor};
   --minigame-subtitle-color: rgba(0, 0, 0, 0.8);
   --minigame-background: #{$lightBgColor};
+
+  //== Click The Bomb ==//
+  --click-the-bomb-prize-text: #000;
+  --click-the-bomb-prize-value: #{$darkerPrimaryColor};
+  --click-the-bomb-score-positive: #99DD44;
+  --click-the-bomb-score-negative: #c81414;
 
   //== Cards ==//
   --cards-bg: #{$lightBgColor};

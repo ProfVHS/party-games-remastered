@@ -4,7 +4,7 @@ import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
 import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig } from '@config/minigames';
-import { cardsRound, sendAllPlayers } from '@sockets';
+import { cardsRound } from '@sockets';
 import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
@@ -92,8 +92,8 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
 
     await multi.exec();
 
-    await sendAllPlayers(socket, roomCode);
-    socket.nsp.to(roomCode).emit('ended_minigame');
+    const players = await roomRepository.getAllPlayers(roomCode);
+    socket.nsp.to(roomCode).emit('ended_minigame', players);
   } catch (error) {
     throw new Error(`Failed to end minigame for room ${roomCode}: ${error}`);
   }

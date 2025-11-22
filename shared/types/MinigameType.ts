@@ -12,6 +12,7 @@ export type ClickTheBombDataType = {
   clickCount: number;
   maxClicks: number;
   streak: number;
+  prizePool: number;
 };
 
 export type ColorsMemoryDataType = {

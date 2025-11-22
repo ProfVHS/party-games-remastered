@@ -20,6 +20,7 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
         id,
         message: toast.message,
         type: toast.type,
+        status: toast.status,
         duration: toast.duration,
       },
     });
@@ -27,7 +28,7 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
 
   const success = ({ message, duration }: addToastProps) => addToast({ message, duration, type: 'success' });
   const info = ({ message, duration }: addToastProps) => addToast({ message, duration, type: 'info' });
-  const error = ({ message, duration }: addToastProps) => addToast({ message, duration, type: 'error' });
+  const error = ({ status, message, duration }: addToastProps) => addToast({ status, message, duration, type: 'error' });
   const warning = ({ message, duration }: addToastProps) => addToast({ message, duration, type: 'warning' });
   const remove = (id: number) => dispatch({ type: 'REMOVE_TOAST', payload: id });
 

@@ -13,6 +13,7 @@ type Story = StoryObj<typeof meta>;
 export const Error: Story = {
   args: {
     id: 1,
+    status: 404,
     message: 'Test toast message, lorem ipsum',
     type: 'error',
     autoDismiss: false,

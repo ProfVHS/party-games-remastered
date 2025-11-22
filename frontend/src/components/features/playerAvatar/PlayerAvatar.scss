@@ -73,4 +73,19 @@
       width: 4rem;
     }
   }
+
+  &__status {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: var(--player-avatar-status);
+
+    &--ready {
+      background-color: var(--player-avatar-status-ready);
+    }
+  }
 }

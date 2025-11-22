@@ -13,6 +13,7 @@
     "paths": {
       "@shared/*": ["../../shared/*"],
       "@config/*": ["config/*"],
+      "@errors": ["errors"],
       "@roomRepository": ["repositories/roomRepository"],
       "@roomService": ["services/roomService.ts"],
       "@playerService": ["services/playerService.ts"],
