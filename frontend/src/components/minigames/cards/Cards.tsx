@@ -4,7 +4,7 @@ import { Card } from './Card';
 import { socket } from '@socket';
 import { PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore.ts';
-import { Stopwatch } from '@components/ui/countdown/Stopwatch.tsx';
+import { Stopwatch } from '@components/ui/stopwatch/Stopwatch.tsx';
 import { useCountdownAnimation } from '@hooks/useCountdownAnimation.ts';
 import { CARDS_RULES } from '@shared/constants/gameRules.ts';
 import { delay } from '@utils';
@@ -24,11 +24,11 @@ export const Cards = () => {
   const { animationTimeLeft, startCountdownAnimation } = useCountdownAnimation(CARDS_RULES.COUNTDOWN, () => endRound());
   const { currentPlayer } = usePlayersStore();
 
-  const currentRound = useRef<string>('1');
+  const currentRound = useRef<number>(1);
   const hasStarted = useRef<boolean>(false);
 
   const handleCardSelect = (id: number) => {
-    if (animationTimeLeft <= 0 || hasStarted.current) return; // Player can only select a card if the countdown is running
+    if (animationTimeLeft <= 0 || hasStarted.current) return; // Player can only select a card if the stopwatch is running
 
     socket.emit('card_select', id);
     setSelectedCard(() => id);
@@ -41,7 +41,9 @@ export const Cards = () => {
   };
 
   const startNewRound = async () => {
-    if (currentRound.current === '4') {
+    console.log('Round: ', currentRound.current);
+
+    if (currentRound.current === 3) {
       if (currentPlayer?.isHost) socket.emit('end_minigame');
       return;
     }
@@ -61,14 +63,14 @@ export const Cards = () => {
 
   const endRound = () => {
     if (hasStarted.current) return;
-    socket.emit('start_round_queue');
+    socket.emit('end_round_queue');
     hasStarted.current = true;
   };
 
   useEffect(() => {
     startNewRound(); // Start the first round on component mount
 
-    socket.on('cards_round_ended', (newCards: number[], newPlayersPoints: PlayerType[], round: string) => {
+    socket.on('cards_round_ended', (newCards: number[], newPlayersPoints: PlayerType[], round: number) => {
       currentRound.current = round;
       setCards(() => newCards);
       setNewPlayerPoints(() => newPlayersPoints);
