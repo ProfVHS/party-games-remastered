@@ -14,6 +14,7 @@ import Checkmark from './svgs/checkmark.svg?react';
 import ClickTheBomb from './svgs/clickTheBomb.svg?react';
 import Cards from './svgs/cards.svg?react';
 import ColorsMemory from './svgs/colorsMemory.svg?react';
+import Buddies from './svgs/buddies.svg?react';
 
 export const icons = {
   Error,
@@ -26,6 +27,7 @@ export const icons = {
   ClickTheBomb,
   Cards,
   ColorsMemory,
+  Buddies,
   Person,
   Save,
   Trash,

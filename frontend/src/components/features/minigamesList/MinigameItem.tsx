@@ -1,10 +1,11 @@
-import { MinigameNamesEnum } from '@shared/types';
 import { ClassNames } from '@utils';
-import { Icon } from '@assets/icon';
+import { Icon, IconNames } from '@assets/icon';
 import { Button } from '@components/ui/button/Button.tsx';
 
 import './MinigameItem.scss';
 import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
+import { MinigameNamesEnum } from '@shared/types';
+import { camelCase, upperFirst } from 'lodash';
 
 type MinigameItemProps = {
   minigame: MinigameEntryType;
@@ -15,12 +16,14 @@ type MinigameItemProps = {
 };
 
 export const MinigameItem = ({ minigame, type, onClick, onDrag, isHost }: MinigameItemProps) => {
+  const getMinigameIcon = (minigameName: MinigameNamesEnum): IconNames => {
+    return upperFirst(camelCase(minigameName)) as IconNames;
+  };
+
   return (
     <div className={ClassNames('minigame-item', { draggable: !!onDrag })}>
       <div className="minigame-item__icon" onPointerDown={(e) => onDrag && onDrag(e)}>
-        {minigame.name === MinigameNamesEnum.clickTheBomb && <Icon icon="ClickTheBomb" />}
-        {minigame.name === MinigameNamesEnum.cards && <Icon icon="Cards" />}
-        {minigame.name === MinigameNamesEnum.colorsMemory && <Icon icon="ColorsMemory" />}
+        <Icon icon={getMinigameIcon(minigame.name)} />
       </div>
       <div className="minigame-item__content">
         <span>{minigame.name}</span>
