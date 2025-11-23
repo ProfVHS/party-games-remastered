@@ -1,5 +1,5 @@
-import { Text } from '@components/features/tutorials/Text.tsx';
-import { Image } from '@components/features/tutorials/Image.tsx';
+import { Text } from '@components/features/tutorials/components/Text.tsx';
+import { Image } from '@components/features/tutorials/components/Image.tsx';
 import { Button } from '@components/ui/button/Button.tsx';
 import Bomb from '@assets/tutorials/Bomb.svg?react';
 

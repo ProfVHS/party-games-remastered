@@ -2,15 +2,15 @@ import './Tutorial.scss';
 import { useEffect, useState } from 'react';
 import { MinigameNamesEnum } from '@shared/types';
 import { Button } from '@components/ui/button/Button.tsx';
-import { Pagination } from '@components/features/tutorials/Pagination.tsx';
-import { Text } from '@components/features/tutorials/Text.tsx';
+import { Pagination } from '@components/features/tutorials/components/Pagination.tsx';
+import { Text } from '@components/features/tutorials/components/Text.tsx';
 import { ClickTheBombTutorial } from '@components/features/tutorials/minigamesTutorials/clickTheBomb.tsx';
 import { socket } from '@socket';
 
 const maxPagesByGame: Record<MinigameNamesEnum, number> = {
   [MinigameNamesEnum.clickTheBomb]: 3,
+  [MinigameNamesEnum.cards]: 3,
   [MinigameNamesEnum.colorsMemory]: 2,
-  [MinigameNamesEnum.cards]: 4,
 };
 
 type TutorialProps = {
@@ -18,6 +18,7 @@ type TutorialProps = {
 };
 
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules.ts';
+import { CardsTutorial } from '@components/features/tutorials/minigamesTutorials/cards.tsx';
 
 export const Tutorial = ({ minigameName }: TutorialProps) => {
   const [page, setPage] = useState<number>(1);
@@ -56,7 +57,7 @@ export const Tutorial = ({ minigameName }: TutorialProps) => {
             <Text variant="title">How To Play?</Text>
             <div className="tutorial__content">
               {minigameName === MinigameNamesEnum.clickTheBomb && <ClickTheBombTutorial page={page} />}
-              {minigameName === MinigameNamesEnum.cards && <div></div>}
+              {minigameName === MinigameNamesEnum.cards && <CardsTutorial page={page} />}
             </div>
             <Pagination page={page} maxPages={maxPage} onClick={handleChangePage} />
           </div>

@@ -85,6 +85,9 @@ html[data-theme='dark'] {
   --tutorial-text-reward: #CCA600;
   --tutorial-indicator: #C287F1;
 
+  --tutorial-cards-deck: url('../../assets/tutorials/cardsDeckDark.svg');
+  --tutorial-cards-random-card: url("../../assets/tutorials/cardRandomDark.svg");
+  
   //== Click The Bomb ==//
   --click-the-bomb-bg: #{$darkBgColor};
   --click-the-bomb-turn: #fff;

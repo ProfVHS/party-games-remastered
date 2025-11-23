@@ -92,6 +92,10 @@
     margin: 10px;
   }
 
+  &--large {
+    font-size: 3rem;
+  }
+
   &--title {
     font-size: 3rem;
     margin: 30px;
@@ -100,6 +104,10 @@
   @media (max-height: 700px) {
     &--normal {
       font-size: 1.3rem;
+    }
+
+    &--large {
+      font-size: 2.5rem;
     }
 
     &--title {
@@ -176,5 +184,24 @@
       opacity: 0.4;
       cursor: default;
     }
+  }
+}
+
+.tutorial__cards {
+
+  &__deck {
+    height: 100%;
+    width: 100%;
+
+    background: var(--tutorial-cards-deck) no-repeat center;
+    background-size: 85%;
+  }
+
+  &__random {
+    height: 100%;
+    width: 100%;
+
+    background: var(--tutorial-cards-random-card) no-repeat center;
+    background-size: 20%;
   }
 }
