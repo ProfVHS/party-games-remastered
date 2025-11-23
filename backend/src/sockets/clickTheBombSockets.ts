@@ -3,7 +3,7 @@ import { sendAllPlayers } from '@sockets';
 import { handleSocketError } from '@errors';
 import { ErrorEventNameEnum } from '@backend-types';
 import { minigameRegistry } from '../engine/minigameRegistry';
-import { ClickTheBombMinigame } from '../engine/minigames/clickTheBombMinigame';
+import { ClickTheBombMinigame } from '../engine/minigames/clickTheBomb/clickTheBombMinigame';
 import * as roomRepository from '@roomRepository';
 
 export const clickTheBombSockets = (socket: Socket) => {

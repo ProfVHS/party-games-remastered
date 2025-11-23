@@ -18,7 +18,7 @@ import {
   turnSockets,
 } from '@sockets';
 import { minigameRegistry } from './engine/minigameRegistry';
-import { ClickTheBombMinigame } from './engine/minigames/clickTheBombMinigame';
+import { ClickTheBombMinigame } from './engine/minigames/clickTheBomb/clickTheBombMinigame';
 
 dotenv.config();
 

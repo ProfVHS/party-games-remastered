@@ -1,4 +1,4 @@
-import { TurnBasedMinigame } from './turnBasedMinigame';
+import { TurnBasedMinigame } from '../../turnBasedMinigame';
 import { ChainableCommander } from 'ioredis';
 import { createClickTheBombConfig } from '@config/minigames';
 import * as roomRepository from '@roomRepository';
