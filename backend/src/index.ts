@@ -17,6 +17,8 @@ import {
   trickyDiamondsSockets,
   turnSockets,
 } from '@sockets';
+import { minigameRegistry } from './engine/minigameRegistry';
+import { ClickTheBombMinigame } from './engine/minigames/clickTheBombMinigame';
 
 dotenv.config();
 
@@ -36,6 +38,8 @@ const io = new Server(socketServer, {
     methods: ['GET', 'POST'],
   },
 });
+
+minigameRegistry.register('click_the_bomb', ClickTheBombMinigame);
 
 const handleModulesOnConnection = async (socket: Socket) => {
   connectionSockets(socket);

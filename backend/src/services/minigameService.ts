@@ -2,10 +2,12 @@ import { client } from '@config/db';
 import { Socket } from 'socket.io';
 import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
-import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
-import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig, createTrickyDiamondsConfig } from '@config/minigames';
+import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum } from '@shared/types';
+import { createRoomConfig } from '@config/minigames';
 import { cardsRound, trickyDiamondsRound } from '@sockets';
 import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
+import { minigameRegistry } from '../engine/minigameRegistry';
+import { snakeCase } from 'lodash';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
   let minigameData: MinigameDataType | null = null;
@@ -17,19 +19,13 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
 
   if (!players || players.length === 0) {
     console.error(`No players found in room ${roomCode} for starting minigame`);
-    return { success: false }; // No players to start the minigame
+    return { success: false };
   }
 
-  if (minigames.length === 0) {
-    throw new Error(`Couldn't find minigames for room ${roomCode} when starting a game`);
-  }
-
-  if (!roomData) {
-    throw new Error(`Couldn't find roomData for room ${roomCode} when starting a game`);
-  }
+  if (minigames.length === 0) throw new Error(`Couldn't find minigames for room ${roomCode} when starting a game`);
+  if (!roomData) throw new Error(`Couldn't find roomData for room ${roomCode} when starting a game`);
 
   const currentMinigame = minigames[roomData?.minigameIndex]?.name;
-
   console.log(`Current minigame: ${currentMinigame}`);
 
   try {
@@ -37,35 +33,43 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     await roomRepository.updateRoomData(roomCode, createRoomConfig(players.length, RoomStatusEnum.game), multi);
     await roomRepository.deleteScheduled(roomCode, ScheduledNameEnum.minigames);
 
-    switch (currentMinigame) {
-      case MinigameNamesEnum.clickTheBomb:
-        const clickTheBombConfig = createClickTheBombConfig(players.length);
-        minigameData = clickTheBombConfig;
-        console.log(`Starting Click The Bomb minigame in room ${roomCode} with config:`, clickTheBombConfig);
-        await roomRepository.setMinigameData(roomCode, clickTheBombConfig, multi);
-        break;
-      case MinigameNamesEnum.cards:
-        const cardsConfig = createCardsConfig();
-        minigameData = cardsConfig;
-        console.log(`Starting Cards minigame in room ${roomCode} with config:`, cardsConfig);
-        await roomRepository.setMinigameData(roomCode, cardsConfig, multi);
-        break;
-      case MinigameNamesEnum.colorsMemory:
-        const colorsMemoryConfig = createColorsMemoryConfig();
-        minigameData = colorsMemoryConfig;
-        console.log(`Starting Colors Memory minigame in room ${roomCode} with config:`, colorsMemoryConfig);
-        await roomRepository.setMinigameData(roomCode, colorsMemoryConfig, multi);
-        break;
-      case MinigameNamesEnum.trickyDiamonds:
-        const trickyDiamondConfig = createTrickyDiamondsConfig();
-        minigameData = trickyDiamondConfig;
-        console.log(`Starting Tricky Diamonds minigame in room ${roomCode} with config:`, trickyDiamondConfig);
-        await roomRepository.setMinigameData(roomCode, trickyDiamondConfig, multi);
-        break;
-      default:
-        console.error("Tried setting game which doesn't exist");
-        break;
+    const minigame = minigameRegistry.create(snakeCase(currentMinigame), roomCode);
+
+    try {
+      minigameData = await minigame.start(multi);
+    } catch (e) {
+      console.error(e);
     }
+
+    // switch (currentMinigame) {
+    //   case MinigameNamesEnum.clickTheBomb:
+    //     const clickTheBombConfig = createClickTheBombConfig(players.length);
+    //     minigameData = clickTheBombConfig;
+    //     console.log(`Starting Click The Bomb minigame in room ${roomCode} with config:`, clickTheBombConfig);
+    //     await roomRepository.setMinigameData(roomCode, clickTheBombConfig, multi);
+    //     break;
+    //   case MinigameNamesEnum.cards:
+    //     const cardsConfig = createCardsConfig();
+    //     minigameData = cardsConfig;
+    //     console.log(`Starting Cards minigame in room ${roomCode} with config:`, cardsConfig);
+    //     await roomRepository.setMinigameData(roomCode, cardsConfig, multi);
+    //     break;
+    //   case MinigameNamesEnum.colorsMemory:
+    //     const colorsMemoryConfig = createColorsMemoryConfig();
+    //     minigameData = colorsMemoryConfig;
+    //     console.log(`Starting Colors Memory minigame in room ${roomCode} with config:`, colorsMemoryConfig);
+    //     await roomRepository.setMinigameData(roomCode, colorsMemoryConfig, multi);
+    //     break;
+    //   case MinigameNamesEnum.trickyDiamonds:
+    //     const trickyDiamondConfig = createTrickyDiamondsConfig();
+    //     minigameData = trickyDiamondConfig;
+    //     console.log(`Starting Tricky Diamonds minigame in room ${roomCode} with config:`, trickyDiamondConfig);
+    //     await roomRepository.setMinigameData(roomCode, trickyDiamondConfig, multi);
+    //     break;
+    //   default:
+    //     console.error("Tried setting game which doesn't exist");
+    //     break;
+    // }
     await multi.exec();
 
     await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.minigame); // We don't need it after the game has started
@@ -137,31 +141,4 @@ export const endRoundService = async (roomCode: string, socket: Socket) => {
     console.error(`Round start failed for room ${roomCode}: ${error}`);
     return { success: false }; // Minigame not started
   }
-};
-
-export const changeTurnService = async (roomCode: string): Promise<TurnType | null> => {
-  const players = await roomRepository.getAllPlayers(roomCode);
-  const roomData = await roomRepository.getRoomData(roomCode);
-
-  if (!roomData) {
-    throw new Error(`Room data not found for room: ${roomCode}`);
-  }
-
-  if (!players) {
-    throw new Error(`Players not found for room: ${roomCode}`);
-  }
-
-  let currentTurn = roomData.currentTurn;
-
-  for (let i = 1; i <= players.length; i++) {
-    const nextTurn = (currentTurn + i) % players.length;
-    const potentialPlayer = players[nextTurn];
-
-    if (potentialPlayer.isAlive && !potentialPlayer.isDisconnected) {
-      await roomRepository.updateRoomData(roomCode, { currentTurn: nextTurn });
-      return { id: nextTurn, player_id: potentialPlayer.id, nickname: potentialPlayer.nickname };
-    }
-  }
-
-  throw new Error(`No suitable player found to change turn for room "${roomCode}".`);
 };
