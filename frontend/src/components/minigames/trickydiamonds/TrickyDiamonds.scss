@@ -4,12 +4,12 @@
   flex-direction: column;
 
   height: 100%;
-  min-height: 320px;
-  max-height: 320px;
+  min-height: 20rem;
+  max-height: 20rem;
 
   width: 100%;
-  min-width: 500px;
-  max-width: 600px;
+  min-width: 31rem;
+  max-width: 37.5rem;
 
   &__title {
     height: 70px;
@@ -21,18 +21,20 @@
     font-family: 'Spicy Rice', serif;
     background-color: var(--tricky-diamonds-bg);
     color: var(--tricky-diamonds-title);
-    border-radius: 15px;
+    box-shadow: 0 0.25rem 0 0 rgba(0, 0, 0, 0.25);
+
+    border-radius: 0.5rem;
   }
 
   &__timer {
-    height: 20px;
+    height: 1.25rem;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 0.75rem;
   }
 
   &__container {
     width: 100%;
-    height: 240px;
+    height: 15rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -47,14 +49,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-radius: 10px;
+    border-radius: 0.5rem;
     cursor: pointer;
+
+    box-shadow: 0 0.25rem 0 0 rgba(0, 0, 0, 0.25);
 
     &__value {
       width: 100%;
       height: auto;
       text-align: center;
-      margin-top: 25px;
+      margin-top: 1.5rem;
       font-size: 1.8rem;
       color: var(--tricky-diamonds-value);
       font-family: "Poppins", sans-serif;
@@ -78,9 +82,9 @@
   }
 
   svg {
-    width: 80px;
-    height: 100px;
-    margin-top: 20px;
+    width: 5rem;
+    height: 6rem;
+    margin-top: 1.25rem;
   }
 
   &__players__list {
@@ -93,7 +97,7 @@
     pointer-events: none;
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
-    border-radius: 10px;
+    border-radius: 0.75rem;
     font-size: 1rem;
     z-index: 10;
     animation: fadeIn 0.8s ease-out forwards;
@@ -102,8 +106,8 @@
       width: 100%;
       max-width: 80%;
 
-      border-radius: 10px;
-      margin-top: 3px;
+      border-radius: 0.75rem;
+      margin-top: 0.25rem;
 
       font-family: 'Spicy Rice', serif;
       text-align: center;
@@ -159,10 +163,10 @@
       height: 50%;
       width: 60%;
       background-color: #FFE4AF;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-top: 0.75rem;
+      margin-bottom: 0.75rem;
 
-      border-radius: 15px;
+      border-radius: 0.75rem;
 
       display: flex;
       justify-content: center;

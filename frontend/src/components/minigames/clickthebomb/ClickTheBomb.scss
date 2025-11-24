@@ -8,17 +8,17 @@
   align-items: center;
 
   height: 100%;
-  max-height: 400px;
-  min-height: 380px;
+  max-height: 25rem;
+  min-height: 23rem;
 
   width: 100%;
-  max-width: 400px;
-  min-width: 320px;
+  max-width: 25rem;
+  min-width: 20rem;
 
   background-color: var(--click-the-bomb-bg);
-  border-radius: 4px;
+  border-radius: 0.25rem;
 
-  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.25rem 0 0 rgba(0, 0, 0, 0.2);
 
   user-select: none;
 
@@ -32,21 +32,24 @@
   &__title {
     color: var(--click-the-bomb-title);
     font-family: 'Spicy Rice', serif;
-    font-size: 32px;
+    font-size: 2rem;
   }
 
   &__turn {
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 1rem;
     color: var(--click-the-bomb-turn);
   }
 
   &__bomb {
     position: relative;
-
     cursor: pointer;
     transition: 0.05s ease-in-out;
+
+    svg{
+      height: 10rem;
+    }
 
     &.bomb__lock {
       cursor: not-allowed;
@@ -67,7 +70,7 @@
     font-family: 'Wallpoet', sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 32px;
+    font-size: 2rem;
 
     color: #fff;
 
@@ -76,38 +79,37 @@
 
   &__timer {
     position: absolute;
-    top: 80%;
+    bottom: 15%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -30%);
 
     font-family: 'Wallpoet', sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 12spx;
+    font-size: 0.8rem;
     color: #ff0505;
   }
 
   &__button {
     bottom: 10%;
     width: 75%;
-    max-width: 225px;
+    max-width: 14rem;
   }
 
   &__prize {
-    height: 100px;
-    width: 100px;
-
-    background-color: var(--background);
-
-    position: absolute;
-    left: 103%;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: absolute;
+    left: calc(100% + 1rem);
 
-    border-radius: 5px;
+    height: 6rem;
+    width: 6rem;
+
+    background-color: var(--background);
+    box-shadow: 0 0.25rem 0 0 rgba(0, 0, 0, 0.2);
     font-family: 'Poppins', sans-serif;
+    border-radius: 0.25rem;
 
     &__text {
       width: 100%;
@@ -177,31 +179,7 @@
 
   &__explode {
     position: absolute;
-    width: 600px;
-    height: 600px;
-  }
-
-  .random__score__box {
-    height: 100px;
-    width: 65%;
-
-    position: absolute;
-    margin-bottom: 50px;
-
-    pointer-events: none;
-
-    z-index: 5;
-
-    .score {
-      position: absolute;
-
-      color: var(--click-the-bomb-score-positive);
-      font-size: 34px;
-      font-weight: bold;
-
-      transition:
-        opacity 0.3s ease-in-out,
-        transform 0.3s ease;
-    }
+    width: 37.5rem;
+    height: 37.5rem;
   }
 }

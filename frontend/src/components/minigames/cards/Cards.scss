@@ -7,32 +7,33 @@
   align-items: center;
 
   height: 100%;
-  max-height: 400px;
-  min-height: 380px;
+  min-height: 24rem;
 
   width: 100%;
-  max-width: 550px;
-  min-width: 320px;
+  max-width: 36rem;
+  min-width: 20rem;
 
   background-color: var(--cards-bg);
-  border-radius: 4px;
+  border-radius: 0.25rem;
 
-  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.25rem 0 0 rgba(0, 0, 0, 0.2);
 
   user-select: none;
 
   &__round {
     position: absolute;
-    width: 280px;
-    height: 120px;
+    width: 17rem;
+    height: 6rem;
     background-color: var(--cards-round-bg);
+    box-shadow: 0 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, 0.2);
+
     color: var(--cards-title);
-    top: 130px;
+    top: 8rem;
     font-family: 'Spicy Rice', serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 60px;
-    border-radius: 5px;
+    font-size: 3.75rem;
+    border-radius: 0.25rem;
     display: none;
     z-index: -100;
 
@@ -50,26 +51,25 @@
   &__countdown {
     width: 4rem;
     height: 4rem;
+    margin: 0.75rem 0 0 0.75rem;
 
     position: absolute;
     top: 0;
     left: 0;
 
-    font-size: 50px;
-
-    margin: 10px 0 0 10px;
+    font-size: 3rem;
   }
 
   &__status {
     font-family: 'Spicy Rice', serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 50px;
+    font-size: 3rem;
     color: var(--cards-title);
 
-    text-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+    text-shadow: 0 0.25rem 0 rgba(0, 0, 0, 0.2);
 
-    margin-bottom: 15px;
+    margin-bottom: 1rem;
   }
 
   &__content {
@@ -79,11 +79,11 @@
   }
 
   .card {
-    width: 90px;
-    height: 130px;
-    margin: 5px;
+    width: 6rem;
+    height: 8rem;
+    margin: 0.25rem;
 
-    border-radius: 5px;
+    border-radius: 0.25rem;
 
     transition: transform 0.4s ease;
     transform-origin: center;
@@ -91,16 +91,14 @@
     font-family: 'Spicy Rice', serif;
     font-weight: 400;
     font-style: normal;
-    text-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+    text-shadow: 0 0.25rem 0 rgba(0, 0, 0, 0.2);
 
-    // TODO: Temporary code
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 150%;
 
-    border: 3px solid;
+    border: 0.20rem solid;
     color: var(--cards-text);
 
     transform: rotateY(0deg);
@@ -110,20 +108,20 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 32px;
+      font-size: 2rem;
 
       &__top {
         position: absolute;
         top: 3px;
         left: 3px;
-        font-size: 16px;
+        font-size: 1rem;
       }
 
       &__bottom {
         position: absolute;
-        bottom: 3px;
-        right: 3px;
-        font-size: 16px;
+        bottom: 0.25rem;
+        right: 0.25rem;
+        font-size: 1rem;
         transform: rotate(180deg);
       }
     }
@@ -132,11 +130,12 @@
       background-color: var(--cards-back-bg);
       border-color: var(--cards-back-border);
       background-image: var(--cards-back-img);
+      color: var(--cards-logo-bg);
     }
 
     &.back:hover {
       cursor: pointer;
-      box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0.25rem 0 0 rgba(0, 0, 0, 0.2);
       transform: scale(1.05);
     }
 
@@ -153,8 +152,8 @@
     }
 
     .svg {
-      width: 60px;
-      height: 60px;
+      width: 4rem;
+      height: 4rem;
     }
   }
 
@@ -178,8 +177,8 @@
     pointer-events: none;
     background-color: rgba(0, 0, 0, 0.5);
     color: var(--cards-text);
-    border-radius: 2px;
-    font-size: 12px;
+    border-radius: 0.125rem;
+    font-size: 0.75rem;
     z-index: 10;
     animation: fadeIn 0.8s ease-out forwards;
 
@@ -187,7 +186,7 @@
       white-space: nowrap;
       overflow: hidden; // hide extra text
       text-overflow: ellipsis; // add "..."
-      max-width: 80px;
+      max-width: 5rem;
     }
   }
 

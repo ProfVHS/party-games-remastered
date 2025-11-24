@@ -33,7 +33,6 @@ export const playerSockets = (socket: Socket) => {
   });
 };
 
-//TODO: Consider adding option to pass only 1 player data and then change it in frontend (helpfull if just one player changed one value e.g. isAlive)
 export const sendAllPlayers = async (socket: Socket, roomCode: string, players?: PlayerType[]) => {
   if (!players) {
     players = await getAllPlayers(roomCode);

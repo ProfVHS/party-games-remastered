@@ -19,7 +19,6 @@ export const useSocketConnection = () => {
 
     socket.emit('check_if_user_in_room', roomCode, playerId, (response: ReturnDataType) => {
       if (response.success) {
-        //TODO: Fetch MinigameData I guess
         fetchRoomSettings();
         fetchPlayers();
         setSessionVariables(roomCode!, socket.id!);

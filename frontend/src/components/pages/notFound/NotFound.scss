@@ -1,4 +1,4 @@
-@use '../../../common/styles/_variables' as *;
+@use '../../../common/styles/variables' as *;
 
 .not-found {
   display: flex;
@@ -15,11 +15,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #fff;
+    background-color: var(--background);
+    color: var(--text-color);
     padding: 16px;
     border-radius: 8px;
     gap: 16px;
-    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0.25rem 0 0 rgba(0, 0, 0, 0.2);
   }
 
   &__title {
@@ -28,22 +29,22 @@
     font-family: 'Spicy Rice', serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 64px;
-    color: #fff;
+    font-size: 4rem;
+    color: var(--party-games-fill);
 
-    text-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
-    -webkit-text-stroke: 3px $darkerSecondaryColor;
+    text-shadow: 0 0.5rem 0 rgba(0, 0, 0, 0.2);
+    -webkit-text-stroke: 0.20rem $darkerSecondaryColor;
   }
 
   &__subtitle {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
-    font-size: 20px;
+    font-size: 1.25rem;
   }
 
   &__description {
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 1rem;
   }
 }

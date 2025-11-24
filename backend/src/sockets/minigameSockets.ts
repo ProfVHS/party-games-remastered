@@ -84,8 +84,6 @@ export const minigameSockets = (socket: Socket) => {
       return;
     }
 
-    //TODO: Send socket to clients (frontend will start progressbar or smth)
-
     // The minigame will start in 5 seconds
     if (playersReady >= MIN_PLAYERS_TO_START) {
       const startedCountdown = await roomRepository.acquireLock(roomCode, LockName.countdownMinigame);

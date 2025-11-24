@@ -1,0 +1,23 @@
+.random__score__box {
+  height: 6rem;
+  width: 65%;
+
+  position: absolute;
+  margin-bottom: 3rem;
+
+  pointer-events: none;
+
+  z-index: 5;
+
+  .score {
+    position: absolute;
+
+    color: var(--click-the-bomb-score-positive);
+    font-size: 2rem;
+    font-weight: bold;
+
+    transition:
+            opacity 0.3s ease-in-out,
+            transform 0.3s ease;
+  }
+}

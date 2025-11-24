@@ -51,7 +51,6 @@ export const connectionSockets = (socket: Socket) => {
       return callback({ success: false });
     }
 
-    // TODO: Check if player is in the room (localStroage)
     const playerData = await roomRepository.getPlayer(roomCode, socket.id);
     const roomData = await roomRepository.getRoomData(roomCode);
 

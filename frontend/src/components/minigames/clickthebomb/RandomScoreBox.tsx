@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType';
+import './RandomScoreBox.scss';
 
 type ScoreData = {
   id: number;
