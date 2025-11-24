@@ -2,18 +2,28 @@ import { Text } from '@components/features/tutorials/components/Text.tsx';
 import { Image } from '@components/features/tutorials/components/Image.tsx';
 import { Row } from '@components/ui/row/Row.tsx';
 import { Icon } from '@assets/icon';
+import { useContext } from 'react';
+import { ThemeContext } from '@context/theme/ThemeContext.ts';
 import CardPositiveLight from '@assets/tutorials/cardPositiveLight.svg?react';
+import CardPositiveDark from '@assets/tutorials/cardPositiveDark.svg?react';
 import CardNegative from '@assets/tutorials/cardNegative.svg?react';
+import CardsDeckDark from '@assets/tutorials/cardsDeckDark.svg?react';
+import CardsDeckLight from '@assets/tutorials/cardsDeckLight.svg?react';
+import CardRandomDark from '@assets/tutorials/cardRandomDark.svg?react';
+import CardRandomLight from '@assets/tutorials/cardRandomLight.svg?react';
 
-const PageOne = () => {
+type PageProps = {
+  darkMode: boolean;
+};
+
+const PageOne = ({ darkMode }: PageProps) => {
   return (
     <>
-      <Text>
-        The game has <Text color="highlight">3 rounds</Text> and a deck of <Text color="highlight">9 cards</Text>
+      <Text variant="small">
+        The game has <Text color="highlight">3 rounds</Text> and a deck of <Text color="highlight">9 cards</Text> which includes both{' '}
+        <Text color="reward">positive</Text> and <Text color="warning">negative</Text> cards
       </Text>
-      <Image size="large">
-        <div className="tutorial__cards__deck"></div>
-      </Image>
+      <Image size="large">{darkMode ? <CardsDeckDark /> : <CardsDeckLight />}</Image>
       <Text>
         Watch out! In each new round, more and more <Text color="warning">bombs</Text> will appear
       </Text>
@@ -21,7 +31,7 @@ const PageOne = () => {
   );
 };
 
-const PageTwo = () => {
+const PageTwo = ({ darkMode }: PageProps) => {
   return (
     <>
       <Text>To choose a card you have</Text>
@@ -31,22 +41,31 @@ const PageTwo = () => {
       <Text>
         If you don’t pick one in time, a <Text color="highlight">random</Text> card will be selected for you
       </Text>
-      <Image size="large">
-        <div className="tutorial__cards__random"></div>
-      </Image>
+      <Image>{darkMode ? <CardRandomDark /> : <CardRandomLight />}</Image>
     </>
   );
 };
 
-const PageThree = () => {
+const PageThree = ({ darkMode }: PageProps) => {
   return (
     <>
-      <Text>
-        If you and other players choose the <Text color="highlight">same card</Text>, the <Text color="reward">positive points</Text> will be{' '}
-        <Text color="highlight">split</Text> among all players
+      <Text variant="small">
+        If you and other players choose the{' '}
+        <Text variant="small" color="highlight">
+          same card
+        </Text>
+        , the{' '}
+        <Text variant="small" color="reward">
+          positive points
+        </Text>{' '}
+        will be{' '}
+        <Text variant="small" color="highlight">
+          split
+        </Text>
       </Text>
+
       <Row gap={30}>
-        <CardPositiveLight />
+        {darkMode ? <CardPositiveDark /> : <CardPositiveLight />}
         <div className="arrow right for-cards">
           <Icon icon={'Arrow'} />
         </div>
@@ -58,9 +77,19 @@ const PageThree = () => {
           <Text color="highlight">+25</Text>
         </div>
       </Row>
-      <Text>
-        For a <Text color="warning">bomb</Text>, the penalty points are <Text color="highlight">multiplied</Text> by the number of players
+
+      <Text variant="small">
+        For a{' '}
+        <Text variant="small" color="warning">
+          bomb
+        </Text>
+        , the penalty points are{' '}
+        <Text variant="small" color="highlight">
+          multiplied
+        </Text>{' '}
+        by the number of players
       </Text>
+
       <Row gap={30}>
         <CardNegative />
         <div className="arrow right for-cards">
@@ -83,11 +112,13 @@ type CardsTutorialProps = {
 };
 
 export const CardsTutorial = ({ page }: CardsTutorialProps) => {
+  const { darkMode } = useContext(ThemeContext);
+
   return (
     <>
-      {page === 1 && <PageOne />}
-      {page === 2 && <PageTwo />}
-      {page === 3 && <PageThree />}
+      {page === 1 && <PageOne darkMode={darkMode} />}
+      {page === 2 && <PageTwo darkMode={darkMode} />}
+      {page === 3 && <PageThree darkMode={darkMode} />}
     </>
   );
 };

@@ -83,9 +83,6 @@ html[data-theme='light'] {
   --tutorial-text-reward: #CCA600;
   --tutorial-indicator: #{$secondaryColor};
 
-  --tutorial-cards-deck: url('../../assets/tutorials/cardsDeckLight.svg');
-  --tutorial-cards-random-card: url("../../assets/tutorials/cardRandomLight.svg");
-
   //== Click The Bomb ==//
   --click-the-bomb-bg: #{$lightBgColor};
   --click-the-bomb-turn: #000;

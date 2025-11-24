@@ -3,7 +3,7 @@ import { ClassNames } from '@utils';
 
 type TextProps = {
   children?: ReactNode;
-  variant?: 'title' | 'normal' | 'large';
+  variant?: 'title' | 'small' | 'normal' | 'large';
   color?: 'normal' | 'highlight' | 'warning' | 'reward';
 };
 
