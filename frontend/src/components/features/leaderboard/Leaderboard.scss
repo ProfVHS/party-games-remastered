@@ -1,8 +1,5 @@
 @use '../../../common/styles/_variables' as *;
 
-//TODO: Animation
-//TODO: Change width and others to be responsive
-
 .leaderboard {
   height: 400px;
   width: 350px;
@@ -14,12 +11,12 @@
   align-items: center;
 
   font-weight: bold;
-  font-family: 'Poppins';
+  font-family: 'Poppins', serif;
 
   &__title {
     font-size: 34px;
     color: var(--leaderboard-title);
-    margin: 10px 0px 10px 0px;
+    margin: 10px 0 10px 0;
   }
 
   &__players__container {

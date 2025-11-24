@@ -7,8 +7,6 @@ export const Leaderboard = () => {
   const { players } = usePlayersStore();
   const [sortedPlayers, setSortedPlayers] = useState<PlayerType[]>([]);
 
-  //TODO: Second leaderboard for game (how many points did you get, extra stats )
-
   useEffect(() => {
     if (!players) return;
     setSortedPlayers([...players].sort((a, b) => b.score - a.score));
