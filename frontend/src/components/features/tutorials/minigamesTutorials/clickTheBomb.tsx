@@ -1,7 +1,7 @@
 import { Text } from '@components/features/tutorials/components/Text.tsx';
 import { Image } from '@components/features/tutorials/components/Image.tsx';
 import { Button } from '@components/ui/button/Button.tsx';
-import Bomb from '@assets/tutorials/Bomb.svg?react';
+import Bomb from '@assets/tutorials/bomb.svg?react';
 
 const PageOne = () => {
   return (

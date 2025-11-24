@@ -68,6 +68,29 @@
       margin-top: 15px;
     }
   }
+
+  .arrow {
+    cursor: pointer;
+    color: #9d4edd;
+
+    &.right {
+      transform: rotate(90deg);
+    }
+
+    &.left {
+      transform: rotate(-90deg);
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    &.for-cards {
+      color: var(--tutorial-text);
+      opacity: 0.4;
+    }
+  }
 }
 
 .tutorial__content {
@@ -167,23 +190,6 @@
     font-size: 1.5rem;
     color: var(--tutorial-indicator);
     margin: 0 40px 0 40px;
-  }
-
-  .arrow {
-    cursor: pointer;
-
-    &.right {
-      transform: rotate(90deg);
-    }
-
-    &.left {
-      transform: rotate(-90deg);
-    }
-
-    &--disabled {
-      opacity: 0.4;
-      cursor: default;
-    }
   }
 }
 

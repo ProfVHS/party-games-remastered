@@ -1,8 +1,9 @@
 import { Text } from '@components/features/tutorials/components/Text.tsx';
 import { Image } from '@components/features/tutorials/components/Image.tsx';
 import { Row } from '@components/ui/row/Row.tsx';
-import CardRandomDark from '@assets/tutorials/cardRandomDark.svg?react';
-import Arrow from '@assets/textures/arrow.svg?react';
+import { Icon } from '@assets/icon';
+import CardPositiveLight from '@assets/tutorials/cardPositiveLight.svg?react';
+import CardNegative from '@assets/tutorials/cardNegative.svg?react';
 
 const PageOne = () => {
   return (
@@ -40,32 +41,37 @@ const PageTwo = () => {
 const PageThree = () => {
   return (
     <>
-      <Text>If you and other players choose the same card, the positive points will be split among all players</Text>
-      <Row>
-        <CardRandomDark />
-        <div className="tutorial__cards__">
-          <Arrow />
+      <Text>
+        If you and other players choose the <Text color="highlight">same card</Text>, the <Text color="reward">positive points</Text> will be{' '}
+        <Text color="highlight">split</Text> among all players
+      </Text>
+      <Row gap={30}>
+        <CardPositiveLight />
+        <div className="arrow right for-cards">
+          <Icon icon={'Arrow'} />
         </div>
-        <div className="">
+        <div>
           <Text>Ultra Mango Guy</Text>
-          <Text>+25</Text>
+          <Text color="highlight">+25</Text>
           <br />
           <Text>King Dog</Text>
-          <Text>+25</Text>
+          <Text color="highlight">+25</Text>
         </div>
       </Row>
-      <Text>For a bomb, the penalty points are multiplied by the number of players</Text>
-      <Row>
-        <CardRandomDark />
-        <div className="tutorial__cards__">
-          <Arrow />
+      <Text>
+        For a <Text color="warning">bomb</Text>, the penalty points are <Text color="highlight">multiplied</Text> by the number of players
+      </Text>
+      <Row gap={30}>
+        <CardNegative />
+        <div className="arrow right for-cards">
+          <Icon icon={'Arrow'} />
         </div>
-        <div className="">
+        <div>
           <Text>Ultra Mango Guy</Text>
-          <Text>+25</Text>
+          <Text color="warning">-100</Text>
           <br />
           <Text>King Dog</Text>
-          <Text>+25</Text>
+          <Text color="warning">-100</Text>
         </div>
       </Row>
     </>

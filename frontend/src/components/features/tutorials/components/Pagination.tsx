@@ -1,5 +1,5 @@
 import { ClassNames } from '@utils';
-import Arrow from '@assets/textures/arrow.svg?react';
+import { Icon } from '@assets/icon';
 
 type PaginatedProps = {
   page: number;
@@ -11,13 +11,13 @@ export const Pagination = ({ page, maxPages, onClick }: PaginatedProps) => {
   return (
     <div className="tutorial__pagination">
       <div className={ClassNames('arrow', 'left', { disabled: page === 1 })} onClick={() => onClick(-1)}>
-        <Arrow />
+        <Icon icon={'Arrow'} />
       </div>
       <span className="tutorial__pagination__indicator">
         {page} / {maxPages}
       </span>
       <div className={ClassNames('arrow', 'right', { disabled: page === maxPages })} onClick={() => onClick(1)}>
-        <Arrow />
+        <Icon icon={'Arrow'} />
       </div>
     </div>
   );
