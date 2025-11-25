@@ -50,16 +50,13 @@ const PageThree = () => {
   );
 };
 
+const ClickTheBombPages = [PageOne, PageTwo, PageThree];
+
 type ClickTheBombTutorialProps = {
   page: number;
 };
 
 export const ClickTheBombTutorial = ({ page }: ClickTheBombTutorialProps) => {
-  return (
-    <>
-      {page === 1 && <PageOne />}
-      {page === 2 && <PageTwo />}
-      {page === 3 && <PageThree />}
-    </>
-  );
+  const CurrentPage = ClickTheBombPages[page - 1];
+  return <CurrentPage />;
 };

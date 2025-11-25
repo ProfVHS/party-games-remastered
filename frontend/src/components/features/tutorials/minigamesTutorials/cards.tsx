@@ -12,11 +12,9 @@ import CardsDeckLight from '@assets/tutorials/cardsDeckLight.svg?react';
 import CardRandomDark from '@assets/tutorials/cardRandomDark.svg?react';
 import CardRandomLight from '@assets/tutorials/cardRandomLight.svg?react';
 
-type PageProps = {
-  darkMode: boolean;
-};
+const PageOne = () => {
+  const { darkMode } = useContext(ThemeContext);
 
-const PageOne = ({ darkMode }: PageProps) => {
   return (
     <>
       <Text variant="small">
@@ -31,7 +29,9 @@ const PageOne = ({ darkMode }: PageProps) => {
   );
 };
 
-const PageTwo = ({ darkMode }: PageProps) => {
+const PageTwo = () => {
+  const { darkMode } = useContext(ThemeContext);
+
   return (
     <>
       <Text>To choose a card you have</Text>
@@ -46,7 +46,9 @@ const PageTwo = ({ darkMode }: PageProps) => {
   );
 };
 
-const PageThree = ({ darkMode }: PageProps) => {
+const PageThree = () => {
+  const { darkMode } = useContext(ThemeContext);
+
   return (
     <>
       <Text variant="small">
@@ -107,18 +109,13 @@ const PageThree = ({ darkMode }: PageProps) => {
   );
 };
 
+const CardsPages = [PageOne, PageTwo, PageThree];
+
 type CardsTutorialProps = {
   page: number;
 };
 
 export const CardsTutorial = ({ page }: CardsTutorialProps) => {
-  const { darkMode } = useContext(ThemeContext);
-
-  return (
-    <>
-      {page === 1 && <PageOne darkMode={darkMode} />}
-      {page === 2 && <PageTwo darkMode={darkMode} />}
-      {page === 3 && <PageThree darkMode={darkMode} />}
-    </>
-  );
+  const CurrentPage = CardsPages[page - 1];
+  return <CurrentPage />;
 };

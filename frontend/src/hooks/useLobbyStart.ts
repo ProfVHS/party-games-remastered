@@ -28,7 +28,6 @@ export const useLobbyStart = ({ playerIdsReady, setReady }: useLobbyStartProps) 
               socket.emit('verify_minigames');
               socket.emit('start_minigame_queue', true);
             }
-            //setOldPlayers(players); //TODO: Error? Check website console
             hasStarted.current = true;
             clearInterval(timer);
             return null;

@@ -48,7 +48,6 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
         setOldPlayers(newPlayers);
         setPlayers(newPlayers);
         socket.emit('start_minigame_queue');
-        //handleStartNewGame();
       }, 8000);
     });
 
