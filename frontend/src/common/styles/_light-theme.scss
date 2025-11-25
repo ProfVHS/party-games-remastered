@@ -10,6 +10,8 @@ html[data-theme='light'] {
   --party-games-fill: #fff;
   --cartoon-shadow: 0 4px rgba(0, 0, 0, 0.3);
 
+  //== Not Found ==//
+
   //== Player Avatar ==//
   --player-avatar-username: #{$darkerPrimaryColor};
   --player-avatar-score: #{$darkerPrimaryColor};
@@ -36,6 +38,10 @@ html[data-theme='light'] {
   --number-picker-bg-active: #{$darkerPrimaryColor};
   --number-picker-shadow: #5a189a;
   --number-picker-text: #{rgba(255, 255, 255, 0.8)};
+
+  //== Progress Bar ==//
+  --progress-bg: #D5B5FF;
+  --progress-bg-fill: url('@assets/textures/background-loading.svg');
 
   //== Badge ==//
   --badge-red-bg: #c81414;
@@ -97,11 +103,17 @@ html[data-theme='light'] {
   --cards-title: #{$secondaryColor};
   --cards-round-bg: #{$lightBgColor};
   --cards-text: #fff;
-  --cards-back-img: url('../../assets/textures/card-back.svg');
+  --cards-back-img: url('@assets/textures/card-back.svg');
   --cards-back-bg: #f1eaf7;
   --cards-back-border: #{$darkerPrimaryColor};
   --cards-positive-bg: #{$primaryColor};
   --cards-positive-border: #{$secondaryColor};
   --cards-negative-bg: #9d1133;
   --cards-negative-border: #000;
+  --cards-logo-bg: #FFF;
+
+  //== Tricky Diamonds ==//
+  --tricky-diamonds-bg: #{$lightBgColor};
+  --tricky-diamonds-title: #{$secondaryColor};
+  --tricky-diamonds-value: #000;
 }

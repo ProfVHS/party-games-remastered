@@ -13,3 +13,10 @@ export const CARDS_RULES = {
   ROUND_2: [50, 50, 50, 70, 90, -15, -30, -30, -50],
   ROUND_3: [50, 90, 90, 120, -40, -40, -70, -70, -90],
 };
+
+export const TRICKY_DIAMONDS_RULES = {
+  COUNTDOWN: 10,
+  ROUND_1: [150, 100, 35],
+  ROUND_2: [200, 125, 50],
+  ROUND_3: [250, 150, 75],
+};

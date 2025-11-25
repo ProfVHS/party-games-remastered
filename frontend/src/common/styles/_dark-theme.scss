@@ -37,6 +37,10 @@ html[data-theme='dark'] {
   --number-picker-shadow: #39135d;
   --number-picker-text: #{rgba(255, 255, 255, 0.4)};
 
+  //== Progress Bar ==//
+  --progress-bg: #BD8CF8;
+  --progress-bg-fill: url('@assets/textures/background-loading-dark.svg');
+
   //== Badge ==//
   --badge-red-bg: #971010;
   --badge-green-bg: #99DD44;
@@ -99,11 +103,17 @@ html[data-theme='dark'] {
   --cards-title: #{$darkerPrimaryColor};
   --cards-round-bg: #{$darkBgColor};
   --cards-text: #fff;
-  --cards-back-img: url('../../assets/textures/card-back-dark.svg');
+  --cards-back-img: url('@assets/textures/card-back-dark.svg');
   --cards-back-bg: #3c3c3c;
   --cards-back-border: #{$darkerPrimaryColor};
   --cards-positive-bg: #{$darkerPrimaryColor};
   --cards-positive-border: #{$secondaryColor};
   --cards-negative-bg: #9d1133;
   --cards-negative-border: #000;
+  --cards-logo-bg: #303030;
+
+  //== Tricky Diamonds ==//
+  --tricky-diamonds-bg: #{$darkBgColor};
+  --tricky-diamonds-title: #{$darkerPrimaryColor};
+  --tricky-diamonds-value: #C287F1;
 }

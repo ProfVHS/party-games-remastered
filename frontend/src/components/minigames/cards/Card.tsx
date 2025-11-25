@@ -4,9 +4,6 @@ import { PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore';
 import { Icon } from '@assets/icon';
 
-// TODO: Responsive design
-// TODO: Add sound effects
-
 interface CardProps {
   id: number;
   points: number; // number

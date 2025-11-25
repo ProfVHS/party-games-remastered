@@ -44,6 +44,10 @@ export const getMinigameData = async (roomCode: string): Promise<MinigameDataTyp
         minigameName: MinigameNamesEnum.colorsMemory,
         sequence: minigameData.sequence.split(','),
       };
+    case MinigameNamesEnum.trickyDiamonds:
+      return {
+        minigameName: MinigameNamesEnum.trickyDiamonds,
+      };
     default:
       return null;
   }

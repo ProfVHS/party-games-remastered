@@ -13,6 +13,7 @@ import Arrow from './svgs/arrow.svg?react';
 import ClickTheBomb from './svgs/clickTheBomb.svg?react';
 import Cards from './svgs/cards.svg?react';
 import ColorsMemory from './svgs/colorsMemory.svg?react';
+import TrickyDiamonds from './svgs/trickyDiamonds.svg?react';
 
 export const icons = {
   Error,
@@ -25,6 +26,7 @@ export const icons = {
   ClickTheBomb,
   Cards,
   ColorsMemory,
+  TrickyDiamonds,
   Person,
   Save,
   Trash,

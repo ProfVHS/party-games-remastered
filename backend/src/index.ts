@@ -14,7 +14,8 @@ import {
   minigameSockets,
   playerSockets,
   roomSockets,
-  turnSockets
+  trickyDiamondsSockets,
+  turnSockets,
 } from '@sockets';
 
 dotenv.config();
@@ -31,7 +32,7 @@ const io = new Server(socketServer, {
   pingInterval: 5000, // Send a ping every 5 seconds
   pingTimeout: 3000, // Wait 3 seconds for a response
   cors: {
-    origin: '*', // TODO: Change this to frontend URL in production
+    origin: '*',
     methods: ['GET', 'POST'],
   },
 });
@@ -44,6 +45,7 @@ const handleModulesOnConnection = async (socket: Socket) => {
   minigameSockets(socket);
   clickTheBombSockets(socket);
   cardsSockets(socket);
+  trickyDiamondsSockets(socket);
 
   socket.on('error', (err) => {
     console.error(`Socket error: ${err}`);

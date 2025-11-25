@@ -4,7 +4,7 @@ import { Card } from './Card';
 import { socket } from '@socket';
 import { PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore.ts';
-import { Stopwatch } from '@components/ui/countdown/Stopwatch.tsx';
+import { Stopwatch } from '@components/ui/stopwatch/Stopwatch.tsx';
 import { useCountdownAnimation } from '@hooks/useCountdownAnimation.ts';
 import { CARDS_RULES } from '@shared/constants/gameRules.ts';
 import { delay } from '@utils';
@@ -32,7 +32,7 @@ export const Cards = ({ startGame }: CardsProps) => {
   const hasStarted = useRef<boolean>(false);
 
   const handleCardSelect = (id: number) => {
-    if (animationTimeLeft <= 0 || hasStarted.current) return; // Player can only select a card if the countdown is running
+    if (animationTimeLeft <= 0 || hasStarted.current) return; // Player can only select a card if the stopwatch is running
 
     socket.emit('card_select', id);
     setSelectedCard(() => id);
@@ -65,7 +65,7 @@ export const Cards = ({ startGame }: CardsProps) => {
 
   const endRound = () => {
     if (hasStarted.current) return;
-    socket.emit('start_round_queue');
+    socket.emit('end_round_queue');
     hasStarted.current = true;
   };
 

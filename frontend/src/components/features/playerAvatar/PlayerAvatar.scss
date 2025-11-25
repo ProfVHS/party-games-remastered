@@ -37,6 +37,12 @@
   }
 
   &__username {
+    max-width: 12rch;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     color: var(--player-avatar-username);
     font-size: 1rem;
   }
@@ -49,7 +55,7 @@
   &__avatar {
     display: flex;
     align-items: flex-end;
-    background: url('../../../assets/textures/character-bg.svg');
+    background: url('@assets/textures/character-bg.svg');
     background-size: cover;
     width: 175px;
     height: 125px;
