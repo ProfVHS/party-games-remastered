@@ -151,7 +151,7 @@ export const minigameSockets = (socket: Socket) => {
 
     // Start the minigame immediately
     if (playersReady === connectedPlayers.length) {
-      const started = await roomRepository.acquireLock(roomCode, LockName.tutorial, 10);
+      const started = await roomRepository.acquireLock(roomCode, LockName.tutorial);
 
       if (!started) {
         console.log('Tutorial already ended');
