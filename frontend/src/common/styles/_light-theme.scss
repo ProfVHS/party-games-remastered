@@ -10,7 +10,10 @@ html[data-theme='light'] {
   --party-games-fill: #fff;
   --cartoon-shadow: 0 4px rgba(0, 0, 0, 0.3);
 
-  //== Not Found ==//
+  //== Small Screen ==//
+  --small-screen-background: url('@assets/textures/background.svg');
+  --small-screen-title: #fff;
+  --small-screen-description: #{$darkerPrimaryColor};
 
   //== Player Avatar ==//
   --player-avatar-username: #{$darkerPrimaryColor};
