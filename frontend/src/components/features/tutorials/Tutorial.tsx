@@ -11,6 +11,7 @@ const maxPagesByGame: Record<MinigameNamesEnum, number> = {
   [MinigameNamesEnum.clickTheBomb]: 3,
   [MinigameNamesEnum.cards]: 3,
   [MinigameNamesEnum.colorsMemory]: 2,
+  [MinigameNamesEnum.trickyDiamonds]: 2,
 };
 
 type TutorialProps = {
