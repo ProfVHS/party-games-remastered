@@ -1,5 +1,7 @@
 import './SmallScreenOverlay.scss';
 import { useEffect, useState } from 'react';
+import { Icon } from '@assets/icon';
+import { MIN_SCREEN_WIDTH } from '@shared/constants/defaults.ts';
 
 export const SmallScreenOverlay = () => {
   const [tooSmall, setTooSmall] = useState<boolean>(false);
@@ -7,7 +9,7 @@ export const SmallScreenOverlay = () => {
   useEffect(() => {
     const check = () => {
       const width = window.innerWidth;
-      setTooSmall(width < 1000);
+      setTooSmall(width < MIN_SCREEN_WIDTH);
     };
 
     check();
@@ -21,10 +23,10 @@ export const SmallScreenOverlay = () => {
     <>
       {tooSmall && (
         <div className="screen-overlay">
-          <div className="screen-overlay__content">
-            <span className="screen-overlay__title">Screen Too Small</span>
-            <span className="screen-overlay__description">This screen is too small to run the game. Please use a device with a minimum width of 1000px.</span>
-          </div>
+          <Icon icon="Error" className="icon" />
+          <span className="screen-overlay__description">
+            This screen is too small to run the game. Please use a device with a minimum width of <b>{MIN_SCREEN_WIDTH}px</b>.
+          </span>
         </div>
       )}
     </>

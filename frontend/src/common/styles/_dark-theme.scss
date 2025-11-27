@@ -10,11 +10,6 @@ html[data-theme='dark'] {
   --party-games-fill: #{$darkerPrimaryColor};
   --cartoon-shadow: 0 4px rgba(0, 0, 0, 0.3);
 
-  //== Small Screen ==//
-  --small-screen-background: url('@assets/textures/background-dark.svg');
-  --small-screen-title: rgba(186, 103, 254, 0.6);
-  --small-screen-description: #{$primaryColor};
-
   //== Player Avatar ==//
   --player-avatar-username: #{$darkerPrimaryColor};
   --player-avatar-score: #{$darkerPrimaryColor};
