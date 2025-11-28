@@ -3,10 +3,10 @@ import { Cards } from '@components/minigames/cards/Cards';
 import { ClickTheBomb } from '@components/minigames/clickthebomb/ClickTheBomb';
 import { TrickyDiamonds } from '@components/minigames/trickydiamonds/TrickyDiamonds.tsx';
 import { useEffect, useState } from 'react';
-import { socket } from '@socket';
-import { Leaderboard } from '@components/features/leaderboard/Leaderboard';
-import { usePlayersStore } from '@stores/playersStore.ts';
+import { Scoreboard } from '@components/features/leaderboard/Scoreboard.tsx';
 import { Tutorial } from '@components/features/tutorials/Tutorial.tsx';
+import { socket } from '@socket';
+import { usePlayersStore } from '@stores/playersStore.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 
 type MinigameProps = {
@@ -17,9 +17,9 @@ type MinigameProps = {
 export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(false);
-  const [leaderboardPlayers, setLeaderboardPlayers] = useState<PlayerType[]>([]);
+  const [scoreboardPlayers, setScoreboardPlayersPlayers] = useState<PlayerType[]>([]);
   const [startGame, setStartGame] = useState<boolean>(false);
-  const { setPlayers, setOldPlayers, oldPlayers } = usePlayersStore();
+  const { setPlayers, setOldPlayers } = usePlayersStore();
   const { roomSettings } = useRoomStore();
 
   const handleStartNewGame = () => {
@@ -34,20 +34,15 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
     socket.on('ended_minigame', (newPlayers: PlayerType[]) => {
       // Show Leaderboard
       setTimeout(() => {
-        setLeaderboardPlayers(oldPlayers);
         setShowLeaderboard(true);
-      }, 2000);
-
-      // Change for new players
-      setTimeout(() => {
-        setLeaderboardPlayers(newPlayers);
         setStartGame(false);
-      }, 5000);
+        setScoreboardPlayersPlayers(newPlayers);
+        setPlayers(newPlayers);
+      }, 2000);
 
       // Start next game
       setTimeout(() => {
         setOldPlayers(newPlayers);
-        setPlayers(newPlayers);
         socket.emit('start_minigame_queue');
       }, 8000);
     });
@@ -74,7 +69,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   return (
     <div>
       {showLeaderboard ? (
-        <Leaderboard leaderboardPlayers={leaderboardPlayers} />
+        <Scoreboard scoreboardPlayers={scoreboardPlayers} />
       ) : (
         <>
           {minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb startGame={startGame} />}
