@@ -1,8 +1,10 @@
+@use '@common/styles/variables' as *;
+
 .app-version {
   position: absolute;
   left: 1rem;
   bottom: 0.2rem;
   font-size: 1.3rem;
-  color: #9D4EDD;
+  color: $darkerPrimaryColor;
   opacity: 0.8;
 }
