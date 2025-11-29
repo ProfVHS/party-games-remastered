@@ -21,7 +21,11 @@ const formatMillisecondsToTimer = (ms: number) => {
   return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
 };
 
-export const ClickTheBomb = () => {
+type ClickTheBombProps = {
+  startGame: boolean;
+};
+
+export const ClickTheBomb = ({ startGame }: ClickTheBombProps) => {
   const [clicksCount, setClicksCount] = useState<number>(0);
   const [canSkipTurn, setCanSkipTurn] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -102,12 +106,14 @@ export const ClickTheBomb = () => {
   }, [isMyTurn]);
 
   useEffect(() => {
+    if (!startGame) return;
+
     startCountdownAnimation();
 
     return () => {
       stopCountdownAnimation();
     };
-  }, []);
+  }, [startGame]);
 
   return (
     <>

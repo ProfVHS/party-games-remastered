@@ -81,6 +81,14 @@ html[data-theme='dark'] {
   --minigame-list-item-icon: #{$darkerPrimaryColor};
   --minigame-list-item-text: #{rgba(#fff, 0.4)};
 
+  //== Tutorial ==//
+  --tutorial-bg: #{$darkBgColor};
+  --tutorial-text: #fff;
+  --tutorial-text-highlight: #B87DE8;
+  --tutorial-text-warning: #DE0505;
+  --tutorial-text-reward: #CCA600;
+  --tutorial-indicator: #C287F1;
+  
   //== Click The Bomb ==//
   --click-the-bomb-bg: #{$darkBgColor};
   --click-the-bomb-turn: #fff;

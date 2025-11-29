@@ -136,6 +136,44 @@ export const minigameSockets = (socket: Socket) => {
     }
   });
 
+  socket.on('end_tutorial_queue', async () => {
+    const roomCode = socket.data.roomCode;
+    const roomData = await roomRepository.getRoomData(roomCode);
+
+    if (!roomData) {
+      console.error(`Room not found for room: ${roomCode}`);
+      return;
+    }
+
+    await roomRepository.toggleReady(roomCode, socket.id, ReadyNameEnum.tutorial);
+    const playersReady = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.tutorial);
+    const connectedPlayers = await roomRepository.getFilteredPlayers(roomCode, { isDisconnected: false });
+
+    // Start the minigame immediately
+    if (playersReady === connectedPlayers.length) {
+      const started = await roomRepository.acquireLock(roomCode, LockName.tutorial);
+
+      if (!started) {
+        console.log('Tutorial already ended');
+        return;
+      }
+
+      setTimeout(async () => {
+        try {
+          await roomRepository.deleteLock(roomCode, LockName.tutorial);
+          await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.tutorial);
+        } catch (err) {
+          console.error('Error clearing tutorial lock:', err);
+        }
+      }, 2000);
+
+      //Change to minigame and close tutorial
+      socket.nsp.to(roomCode).emit('ended_tutorial_queue');
+    }
+
+    socket.nsp.to(roomCode).emit('tutorial_queue_players', playersReady, connectedPlayers.length);
+  });
+
   socket.on('end_minigame', async () => {
     const roomCode = socket.data.roomCode;
     await endMinigameService(roomCode, socket);

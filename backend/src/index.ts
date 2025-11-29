@@ -32,7 +32,7 @@ const io = new Server(socketServer, {
   pingInterval: 5000, // Send a ping every 5 seconds
   pingTimeout: 3000, // Wait 3 seconds for a response
   cors: {
-    origin: '*',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     methods: ['GET', 'POST'],
   },
 });
