@@ -41,8 +41,6 @@ export const Cards = () => {
   };
 
   const startNewRound = async () => {
-    console.log('Round: ', currentRound.current);
-
     if (currentRound.current === 3) {
       if (currentPlayer?.isHost) socket.emit('end_minigame');
       return;
@@ -68,7 +66,7 @@ export const Cards = () => {
   };
 
   useEffect(() => {
-    startNewRound(); // Start the first round on component mount
+    startNewRound();
 
     socket.on('cards_round_ended', (newCards: number[], newPlayersPoints: PlayerType[], round: number) => {
       currentRound.current = round;

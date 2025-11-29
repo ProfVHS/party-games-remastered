@@ -9,6 +9,7 @@ import { usePlayersStore } from '@stores/playersStore.ts';
 import { ProgressBar } from '@components/ui/progressBar/ProgressBar.tsx';
 import { useCountdownAnimation } from '@hooks/useCountdownAnimation.ts';
 import Trophy from '@assets/textures/trophy.svg?react';
+import { Icon } from '@assets/icon';
 
 type Stats = {
   id: number;
@@ -89,8 +90,7 @@ export const TrickyDiamonds = () => {
                     </div>
                   ) : (
                     <div className="lost__background">
-                      <div className="cross part__one"></div>
-                      <div className="cross part__two"></div>
+                      <Icon icon="Cross" className="tricky-diamonds__cross" />
                     </div>
                   )}
                   {diamond.players.map((nickname, i) => (
