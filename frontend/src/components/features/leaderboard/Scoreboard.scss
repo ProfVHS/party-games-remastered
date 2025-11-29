@@ -1,8 +1,8 @@
-@use '../../../common/styles/_variables' as *;
+@use '@common/styles/_variables' as *;
 
-.leaderboard {
-  height: 400px;
-  width: 350px;
+.scoreboard, .leaderboard, .game-results {
+  height: 25rem;
+  width: 22rem;
 
   background-color: var(--leaderboard-bg);
 
@@ -13,10 +13,12 @@
   font-weight: bold;
   font-family: 'Poppins', sans-serif;
 
+  border-radius: 1rem;
+
   &__title {
-    font-size: 34px;
+    font-size: 2.5rem;
     color: var(--leaderboard-title);
-    margin: 10px 0 10px 0;
+    margin: 0.5rem 0 0.5rem 0;
   }
 
   &__players__container {
@@ -29,19 +31,29 @@
 
   &__player {
     width: 90%;
-    height: 30px;
+    height: 2rem;
 
     background-color: var(--leaderboard-player-bg);
     color: rgba(0, 0, 0, var(--leaderboard-player-opacity));
+
+    position: relative;
 
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
 
-    margin-top: 7px;
-    font-size: 18px;
-    border-radius: 5px;
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+    border-radius: 0.4rem;
+
+    transform: rotateX(90deg);
+    transition: transform 0.5s ease, opacity 0.5s ease;
+
+    &--visible {
+      opacity: 1;
+      transform: rotateX(0deg);
+    }
 
     &:nth-child(1) {
       background-color: var(--leaderboard-first-place);
@@ -56,11 +68,15 @@
     }
 
     &__nickname {
-      margin-left: 10px;
+      margin-left: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 65%;
     }
 
     &__score {
-      margin-right: 20px;
+      margin-right: 1rem;
     }
   }
 }
