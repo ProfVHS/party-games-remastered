@@ -3,4 +3,5 @@ export type ToastsType = {
   message: string;
   type: 'error' | 'info' | 'warning' | 'success';
   duration?: number;
+  status?: number;
 };

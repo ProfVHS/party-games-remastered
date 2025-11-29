@@ -6,7 +6,8 @@
     "dev": "nodemon -r tsconfig-paths/register --exec ts-node src/index.ts",
     "build": "tsc && tsc-alias",
     "start": "node dist/backend/src/index.js",
-    "test": "vitest"
+    "test": "vitest",
+    "debugging": "nodemon --exec node -r ts-node/register -r tsconfig-paths/register src/index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +15,7 @@
   "dependencies": {
     "@types/express": "^5.0.0",
     "@types/socket.io": "^3.0.2",
+    "canvas": "^3.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

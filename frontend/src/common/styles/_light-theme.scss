@@ -15,6 +15,8 @@ html[data-theme='light'] {
   --player-avatar-score: #{$darkerPrimaryColor};
   --player-avatar-bg: #{$lightBgColor};
   --player-avatar-turn-indicator: #994CE4;
+  --player-avatar-status: #c81414;
+  --player-avatar-status-ready: #99DD44;
 
   //== Button ==//
   --button-primary-bg: #{$primaryColor};
@@ -34,6 +36,10 @@ html[data-theme='light'] {
   --number-picker-bg-active: #{$darkerPrimaryColor};
   --number-picker-shadow: #5a189a;
   --number-picker-text: #{rgba(255, 255, 255, 0.8)};
+
+  //== Progress Bar ==//
+  --progress-bg: #D5B5FF;
+  --progress-bg-fill: url('@assets/textures/background-loading.svg');
 
   //== Badge ==//
   --badge-red-bg: #c81414;
@@ -73,21 +79,41 @@ html[data-theme='light'] {
   --minigame-list-item-icon: #{$darkerPrimaryColor};
   --minigame-list-item-text: #{rgba(#000, 0.4)};
 
+  //== Tutorial ==//
+  --tutorial-bg: #{$lightBgColor};
+  --tutorial-text: #000;
+  --tutorial-text-highlight: #B87DE8;
+  --tutorial-text-warning: #DE0505;
+  --tutorial-text-reward: #CCA600;
+  --tutorial-indicator: #{$secondaryColor};
+
   //== Click The Bomb ==//
   --click-the-bomb-bg: #{$lightBgColor};
   --click-the-bomb-turn: #000;
   --click-the-bomb-title: #{$secondaryColor};
+  --click-the-bomb-prize-text: #000;
+  --click-the-bomb-prize-value: #{$darkerPrimaryColor};
+  --click-the-bomb-score-positive: #99DD44;
+  --click-the-bomb-score-negative: #c81414;
 
   //== Cards ==//
   --cards-bg: #{$lightBgColor};
   --cards-title: #{$secondaryColor};
   --cards-round-bg: #{$lightBgColor};
   --cards-text: #fff;
-  --cards-back-img: url('../../assets/textures/card-back.svg');
+  --cards-back-img: url('@assets/textures/card-back.svg');
   --cards-back-bg: #f1eaf7;
   --cards-back-border: #{$darkerPrimaryColor};
   --cards-positive-bg: #{$primaryColor};
   --cards-positive-border: #{$secondaryColor};
   --cards-negative-bg: #9d1133;
   --cards-negative-border: #000;
+  --cards-logo-bg: #FFF;
+  --cards-player-negative-bg: #{rgba(#781930, 0.9)};
+  --cards-player-positive-bg: #{rgba(#8350AD, 0.9)};
+
+  //== Tricky Diamonds ==//
+  --tricky-diamonds-bg: #{$lightBgColor};
+  --tricky-diamonds-title: #{$secondaryColor};
+  --tricky-diamonds-value: #000;
 }

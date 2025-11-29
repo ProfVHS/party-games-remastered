@@ -5,11 +5,11 @@ import { usePlayersStore } from '@stores/playersStore';
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
 
 type useLobbyStartProps = {
-  playersReady: number;
+  playerIdsReady: string[];
   setReady: Dispatch<SetStateAction<boolean>>;
 };
 
-export const useLobbyStart = ({ playersReady, setReady }: useLobbyStartProps) => {
+export const useLobbyStart = ({ playerIdsReady, setReady }: useLobbyStartProps) => {
   const toast = useToast();
   const [countdown, setCountdown] = useState<number | null>(null);
   const { currentPlayer, players } = usePlayersStore();
@@ -18,13 +18,13 @@ export const useLobbyStart = ({ playersReady, setReady }: useLobbyStartProps) =>
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
 
-    if (playersReady === players.length && players.length >= MIN_PLAYERS_TO_START) {
+    if (playerIdsReady.length === players.length && players.length >= MIN_PLAYERS_TO_START) {
       setCountdown(() => 3);
 
       timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1 && !hasStarted.current) {
-            if (currentPlayer?.isHost == 'true') {
+            if (currentPlayer?.isHost) {
               socket.emit('verify_minigames');
               socket.emit('start_minigame_queue', true);
             }
@@ -40,7 +40,7 @@ export const useLobbyStart = ({ playersReady, setReady }: useLobbyStartProps) =>
     }
 
     return () => clearInterval(timer);
-  }, [playersReady]);
+  }, [playerIdsReady]);
 
   useEffect(() => {
     socket.on('failed_to_start_minigame', () => {

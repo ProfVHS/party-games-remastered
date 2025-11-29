@@ -8,7 +8,7 @@ export const turnSockets = (socket: Socket) => {
 
     const roomData = await roomRepository.getRoomData(roomCode);
 
-    socket.nsp.to(roomCode).emit('got_turn', Number(roomData?.currentTurn));
+    socket.nsp.to(roomCode).emit('got_turn', roomData?.currentTurn);
   });
 
   socket.on('change_turn', async () => {

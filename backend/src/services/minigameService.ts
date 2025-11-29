@@ -3,8 +3,8 @@ import { Socket } from 'socket.io';
 import { ChainableCommander } from 'ioredis';
 import * as roomRepository from '@roomRepository';
 import { MinigameDataType, MinigameNamesEnum, PlayerStatusEnum, ReturnDataType, RoomStatusEnum, TurnType } from '@shared/types';
-import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig } from '@config/minigames';
-import { cardsRound, sendAllPlayers } from '@sockets';
+import { createCardsConfig, createClickTheBombConfig, createColorsMemoryConfig, createRoomConfig, createTrickyDiamondsConfig } from '@config/minigames';
+import { cardsRound, trickyDiamondsRound } from '@sockets';
 import { LockName, ReadyNameEnum, ScheduledNameEnum } from '@backend-types';
 
 export const startMinigameService = async (roomCode: string): Promise<ReturnDataType> => {
@@ -28,7 +28,9 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
     throw new Error(`Couldn't find roomData for room ${roomCode} when starting a game`);
   }
 
-  const currentMinigame = minigames[Number(roomData?.minigameIndex)]?.name;
+  const currentMinigame = minigames[roomData?.minigameIndex]?.name;
+
+  console.log(`Current minigame: ${currentMinigame}`);
 
   try {
     multi = client.multi();
@@ -54,6 +56,12 @@ export const startMinigameService = async (roomCode: string): Promise<ReturnData
         console.log(`Starting Colors Memory minigame in room ${roomCode} with config:`, colorsMemoryConfig);
         await roomRepository.setMinigameData(roomCode, colorsMemoryConfig, multi);
         break;
+      case MinigameNamesEnum.trickyDiamonds:
+        const trickyDiamondConfig = createTrickyDiamondsConfig();
+        minigameData = trickyDiamondConfig;
+        console.log(`Starting Tricky Diamonds minigame in room ${roomCode} with config:`, trickyDiamondConfig);
+        await roomRepository.setMinigameData(roomCode, trickyDiamondConfig, multi);
+        break;
       default:
         console.error("Tried setting game which doesn't exist");
         break;
@@ -77,8 +85,12 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
 
     await roomRepository.updateFilteredPlayers(
       roomCode,
-      { isDisconnected: 'false' },
-      { isAlive: 'true', status: PlayerStatusEnum.idle, selectedObjectId: '-100' },
+      { isDisconnected: false },
+      {
+        isAlive: true,
+        status: PlayerStatusEnum.idle,
+        selectedObjectId: -100,
+      },
       multi,
     );
     await roomRepository.updateRoomData(roomCode, { status: RoomStatusEnum.leaderboard }, multi);
@@ -88,14 +100,14 @@ export const endMinigameService = async (roomCode: string, socket: Socket) => {
 
     await multi.exec();
 
-    await sendAllPlayers(socket, roomCode);
-    socket.nsp.to(roomCode).emit('ended_minigame');
+    const players = await roomRepository.getAllPlayers(roomCode);
+    socket.nsp.to(roomCode).emit('ended_minigame', players);
   } catch (error) {
     throw new Error(`Failed to end minigame for room ${roomCode}: ${error}`);
   }
 };
 
-export const startRoundService = async (roomCode: string, socket: Socket) => {
+export const endRoundService = async (roomCode: string, socket: Socket) => {
   const minigameData = await roomRepository.getMinigameData(roomCode);
   let multi: ChainableCommander;
 
@@ -111,6 +123,9 @@ export const startRoundService = async (roomCode: string, socket: Socket) => {
     switch (minigameData?.minigameName) {
       case MinigameNamesEnum.cards:
         await cardsRound(socket);
+        break;
+      case MinigameNamesEnum.trickyDiamonds:
+        await trickyDiamondsRound(socket);
         break;
       default:
         console.error('Tried start round for non existing game: ', minigameData?.minigameName);
@@ -136,14 +151,14 @@ export const changeTurnService = async (roomCode: string): Promise<TurnType | nu
     throw new Error(`Players not found for room: ${roomCode}`);
   }
 
-  let currentTurn = Number(roomData.currentTurn);
+  let currentTurn = roomData.currentTurn;
 
   for (let i = 1; i <= players.length; i++) {
     const nextTurn = (currentTurn + i) % players.length;
     const potentialPlayer = players[nextTurn];
 
-    if (potentialPlayer.isAlive === 'true' && potentialPlayer.isDisconnected === 'false') {
-      await roomRepository.updateRoomData(roomCode, { currentTurn: nextTurn.toString() });
+    if (potentialPlayer.isAlive && !potentialPlayer.isDisconnected) {
+      await roomRepository.updateRoomData(roomCode, { currentTurn: nextTurn });
       return { id: nextTurn, player_id: potentialPlayer.id, nickname: potentialPlayer.nickname };
     }
   }

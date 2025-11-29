@@ -4,6 +4,27 @@ body {
   background-color: #f5f5f5;
 }
 
+html {
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+
+  @media (min-width: 1921px) and (max-width: 2559px) {
+    font-size: clamp(16px, 0.5vw + 0.5rem, 22px)
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 22px;
+  }
+
+  @media (min-width: 2561px) and (max-width: 3839px) {
+    font-size: clamp(22px, 0.5vw + 0.5rem, 28px)
+  }
+
+  @media (min-width: 3840px) {
+    font-size: 28px;
+  }
+}
+
 html[data-theme="dark"]{
   body{
     background-color: #282828;

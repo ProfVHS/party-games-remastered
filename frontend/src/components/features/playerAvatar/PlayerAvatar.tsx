@@ -12,17 +12,19 @@ type PlayerAvatarProps = {
   style?: React.CSSProperties;
   inLobby?: boolean;
   currentTurn?: TurnType | null;
+  ready?: boolean;
 };
 
-export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn }: PlayerAvatarProps) => {
+export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn, ready }: PlayerAvatarProps) => {
   const avatar = player.avatar as avatars;
   return (
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.player_id === player.id })} style={style}>
+      {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
       <h2 className="player-avatar__username">{player.nickname}</h2>
       <div className="player-avatar__avatar">{avatarList[avatar] && createElement(avatarList[avatar][player.status])}</div>
       {!inLobby && (
         <h2 className="player-avatar__score">
-          Score: <Counter count={parseInt(player.score)} duration={1} />
+          Score: <Counter count={player.score} duration={1} />
         </h2>
       )}
     </div>

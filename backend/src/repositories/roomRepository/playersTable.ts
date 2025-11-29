@@ -1,9 +1,23 @@
 import { client } from '@config/db';
 import { ChainableCommander } from 'ioredis';
-import { PlayerType } from '@shared/types';
+import { PlayerStatusEnum, PlayerType } from '@shared/types';
 import { getKey } from '@roomRepository';
 
 const keyName = 'players';
+
+const parsePlayer = (player: Record<string, string>): PlayerType => {
+  return {
+    avatar: player.avatar,
+    id: player.id,
+    isAlive: player.isAlive === 'true',
+    isDisconnected: player.isDisconnected === 'true',
+    isHost: player.isHost === 'true',
+    nickname: player.nickname,
+    score: Number(player.score),
+    selectedObjectId: Number(player.selectedObjectId),
+    status: player.status as PlayerStatusEnum,
+  };
+};
 
 export const createPlayer = async (roomCode: string, id: string, playerData: PlayerType, multi?: ChainableCommander): Promise<void> => {
   if (multi) {
@@ -44,7 +58,7 @@ export const updateFilteredPlayers = async (
 ): Promise<void> => {
   const players = await getAllPlayers(roomCode);
   // Object.entries -> From { isAlive: "true" } to [["isAlive", "true"]]
-  // every -> Checks if all provided conditions match the player
+  // every -> Checks if all provided conditions match the player,
   // player[key] === value -> Compares a specific field of the player with the given value
   const filteredPlayers = players.filter((player) => Object.entries(filter).every(([key, value]) => player[key as keyof PlayerType] === value));
 
@@ -67,11 +81,11 @@ export const updateFilteredPlayers = async (
   }
 };
 
-export const updatePlayerScore = async (roomCode: string, id: string, score: number, multi?: ChainableCommander): Promise<void> => {
-  if (multi) {
-    multi.hincrby(getKey(roomCode, keyName, id), 'score', score);
-  } else {
-    await client.hincrby(getKey(roomCode, keyName, id), 'score', score);
+export const updatePlayerScore = async (roomCode: string, id: string, score: number): Promise<void> => {
+  const newScore = await client.hincrby(getKey(roomCode, keyName, id), 'score', score);
+
+  if (newScore < 0) {
+    await updatePlayer(roomCode, id, { score: 0 });
   }
 };
 
@@ -103,7 +117,7 @@ export const getPlayer = async (roomCode: string, id: string): Promise<PlayerTyp
 
   if (!player || Object.keys(player).length === 0) return null;
 
-  return player as PlayerType;
+  return parsePlayer(player);
 };
 
 export const getAllPlayers = async (roomCode: string): Promise<PlayerType[]> => {
@@ -113,7 +127,7 @@ export const getAllPlayers = async (roomCode: string): Promise<PlayerType[]> => 
 
   const players = await Promise.all(playerIds.map((id) => client.hgetall(getKey(roomCode, keyName, id))));
 
-  return players as PlayerType[];
+  return players.map((player) => parsePlayer(player));
 };
 
 export const getAllPlayerIds = async (roomCode: string): Promise<string[]> => {

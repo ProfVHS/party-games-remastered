@@ -1,43 +1,54 @@
 import './Lobby.scss';
 import { Button } from '@components/ui/button/Button';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { socket } from '@socket';
 
 import { useToast } from '@hooks/useToast.ts';
 import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
 import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
 import { useLobbyStart } from '@hooks/useLobbyStart.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
-export const Lobby = () => {
+type LobbyProps = {
+  playerIdsReady: string[];
+  setPlayerIdsReady: Dispatch<SetStateAction<string[]>>;
+  areRoomSettingsUpToDate: boolean;
+};
+
+export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDate }: LobbyProps) => {
   const [ready, setReady] = useState(false);
-  const [playersReady, setPlayersReady] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = localStorage.getItem('roomCode');
+  const { currentPlayer } = usePlayersStore();
 
-  useLobbyToggle({ setPlayersReady, setIsLoading });
-  useLobbyFetch({ setPlayersReady });
-  const { countdown } = useLobbyStart({
-    playersReady,
-    setReady,
-  });
+  useLobbyToggle({ setPlayerIdsReady, setIsLoading });
+  useLobbyFetch({ setPlayerIdsReady });
+  const { countdown } = useLobbyStart({ playerIdsReady, setReady });
 
   const toast = useToast();
 
   const toggleReady = () => {
-    setIsLoading(true);
-
-    setReady((prevReady) => !prevReady);
+    if (!areRoomSettingsUpToDate) return;
 
     if (roomCode) {
+      setIsLoading(true);
       socket.emit('toggle_player_ready');
+    } else {
+      toast.error({ message: 'Oops! Something went wrong while setting your ready status', duration: 3 });
     }
   };
 
   const handleCopyRoomCode = () => {
     if (roomCode) {
-      navigator.clipboard.writeText(roomCode).then(() => toast.info({ message: 'Room code copied!', duration: 5 }));
+      const inviteLink = `${window.location.origin}/${roomCode}`;
+      navigator.clipboard.writeText(inviteLink).then(() => toast.info({ message: 'Room code copied!', duration: 5 }));
     }
   };
+
+  useEffect(() => {
+    if (!currentPlayer) return;
+    setReady(playerIdsReady.includes(currentPlayer.id));
+  }, [playerIdsReady]);
 
   return (
     <div className="lobby">
@@ -50,10 +61,10 @@ export const Lobby = () => {
             </span>
           </span>
           <div className="lobby__info">
-            <span className="lobby__players">{playersReady}</span>
+            <span className="lobby__players">{playerIdsReady.length}</span>
             <span className="lobby__text">Players ready</span>
           </div>
-          <Button isDisabled={isLoading} style={{ width: '75%' }} onClick={toggleReady}>
+          <Button isDisabled={isLoading || !areRoomSettingsUpToDate} style={{ width: '75%' }} onClick={toggleReady}>
             {ready ? 'Unready' : 'Ready'}
           </Button>
         </>

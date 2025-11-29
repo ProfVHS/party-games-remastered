@@ -9,7 +9,7 @@ import { usePlayersStore } from '@stores/playersStore.ts';
 import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar.tsx';
 import { EmptySlot } from '@components/features/emptySlot/EmptySlot.tsx';
 import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
-import { MinigameDataType } from '@shared/types';
+import { MinigameDataType, MinigameNamesEnum } from '@shared/types';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
 import { useRoomStore } from '@stores/roomStore.ts';
@@ -18,8 +18,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const RoomPage = () => {
   const { setRoomSettings, fetchRoomData } = useRoomStore();
-  const [minigameName, setMinigameName] = useState<string>('');
+  const [minigameName, setMinigameName] = useState<MinigameNamesEnum | null>(null);
   const [minigameId, setMinigameId] = useState<string>('');
+  const [playerIdsReady, setPlayerIdsReady] = useState<string[]>([]);
+  const [areRoomSettingsUpToDate, setAreRoomSettingsUpToDate] = useState<boolean>(true);
 
   const toast = useToast();
 
@@ -31,9 +33,9 @@ export const RoomPage = () => {
     });
 
     socket.on('started_minigame', (data: { minigameData: MinigameDataType }) => {
-      setMinigameName(() => data.minigameData.minigameName);
+      setMinigameName(data.minigameData.minigameName);
+      setMinigameId(uuidv4());
       fetchRoomData();
-      setMinigameId(() => uuidv4());
     });
 
     socket.on('updated_room_settings', (roomSettings: RoomSettingsType) => {
@@ -53,15 +55,17 @@ export const RoomPage = () => {
   const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
 
   return minigameName ? (
-    <RoomLayout players={players}>{minigameName !== '' ? <Minigame minigameId={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
+    <RoomLayout players={players}>{minigameName ? <Minigame minigameId={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
   ) : (
     <div className="lobby-page">
       <div className="lobby-page__content">
-        <RoomSettings />
-        <Lobby />
+        <RoomSettings playerIdsReady={playerIdsReady} setAreRoomSettingsUpToDate={setAreRoomSettingsUpToDate} />
+        <Lobby playerIdsReady={playerIdsReady} setPlayerIdsReady={setPlayerIdsReady} areRoomSettingsUpToDate={areRoomSettingsUpToDate} />
       </div>
       <div className="lobby-page__players">
-        {slots.map((player, index) => (player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} /> : <EmptySlot key={index} />))}
+        {slots.map((player, index) =>
+          player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} ready={playerIdsReady.includes(player.id)} /> : <EmptySlot key={index} />,
+        )}
       </div>
     </div>
   );

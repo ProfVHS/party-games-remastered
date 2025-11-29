@@ -1,5 +1,5 @@
 import './RoomSettings.scss';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Button } from '@components/ui/button/Button';
 import { AnimatePresence } from 'framer-motion';
 import { RoomSettingsType } from '@frontend-types/index';
@@ -14,18 +14,45 @@ import { SettingRow } from '@components/features/roomSettings/SettingRow.tsx';
 import { useRoomStore } from '@stores/roomStore.ts';
 import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
 
-export const RoomSettings = () => {
+type RoomSettingsProps = {
+  playerIdsReady: string[];
+  setAreRoomSettingsUpToDate: Dispatch<SetStateAction<boolean>>;
+};
+
+export const RoomSettings = ({ playerIdsReady, setAreRoomSettingsUpToDate }: RoomSettingsProps) => {
   const { roomSettings, setRoomSettings } = useRoomStore();
 
-  const [minigamesModal, setMinigamesModal] = useState(false);
+  const [minigamesModal, setMinigamesModal] = useState<boolean>(false);
   const [newRoomSettings, setNewRoomSettings] = useState<RoomSettingsType>(roomSettings);
 
   const { currentPlayer } = usePlayersStore();
 
-  const isHost = currentPlayer?.isHost === 'true';
+  const isHost = currentPlayer?.isHost || false;
   const currentRoomSettings = isHost ? newRoomSettings : roomSettings;
 
   const toast = useToast();
+
+  const handleRoomSettingsChange = (field: string, value: unknown) => {
+    if (playerIdsReady.includes(currentPlayer!.id)) {
+      socket.emit('toggle_player_ready');
+    }
+
+    setNewRoomSettings((prev) => {
+      switch (field) {
+        case 'isRandomMinigames':
+          return { ...prev, isRandomMinigames: value as boolean };
+        case 'numberOfMinigames':
+          return { ...prev, numberOfMinigames: value as number };
+        case 'isTutorialsEnabled':
+          return { ...prev, isTutorialsEnabled: value as boolean };
+        case 'minigames':
+          return { ...prev, minigames: value as MinigameEntryType[] };
+        default:
+          console.warn(`Unknown room setting field: ${field}`);
+          return prev;
+      }
+    });
+  };
 
   const handleSave = () => {
     if (!newRoomSettings.isRandomMinigames) {
@@ -44,8 +71,18 @@ export const RoomSettings = () => {
   };
 
   const resetSettings = () => {
-    setNewRoomSettings(currentRoomSettings);
+    setNewRoomSettings(roomSettings);
   };
+
+  useEffect(() => {
+    if (!isHost) return;
+
+    if (_.isEqual(roomSettings, newRoomSettings)) {
+      setAreRoomSettingsUpToDate(true);
+    } else {
+      setAreRoomSettingsUpToDate(false);
+    }
+  }, [roomSettings, newRoomSettings]);
 
   return (
     <div className="lobby-settings">
@@ -55,7 +92,7 @@ export const RoomSettings = () => {
         isHost={isHost}
         label="Random mode"
         value={currentRoomSettings.isRandomMinigames}
-        onChange={(value) => setNewRoomSettings((prev) => ({ ...prev, isRandomMinigames: value as boolean }))}
+        onChange={(value) => handleRoomSettingsChange('isRandomMinigames', value)}
         type="switch"
       />
 
@@ -64,7 +101,7 @@ export const RoomSettings = () => {
           isHost={isHost}
           label="Number of games"
           value={currentRoomSettings.numberOfMinigames}
-          onChange={(value) => setNewRoomSettings((prev) => ({ ...prev, numberOfMinigames: value as number }))}
+          onChange={(value) => handleRoomSettingsChange('numberOfMinigames', value)}
           type="number-picker"
         />
       ) : (
@@ -82,7 +119,7 @@ export const RoomSettings = () => {
         isHost={isHost}
         label="Tutorial before minigames?"
         value={currentRoomSettings.isTutorialsEnabled}
-        onChange={(value) => setNewRoomSettings((prev) => ({ ...prev, isTutorialsEnabled: value as boolean }))}
+        onChange={(value) => handleRoomSettingsChange('isTutorialsEnabled', value)}
         type="switch"
       />
 
@@ -104,7 +141,7 @@ export const RoomSettings = () => {
             <MinigamesList
               isHost={isHost}
               onCancel={() => setMinigamesModal(false)}
-              onSave={(minigames: MinigameEntryType[]) => setNewRoomSettings((prev) => ({ ...prev, minigames }))}
+              onSave={(minigames: MinigameEntryType[]) => handleRoomSettingsChange('minigames', minigames)}
               minigames={currentRoomSettings.minigames || []}
             />
           </Modal>

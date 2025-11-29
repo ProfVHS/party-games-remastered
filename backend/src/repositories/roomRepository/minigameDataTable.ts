@@ -1,6 +1,6 @@
 import { ChainableCommander } from 'ioredis';
 import { client } from '@config/db';
-import { MinigameDataType } from '@shared/types';
+import { MinigameDataType, MinigameNamesEnum } from '@shared/types';
 import { getKey } from '@roomRepository';
 
 const keyName = 'minigameData';
@@ -26,5 +26,29 @@ export const getMinigameData = async (roomCode: string): Promise<MinigameDataTyp
 
   if (!minigameData || Object.keys(minigameData).length === 0) return null;
 
-  return minigameData as MinigameDataType;
+  switch (minigameData.minigameName) {
+    case MinigameNamesEnum.clickTheBomb:
+      return {
+        clickCount: Number(minigameData.clickCount),
+        maxClicks: Number(minigameData.maxClicks),
+        minigameName: MinigameNamesEnum.clickTheBomb,
+        streak: Number(minigameData.streak),
+        prizePool: Number(minigameData.prizePool),
+      };
+    case MinigameNamesEnum.cards:
+      return {
+        minigameName: MinigameNamesEnum.cards,
+      };
+    case MinigameNamesEnum.colorsMemory:
+      return {
+        minigameName: MinigameNamesEnum.colorsMemory,
+        sequence: minigameData.sequence.split(','),
+      };
+    case MinigameNamesEnum.trickyDiamonds:
+      return {
+        minigameName: MinigameNamesEnum.trickyDiamonds,
+      };
+    default:
+      return null;
+  }
 };

@@ -1,28 +1,27 @@
-import { usePlayersStore } from '@stores/playersStore';
-import './Leaderboard.scss';
-import { useEffect, useState } from 'react';
 import { PlayerType } from '@shared/types';
+import { useEffect, useState } from 'react';
+import { ScoreboardItem } from '@components/features/leaderboard/Scoreboard.tsx';
 
-export const Leaderboard = () => {
-  const { players } = usePlayersStore();
+type LeaderboardProps = {
+  leaderboardPlayers: PlayerType[];
+};
+
+export const Leaderboard = ({ leaderboardPlayers }: LeaderboardProps) => {
   const [sortedPlayers, setSortedPlayers] = useState<PlayerType[]>([]);
 
-  //TODO: Second leaderboard for game (how many points did you get, extra stats )
-
   useEffect(() => {
-    if (!players) return;
-    setSortedPlayers([...players].sort((a, b) => Number(b.score) - Number(a.score)));
-  }, [players]);
+    if (!leaderboardPlayers) return;
+
+    const sorted = [...leaderboardPlayers].sort((a, b) => b.score - a.score);
+    setSortedPlayers(sorted);
+  }, [leaderboardPlayers]);
 
   return (
     <div className="leaderboard">
       <div className="leaderboard__title">Leaderboard</div>
       <div className="leaderboard__players__container">
         {sortedPlayers.map((player, index) => (
-          <div className={`leaderboard__player`} key={index}>
-            <div className="leaderboard__player__nickname">{index + 1 + '.' + player.nickname}</div>
-            <div className="leaderboard__player__score">{player.score}</div>
-          </div>
+          <ScoreboardItem key={player.id} index={index} nickname={player.nickname} score={player.score} gameBoard={false} />
         ))}
       </div>
     </div>
