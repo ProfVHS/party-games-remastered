@@ -8,6 +8,7 @@ import Mine from './svgs/mine.svg?react';
 import Person from './svgs/person.svg?react';
 import Save from './svgs/save.svg?react';
 import Trash from './svgs/trash.svg?react';
+import Cross from './svgs/cross.svg?react';
 import Arrow from './svgs/arrow.svg?react';
 
 import ClickTheBomb from './svgs/clickTheBomb.svg?react';
@@ -30,5 +31,6 @@ export const icons = {
   Person,
   Save,
   Trash,
+  Cross,
   Arrow,
 };

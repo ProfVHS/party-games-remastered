@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore';
 import { Icon } from '@assets/icon';
+import { ClassNames } from '@utils';
+import './Card.scss';
 
 interface CardProps {
   id: number;
@@ -17,7 +19,7 @@ interface CardProps {
 
 export const Card = ({ id, points, isPositive, isFlipping, selected, newPlayersPointsCard, onClick, startNewRound }: CardProps) => {
   const visibleDuration: number = 2000; // How long the cards and selected players remain visible
-  const revealeTime: number = 400 * (id + 1); // Time in milliseconds to reveal the card
+  const revealTime: number = 400 * (id + 1); // Time in milliseconds to reveal the card
   const pointsToDisplay: string = points < 0 ? points.toString() : '+' + points.toString();
   const [cardType, setCardType] = useState<'back' | 'positive' | 'negative'>('back'); // 'back', 'positive', 'negative'
   const [flipping, setFlipping] = useState<boolean>(false);
@@ -69,7 +71,7 @@ export const Card = ({ id, points, isPositive, isFlipping, selected, newPlayersP
           }, visibleDuration);
         }
       }, 400);
-    }, revealeTime);
+    }, revealTime);
   };
 
   useEffect(() => {
@@ -82,23 +84,34 @@ export const Card = ({ id, points, isPositive, isFlipping, selected, newPlayersP
 
   return (
     <div
-      className={`card ${cardType} ${flipping ? 'flipping' : ''} ${selected ? 'selected' : ''} ${playerNicknamesSelectedCard.length > 0 ? 'players' : ''}`}
+      className={ClassNames('card', [cardType], {
+        flipping: flipping,
+        selected: selected,
+        players: playerNicknamesSelectedCard.length > 0,
+      })}
       onClick={cardType === 'back' ? () => onClick(id) : undefined}
     >
       {playerNicknamesSelectedCard.length > 0 && (
-        <div className="players__list">
+        <div className="card__players">
           {playerNicknamesSelectedCard.map((nickname, index) => (
-            <div key={index}>{nickname}</div>
+            <div className={ClassNames('card__player', [cardType])} key={index}>
+              {nickname}
+            </div>
           ))}
         </div>
       )}
-      {cardType !== 'back' && <div className="card__content__top">{pointsToDisplay}</div>}
-      <div className="card__content">
+      {cardType !== 'back' && <div className="card__score card__score--top">{pointsToDisplay}</div>}
+      <div
+        className={ClassNames('card__content', {
+          positive: cardType === 'positive',
+          negative: cardType === 'negative',
+        })}
+      >
         {cardType === 'back' && <Icon icon="Logo" className="svg" />}
-        {cardType === 'positive' && pointsToDisplay}
+        {cardType === 'positive' && <div className="card__score card__score--mid">{pointsToDisplay}</div>}
         {cardType === 'negative' && <Icon icon="Mine" className="svg" />}
       </div>
-      {cardType !== 'back' && <div className="card__content__bottom">{pointsToDisplay}</div>}
+      {cardType !== 'back' && <div className="card__score card__score--bottom">{pointsToDisplay}</div>}
     </div>
   );
 };

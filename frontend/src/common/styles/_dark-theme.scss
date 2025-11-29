@@ -111,6 +111,8 @@ html[data-theme='dark'] {
   --cards-negative-bg: #9d1133;
   --cards-negative-border: #000;
   --cards-logo-bg: #303030;
+  --cards-player-negative-bg: #{rgba(#781930, 0.9)};
+  --cards-player-positive-bg: #{rgba(#2D0C4D, 0.8)};
 
   //== Tricky Diamonds ==//
   --tricky-diamonds-bg: #{$darkBgColor};
