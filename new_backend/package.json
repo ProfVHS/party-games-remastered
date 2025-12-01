@@ -1,0 +1,39 @@
+{
+  "name": "party-games-backend",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "nodemon -r tsconfig-paths/register --exec ts-node src/index.ts",
+    "build": "tsc && tsc-alias",
+    "start": "node dist/backend/src/index.js",
+    "test": "vitest",
+    "debugging": "nodemon --exec node -r ts-node/register -r tsconfig-paths/register src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/socket.io": "^3.0.2",
+    "canvas": "^3.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "ioredis": "^5.5.0",
+    "lodash": "^4.17.21",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.3",
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^22.13.4",
+    "nodemon": "^3.1.9",
+    "prettier": "3.5.1",
+    "socket.io-client": "^4.8.1",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7"
+  }
+}
