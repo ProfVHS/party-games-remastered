@@ -17,7 +17,6 @@ export const handlePlayers = (io: Server, socket: Socket) => {
     if (!room) return { success: false, message: 'Room not found!' };
 
     const players = room.getPlayers();
-    console.log(players);
     socket.nsp.to(room.roomCode).emit('got_players', players);
   });
 
@@ -30,5 +29,11 @@ export const handlePlayers = (io: Server, socket: Socket) => {
 
     player.toggleReady();
     io.to(room.roomCode).emit('toggled_player_ready', room.getReadyPlayers());
+  });
+
+  socket.on('fetch_ready_players', async () => {
+    const room = RoomManager.getRoom(socket.data.roomCode);
+    if (!room) return { success: false, message: 'Room not found!' };
+    io.to(room.roomCode).emit('fetched_ready_players', room.getReadyPlayers());
   });
 };

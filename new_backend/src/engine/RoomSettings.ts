@@ -16,4 +16,13 @@ export class RoomSettings {
   public update = (newSettings: Partial<RoomSettings>) => {
     Object.assign(this, newSettings);
   };
+
+  public getData = () => {
+    return {
+      isRandomMinigames: this.isRandomMinigames,
+      isTutorialsEnabled: this.isTutorialsEnabled,
+      minigames: this.minigames,
+      numberOfMinigames: this.numberOfMinigames,
+    };
+  };
 }

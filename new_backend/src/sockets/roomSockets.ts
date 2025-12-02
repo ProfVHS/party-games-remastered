@@ -25,4 +25,11 @@ export const handleRoom = (io: Server, socket: Socket) => {
     socket.to(room.roomCode).emit('updated_room_settings', roomSettings);
     callback();
   });
+
+  socket.on('get_room_settings', async () => {
+    const room = RoomManager.getRoom(socket.data.roomCode);
+    if (!room) return { success: false, message: 'Room not found!' };
+
+    io.to(socket.id).emit('got_room_settings', room.settings.getData());
+  });
 };

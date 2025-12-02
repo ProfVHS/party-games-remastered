@@ -7,16 +7,7 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 
-import {
-  cardsSockets,
-  clickTheBombSockets,
-  connectionSockets,
-  minigameSockets,
-  playerSockets,
-  roomSockets,
-  trickyDiamondsSockets,
-  turnSockets,
-} from '@sockets';
+import { cardsSockets, clickTheBombSockets, connectionSockets, minigameSockets, trickyDiamondsSockets, turnSockets } from '@sockets';
 
 dotenv.config();
 
@@ -39,9 +30,7 @@ const io = new Server(socketServer, {
 
 const handleModulesOnConnection = async (socket: Socket) => {
   connectionSockets(socket);
-  roomSockets(socket);
   turnSockets(socket);
-  playerSockets(socket);
   minigameSockets(socket);
   clickTheBombSockets(socket);
   cardsSockets(socket);
