@@ -25,13 +25,14 @@
     width: 90%;
     height: 80%;
 
-    margin-top: 3%;
-
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+
     gap: 1rem;
+    padding-bottom: 2rem;
+    margin-top: 3%;
+
     overflow-y: auto;
-    padding: 0 0 2rem 0;
 
     &::-webkit-scrollbar {
       width: 8px;
@@ -44,6 +45,7 @@
   &__buttons {
     width: 100%;
     height: 15%;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -61,19 +63,23 @@
   cursor: pointer;
 
   &__svg {
-    height: 7.5rem;
-    background-color: #1e1e1e;
+    height: 8rem;
+    background-image: url('@assets/textures/background-loading-black.svg');
+    background-size: 60%;
   }
 
   &__name {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 2rem;
     width: 100%;
-    height: 2.5rem;
+
     background-color: #171717;
     color: rgba(#fff, 0.8);
 
-    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-transform: capitalize;
+    font-size: 1.4rem;
   }
 }
