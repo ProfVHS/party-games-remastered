@@ -4,6 +4,7 @@ import { avatarList } from './avatarList';
 import React, { createElement } from 'react';
 import { Counter } from '@components/ui/counter/Counter.tsx';
 import { ClassNames } from '@utils';
+import Default from '@assets/avatars/default.svg?react';
 
 type avatars = keyof typeof avatarList;
 
@@ -21,7 +22,9 @@ export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn, read
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.player_id === player.id })} style={style}>
       {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
       <h2 className="player-avatar__username">{player.nickname}</h2>
-      <div className="player-avatar__avatar">{avatarList[avatar] && createElement(avatarList[avatar][player.status])}</div>
+      <div className="player-avatar__avatar">
+        {avatarList[avatar] ? createElement(avatarList[avatar][player.status]) : <Default className="player-avatar__avatar__default" />}
+      </div>
       {!inLobby && (
         <h2 className="player-avatar__score">
           Score: <Counter count={player.score} duration={1} />

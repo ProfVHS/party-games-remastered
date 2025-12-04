@@ -57,15 +57,39 @@
   height: 10rem;
   width: 12rem;
 
+  position: relative;
+
   border-radius: 0.7rem;
   overflow: hidden;
 
   cursor: pointer;
 
+  &__random {
+    height: 6rem;
+    position: absolute;
+    top: 1rem;
+    left: 3rem;
+  }
+
   &__svg {
     height: 8rem;
     background-image: url('@assets/textures/background-loading-black.svg');
     background-size: 60%;
+  }
+
+  &__selected {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 90%;
+      height: 90%;
+      margin-top: -1.3rem;
+    }
   }
 
   &__name {
