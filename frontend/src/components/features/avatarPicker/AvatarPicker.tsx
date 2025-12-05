@@ -1,12 +1,14 @@
 import './AvatarPicker.scss';
-import { createElement, ReactNode, useState } from 'react';
+import { createElement, ReactNode, useContext, useState } from 'react';
 import { Button } from '@components/ui/button/Button.tsx';
 import { avatarList } from '@components/features/playerAvatar/avatarList.ts';
 import { Icon } from '@assets/icon';
 import HandDrawnCircle from '@assets/textures/hand-drawn-circle.svg?react';
+import { AvatarPickerContext } from '@context/avatarPicker/AvatarPickerContext.ts';
 
 export const AvatarPicker = () => {
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
+  const { setShowAvatarPicker } = useContext(AvatarPickerContext);
 
   return (
     <>
@@ -26,7 +28,9 @@ export const AvatarPicker = () => {
           </div>
           <div className="avatar-picker__buttons">
             <Button>Confirm</Button>
-            <Button color="remove">Cancel</Button>
+            <Button color="remove" onClick={() => setShowAvatarPicker(false)}>
+              Cancel
+            </Button>
           </div>
         </div>
       </div>

@@ -1,13 +1,16 @@
 import './Lobby.scss';
 import { Button } from '@components/ui/button/Button';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { socket } from '@socket';
 
 import { useToast } from '@hooks/useToast.ts';
 import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
 import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
 import { useLobbyStart } from '@hooks/useLobbyStart.ts';
+import { AvatarPicker } from '@components/features/avatarPicker/AvatarPicker.tsx';
+
 import { usePlayersStore } from '@stores/playersStore.ts';
+import { AvatarPickerContext } from '@context/avatarPicker/AvatarPickerContext.ts';
 
 type LobbyProps = {
   playerIdsReady: string[];
@@ -20,6 +23,7 @@ export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDa
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = localStorage.getItem('roomCode');
   const { currentPlayer } = usePlayersStore();
+  const { showAvatarPicker } = useContext(AvatarPickerContext);
 
   useLobbyToggle({ setPlayerIdsReady, setIsLoading });
   useLobbyFetch({ setPlayerIdsReady });
@@ -52,6 +56,7 @@ export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDa
 
   return (
     <div className="lobby">
+      {showAvatarPicker && <AvatarPicker />}
       {countdown === null ? (
         <>
           <span className="lobby__title">
