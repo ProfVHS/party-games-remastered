@@ -81,6 +81,25 @@
     background-size: 60%;
   }
 
+  &__locked {
+    position: absolute;
+    inset: 0;
+
+    background-color: rgba(0, 0, 0, 0.8);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: not-allowed;
+
+    color: #3A3A3A;
+
+    svg {
+      margin-top: -1.5rem;
+    }
+  }
+
   &__selected {
     position: absolute;
     inset: 0;

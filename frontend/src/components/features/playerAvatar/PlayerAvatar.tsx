@@ -6,6 +6,7 @@ import { Counter } from '@components/ui/counter/Counter.tsx';
 import { ClassNames } from '@utils';
 import Default from '@assets/avatars/default.svg?react';
 import { AvatarPickerContext } from '@context/avatarPicker/AvatarPickerContext.ts';
+import { socket } from '@socket';
 
 type avatars = keyof typeof avatarList;
 
@@ -21,16 +22,19 @@ export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn, read
   const avatar = player.avatar as avatars;
   const { setShowAvatarPicker } = useContext(AvatarPickerContext);
 
+  const handleChooseAvatar = () => {
+    if (player.id === socket.id) {
+      setShowAvatarPicker(true);
+    }
+  };
+
+  //TODO: Add styles (cursor)
   return (
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.player_id === player.id })} style={style}>
       {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
       <h2 className="player-avatar__username">{player.nickname}</h2>
-      <div className="player-avatar__avatar">
-        {avatarList[avatar] ? (
-          createElement(avatarList[avatar][player.status])
-        ) : (
-          <Default className="player-avatar__avatar__default" onClick={() => setShowAvatarPicker(true)} />
-        )}
+      <div className="player-avatar__avatar" onClick={handleChooseAvatar}>
+        {avatarList[avatar] ? createElement(avatarList[avatar][player.status]) : <Default className="player-avatar__avatar__default" />}
       </div>
       {!inLobby && (
         <h2 className="player-avatar__score">

@@ -1,14 +1,49 @@
 import './AvatarPicker.scss';
-import { createElement, ReactNode, useContext, useState } from 'react';
+import { createElement, useContext, useEffect, useState } from 'react';
 import { Button } from '@components/ui/button/Button.tsx';
-import { avatarList } from '@components/features/playerAvatar/avatarList.ts';
+import { Avatar } from '@components/features/avatarPicker/Avatar.tsx';
 import { Icon } from '@assets/icon';
-import HandDrawnCircle from '@assets/textures/hand-drawn-circle.svg?react';
+import { useToast } from '@hooks/useToast.ts';
+import { ReturnDataType } from '@shared/types';
+import { socket } from '@socket';
+import { avatarList } from '@components/features/playerAvatar/avatarList.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
 import { AvatarPickerContext } from '@context/avatarPicker/AvatarPickerContext.ts';
 
 export const AvatarPicker = () => {
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
+  const [freeAvatars, setFreeAvatars] = useState<string[] | null>(null);
   const { setShowAvatarPicker } = useContext(AvatarPickerContext);
+  const { players } = usePlayersStore();
+  const toast = useToast();
+
+  const handleConfirmAvatar = () => {
+    let avatar = selectedAvatar;
+
+    if (selectedAvatar === null) {
+      setShowAvatarPicker(false);
+      return;
+    }
+    if (selectedAvatar === 'random') {
+      if (!freeAvatars) return;
+
+      avatar = freeAvatars[Math.floor(Math.random() * freeAvatars.length)];
+    }
+
+    socket.emit('choose_avatar', avatar, (response: ReturnDataType) => {
+      if (response.success) {
+        setShowAvatarPicker(false);
+      } else {
+        toast.error({ message: 'Selection failed. Try again.', duration: 3 });
+      }
+    });
+  };
+
+  useEffect(() => {
+    const takenAvatars = players.map((p) => p.avatar);
+
+    setFreeAvatars(Object.keys(avatarList).filter((key) => !takenAvatars.includes(key)));
+  }, [players]);
 
   return (
     <>
@@ -20,14 +55,14 @@ export const AvatarPicker = () => {
             </Avatar>
             {Object.entries(avatarList).map(([name, data]) =>
               name !== 'default' ? (
-                <Avatar key={name} name={name} selected={selectedAvatar === name} onClick={() => setSelectedAvatar(name)}>
+                <Avatar key={name} name={name} selected={selectedAvatar === name} locked={!freeAvatars?.includes(name)} onClick={() => setSelectedAvatar(name)}>
                   {createElement(data.idle)}
                 </Avatar>
               ) : null,
             )}
           </div>
           <div className="avatar-picker__buttons">
-            <Button>Confirm</Button>
+            <Button onClick={handleConfirmAvatar}>Confirm</Button>
             <Button color="remove" onClick={() => setShowAvatarPicker(false)}>
               Cancel
             </Button>
@@ -35,26 +70,5 @@ export const AvatarPicker = () => {
         </div>
       </div>
     </>
-  );
-};
-
-type AvatarProps = {
-  children?: ReactNode;
-  name: string;
-  selected: boolean;
-  onClick: (name: string) => void;
-};
-
-const Avatar = ({ children, name, selected, onClick }: AvatarProps) => {
-  return (
-    <div className="avatar" onClick={() => onClick(name)}>
-      {selected && (
-        <div className="avatar__selected">
-          <HandDrawnCircle />
-        </div>
-      )}
-      <div className="avatar__svg">{children}</div>
-      <div className="avatar__name">{name}</div>
-    </div>
   );
 };
