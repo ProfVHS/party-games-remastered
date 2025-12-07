@@ -40,8 +40,4 @@ export class Player {
   public toggleReady = () => {
     this.ready = !this.ready;
   };
-
-  public setAvatar = (avatar: string) => {
-    this.avatar = avatar;
-  };
 }
