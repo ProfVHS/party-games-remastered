@@ -28,12 +28,11 @@ export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn, read
     }
   };
 
-  //TODO: Add styles (cursor)
   return (
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.player_id === player.id })} style={style}>
       {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
       <h2 className="player-avatar__username">{player.nickname}</h2>
-      <div className="player-avatar__avatar" onClick={handleChooseAvatar}>
+      <div className={ClassNames('player-avatar__avatar', { lobby: socket.id === player.id && inLobby })} onClick={handleChooseAvatar}>
         {avatarList[avatar] ? createElement(avatarList[avatar][player.status]) : <Default className="player-avatar__avatar__default" />}
       </div>
       {!inLobby && (
