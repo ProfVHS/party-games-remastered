@@ -57,6 +57,7 @@
   }
 
   &__svg {
+    position: relative;
     height: 8rem;
     background-image: var(--avatar-picker-avatar-bg);
     background-size: 60%;
@@ -75,10 +76,6 @@
     cursor: not-allowed;
 
     color: var(--avatar-picker-lock-color);
-
-    svg {
-      margin-top: -1.5rem;
-    }
   }
 
   &__selected {
@@ -90,9 +87,9 @@
     justify-content: center;
 
     svg {
-      width: 90%;
-      height: 90%;
-      margin-top: -1.3rem;
+      width: 100%;
+      height: 100%;
+      margin-top: 0.5rem;
     }
   }
 
@@ -110,5 +107,9 @@
     text-transform: capitalize;
     font-size: 1.4rem;
     font-family: 'Spicy Rice', sans-serif;
+
+    &--locked {
+      cursor: not-allowed;
+    }
   }
 }
