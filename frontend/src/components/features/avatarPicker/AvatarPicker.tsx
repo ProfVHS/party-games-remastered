@@ -22,9 +22,10 @@ export const AvatarPicker = () => {
     let avatar = selectedAvatar;
 
     if (selectedAvatar === null) {
-      setShowAvatarPicker(false);
+      toast.warning({ message: 'You need to select an avatar.', duration: 3 });
       return;
     }
+
     if (selectedAvatar === 'random') {
       if (!freeAvatars) return;
 

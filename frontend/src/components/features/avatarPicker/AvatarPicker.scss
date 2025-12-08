@@ -58,7 +58,7 @@
 
   &__svg {
     height: 8rem;
-    background-image: url('@assets/textures/background-loading-black.svg');
+    background-image: var(--avatar-picker-avatar-bg);
     background-size: 60%;
   }
 
@@ -74,7 +74,7 @@
 
     cursor: not-allowed;
 
-    color: #3A3A3A;
+    color: var(--avatar-picker-lock-color);
 
     svg {
       margin-top: -1.5rem;
@@ -100,8 +100,8 @@
     height: 2rem;
     width: 100%;
 
-    background-color: #171717;
-    color: rgba(#fff, 0.8);
+    background-color: var(--avatar-picker-avatar-text-bg);
+    color: var(--avatar-picker-avatar-text);
 
     display: flex;
     align-items: center;
@@ -109,5 +109,6 @@
 
     text-transform: capitalize;
     font-size: 1.4rem;
+    font-family: 'Spicy Rice', sans-serif;
   }
 }

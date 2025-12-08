@@ -18,6 +18,12 @@ html[data-theme='dark'] {
   --player-avatar-status: #c81414;
   --player-avatar-status-ready: #99DD44;
 
+  //== Avatar Picker ==//
+  --avatar-picker-avatar-bg: url('@assets/textures/background-loading-black.svg');
+  --avatar-picker-avatar-text: rgba(#fff, 0.8);
+  --avatar-picker-avatar-text-bg: #171717;
+  --avatar-picker-lock-color: #4D4D4D;
+
   //== Button ==//
   --button-primary-bg: #6f359e;
   --button-primary-shadow: #39135d;

@@ -18,6 +18,12 @@ html[data-theme='light'] {
   --player-avatar-status: #c81414;
   --player-avatar-status-ready: #99DD44;
 
+  //== Avatar Picker ==//
+  --avatar-picker-avatar-bg: url('@assets/textures/background-loading-white.svg');
+  --avatar-picker-avatar-text: rgba(#000, 0.8);
+  --avatar-picker-avatar-text-bg: #CFCFCF;
+  --avatar-picker-lock-color: #D9D9D9;
+
   //== Button ==//
   --button-primary-bg: #{$primaryColor};
   --button-primary-shadow: #{color.adjust($primaryColor, $lightness: -30%)};
