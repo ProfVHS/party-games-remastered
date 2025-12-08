@@ -9,6 +9,7 @@ import { socket } from '@socket';
 import { avatarList } from '@components/features/playerAvatar/avatarList.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { AvatarPickerContext } from '@context/avatarPicker/AvatarPickerContext.ts';
+import { Modal } from '@components/ui/modal/Modal.tsx';
 
 export const AvatarPicker = () => {
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
@@ -46,29 +47,27 @@ export const AvatarPicker = () => {
   }, [players]);
 
   return (
-    <>
-      <div className="avatar-picker__overlay">
-        <div className="avatar-picker">
-          <div className="avatar-picker__avatars">
-            <Avatar name="Random" selected={selectedAvatar === 'random'} onClick={() => setSelectedAvatar('random')}>
-              <Icon icon={'Random'} className="avatar__random" />
-            </Avatar>
-            {Object.entries(avatarList).map(([name, data]) =>
-              name !== 'default' ? (
-                <Avatar key={name} name={name} selected={selectedAvatar === name} locked={!freeAvatars?.includes(name)} onClick={() => setSelectedAvatar(name)}>
-                  {createElement(data.idle)}
-                </Avatar>
-              ) : null,
-            )}
-          </div>
-          <div className="avatar-picker__buttons">
-            <Button onClick={handleConfirmAvatar}>Confirm</Button>
-            <Button color="remove" onClick={() => setShowAvatarPicker(false)}>
-              Cancel
-            </Button>
-          </div>
+    <Modal onClose={() => setShowAvatarPicker(false)}>
+      <div className="avatar-picker">
+        <div className="avatar-picker__avatars">
+          <Avatar name="Random" selected={selectedAvatar === 'random'} onClick={() => setSelectedAvatar('random')}>
+            <Icon icon={'Random'} className="avatar__random" />
+          </Avatar>
+          {Object.entries(avatarList).map(([name, data]) =>
+            name !== 'default' ? (
+              <Avatar key={name} name={name} selected={selectedAvatar === name} locked={!freeAvatars?.includes(name)} onClick={() => setSelectedAvatar(name)}>
+                {createElement(data.idle)}
+              </Avatar>
+            ) : null,
+          )}
+        </div>
+        <div className="avatar-picker__buttons">
+          <Button onClick={handleConfirmAvatar}>Confirm</Button>
+          <Button color="remove" onClick={() => setShowAvatarPicker(false)}>
+            Cancel
+          </Button>
         </div>
       </div>
-    </>
+    </Modal>
   );
 };
