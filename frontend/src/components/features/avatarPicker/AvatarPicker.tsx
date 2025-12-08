@@ -35,7 +35,7 @@ export const AvatarPicker = () => {
       if (response.success) {
         setShowAvatarPicker(false);
       } else {
-        toast.error({ message: 'Selection failed. Try again.', duration: 3 });
+        toast.error({ message: response.payload || 'Selection failed. Try again.', duration: 3 });
       }
     });
   };
