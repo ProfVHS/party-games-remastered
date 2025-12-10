@@ -1,3 +1,5 @@
+@use "@common/styles/mixins" as *;
+
 .podium {
   width: 8rem;
 
@@ -19,24 +21,13 @@
     width: 90%;
     height: 100%;
 
-    position: relative;
-
-    background-color: #9D4EDD;
     color: #fff;
 
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    &::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: url("@assets/textures/background-loading2.svg");
-      background-size: 150%;
-      opacity: 0.1;
-      pointer-events: none;
-    }
+    @include background-opacity(#9D4EDD, 150%, 0.1, '@assets/textures/background-loading.svg');
 
     .place {
       font-size: 3rem;
