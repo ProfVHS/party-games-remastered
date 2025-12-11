@@ -8,6 +8,16 @@
   align-items: center;
   justify-content: center;
 
+  position: relative;
+
+  &__avatar {
+    width: 10rem;
+
+    position: absolute;
+    top: -7rem;
+    left: -0.5rem;
+  }
+
   &__top {
     width: 100%;
     height: 1.5rem;
@@ -30,14 +40,14 @@
     @include background-opacity(#9D4EDD, 150%, 0.1, '@assets/textures/background-loading.svg');
 
     .place {
-      font-size: 3rem;
+      font-size: 2.5rem;
       font-family: 'Spicy Rice', serif;
     }
 
     .nickname {
       width: 90%;
 
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: bold;
       font-family: "Poppins", sans-serif;
 

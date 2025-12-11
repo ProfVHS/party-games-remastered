@@ -21,7 +21,7 @@ const players: PlayerType[] = [
     isDisconnected: false,
     status: PlayerStatusEnum.happy,
     selectedObjectId: 3,
-    avatar: 'avatar1.png',
+    avatar: 'monkey',
   },
   {
     id: 'p2',
@@ -32,7 +32,7 @@ const players: PlayerType[] = [
     isDisconnected: false,
     status: PlayerStatusEnum.idle,
     selectedObjectId: 1,
-    avatar: 'avatar2.png',
+    avatar: 'king',
   },
   {
     id: 'p3',
@@ -43,7 +43,7 @@ const players: PlayerType[] = [
     isDisconnected: false,
     status: PlayerStatusEnum.dead,
     selectedObjectId: 0,
-    avatar: 'avatar3.png',
+    avatar: 'robot',
   },
   {
     id: 'p4',
@@ -54,18 +54,18 @@ const players: PlayerType[] = [
     isDisconnected: true,
     status: PlayerStatusEnum.sleeping,
     selectedObjectId: 5,
-    avatar: 'avatar4.png',
+    avatar: 'skeleton',
   },
   {
     id: 'p5',
     nickname: 'RapidRaccoonasdfasfasdd',
     isAlive: true,
-    score: -1020,
+    score: 0,
     isHost: false,
     isDisconnected: false,
     status: PlayerStatusEnum.happy,
     selectedObjectId: 2,
-    avatar: 'avatar5.png',
+    avatar: 'carton',
   },
 ];
 

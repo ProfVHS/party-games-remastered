@@ -15,25 +15,25 @@ export const EndGame = () => {
       </div>
       {sortedPlayers.length < 6 ? (
         <div className="podium__container lower">
-          {sortedPlayers[3] && <Podium place={4} nickname={sortedPlayers[3].nickname} score={sortedPlayers[3].score} />}
-          {sortedPlayers[1] && <Podium place={2} nickname={sortedPlayers[1].nickname} score={sortedPlayers[1].score} />}
-          {sortedPlayers[0] && <Podium place={1} nickname={sortedPlayers[0].nickname} score={sortedPlayers[0].score} />}
-          {sortedPlayers[2] && <Podium place={3} nickname={sortedPlayers[2].nickname} score={sortedPlayers[2].score} />}
-          {sortedPlayers[4] && <Podium place={5} nickname={sortedPlayers[4].nickname} score={sortedPlayers[4].score} />}
+          {sortedPlayers[3] && <Podium place={4} player={sortedPlayers[3]} />}
+          {sortedPlayers[1] && <Podium place={2} player={sortedPlayers[1]} />}
+          {sortedPlayers[0] && <Podium place={1} player={sortedPlayers[0]} />}
+          {sortedPlayers[2] && <Podium place={3} player={sortedPlayers[2]} />}
+          {sortedPlayers[4] && <Podium place={5} player={sortedPlayers[4]} />}
         </div>
       ) : (
         <>
           <div className="podium__container">
-            {sortedPlayers[1] && <Podium place={2} nickname={sortedPlayers[1].nickname} score={sortedPlayers[1].score} />}
-            {sortedPlayers[0] && <Podium place={1} nickname={sortedPlayers[0].nickname} score={sortedPlayers[0].score} />}
-            {sortedPlayers[2] && <Podium place={3} nickname={sortedPlayers[2].nickname} score={sortedPlayers[2].score} />}
+            {sortedPlayers[1] && <Podium place={2} player={sortedPlayers[1]} />}
+            {sortedPlayers[0] && <Podium place={1} player={sortedPlayers[0]} />}
+            {sortedPlayers[2] && <Podium place={3} player={sortedPlayers[2]} />}
           </div>
           <div className="podium__container">
-            {sortedPlayers[6] && <Podium place={7} nickname={sortedPlayers[6].nickname} score={sortedPlayers[6].score} />}
-            {sortedPlayers[4] && <Podium place={5} nickname={sortedPlayers[4].nickname} score={sortedPlayers[4].score} />}
-            {sortedPlayers[3] && <Podium place={4} nickname={sortedPlayers[3].nickname} score={sortedPlayers[3].score} />}
-            {sortedPlayers[5] && <Podium place={6} nickname={sortedPlayers[5].nickname} score={sortedPlayers[5].score} />}
-            {sortedPlayers[7] && <Podium place={8} nickname={sortedPlayers[7].nickname} score={sortedPlayers[7].score} />}
+            {sortedPlayers[6] && <Podium place={7} player={sortedPlayers[6]} />}
+            {sortedPlayers[4] && <Podium place={5} player={sortedPlayers[4]} />}
+            {sortedPlayers[3] && <Podium place={4} player={sortedPlayers[3]} />}
+            {sortedPlayers[5] && <Podium place={6} player={sortedPlayers[5]} />}
+            {sortedPlayers[7] && <Podium place={8} player={sortedPlayers[7]} />}
           </div>
         </>
       )}
