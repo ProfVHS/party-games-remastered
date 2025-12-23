@@ -8,6 +8,18 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
     this.currentTurn = Math.floor(Math.random() * playerCount);
   };
 
+  public getCurrentTurnPlayer = () => {
+    return Array.from(this.room.players.values())[this.currentTurn];
+  };
+
+  public alivePlayersCount = () => {
+    return Array.from(this.room.players.values()).filter((player) => player.isAlive).length;
+  };
+
+  public isLastPlayerStanding = () => {
+    return this.alivePlayersCount() === 1;
+  };
+
   public nextTurn = () => {
     for (let i = 1; i <= this.room.players.size; i++) {
       const nextTurn = (this.currentTurn + i) % this.room.players.size;

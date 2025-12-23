@@ -4,12 +4,14 @@ import { MAX_PLAYERS } from '@shared/constants/gameRules';
 import { RoomSettings } from './RoomSettings';
 import { MinigameNamesEnum } from '@shared/types';
 import { MinigameEntryType } from '@shared/types/RoomSettingsType';
+import { BaseMinigame } from './minigame/BaseMinigame';
 
 export class Room {
   public roomCode: string;
   public players: Map<string, Player>;
   private gameState: GameStateType;
   public settings: RoomSettings;
+  public currentMinigame: BaseMinigame;
 
   constructor(roomCode: string) {
     this.roomCode = roomCode;
