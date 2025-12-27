@@ -1,0 +1,14 @@
+@mixin background-opacity($bg-color, $bg-size, $bg-opacity, $bg-svg) {
+  position: relative;
+  background-color: $bg-color;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url(#{$bg-svg});
+    background-size: $bg-size;
+    opacity: $bg-opacity;
+    pointer-events: none;
+  }
+}
