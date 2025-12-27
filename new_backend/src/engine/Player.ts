@@ -18,7 +18,7 @@ export class Player {
     this.score = 0;
     this.isDisconnected = false;
     this.status = PlayerStatusEnum.idle;
-    this.avatar = 'skeleton';
+    this.avatar = 'default';
     this.ready = false;
     this.isHost = isHost;
   }

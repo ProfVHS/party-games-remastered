@@ -36,4 +36,21 @@ export const handlePlayers = (io: Server, socket: Socket) => {
     if (!room) return { success: false, message: 'Room not found!' };
     io.to(room.roomCode).emit('fetched_ready_players', room.getReadyPlayers());
   });
+
+  socket.on('choose_avatar', (avatar, callback) => {
+    const room = RoomManager.getRoom(socket.data.roomCode);
+    if (!room) return callback({ success: false, payload: 'Room not found!' });
+
+    const isTaken = [...room.players.values()].some((p) => p.avatar === avatar && p.id !== socket.id);
+    if (isTaken) return callback({ success: false, payload: 'Avatar already taken!' });
+
+    const player = room.players.get(socket.id);
+    if (!player) return callback({ success: false, payload: 'Player not found!' });
+
+    player.avatar = avatar;
+
+    socket.nsp.to(room.roomCode).emit('got_players', room.getPlayers());
+
+    callback({ success: true });
+  });
 };
