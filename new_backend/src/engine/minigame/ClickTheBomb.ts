@@ -8,9 +8,9 @@ const POINTS = CLICK_THE_BOMB_RULES.POINTS;
 export class ClickTheBomb extends TurnBasedMinigame {
   public clickCount: number = 0;
   public streak: number = 0;
+  public prizePool: number = 0;
 
   private maxClicks: number = 0;
-  private prizePool: number = 0;
 
   constructor(players: Map<string, Player>, config: MinigameDataType) {
     super(players, config);
@@ -62,6 +62,10 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
   onNextTurn = () => {
     this.grantPrizePool();
+  };
+
+  start = () => {
+    this.setupBomb();
   };
 
   end(): void {

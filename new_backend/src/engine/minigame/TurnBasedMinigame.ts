@@ -9,8 +9,6 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   };
 
   public getCurrentTurnPlayer = () => {
-    console.log(Array.from(this.players.values()));
-    console.log(this.currentTurn);
     return Array.from(this.players.values())[this.currentTurn];
   };
 

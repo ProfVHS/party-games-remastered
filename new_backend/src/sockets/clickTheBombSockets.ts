@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { RoomManager } from '../engine/RoomManager';
+import { RoomManager } from '../engine/room/RoomManager';
 import { ClickTheBomb } from '../engine/minigame/ClickTheBomb';
 
 export const handleClickTheBomb = (io: Server, socket: Socket) => {
@@ -14,8 +14,7 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
     if (response && response.success) {
       switch (response.state) {
         case 'INCREMENTED':
-          console.log(response.state, game.clickCount, game.streak);
-          io.to(roomCode).emit('updated_click_count', game.clickCount, game.streak);
+          io.to(roomCode).emit('updated_click_count', game.clickCount, game.prizePool);
           break;
         case 'PLAYER_EXPLODED':
           io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer());

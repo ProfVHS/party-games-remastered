@@ -46,6 +46,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
 
     const ctb = createClickTheBombConfig(2);
     room.currentMinigame = new ClickTheBomb(room.players, ctb);
+    room.currentMinigame.start();
     io.to(roomCode).emit('started_minigame', ctb);
   });
 };
