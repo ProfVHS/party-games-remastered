@@ -7,7 +7,7 @@ export class RoomSettings {
   public numberOfMinigames: number;
 
   constructor() {
-    this.isRandomMinigames = false;
+    this.isRandomMinigames = true;
     this.isTutorialsEnabled = true;
     this.minigames = [];
     this.numberOfMinigames = 2;

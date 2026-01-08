@@ -14,7 +14,7 @@ export class Player {
   constructor(id: string, nickname: string, isHost: boolean = false) {
     this.id = id;
     this.nickname = nickname;
-    this.isAlive = false;
+    this.isAlive = true;
     this.score = 0;
     this.isDisconnected = false;
     this.status = PlayerStatusEnum.idle;

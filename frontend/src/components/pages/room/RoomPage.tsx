@@ -32,8 +32,8 @@ export const RoomPage = () => {
       toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
     });
 
-    socket.on('started_minigame', (data: { minigameData: MinigameDataType }) => {
-      setMinigameName(data.minigameData.minigameName);
+    socket.on('started_minigame', (minigameData: MinigameDataType) => {
+      setMinigameName(minigameData.minigameName);
       setMinigameId(uuidv4());
       fetchRoomData();
     });

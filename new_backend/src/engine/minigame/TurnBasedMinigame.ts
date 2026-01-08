@@ -1,19 +1,25 @@
 import { BaseMinigame } from './BaseMinigame';
 
 export abstract class TurnBasedMinigame extends BaseMinigame {
-  protected currentTurn: number = 0;
+  public currentTurn: number = 0;
 
   public start = () => {
-    const playerCount = this.room.players.size;
+    const playerCount = this.players.size;
     this.currentTurn = Math.floor(Math.random() * playerCount);
   };
 
   public getCurrentTurnPlayer = () => {
-    return Array.from(this.room.players.values())[this.currentTurn];
+    console.log(Array.from(this.players.values()));
+    console.log(this.currentTurn);
+    return Array.from(this.players.values())[this.currentTurn];
   };
 
   public alivePlayersCount = () => {
-    return Array.from(this.room.players.values()).filter((player) => player.isAlive).length;
+    return Array.from(this.players.values()).filter((player) => player.isAlive).length;
+  };
+
+  public getPlayers = () => {
+    return Array.from(this.players.values());
   };
 
   public isLastPlayerStanding = () => {
@@ -21,9 +27,11 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   };
 
   public nextTurn = () => {
-    for (let i = 1; i <= this.room.players.size; i++) {
-      const nextTurn = (this.currentTurn + i) % this.room.players.size;
-      const potentialPlayer = Array.from(this.room.players.values())[nextTurn];
+    this.onNextTurn();
+
+    for (let i = 1; i <= this.players.size; i++) {
+      const nextTurn = (this.currentTurn + i) % this.players.size;
+      const potentialPlayer = this.getPlayers()[nextTurn];
 
       if (potentialPlayer.isAlive && !potentialPlayer.isDisconnected) {
         this.currentTurn = nextTurn;
@@ -31,6 +39,10 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
       }
     }
 
-    throw new Error(`No suitable player found to change turn for room "${this.room.roomCode}".`);
+    throw new Error('No suitable player found to change turn.');
+  };
+
+  onNextTurn = () => {
+    // Logic before skipping turn - implement in Minigame Class
   };
 }

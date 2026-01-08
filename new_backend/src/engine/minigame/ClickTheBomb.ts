@@ -1,18 +1,19 @@
 import { TurnBasedMinigame } from './TurnBasedMinigame';
-import { Room } from '../Room';
 import { MinigameDataType } from '@shared/types';
 import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
+import { Player } from '../Player';
 
 const POINTS = CLICK_THE_BOMB_RULES.POINTS;
 
 export class ClickTheBomb extends TurnBasedMinigame {
-  private clickCount: number = 0;
+  public clickCount: number = 0;
+  public streak: number = 0;
+
   private maxClicks: number = 0;
-  private streak: number = 0;
   private prizePool: number = 0;
 
-  constructor(roomInstance: Room, config: MinigameDataType) {
-    super(roomInstance, config);
+  constructor(players: Map<string, Player>, config: MinigameDataType) {
+    super(players, config);
   }
 
   private setupBomb = () => {
@@ -27,11 +28,13 @@ export class ClickTheBomb extends TurnBasedMinigame {
     player.isAlive = false;
 
     if (this.isLastPlayerStanding()) {
+      this.end();
       return { success: true, state: 'END_GAME' };
     }
 
     this.nextTurn();
     this.setupBomb();
+    return { success: true, state: 'PLAYER_EXPLODED' };
   };
 
   private incrementCounter = () => {
@@ -42,11 +45,23 @@ export class ClickTheBomb extends TurnBasedMinigame {
     this.prizePool += prizePoolDelta;
   };
 
+  private grantPrizePool = () => {
+    const currentPlayer = this.getCurrentTurnPlayer();
+    currentPlayer.score += this.prizePool;
+
+    this.prizePool = 0;
+    this.streak = 0;
+  };
+
   public click = () => {
     if (this.maxClicks === this.clickCount) return this.explode();
 
     this.incrementCounter();
     return { success: true, state: 'INCREMENTED' };
+  };
+
+  onNextTurn = () => {
+    this.grantPrizePool();
   };
 
   end(): void {

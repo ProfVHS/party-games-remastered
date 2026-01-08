@@ -6,6 +6,8 @@ import cors from 'cors';
 import { handleConnection } from './sockets/connectionSockets';
 import { handlePlayers } from './sockets/playersSockets';
 import { handleRoom } from './sockets/roomSockets';
+import { handleMinigames } from './sockets/minigamesSockets';
+import { handleClickTheBomb } from './sockets/clickTheBombSockets';
 
 dotenv.config();
 
@@ -35,4 +37,6 @@ io.on('connection', (socket: Socket) => {
   handleConnection(io, socket);
   handlePlayers(io, socket);
   handleRoom(io, socket);
+  handleMinigames(io, socket);
+  handleClickTheBomb(io, socket);
 });

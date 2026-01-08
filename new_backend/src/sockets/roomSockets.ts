@@ -1,6 +1,8 @@
 import { Server, Socket } from 'socket.io';
-import { RoomManager } from '../engine/RoomManager';
+import { RoomManager } from '../engine/room/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
+import { MinigameDataType, MinigameNamesEnum } from '@shared/types';
+import { ClickTheBomb } from '../engine/minigame/ClickTheBomb';
 
 export const handleRoom = (io: Server, socket: Socket) => {
   socket.on('get_room_data', () => {
@@ -32,4 +34,26 @@ export const handleRoom = (io: Server, socket: Socket) => {
 
     io.to(socket.id).emit('got_room_settings', room.settings.getData());
   });
+
+  socket.on('start_minigame_queue', async () => {
+    const roomCode = socket.data.roomCode;
+    const room = RoomManager.getRoom(roomCode);
+    if (!room) return { success: false, message: 'Room not found!' };
+
+    if (room.settings.minigames.length === 0) {
+      room.randomiseMinigames();
+    }
+
+    const ctb = createClickTheBombConfig(2);
+    room.currentMinigame = new ClickTheBomb(room.players, ctb);
+    io.to(roomCode).emit('started_minigame', ctb);
+  });
 };
+
+const createClickTheBombConfig = (alivePlayersLength: number): MinigameDataType => ({
+  minigameName: MinigameNamesEnum.clickTheBomb,
+  clickCount: 0,
+  maxClicks: Math.floor(Math.random() * (alivePlayersLength * 4)) + 1,
+  streak: 0,
+  prizePool: 0,
+});

@@ -1,23 +1,24 @@
-import { GameStateType } from '../types/gameStateType';
-import { Player } from './Player';
+import { GameStateType } from '../../types/gameStateType';
+import { Player } from '../Player';
 import { MAX_PLAYERS } from '@shared/constants/gameRules';
 import { RoomSettings } from './RoomSettings';
-import { MinigameNamesEnum } from '@shared/types';
 import { MinigameEntryType } from '@shared/types/RoomSettingsType';
-import { BaseMinigame } from './minigame/BaseMinigame';
+import { BaseMinigame } from '../minigame/BaseMinigame';
+import { MINIGAME_REGISTRY } from '../minigame';
 
 export class Room {
   public roomCode: string;
   public players: Map<string, Player>;
   private gameState: GameStateType;
   public settings: RoomSettings;
-  public currentMinigame: BaseMinigame;
+  public currentMinigame: BaseMinigame | null;
 
   constructor(roomCode: string) {
     this.roomCode = roomCode;
     this.players = new Map();
     this.gameState = GameStateType.lobby;
     this.settings = new RoomSettings();
+    this.currentMinigame = null;
   }
 
   public addPlayer = (player: Player) => {
@@ -66,9 +67,13 @@ export class Room {
   public randomiseMinigames = () => {
     const settings = this.settings;
     if (!settings.isRandomMinigames) return { success: false, message: 'Random minigames is disabled!' };
-    if (settings.numberOfMinigames < 2) return { success: false, message: 'Number of Minigames must be greater than 2!' };
+    if (settings.numberOfMinigames < 2)
+      return {
+        success: false,
+        message: 'Number of Minigames must be greater than 2!',
+      };
 
-    let allMinigames = Object.values(MinigameNamesEnum);
+    let allMinigames = Object.keys(MINIGAME_REGISTRY);
     const minigames: MinigameEntryType[] = [];
 
     for (let i = 0; i < settings.numberOfMinigames; i++) {
@@ -76,7 +81,7 @@ export class Room {
       minigames.push({ name: allMinigames[index] });
 
       if (allMinigames.length === 1) {
-        allMinigames = Object.values(MinigameNamesEnum);
+        allMinigames = Object.keys(MINIGAME_REGISTRY);
       } else {
         allMinigames.splice(index, 1);
       }
