@@ -8,6 +8,7 @@ import { handlePlayers } from './sockets/playersSockets';
 import { handleRoom } from './sockets/roomSockets';
 import { handleMinigames } from './sockets/minigamesSockets';
 import { handleClickTheBomb } from './sockets/clickTheBombSockets';
+import { validationMiddleware } from './sockets/middlewares/validationMiddleware';
 
 dotenv.config();
 
@@ -33,6 +34,8 @@ socketServer.listen(PORT, () => {
 
 io.on('connection', (socket: Socket) => {
   console.log(`Socket connection started: ${socket.id}`);
+
+  validationMiddleware(socket);
 
   handleConnection(io, socket);
   handlePlayers(io, socket);

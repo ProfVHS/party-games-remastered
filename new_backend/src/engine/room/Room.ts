@@ -47,6 +47,10 @@ export class Room {
     return Array.from(this.players.values()).map((p) => p.getData());
   };
 
+  public getPlayer = (id: string) => {
+    return this.players.get(id);
+  };
+
   public getReadyPlayers = () => {
     return Array.from(this.players.values())
       .filter((p) => p.ready)
