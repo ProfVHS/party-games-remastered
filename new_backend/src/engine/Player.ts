@@ -1,7 +1,6 @@
 import { PlayerStatusEnum } from '@shared/types';
 
 export class Player {
-
   public readonly id: string;
   public readonly nickname: string;
 
@@ -87,7 +86,7 @@ export class Player {
       status: this.status,
       isDisconnected: this.disconnected,
       ready: this.ready,
-      isHost: this.isHost
+      isHost: this.isHost,
     };
   };
 }
