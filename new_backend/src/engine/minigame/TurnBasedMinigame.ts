@@ -13,7 +13,7 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   };
 
   public alivePlayersCount = () => {
-    return Array.from(this.players.values()).filter((player) => player.isAlive).length;
+    return Array.from(this.players.values()).filter((player) => player.isAlive()).length;
   };
 
   public getPlayers = () => {
@@ -31,7 +31,7 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
       const nextTurn = (this.currentTurn + i) % this.players.size;
       const potentialPlayer = this.getPlayers()[nextTurn];
 
-      if (potentialPlayer.isAlive && !potentialPlayer.isDisconnected) {
+      if (potentialPlayer.isAlive() && !potentialPlayer.isDisconnected()) {
         this.currentTurn = nextTurn;
         return { id: nextTurn, player_id: potentialPlayer.id, nickname: potentialPlayer.nickname };
       }

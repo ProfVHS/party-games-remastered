@@ -7,7 +7,7 @@ import { BaseMinigame } from '../minigame/BaseMinigame';
 import { MINIGAME_REGISTRY } from '../minigame';
 
 export class Room {
-  public roomCode: string;
+  public readonly roomCode: string;
   public players: Map<string, Player>;
   private gameState: GameStateType;
   public settings: RoomSettings;
@@ -39,7 +39,7 @@ export class Room {
     return {
       roomCode: this.roomCode,
       players: Array.from(this.players.values()).map((p) => p.getData()),
-      gameState: this.gameState,
+      gameState: this.gameState
     };
   };
 
@@ -53,7 +53,7 @@ export class Room {
 
   public getReadyPlayers = () => {
     return Array.from(this.players.values())
-      .filter((p) => p.ready)
+      .filter((p) => p.isReady())
       .map((p) => p.id);
   };
 
@@ -74,7 +74,7 @@ export class Room {
     if (settings.numberOfMinigames < 2)
       return {
         success: false,
-        message: 'Number of Minigames must be greater than 2!',
+        message: 'Number of Minigames must be greater than 2!'
       };
 
     let allMinigames = Object.keys(MINIGAME_REGISTRY);

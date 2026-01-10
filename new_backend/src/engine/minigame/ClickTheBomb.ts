@@ -1,9 +1,9 @@
 import { TurnBasedMinigame } from './TurnBasedMinigame';
 import { MinigameDataType } from '@shared/types';
-import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 import { Player } from '../Player';
 
-const POINTS = CLICK_THE_BOMB_RULES.POINTS;
+const POINTS = [15, 17, 20, 23, 26, 30, 35];
+const LOSS = 50;
 
 export class ClickTheBomb extends TurnBasedMinigame {
   public clickCount: number = 0;
@@ -25,7 +25,8 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
   private explode = () => {
     const player = this.getCurrentTurnPlayer();
-    player.isAlive = false;
+    player.kill();
+    player.substractScore(LOSS);
 
     if (this.isLastPlayerStanding()) {
       this.end();
@@ -47,7 +48,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
   private grantPrizePool = () => {
     const currentPlayer = this.getCurrentTurnPlayer();
-    currentPlayer.score += this.prizePool;
+    currentPlayer.addScore(this.prizePool);
 
     this.prizePool = 0;
     this.streak = 0;
@@ -69,6 +70,8 @@ export class ClickTheBomb extends TurnBasedMinigame {
   };
 
   end(): void {
-    // Logic after ending click the bomb
+    this.players.forEach((player: Player) => {
+      player.revive();
+    });
   }
 }

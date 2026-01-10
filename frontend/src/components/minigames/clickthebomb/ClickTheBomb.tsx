@@ -39,7 +39,6 @@ export const ClickTheBomb = ({ startGame }: ClickTheBombProps) => {
     setExploded(false);
     setPrizePool(0);
     startCountdownAnimation();
-    if (currentPlayer?.isHost) socket.emit('streak_reset');
   };
 
   const handlePlayerDeath = () => {
@@ -62,7 +61,6 @@ export const ClickTheBomb = ({ startGame }: ClickTheBombProps) => {
     setCanSkipTurn(false);
     stopCountdownAnimation();
     socket.emit('change_turn');
-    socket.emit('grant_prize_pool');
   };
 
   useEffect(() => {
