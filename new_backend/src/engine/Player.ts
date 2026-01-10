@@ -6,7 +6,7 @@ export class Player {
   public readonly nickname: string;
 
   private disconnected: boolean;
-  private isHost: boolean;
+  private readonly isHost: boolean;
   private alive: boolean;
   private score: number;
   private status: PlayerStatusEnum;
