@@ -1,12 +1,11 @@
 import { Server, Socket } from 'socket.io';
-import { RoomManager } from '../engine/room/RoomManager';
+import { RoomManager } from '../engine/managers/RoomManager';
 import { ClickTheBomb } from '../engine/minigame/ClickTheBomb';
 
 export const handleClickTheBomb = (io: Server, socket: Socket) => {
   socket.on('bomb_click', async () => {
     const roomCode = socket.data.roomCode;
-    const room = RoomManager.getRoom(roomCode);
-    if (!room) return { success: false, message: 'Room not found!' };
+    const room = RoomManager.getRoom(roomCode)!;
 
     const game = room.currentMinigame as ClickTheBomb;
     const response = game.click();

@@ -1,6 +1,6 @@
-import { TurnBasedMinigame } from './TurnBasedMinigame';
+import { TurnBasedMinigame } from './base/TurnBasedMinigame';
 import { MinigameDataType } from '@shared/types';
-import { Player } from '../Player';
+import { Player } from '../core/Player';
 
 const POINTS = [15, 17, 20, 23, 26, 30, 35];
 const LOSS = 50;
@@ -26,7 +26,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
   private explode = () => {
     const player = this.getCurrentTurnPlayer();
     player.kill();
-    player.substractScore(LOSS);
+    player.subtractScore(LOSS);
 
     if (this.isLastPlayerStanding()) {
       this.end();

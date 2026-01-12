@@ -1,4 +1,4 @@
-import { RoomManager } from '../engine/room/RoomManager';
+import { RoomManager } from '../engine/managers/RoomManager';
 import { Server, Socket } from 'socket.io';
 
 export const handlePlayers = (io: Server, socket: Socket) => {

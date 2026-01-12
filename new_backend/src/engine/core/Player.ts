@@ -1,4 +1,5 @@
 import { PlayerStatusEnum } from '@shared/types';
+import { avatars } from '@shared/constants/avatars';
 
 export class Player {
   public readonly id: string;
@@ -10,7 +11,7 @@ export class Player {
   private score: number;
   private status: PlayerStatusEnum;
   private ready: boolean;
-  private avatar: string;
+  private avatar: avatars;
 
   constructor(id: string, nickname: string, isHost: boolean = false) {
     this.id = id;
@@ -19,7 +20,7 @@ export class Player {
     this.score = 0;
     this.disconnected = false;
     this.status = PlayerStatusEnum.idle;
-    this.avatar = 'skeleton';
+    this.avatar = avatars.skeleton;
     this.ready = false;
     this.isHost = isHost;
   }
@@ -56,7 +57,7 @@ export class Player {
     this.status = status;
   }
 
-  public changeAvatar = (avatar: string) => {
+  public changeAvatar = (avatar: avatars) => {
     this.avatar = avatar;
   };
 
@@ -72,7 +73,7 @@ export class Player {
     this.score = this.score + score < 0 ? 0 : this.score + score;
   };
 
-  public substractScore = (score: number) => {
+  public subtractScore = (score: number) => {
     this.score = this.score - score <= 0 ? 0 : this.score - score;
   };
 

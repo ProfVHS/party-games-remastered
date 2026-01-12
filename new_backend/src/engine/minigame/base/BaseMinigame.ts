@@ -1,5 +1,5 @@
 import { MinigameDataType } from '@shared/types';
-import { Player } from '../Player';
+import { Player } from '../../core/Player';
 
 export abstract class BaseMinigame {
   protected config: MinigameDataType;

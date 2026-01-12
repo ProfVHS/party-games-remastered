@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
-import { RoomManager } from '../engine/room/RoomManager';
-import { TurnBasedMinigame } from '../engine/minigame/TurnBasedMinigame';
+import { RoomManager } from '../engine/managers/RoomManager';
+import { TurnBasedMinigame } from '../engine/minigame/base/TurnBasedMinigame';
 
 export const handleMinigames = (io: Server, socket: Socket) => {
   socket.on('change_turn', async () => {

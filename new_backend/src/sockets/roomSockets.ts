@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { RoomManager } from '../engine/room/RoomManager';
+import { RoomManager } from '../engine/managers/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
 import { MinigameDataType, MinigameNamesEnum } from '@shared/types';
 import { ClickTheBomb } from '../engine/minigame/ClickTheBomb';
@@ -40,8 +40,8 @@ export const handleRoom = (io: Server, socket: Socket) => {
     const room = RoomManager.getRoom(roomCode);
     if (!room) return { success: false, message: 'Room not found!' };
 
-    if (room.settings.minigames.length === 0) {
-      room.randomiseMinigames();
+    if (room.settings.getMinigames().length === 0) {
+      room.settings.randomiseMinigames();
     }
 
     const ctb = createClickTheBombConfig(2);
