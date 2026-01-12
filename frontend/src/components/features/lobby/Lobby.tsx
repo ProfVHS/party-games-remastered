@@ -1,6 +1,6 @@
 import './Lobby.scss';
 import { Button } from '@components/ui/button/Button';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { socket } from '@socket';
 
 import { useToast } from '@hooks/useToast.ts';
@@ -9,22 +9,18 @@ import { useLobbyStart } from '@hooks/useLobbyStart.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 
 type LobbyProps = {
-  playerIdsReady: string[];
-  setPlayerIdsReady: Dispatch<SetStateAction<string[]>>;
   areRoomSettingsUpToDate: boolean;
 };
 
-export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDate }: LobbyProps) => {
+export const Lobby = ({ areRoomSettingsUpToDate }: LobbyProps) => {
   const [ready, setReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = localStorage.getItem('roomCode');
-  const { currentPlayer } = usePlayersStore();
-
-  useLobbyToggle({ setPlayerIdsReady, setIsLoading });
-
-  const { countdown } = useLobbyStart({ playerIdsReady, setReady });
-
+  const { currentPlayer, players } = usePlayersStore();
   const toast = useToast();
+
+  useLobbyToggle({ setIsLoading });
+  const { countdown } = useLobbyStart({ setReady });
 
   const toggleReady = () => {
     if (!areRoomSettingsUpToDate) return;
@@ -45,9 +41,8 @@ export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDa
   };
 
   useEffect(() => {
-    if (!currentPlayer) return;
-    setReady(playerIdsReady.includes(currentPlayer.id));
-  }, [playerIdsReady]);
+    setReady(currentPlayer!.ready);
+  }, [players]);
 
   return (
     <div className="lobby">
@@ -60,7 +55,7 @@ export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDa
             </span>
           </span>
           <div className="lobby__info">
-            <span className="lobby__players">{playerIdsReady.length}</span>
+            <span className="lobby__players">{players.filter((p) => p.ready).length}</span>
             <span className="lobby__text">Players ready</span>
           </div>
           <Button isDisabled={isLoading || !areRoomSettingsUpToDate} style={{ width: '75%' }} onClick={toggleReady}>

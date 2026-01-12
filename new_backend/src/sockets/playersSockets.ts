@@ -24,7 +24,6 @@ export const handlePlayers = (io: Server, socket: Socket) => {
         payload: {
           gameState: roomGameState,
           roomSettings: room.settings,
-          playerIdsReady: room.getReadyPlayers(),
         },
       });
     } else if (roomGameState === GameStateType.playing) {
@@ -47,6 +46,6 @@ export const handlePlayers = (io: Server, socket: Socket) => {
     if (!player) return { success: false, message: 'Player not found!' };
 
     player.toggleReady();
-    io.to(room.roomCode).emit('toggled_player_ready', room.getReadyPlayers());
+    io.to(room.roomCode).emit('toggled_player_ready', room.getPlayers());
   });
 };

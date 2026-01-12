@@ -10,7 +10,6 @@ export enum GameStateType {
 export type LobbySessionDataType = {
     gameState: GameStateType.lobby;
     roomSettings: RoomSettingsType;
-    playerIdsReady: string[];
 };
 
 type GameSessionDataType = {

@@ -8,6 +8,7 @@ export type PlayerType = {
   status: PlayerStatusEnum;
   selectedObjectId: number;
   avatar: string;
+  ready: boolean;
 };
 
 export enum PlayerStatusEnum {

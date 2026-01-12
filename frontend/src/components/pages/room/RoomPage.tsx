@@ -20,10 +20,9 @@ export const RoomPage = () => {
   const { setRoomSettings, fetchRoomData } = useRoomStore();
   const [minigameName, setMinigameName] = useState<MinigameNamesEnum | null>(null);
   const [minigameId, setMinigameId] = useState<string>('');
-  const [playerIdsReady, setPlayerIdsReady] = useState<string[]>([]);
   const [areRoomSettingsUpToDate, setAreRoomSettingsUpToDate] = useState<boolean>(true);
 
-  const { setPlayers } = usePlayersStore();
+  const { players, setPlayers } = usePlayersStore();
   const { sessionData } = useSocketConnection();
   const toast = useToast();
 
@@ -32,7 +31,6 @@ export const RoomPage = () => {
 
     if (sessionData.gameState === GameStateType.lobby) {
       setRoomSettings(sessionData.roomSettings);
-      setPlayerIdsReady(sessionData.playerIdsReady);
     } else if (sessionData.gameState === GameStateType.playing) {
       setMinigameId(sessionData.minigameId);
       setMinigameName(sessionData.minigameName);
@@ -67,8 +65,6 @@ export const RoomPage = () => {
     };
   }, [socket]);
 
-  const { players } = usePlayersStore();
-
   const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
 
   return minigameName ? (
@@ -76,12 +72,12 @@ export const RoomPage = () => {
   ) : (
     <div className="lobby-page">
       <div className="lobby-page__content">
-        <RoomSettings playerIdsReady={playerIdsReady} setAreRoomSettingsUpToDate={setAreRoomSettingsUpToDate} />
-        <Lobby playerIdsReady={playerIdsReady} setPlayerIdsReady={setPlayerIdsReady} areRoomSettingsUpToDate={areRoomSettingsUpToDate} />
+        <RoomSettings setAreRoomSettingsUpToDate={setAreRoomSettingsUpToDate} />
+        <Lobby areRoomSettingsUpToDate={areRoomSettingsUpToDate} />
       </div>
       <div className="lobby-page__players">
         {slots.map((player, index) =>
-          player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} ready={playerIdsReady.includes(player.id)} /> : <EmptySlot key={index} />,
+          player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} ready={player.ready} /> : <EmptySlot key={index} />,
         )}
       </div>
     </div>

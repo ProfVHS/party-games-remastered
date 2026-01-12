@@ -1,17 +1,20 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { socket } from '@socket';
 import { useToast } from '@hooks/useToast';
+import { PlayerType } from '@shared/types';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 type useLobbyToggleProps = {
-  setPlayerIdsReady: Dispatch<SetStateAction<string[]>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
-export const useLobbyToggle = ({ setPlayerIdsReady, setIsLoading }: useLobbyToggleProps) => {
+export const useLobbyToggle = ({ setIsLoading }: useLobbyToggleProps) => {
   const toast = useToast();
+  const { setPlayers } = usePlayersStore();
+
   useEffect(() => {
-    socket.on('toggled_player_ready', (playerIdsReady: string[]) => {
-      setPlayerIdsReady(playerIdsReady);
+    socket.on('toggled_player_ready', (players: PlayerType[]) => {
+      setPlayers(players);
       setIsLoading(false);
     });
 
