@@ -41,7 +41,9 @@ export const Lobby = ({ areRoomSettingsUpToDate }: LobbyProps) => {
   };
 
   useEffect(() => {
-    setReady(currentPlayer!.ready);
+    if (!currentPlayer) return;
+
+    setReady(currentPlayer.ready);
   }, [players]);
 
   return (
