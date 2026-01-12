@@ -5,7 +5,6 @@ import { socket } from '@socket';
 
 import { useToast } from '@hooks/useToast.ts';
 import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
-import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
 import { useLobbyStart } from '@hooks/useLobbyStart.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 
@@ -22,7 +21,7 @@ export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDa
   const { currentPlayer } = usePlayersStore();
 
   useLobbyToggle({ setPlayerIdsReady, setIsLoading });
-  useLobbyFetch({ setPlayerIdsReady });
+
   const { countdown } = useLobbyStart({ playerIdsReady, setReady });
 
   const toast = useToast();

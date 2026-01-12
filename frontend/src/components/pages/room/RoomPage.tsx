@@ -1,19 +1,19 @@
 import './RoomPage.scss';
-import { RoomSettings } from '@components/features/roomSettings/RoomSettings.tsx';
-import { Lobby } from '@components/features/lobby/Lobby.tsx';
 import { useEffect, useState } from 'react';
 import { socket } from '@socket';
-import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
-import { useToast } from '@hooks/useToast.ts';
-import { usePlayersStore } from '@stores/playersStore.ts';
+import { RoomSettings } from '@components/features/roomSettings/RoomSettings.tsx';
+import { Lobby } from '@components/features/lobby/Lobby.tsx';
 import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar.tsx';
 import { EmptySlot } from '@components/features/emptySlot/EmptySlot.tsx';
-import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
-import { MinigameDataType, MinigameNamesEnum } from '@shared/types';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
-import { useRoomStore } from '@stores/roomStore.ts';
+import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
+import { MinigameDataType, MinigameNamesEnum, PlayerType, GameStateType } from '@shared/types';
+import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
 import { useSocketConnection } from '@hooks/useSocketConnection.ts';
+import { useToast } from '@hooks/useToast.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
+import { useRoomStore } from '@stores/roomStore.ts';
 import { v4 as uuidv4 } from 'uuid';
 
 export const RoomPage = () => {
@@ -23,9 +23,21 @@ export const RoomPage = () => {
   const [playerIdsReady, setPlayerIdsReady] = useState<string[]>([]);
   const [areRoomSettingsUpToDate, setAreRoomSettingsUpToDate] = useState<boolean>(true);
 
+  const { setPlayers } = usePlayersStore();
+  const { sessionData } = useSocketConnection();
   const toast = useToast();
 
-  useSocketConnection();
+  useEffect(() => {
+    if (!sessionData) return;
+
+    if (sessionData.gameState === GameStateType.lobby) {
+      setRoomSettings(sessionData.roomSettings);
+      setPlayerIdsReady(sessionData.playerIdsReady);
+    } else if (sessionData.gameState === GameStateType.playing) {
+      setMinigameId(sessionData.minigameId);
+      setMinigameName(sessionData.minigameName);
+    }
+  }, [sessionData]);
 
   useEffect(() => {
     socket.on('player_join_toast', (nickname: string) => {
@@ -43,10 +55,15 @@ export const RoomPage = () => {
       setRoomSettings(roomSettings);
     });
 
+    socket.on('got_players', (players: PlayerType[]) => {
+      setPlayers(players);
+    });
+
     return () => {
       socket.off('player_join_toast');
       socket.off('started_minigame');
       socket.off('updated_room_settings');
+      socket.off('got_players');
     };
   }, [socket]);
 

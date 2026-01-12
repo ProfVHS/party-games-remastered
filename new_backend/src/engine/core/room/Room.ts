@@ -1,4 +1,4 @@
-import { GameStateType } from '../../../types/gameStateType';
+import { GameStateType } from '@shared/types/GameStateType';
 import { Player } from '../Player';
 import { MAX_PLAYERS } from '@shared/constants/gameRules';
 import { RoomSettings } from './RoomSettings';
@@ -18,6 +18,10 @@ export class Room {
     this.gameState = GameStateType.lobby;
     this.settings = new RoomSettings();
     this.currentMinigame = null;
+  }
+
+  public getGameState() {
+    return this.gameState;
   }
 
   public addPlayer = (player: Player) => {

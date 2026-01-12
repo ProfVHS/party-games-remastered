@@ -1,27 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { socket } from '@socket';
 import { setSessionVariables } from '@utils';
-import { usePlayersStore } from '@stores/playersStore';
 import { useToast } from '@hooks/useToast';
 import { ReturnDataType } from '@shared/types';
-import { useRoomStore } from '@stores/roomStore.ts';
+import { SessionDataType } from '@shared/types/GameStateType.ts';
 
 export const useSocketConnection = () => {
   const navigate = useNavigate();
   const toast = useToast();
-  const { fetchPlayers } = usePlayersStore();
-  const { fetchRoomSettings } = useRoomStore();
+  const [sessionData, setSessionData] = useState<SessionDataType | null>(null);
 
   useEffect(() => {
-    const roomCode = localStorage.getItem('roomCode');
-    const playerId = localStorage.getItem('id');
+    const storageRoomCode = localStorage.getItem('roomCode');
+    const storagePlayerId = localStorage.getItem('id');
 
-    socket.emit('check_if_user_in_room', roomCode, playerId, (response: ReturnDataType) => {
-      if (response.success) {
-        fetchRoomSettings();
-        fetchPlayers();
-        setSessionVariables(roomCode!, socket.id!);
+    if (!storageRoomCode || !storagePlayerId) {
+      toast.warning({ message: 'Error with storage variables', duration: 3 });
+      navigate('/');
+      return;
+    }
+
+    socket.emit('sync_player_session', storageRoomCode, storagePlayerId, (response: ReturnDataType) => {
+      if (response.success && socket.id) {
+        setSessionVariables(storageRoomCode, socket.id);
+        setSessionData(response.payload);
       } else {
         toast.warning({ message: response.payload, duration: 3 });
         navigate('/');
@@ -38,4 +41,6 @@ export const useSocketConnection = () => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, []);
+
+  return { sessionData };
 };

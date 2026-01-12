@@ -1,23 +1,43 @@
 import { RoomManager } from '../engine/managers/RoomManager';
 import { Server, Socket } from 'socket.io';
+import { GameStateType } from '@shared/types/GameStateType';
 
 export const handlePlayers = (io: Server, socket: Socket) => {
-  socket.on('check_if_user_in_room', (roomCode: string, storageId: string, callback) => {
-    if (!roomCode || !storageId) {
-      console.error('Room code or ID is missing');
-      return callback({ success: false });
+  socket.on('sync_player_session', (storageRoomCode: string, storagePlayerId: string, callback) => {
+    if (!storageRoomCode || !storagePlayerId || !socket.data.roomCode) {
+      return callback({ success: false, message: 'Room code or ID is missing' });
     }
-    const room = RoomManager.getRoom(roomCode);
-    if (!room) return { success: false, message: 'Room not found!' };
-    callback(room.checkIfUserIsInRoom(socket.id));
-  });
 
-  socket.on('get_players', () => {
-    const room = RoomManager.getRoom(socket.data.roomCode);
-    if (!room) return { success: false, message: 'Room not found!' };
+    const room = RoomManager.getRoom(storageRoomCode);
+    if (!room) return callback({ success: false, message: 'Room not found!' });
+
+    const player = room.getPlayer(storagePlayerId);
+    if (!player) return callback({ success: false, message: 'Player not found!' });
 
     const players = room.getPlayers();
-    socket.nsp.to(room.roomCode).emit('got_players', players);
+    io.to(room.roomCode).emit('got_players', players);
+
+    const roomGameState = room.getGameState();
+
+    if (roomGameState === GameStateType.lobby) {
+      return callback({
+        success: true,
+        payload: {
+          gameState: roomGameState,
+          roomSettings: room.settings,
+          playerIdsReady: room.getReadyPlayers(),
+        },
+      });
+    } else if (roomGameState === GameStateType.playing) {
+      return callback({
+        success: true,
+        payload: {
+          gameState: roomGameState,
+          minigameId: 'minigame-id',
+          minigameName: 'minigame-name',
+        },
+      });
+    }
   });
 
   socket.on('toggle_player_ready', async () => {
@@ -29,11 +49,5 @@ export const handlePlayers = (io: Server, socket: Socket) => {
 
     player.toggleReady();
     io.to(room.roomCode).emit('toggled_player_ready', room.getReadyPlayers());
-  });
-
-  socket.on('fetch_ready_players', async () => {
-    const room = RoomManager.getRoom(socket.data.roomCode);
-    if (!room) return { success: false, message: 'Room not found!' };
-    io.to(room.roomCode).emit('fetched_ready_players', room.getReadyPlayers());
   });
 };
