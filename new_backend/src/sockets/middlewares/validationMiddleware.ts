@@ -6,7 +6,7 @@ export const validationMiddleware = (socket: Socket) => {
     try {
       const [eventName] = packet;
 
-      const skipValidationEvents = ['create_room', 'join_room'];
+      const skipValidationEvents = ['create_room', 'join_room', 'sync_player_session'];
 
       if (skipValidationEvents.includes(eventName)) {
         return next();

@@ -11,10 +11,9 @@ export const handlePlayers = (io: Server, socket: Socket) => {
     const room = RoomManager.getRoom(storageRoomCode);
     if (!room) return callback({ success: false, message: 'Room not found!' });
 
-    const player = room.getPlayer(storagePlayerId);
-    if (!player) return callback({ success: false, message: 'Player not found!' });
-
     const players = room.getPlayers();
+    if (!players.find((p) => p.id == storagePlayerId)) return callback({ success: false, message: 'Player not found!' });
+
     io.to(room.roomCode).emit('got_players', players);
 
     const roomGameState = room.getGameState();
