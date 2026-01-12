@@ -60,7 +60,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     return { success: true, state: 'INCREMENTED' };
   };
 
-  public getGameState = () => {
+  public getState = () => {
     const { clickCount, streak, prizePool } = this;
     return { clickCount, streak, prizePool };
   };
