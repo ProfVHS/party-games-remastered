@@ -6,10 +6,9 @@ const POINTS = [15, 17, 20, 23, 26, 30, 35];
 const LOSS = 50;
 
 export class ClickTheBomb extends TurnBasedMinigame {
-  public clickCount: number = 0;
-  public streak: number = 0;
-  public prizePool: number = 0;
-
+  private clickCount: number = 0;
+  private streak: number = 0;
+  private prizePool: number = 0;
   private maxClicks: number = 0;
 
   constructor(players: Map<string, Player>, config: MinigameDataType) {
@@ -21,21 +20,6 @@ export class ClickTheBomb extends TurnBasedMinigame {
     this.maxClicks = Math.floor(Math.random() * (this.alivePlayersCount() * 4)) + 1;
     this.streak = 0;
     this.prizePool = 0;
-  };
-
-  private explode = () => {
-    const player = this.getCurrentTurnPlayer();
-    player.kill();
-    player.subtractScore(LOSS);
-
-    if (this.isLastPlayerStanding()) {
-      this.end();
-      return { success: true, state: 'END_GAME' };
-    }
-
-    this.nextTurn();
-    this.setupBomb();
-    return { success: true, state: 'PLAYER_EXPLODED' };
   };
 
   private incrementCounter = () => {
@@ -54,11 +38,31 @@ export class ClickTheBomb extends TurnBasedMinigame {
     this.streak = 0;
   };
 
+  private explode = () => {
+    const player = this.getCurrentTurnPlayer();
+    player.kill();
+    player.subtractScore(LOSS);
+
+    if (this.isLastPlayerStanding()) {
+      this.end();
+      return { success: true, state: 'END_GAME' };
+    }
+
+    this.nextTurn();
+    this.setupBomb();
+    return { success: true, state: 'PLAYER_EXPLODED' };
+  };
+
   public click = () => {
     if (this.maxClicks === this.clickCount) return this.explode();
 
     this.incrementCounter();
     return { success: true, state: 'INCREMENTED' };
+  };
+
+  public getGameState = () => {
+    const { clickCount, streak, prizePool } = this;
+    return { clickCount, streak, prizePool };
   };
 
   onNextTurn = () => {

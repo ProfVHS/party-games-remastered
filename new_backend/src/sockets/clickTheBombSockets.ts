@@ -13,7 +13,8 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
     if (response && response.success) {
       switch (response.state) {
         case 'INCREMENTED':
-          io.to(roomCode).emit('updated_click_count', game.clickCount, game.prizePool);
+          const { clickCount, prizePool } = game.getGameState();
+          io.to(roomCode).emit('updated_click_count', clickCount, prizePool);
           break;
         case 'PLAYER_EXPLODED':
           io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer());
