@@ -4,15 +4,15 @@ import { GameStateType } from '@shared/types/GameStateType';
 
 export const handlePlayers = (io: Server, socket: Socket) => {
   socket.on('sync_player_session', (storageRoomCode: string, storagePlayerId: string, callback) => {
-    if (!storageRoomCode || !storagePlayerId || !socket.data.roomCode) {
-      return callback({ success: false, message: 'Room code or ID is missing' });
+    if (!storageRoomCode || !storagePlayerId) {
+      return callback({ success: false, payload: 'Your session has expired' });
     }
 
     const room = RoomManager.getRoom(storageRoomCode);
-    if (!room) return callback({ success: false, message: 'Room not found!' });
+    if (!room) return callback({ success: false, payload: 'Room no longer exists' });
 
     const players = room.getPlayers();
-    if (!players.find((p) => p.id == storagePlayerId)) return callback({ success: false, message: 'Player not found!' });
+    if (!players.find((p) => p.id == storagePlayerId)) return callback({ success: false, payload: 'You are not a member of this room' });
 
     io.to(room.roomCode).emit('got_players', players);
 

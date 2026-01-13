@@ -32,4 +32,18 @@ export const handleConnection = (io: Server, socket: Socket) => {
       io.to(socket.id).emit('joined_room', { roomCode, id: socket.id });
     }
   });
+
+  socket.on('disconnect', () => {
+    let room = RoomManager.getRoom(socket.data.roomCode);
+
+    console.log('Socket disconnected: ', room?.getGameState(), socket.id);
+
+    room?.removePlayer(socket.id);
+
+    if (room?.getPlayers().length === 0) {
+      RoomManager.deleteRoom(room.roomCode);
+    }
+
+    io.to(socket.data.roomCode).emit('got_players', room?.getPlayers());
+  });
 };
