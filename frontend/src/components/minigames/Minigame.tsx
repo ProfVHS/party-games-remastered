@@ -47,7 +47,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
       }, 8000);
     });
 
-    socket.on('ended_tutorial_queue', () => {
+    socket.on('tutorial_completed', () => {
       setShowTutorial(false);
       setShowLeaderboard(false);
       setStartGame(true);
@@ -55,7 +55,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
 
     return () => {
       socket.off('ended_minigame');
-      socket.off('ended_tutorial_queue');
+      socket.off('tutorial_completed');
     };
   }, [showTutorial, startGame, showLeaderboard]);
 

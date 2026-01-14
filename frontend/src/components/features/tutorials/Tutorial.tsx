@@ -20,6 +20,7 @@ type TutorialProps = {
 
 import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules.ts';
 import { CardsTutorial } from '@components/features/tutorials/minigamesTutorials/cards.tsx';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 export const Tutorial = ({ minigameName }: TutorialProps) => {
   const [page, setPage] = useState<number>(1);
@@ -27,6 +28,7 @@ export const Tutorial = ({ minigameName }: TutorialProps) => {
   const [readyPlayers, setReadyPlayers] = useState<number>(0);
   const [maxPlayers, setMaxPlayers] = useState<number>(MIN_PLAYERS_TO_START);
   const maxPage = maxPagesByGame[minigameName];
+  const { players } = usePlayersStore();
 
   const handleChangePage = (delta: number) => {
     if (page + delta < 1 || page + delta > maxPage) return;
@@ -36,19 +38,22 @@ export const Tutorial = ({ minigameName }: TutorialProps) => {
 
   const handleReady = () => {
     setReady(true);
-    socket.emit('end_tutorial_queue');
+    socket.emit('tutorial_player_ready');
   };
 
   useEffect(() => {
-    socket.on('tutorial_queue_players', (playersReady: number, maxPlayers: number) => {
+    socket.on('tutorial_ready_status', (playersReady: number) => {
       setReadyPlayers(playersReady);
-      setMaxPlayers(maxPlayers);
     });
 
     return () => {
-      socket.off('tutorial_queue_players');
+      socket.off('tutorial_ready_status');
     };
   }, [readyPlayers, maxPlayers]);
+
+  useEffect(() => {
+    setMaxPlayers(players.filter((p) => !p.isDisconnected).length);
+  }, [players]);
 
   return (
     <div className="tutorial__overlay">

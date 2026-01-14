@@ -61,6 +61,10 @@ export class Player {
     this.avatar = avatar;
   };
 
+  public setReady = (ready: boolean) => {
+    this.ready = ready;
+  };
+
   public toggleReady = () => {
     this.ready = !this.ready;
   };

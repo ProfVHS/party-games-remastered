@@ -44,10 +44,28 @@ export const handleRoom = (io: Server, socket: Socket) => {
       room.settings.randomiseMinigames();
     }
 
+    room.players.forEach((player) => {
+      player.setReady(false);
+    });
+
     const ctb = createClickTheBombConfig(2);
     room.currentMinigame = new ClickTheBomb(room.players, ctb);
     room.currentMinigame.start();
     io.to(roomCode).emit('started_minigame', ctb);
+  });
+
+  socket.on('tutorial_player_ready', async () => {
+    const room = RoomManager.getRoom(socket.data.roomCode);
+    const player = room?.getPlayer(socket.id);
+    player?.toggleReady();
+
+    const readyPlayersLength = room?.getReadyPlayers().length;
+
+    if (room?.getPlayers().length === readyPlayersLength) {
+      io.to(socket.data.roomCode).emit('tutorial_completed');
+    } else {
+      io.to(socket.data.roomCode).emit('tutorial_ready_status', readyPlayersLength);
+    }
   });
 };
 
