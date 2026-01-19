@@ -39,6 +39,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
     const roomCode = socket.data.roomCode;
     const room = RoomManager.getRoom(roomCode);
     if (!room) return { success: false, message: 'Room not found!' };
+    if (!room.getPlayer(socket.id)?.isHost()) return { success: false, message: 'Player is not a host!' };
 
     if (room.settings.getMinigames().length === 0) {
       room.settings.randomiseMinigames();
@@ -49,7 +50,9 @@ export const handleRoom = (io: Server, socket: Socket) => {
     });
 
     const ctb = createClickTheBombConfig(2);
-    room.currentMinigame = new ClickTheBomb(room.players, ctb);
+    room.currentMinigame = new ClickTheBomb(room.players, (state: string, currentTurn: number) => {
+      io.to(roomCode).emit('got_turn', currentTurn);
+    });
     room.currentMinigame.start();
     io.to(roomCode).emit('started_minigame', ctb);
   });

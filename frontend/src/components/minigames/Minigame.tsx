@@ -19,7 +19,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
   const [showTutorial, setShowTutorial] = useState<boolean>(false);
   const [scoreboardPlayers, setScoreboardPlayersPlayers] = useState<PlayerType[]>([]);
   const [startGame, setStartGame] = useState<boolean>(false);
-  const { setPlayers, setOldPlayers } = usePlayersStore();
+  const { setPlayers, setOldPlayers, currentPlayer } = usePlayersStore();
   const { roomSettings } = useRoomStore();
 
   const handleStartNewGame = () => {
@@ -43,7 +43,9 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
       // Start next game
       setTimeout(() => {
         setOldPlayers(newPlayers);
-        socket.emit('start_minigame_queue');
+        if (currentPlayer?.isHost) {
+          socket.emit('start_minigame_queue');
+        }
       }, 8000);
     });
 

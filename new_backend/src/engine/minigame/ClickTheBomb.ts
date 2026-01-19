@@ -1,9 +1,9 @@
 import { TurnBasedMinigame } from './base/TurnBasedMinigame';
-import { MinigameDataType } from '@shared/types';
 import { Player } from '../core/Player';
 
 const POINTS = [15, 17, 20, 23, 26, 30, 35];
 const LOSS = 50;
+const MAX_MS_TO_CLICK = 5000;
 
 export class ClickTheBomb extends TurnBasedMinigame {
   private clickCount: number = 0;
@@ -11,8 +11,8 @@ export class ClickTheBomb extends TurnBasedMinigame {
   private prizePool: number = 0;
   private maxClicks: number = 0;
 
-  constructor(players: Map<string, Player>, config: MinigameDataType) {
-    super(players, config);
+  constructor(players: Map<string, Player>, onTurnTimeout: (state: string, currentTurn: number) => void) {
+    super(players, MAX_MS_TO_CLICK, onTurnTimeout);
   }
 
   private setupBomb = () => {
@@ -28,6 +28,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
     const prizePoolDelta = this.streak > POINTS.length - 1 ? POINTS.at(-1) || 0 : POINTS[this.streak - 1];
     this.prizePool += prizePoolDelta;
+    this.timer.reset();
   };
 
   private grantPrizePool = () => {
@@ -67,15 +68,23 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
   onNextTurn = () => {
     this.grantPrizePool();
+    this.timer.reset();
   };
 
-  start = () => {
+  protected onTimerEnd = () => {
+    const player = this.getCurrentTurnPlayer();
+    player.subtractScore(LOSS);
+
+    this.nextTurn();
+  };
+
+  onStart = () => {
     this.setupBomb();
   };
 
-  end(): void {
+  end = () => {
     this.players.forEach((player: Player) => {
       player.revive();
     });
-  }
+  };
 }

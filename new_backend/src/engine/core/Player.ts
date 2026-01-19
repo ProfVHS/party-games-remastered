@@ -6,7 +6,7 @@ export class Player {
   public readonly nickname: string;
 
   private disconnected: boolean;
-  private readonly isHost: boolean;
+  private readonly host: boolean;
   private alive: boolean;
   private score: number;
   private status: PlayerStatusEnum;
@@ -22,7 +22,7 @@ export class Player {
     this.status = PlayerStatusEnum.idle;
     this.avatar = avatars.skeleton;
     this.ready = false;
-    this.isHost = isHost;
+    this.host = isHost;
   }
 
   public isAlive = () => {
@@ -73,6 +73,10 @@ export class Player {
     return this.ready;
   };
 
+  public isHost = () => {
+    return this.host;
+  };
+
   public addScore = (score: number) => {
     this.score = this.score + score < 0 ? 0 : this.score + score;
   };
@@ -91,7 +95,7 @@ export class Player {
       status: this.status,
       isDisconnected: this.disconnected,
       ready: this.ready,
-      isHost: this.isHost,
+      isHost: this.isHost(),
     };
   };
 }

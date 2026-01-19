@@ -1,27 +1,17 @@
 import { BaseMinigame } from './BaseMinigame';
+import { Player } from '../../core/Player';
 
 export abstract class TurnBasedMinigame extends BaseMinigame {
   public currentTurn: number = 0;
 
-  public start = () => {
-    const playerCount = this.players.size;
-    this.currentTurn = Math.floor(Math.random() * playerCount);
-  };
+  protected constructor(players: Map<string, Player>, roundDuration: number, onTurnTimeout: (state: 'END_GAME' | 'NEXT_TURN', currentTurn: number) => void) {
+    super(players, roundDuration, () => {
+      onTurnTimeout(this.isLastPlayerStanding() ? 'END_GAME' : 'NEXT_TURN', this.currentTurn);
+    });
+  }
 
   public getCurrentTurnPlayer = () => {
     return Array.from(this.players.values())[this.currentTurn];
-  };
-
-  public alivePlayersCount = () => {
-    return Array.from(this.players.values()).filter((player) => player.isAlive()).length;
-  };
-
-  public getPlayers = () => {
-    return Array.from(this.players.values());
-  };
-
-  public isLastPlayerStanding = () => {
-    return this.alivePlayersCount() === 1;
   };
 
   public nextTurn = () => {
@@ -38,6 +28,12 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
     }
 
     throw new Error('No suitable player found to change turn.');
+  };
+
+  beforeStart = () => {
+    const playerCount = this.players.size;
+    this.currentTurn = Math.floor(Math.random() * playerCount);
+    this.timer.start();
   };
 
   onNextTurn = () => {
