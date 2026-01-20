@@ -1,5 +1,6 @@
 import { TurnBasedMinigame } from './base/TurnBasedMinigame';
 import { Player } from '../core/Player';
+import { TurnBaseTimeoutState } from '../../types/MinigameTypes';
 
 const POINTS = [15, 17, 20, 23, 26, 30, 35];
 const LOSS = 50;
@@ -11,7 +12,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
   private prizePool: number = 0;
   private maxClicks: number = 0;
 
-  constructor(players: Map<string, Player>, onTurnTimeout: (state: string, currentTurn: number) => void) {
+  constructor(players: Map<string, Player>, onTurnTimeout: (state: TurnBaseTimeoutState) => void) {
     super(players, MAX_MS_TO_CLICK, onTurnTimeout);
   }
 
@@ -28,7 +29,6 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
     const prizePoolDelta = this.streak > POINTS.length - 1 ? POINTS.at(-1) || 0 : POINTS[this.streak - 1];
     this.prizePool += prizePoolDelta;
-    this.timer.reset();
   };
 
   private grantPrizePool = () => {
@@ -55,8 +55,9 @@ export class ClickTheBomb extends TurnBasedMinigame {
   };
 
   public click = () => {
-    if (this.maxClicks === this.clickCount) return this.explode();
+    this.timer.reset();
 
+    if (this.maxClicks === this.clickCount) return this.explode();
     this.incrementCounter();
     return { success: true, state: 'INCREMENTED' };
   };
@@ -86,5 +87,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     this.players.forEach((player: Player) => {
       player.revive();
     });
+
+    this.timer.clear();
   };
 }

@@ -1,12 +1,13 @@
 import { BaseMinigame } from './BaseMinigame';
 import { Player } from '../../core/Player';
+import { TurnBaseTimeoutState } from '../../../types/MinigameTypes';
 
 export abstract class TurnBasedMinigame extends BaseMinigame {
   public currentTurn: number = 0;
 
-  protected constructor(players: Map<string, Player>, roundDuration: number, onTurnTimeout: (state: 'END_GAME' | 'NEXT_TURN', currentTurn: number) => void) {
+  protected constructor(players: Map<string, Player>, roundDuration: number, onTurnTimeout: (state: TurnBaseTimeoutState) => void) {
     super(players, roundDuration, () => {
-      onTurnTimeout(this.isLastPlayerStanding() ? 'END_GAME' : 'NEXT_TURN', this.currentTurn);
+      onTurnTimeout(this.isLastPlayerStanding() ? 'END_GAME' : 'NEXT_TURN');
     });
   }
 

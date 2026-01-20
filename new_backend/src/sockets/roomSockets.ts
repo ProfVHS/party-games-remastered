@@ -3,6 +3,8 @@ import { RoomManager } from '../engine/managers/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
 import { MinigameDataType, MinigameNamesEnum } from '@shared/types';
 import { ClickTheBomb } from '../engine/minigame/ClickTheBomb';
+import { TurnBasedMinigame } from '../engine/minigame/base/TurnBasedMinigame';
+import { TurnBaseTimeoutState } from '../types/MinigameTypes';
 
 export const handleRoom = (io: Server, socket: Socket) => {
   socket.on('get_room_data', () => {
@@ -50,8 +52,19 @@ export const handleRoom = (io: Server, socket: Socket) => {
     });
 
     const ctb = createClickTheBombConfig(2);
-    room.currentMinigame = new ClickTheBomb(room.players, (state: string, currentTurn: number) => {
-      io.to(roomCode).emit('got_turn', currentTurn);
+    room.currentMinigame = new ClickTheBomb(room.players, (state: TurnBaseTimeoutState) => {
+      const game = room.currentMinigame as TurnBasedMinigame;
+
+      switch (state) {
+        case 'NEXT_TURN':
+          io.to(roomCode).emit('got_turn', game.currentTurn);
+          io.to(roomCode).emit('got_players', room.getPlayers());
+          break;
+        case 'END_GAME':
+          io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer());
+          io.to(roomCode).emit('player_exploded');
+          break;
+      }
     });
     room.currentMinigame.start();
     io.to(roomCode).emit('started_minigame', ctb);

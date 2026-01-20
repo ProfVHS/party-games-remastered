@@ -22,6 +22,7 @@ export const useTurn = ({ onChangedTurn, onGotTurn }: useTurnProps = {}) => {
     const playerId = players[turnIndex].id;
     const turn: TurnType = { id: turnIndex, player_id: playerId, nickname: playerNickname };
 
+    console.log('turn', turn);
     setCurrentTurn(turn);
     onGotTurn?.(turn);
   };
