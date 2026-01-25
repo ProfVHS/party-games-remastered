@@ -1,8 +1,7 @@
 import './RoomLayout.scss';
-import { PlayerType, RoomStatusEnum } from '@shared/types';
+import { PlayerType } from '@shared/types';
 import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar';
-import { useTurn } from '@hooks/useTurn.ts';
-import { useRoomStore } from '@stores/roomStore.ts';
+import { memo } from 'react';
 
 type RoomLayoutProps = {
   players: PlayerType[];
@@ -63,22 +62,12 @@ const possibleAvatarLayouts: Record<number, { row: number; col: number }[]> = {
   ],
 };
 
-export const RoomLayout = ({ players, children }: RoomLayoutProps) => {
-  const { currentTurn } = useTurn();
-  const { roomData } = useRoomStore();
-
+export const RoomLayout = memo(({ players, children }: RoomLayoutProps) => {
   const renderPlayers = () => {
     const relevantGridPositions = possibleAvatarLayouts[players.length];
     return players.map((player, index) => {
       const { row, col } = relevantGridPositions[index];
-      return (
-        <PlayerAvatar
-          key={index}
-          player={player}
-          style={{ gridColumn: col, gridRow: row }}
-          currentTurn={roomData?.status === RoomStatusEnum.game ? currentTurn : null}
-        />
-      );
+      return <PlayerAvatar key={index} player={player} style={{ gridColumn: col, gridRow: row }} />;
     });
   };
 
@@ -88,4 +77,4 @@ export const RoomLayout = ({ players, children }: RoomLayoutProps) => {
       {renderPlayers()}
     </div>
   );
-};
+});

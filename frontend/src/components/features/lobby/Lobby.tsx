@@ -16,7 +16,8 @@ export const Lobby = ({ areRoomSettingsUpToDate }: LobbyProps) => {
   const [ready, setReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = localStorage.getItem('roomCode');
-  const { currentPlayer, players } = usePlayersStore();
+  const currentPlayer = usePlayersStore((state) => state.currentPlayer);
+  const players = usePlayersStore((state) => state.players);
   const toast = useToast();
 
   useLobbyToggle({ setIsLoading });

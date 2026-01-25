@@ -1,9 +1,10 @@
 import './PlayerAvatar.scss';
-import { PlayerType, TurnType } from '@shared/types';
+import { PlayerType } from '@shared/types';
 import { avatarList } from './avatarList';
-import React, { createElement } from 'react';
+import React, { createElement, memo } from 'react';
 import { Counter } from '@components/ui/counter/Counter.tsx';
 import { ClassNames } from '@utils';
+import { useTurn } from '@hooks/useTurn.ts';
 
 type avatars = keyof typeof avatarList;
 
@@ -11,12 +12,12 @@ type PlayerAvatarProps = {
   player: PlayerType;
   style?: React.CSSProperties;
   inLobby?: boolean;
-  currentTurn?: TurnType | null;
   ready?: boolean;
 };
 
-export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn, ready }: PlayerAvatarProps) => {
+export const PlayerAvatar = memo(({ player, style, inLobby = false, ready }: PlayerAvatarProps) => {
   const avatar = player.avatar as avatars;
+  const { currentTurn } = useTurn();
   return (
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.player_id === player.id })} style={style}>
       {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
@@ -29,4 +30,4 @@ export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn, read
       )}
     </div>
   );
-};
+});

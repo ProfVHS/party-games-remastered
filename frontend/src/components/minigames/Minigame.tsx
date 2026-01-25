@@ -74,7 +74,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
         <Scoreboard scoreboardPlayers={scoreboardPlayers} />
       ) : (
         <>
-          {minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb startGame={startGame} />}
+          {minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}
           {minigameName == MinigameNamesEnum.cards && <Cards startGame={startGame} />}
           {minigameName == MinigameNamesEnum.colorsMemory && <div>Colors Memory</div>}
           {minigameName == MinigameNamesEnum.trickyDiamonds && <TrickyDiamonds />}
