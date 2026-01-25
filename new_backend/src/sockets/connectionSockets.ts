@@ -45,5 +45,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
     }
 
     io.to(socket.data.roomCode).emit('got_players', room?.getPlayers());
+
+    socket.leave(socket.data.roomCode);
   });
 };

@@ -10,6 +10,9 @@ html[data-theme='light'] {
   --party-games-fill: #fff;
   --cartoon-shadow: 0 4px rgba(0, 0, 0, 0.3);
 
+  //== Loading ==//
+  --loading-color: #{$darkerPrimaryColor};
+
   //== Player Avatar ==//
   --player-avatar-username: #{$darkerPrimaryColor};
   --player-avatar-score: #{$darkerPrimaryColor};
