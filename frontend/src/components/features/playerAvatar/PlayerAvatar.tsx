@@ -15,7 +15,7 @@ type PlayerAvatarProps = {
   ready?: boolean;
 };
 
-export const PlayerAvatar = memo(({ player, style, inLobby = false, ready }: PlayerAvatarProps) => {
+const PlayerAvatar = ({ player, style, inLobby = false, ready }: PlayerAvatarProps) => {
   const avatar = player.avatar as avatars;
   const currentTurn = useTurnStore((state) => state.currentTurn);
 
@@ -33,7 +33,9 @@ export const PlayerAvatar = memo(({ player, style, inLobby = false, ready }: Pla
       )}
     </div>
   );
-});
+};
+
+export default memo(PlayerAvatar);
 
 type renderAvatarProps = {
   avatar: avatars;

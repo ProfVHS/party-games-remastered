@@ -1,6 +1,6 @@
 import './RoomLayout.scss';
 import { PlayerType } from '@shared/types';
-import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar';
+import PlayerAvatar from '@components/features/playerAvatar/PlayerAvatar';
 import { memo } from 'react';
 
 type RoomLayoutProps = {

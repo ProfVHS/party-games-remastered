@@ -1,26 +1,26 @@
-import { useCountdownAnimation } from '@hooks/useCountdownAnimation.ts';
-import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules.ts';
-import { useEffect } from 'react';
 import { ClassNames } from '@utils';
-
-const formatMillisecondsToTimer = (ms: number) => {
-  const seconds = Math.floor(ms / 1000);
-  const milliseconds = Math.floor((ms % 1000) / 10); // two-digit ms
-  return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
-};
+import { useEffect, useState } from 'react';
 
 type TimerProps = {
   className?: string;
+  endAt: number;
 };
 
-export const Timer = ({ className }: TimerProps) => {
-  const { animationTimeLeft, startCountdownAnimation } = useCountdownAnimation(CLICK_THE_BOMB_RULES.COUNTDOWN, () => {
-    console.log('timer end');
-  });
-
+export const Timer = ({ className, endAt }: TimerProps) => {
+  const [remainingTime, setRemainingTime] = useState(0);
   useEffect(() => {
-    startCountdownAnimation();
-  }, []);
+    if (!endAt) return;
 
-  return <span className={ClassNames('timer', className)}>{formatMillisecondsToTimer(animationTimeLeft)}</span>;
+    const interval = setInterval(() => setRemainingTime(Math.max(0, endAt - Date.now())), 10);
+
+    return () => clearInterval(interval);
+  }, [endAt]);
+
+  const formatMillisecondsToTimer = (ms: number) => {
+    const seconds = Math.floor(ms / 1000);
+    const milliseconds = Math.floor((ms % 1000) / 10);
+    return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
+  };
+
+  return <span className={ClassNames('timer', className)}>{formatMillisecondsToTimer(remainingTime)}</span>;
 };

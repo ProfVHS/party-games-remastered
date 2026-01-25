@@ -1,6 +1,7 @@
 import { useTurnStore } from '@stores/turnStore.ts';
 import { socket } from '@socket';
-import { TurnType } from '@shared/types';
+import { PlayerType, TurnType } from '@shared/types';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 let initialized = false;
 
@@ -8,10 +9,18 @@ export const initializeTurnSocket = () => {
   if (initialized) return;
   initialized = true;
 
-  const handler = (turn: TurnType) => {
+  const handleChangeTurn = (turn: TurnType, players?: PlayerType[]) => {
     useTurnStore.getState().setTurn(turn);
+    players && usePlayersStore.getState().setPlayers(players);
   };
 
-  socket.on('got_turn', handler);
-  socket.on('changed_turn', handler);
+  const handleTurnTimeout = (turn: TurnType, players: PlayerType[], endAt: number) => {
+    usePlayersStore.getState().setPlayers(players);
+    useTurnStore.getState().setTurn(turn);
+    useTurnStore.getState().setTurnEndAt(endAt);
+  };
+
+  socket.on('got_turn', handleChangeTurn);
+  socket.on('changed_turn', handleChangeTurn);
+  socket.on('turn_timeout', handleTurnTimeout);
 };

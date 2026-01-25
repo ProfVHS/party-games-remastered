@@ -3,18 +3,19 @@ import { useEffect, useState } from 'react';
 import { socket } from '@socket';
 import { RoomSettings } from '@components/features/roomSettings/RoomSettings.tsx';
 import { Lobby } from '@components/features/lobby/Lobby.tsx';
-import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar.tsx';
+import PlayerAvatar from '@components/features/playerAvatar/PlayerAvatar.tsx';
 import { EmptySlot } from '@components/features/emptySlot/EmptySlot.tsx';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
 import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
-import { GameStateType, MinigameDataType, MinigameNamesEnum, PlayerType } from '@shared/types';
+import { GameStateType, MinigameNamesEnum, PlayerType, TurnType } from '@shared/types';
 import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
 import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { useToast } from '@hooks/useToast.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 import { v4 as uuid4 } from 'uuid';
+import { useTurnStore } from '@stores/turnStore.ts';
 
 export const RoomPage = () => {
   const { setRoomSettings, fetchRoomData } = useRoomStore();
@@ -24,6 +25,9 @@ export const RoomPage = () => {
 
   const players = usePlayersStore((state) => state.players);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
+
+  const setTurn = useTurnStore((state) => state.setTurn);
+  const setTurnEndAt = useTurnStore((state) => state.setTurnEndAt);
 
   const { sessionData } = useSocketConnection();
   const toast = useToast();
@@ -44,10 +48,12 @@ export const RoomPage = () => {
       toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
     });
 
-    socket.on('started_minigame', (minigameData: MinigameDataType) => {
-      setMinigameName(minigameData.minigameName);
+    socket.on('started_minigame', (minigameName: MinigameNamesEnum, turn: TurnType, turnEndAt) => {
+      setMinigameName(minigameName);
       setMinigameId(uuid4());
       fetchRoomData();
+      setTurn(turn);
+      setTurnEndAt(turnEndAt);
     });
 
     socket.on('updated_room_settings', (roomSettings: RoomSettingsType) => {

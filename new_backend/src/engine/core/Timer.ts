@@ -16,23 +16,26 @@ export class Timer {
     return 0;
   };
 
+  public getEndAt = () => {
+    return this.endAt ? this.endAt : 0;
+  };
+
   public start = () => {
     this.endAt = Date.now() + this.duration;
-    this.timeout = setTimeout(() => {
-      this.onEnd();
-    }, this.duration);
+    this.timeout = setTimeout(this.onEnd, this.duration);
   };
 
   public reset = () => {
     if (this.timeout) {
       clearTimeout(this.timeout);
+      this.endAt = Date.now() + this.duration;
       this.timeout = setTimeout(this.onEnd, this.duration);
     }
   };
 
   public clear = () => {
     if (this.timeout) {
-      this.timeout = setTimeout(this.onEnd, this.duration);
+      clearTimeout(this.timeout);
     }
   };
 }

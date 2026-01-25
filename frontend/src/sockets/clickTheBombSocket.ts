@@ -3,6 +3,7 @@ import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { socket } from '@socket';
 import { useTurnStore } from '@stores/turnStore.ts';
+import { PlayerType, TurnType } from '@shared/types';
 
 type GameState = {
   clickCount: number;
@@ -22,19 +23,24 @@ export const useClickTheBombSocket = () => {
   const [exploded, setExploded] = useState<boolean>(false);
 
   const isMyTurn = useTurnStore((state) => state.isMyTurn);
+  const setTurn = useTurnStore((state) => state.setTurn);
+  const setTurnEndAt = useTurnStore((state) => state.setTurnEndAt);
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
+  const setPlayers = usePlayersStore((state) => state.setPlayers);
 
   useEffect(() => {
     socket.on('updated_click_count', handleUpdateGameState);
     socket.on('player_exploded', bombExploded);
     socket.on('end_game_click_the_bomb', bombExploded);
     socket.on('show_score', handleShowScore);
+    socket.on('turn_timeout', handleTurnTimeout);
 
     return () => {
       socket.off('updated_click_count', handleUpdateGameState);
       socket.off('player_exploded', bombExploded);
       socket.off('end_game_click_the_bomb', bombExploded);
       socket.off('show_score', handleShowScore);
+      socket.off('turn_timeout', handleTurnTimeout);
     };
   }, []);
 
@@ -42,12 +48,21 @@ export const useClickTheBombSocket = () => {
     setScoreData((prev) => ({ id: (prev?.id ?? 0) + 1, score: scoreDelta }));
   };
 
-  const handleUpdateGameState = (clickCount: number, prizePool: number) => {
+  const handleUpdateGameState = (clickCount: number, prizePool: number, turnEndAt: number) => {
     setLoading(false);
     setGameState({ clickCount, prizePool });
+    setTurnEndAt(turnEndAt);
     if (isMyTurn) {
       setCanSkipTurn(true);
     }
+  };
+
+  const handleTurnTimeout = (turn: TurnType, players: PlayerType[], turnEndAt: number) => {
+    setTurn(turn);
+    setPlayers(players);
+    setLoading(false);
+    setGameState((prev) => ({ ...prev, prizePool: 0 }));
+    setTurnEndAt(turnEndAt);
   };
 
   const bombClick = () => {

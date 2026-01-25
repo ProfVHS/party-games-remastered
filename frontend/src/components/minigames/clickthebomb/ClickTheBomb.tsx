@@ -10,11 +10,13 @@ import { useClickTheBombSocket } from '../../../sockets/clickTheBombSocket.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useTurnStore } from '@stores/turnStore.ts';
 import { memo } from 'react';
+import { ClassNames } from '@utils';
 
 export const ClickTheBomb = () => {
   const { bombClick, nextTurn, gameState, canSkipTurn, exploded, scoreData } = useClickTheBombSocket();
   const currentTurn = useTurnStore((state) => state.currentTurn);
   const isMyTurn = useTurnStore((state) => state.isMyTurn);
+  const turnEndAt = useTurnStore((state) => state.endAt);
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
 
   return (
@@ -26,20 +28,26 @@ export const ClickTheBomb = () => {
           <span className="click-the-bomb__title">Click The Bomb</span>
           <span className="click-the-bomb__turn">{currentTurn?.nickname} Turn</span>
         </div>
-        <div className={`click-the-bomb__bomb ${!isMyTurn || !currentPlayer?.isAlive ? 'bomb__lock' : 'bomb__active'}`} onClick={bombClick}>
+        <div
+          className={ClassNames('click-the-bomb__bomb', {
+            lock: !isMyTurn || !currentPlayer?.isAlive,
+            active: isMyTurn && currentPlayer?.isAlive,
+          })}
+          onClick={bombClick}
+        >
           <Bomb />
           <span className="click-the-bomb__counter">{gameState.clickCount! >= 10 ? gameState.clickCount : '0' + gameState.clickCount}</span>
-          <Timer className="click-the-bomb__timer" />
+          <Timer className="click-the-bomb__timer" endAt={turnEndAt} />
         </div>
         <Button className="click-the-bomb__button" type="button" size="medium" isDisabled={!canSkipTurn} onClick={nextTurn}>
           Next
         </Button>
-        <div className={`click-the-bomb__prize`}>
+        <div className="click-the-bomb__prize">
           <div className="click-the-bomb__prize__text">Prize Pool:</div>
           <PrizePoolEffect points={gameState.prizePool} playerExploded={exploded} />
         </div>
         {exploded && (
-          <div className={'click-the-bomb__explode'}>
+          <div className="click-the-bomb__explode">
             <Explosion />
           </div>
         )}
