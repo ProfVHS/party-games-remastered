@@ -97,7 +97,7 @@
     pointer-events: none;
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     font-size: 1rem;
     z-index: 10;
     animation: fadeIn 0.8s ease-out forwards;
@@ -106,7 +106,7 @@
       width: 100%;
       max-width: 80%;
 
-      border-radius: 0.75rem;
+      border-radius: 0.5rem;
       margin-top: 0.25rem;
 
       font-family: 'Spicy Rice', serif;
@@ -114,6 +114,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      z-index: 1;
     }
   }
 
@@ -133,17 +135,8 @@
   }
 
   &__cross {
-    width: 90%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
+    opacity: 1;
     color: #A54159;
-
-    border-radius: 10px;
-
-    z-index: -1;
   }
 
   .win {

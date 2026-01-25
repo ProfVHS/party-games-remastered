@@ -1,35 +1,29 @@
 import './TrickyDiamonds.scss';
-import HighDiamond from '@assets/textures/highDiamond.svg?react';
-import MediumDiamond from '@assets/textures/mediumDiamond.svg?react';
-import LowDiamond from '@assets/textures/lowDiamond.svg?react';
 import { socket } from '@socket';
 import { useEffect, useState } from 'react';
 import { TRICKY_DIAMONDS_RULES } from '@shared/constants/gameRules.ts';
-import { usePlayersStore } from '@stores/playersStore.ts';
-import { ProgressBar } from '@components/ui/progressBar/ProgressBar.tsx';
 import { useCountdownAnimation } from '@hooks/useCountdownAnimation.ts';
-import Trophy from '@assets/textures/trophy.svg?react';
-import { Icon } from '@assets/icon';
+import { ProgressBar } from '@components/ui/progressBar/ProgressBar.tsx';
+import { Diamond } from '@components/minigames/trickydiamonds/Diamond.tsx';
 
-type Stats = {
+type DiamondPlayers = {
   id: number;
-  count: number;
   players: string[];
 };
 
+const roundsDiamonds = [TRICKY_DIAMONDS_RULES.ROUND_1, TRICKY_DIAMONDS_RULES.ROUND_2, TRICKY_DIAMONDS_RULES.ROUND_3];
+
 export const TrickyDiamonds = () => {
-  const [diamondsStats, setDiamondsStats] = useState<Stats[]>([
-    { id: 0, count: 0, players: [] },
-    { id: 1, count: 0, players: [] },
-    { id: 2, count: 0, players: [] },
+  const [diamondsStats, setDiamondsStats] = useState<DiamondPlayers[]>([
+    { id: 0, players: [] },
+    { id: 1, players: [] },
+    { id: 2, players: [] },
   ]);
   const [diamondIdWinner, setDiamondIdWinner] = useState<number | null>(null);
   const [round, setRound] = useState<number>(0);
-  const [reveal, setReveal] = useState<boolean>(false);
+  const [reveal, setReveal] = useState<boolean>(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const roundsDiamonds = [TRICKY_DIAMONDS_RULES.ROUND_1, TRICKY_DIAMONDS_RULES.ROUND_2, TRICKY_DIAMONDS_RULES.ROUND_3];
   const countdownDuration = TRICKY_DIAMONDS_RULES.COUNTDOWN;
-  const { currentPlayer } = usePlayersStore();
 
   const endRound = () => {
     socket.emit('end_round_queue');
@@ -37,6 +31,7 @@ export const TrickyDiamonds = () => {
 
   const { animationTimeLeft, startCountdownAnimation, stopCountdownAnimation } = useCountdownAnimation(countdownDuration, endRound);
 
+  // TODO: Make it as a hook
   const handleDiamondSelect = (id: number) => {
     socket.emit('diamond_select', id);
     setSelectedId(id);
@@ -49,11 +44,6 @@ export const TrickyDiamonds = () => {
       setDiamondIdWinner(diamondIdWinner);
 
       setTimeout(() => {
-        if (nextRound === 4) {
-          if (currentPlayer?.isHost) socket.emit('end_minigame');
-          return;
-        }
-
         setSelectedId(null);
         setRound(nextRound - 1);
         setReveal(false);
@@ -80,33 +70,15 @@ export const TrickyDiamonds = () => {
       <div className="tricky-diamonds__container tricky-diamonds__selected">
         {diamondsStats &&
           diamondsStats.map((diamond, index) => (
-            <div key={index} className="tricky-diamonds__diamond" onClick={() => handleDiamondSelect(diamond.id)}>
-              {reveal && (
-                <div className={`tricky-diamonds__players__list ${diamond.id === diamondIdWinner ? 'win' : 'lost'}`}>
-                  {diamond.id === diamondIdWinner ? (
-                    <div className="win__background">
-                      <span className="score">+{roundsDiamonds[round][diamond.id]}</span>
-                      <Trophy />
-                    </div>
-                  ) : (
-                    <div className="lost__background">
-                      <Icon icon="Cross" className="tricky-diamonds__cross" />
-                    </div>
-                  )}
-                  {diamond.players.map((nickname, i) => (
-                    <div key={i} className="player">
-                      {nickname}
-                    </div>
-                  ))}
-                </div>
-              )}
-              <span className={`${!reveal && selectedId === diamond.id ? 'selected' : ''}`}>
-                {diamond.id === 0 && <HighDiamond />}
-                {diamond.id === 1 && <MediumDiamond />}
-                {diamond.id === 2 && <LowDiamond />}
-              </span>
-              <span className="tricky-diamonds__diamond__value">+{roundsDiamonds[round][diamond.id]}</span>
-            </div>
+            <Diamond
+              key={index}
+              diamond={diamond}
+              reveal={reveal}
+              score={roundsDiamonds[round][diamond.id]}
+              won={diamond.id === diamondIdWinner}
+              isSelected={diamond.id === selectedId}
+              onSelect={handleDiamondSelect}
+            />
           ))}
       </div>
     </div>
