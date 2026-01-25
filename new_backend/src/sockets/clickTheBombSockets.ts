@@ -17,11 +17,9 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
           io.to(roomCode).emit('updated_click_count', clickCount, prizePool, game.getTimer().getEndAt());
           break;
         case 'PLAYER_EXPLODED':
-          io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer());
-          io.to(roomCode).emit('player_exploded');
+          io.to(roomCode).emit('player_exploded', game.getCurrentTurnPlayer());
           break;
         case 'END_GAME':
-          io.to(roomCode).emit('end_game_click_the_bomb');
           io.to(roomCode).emit('ended_minigame', room.getPlayers());
           break;
       }

@@ -1,12 +1,12 @@
-import { MinigameEntryType, RoomSettingsType } from '@shared/types/RoomSettingsType';
-import { MINIGAME_REGISTRY } from '../../minigame';
+import { RoomSettingsType } from '@shared/types/RoomSettingsType';
+import { MINIGAME_REGISTRY, minigameIdType } from '../../minigame';
 
 export class RoomSettings {
   private readonly isRandomMinigames: boolean;
   private readonly isTutorialsEnabled: boolean;
   private readonly numberOfMinigames: number;
 
-  private minigames: MinigameEntryType[];
+  private minigames: minigameIdType[];
 
   constructor() {
     this.isRandomMinigames = true;
@@ -21,6 +21,12 @@ export class RoomSettings {
 
   public getMinigames = () => this.minigames;
 
+  public getCurrentMinigameId = () => {
+    const currentMinigameId = this.minigames[0];
+    this.minigames = this.minigames.slice(1);
+    return currentMinigameId;
+  };
+
   public randomiseMinigames = () => {
     if (!this.isRandomMinigames) return { success: false, message: 'Random minigames is disabled!' };
     if (this.numberOfMinigames < 2)
@@ -29,15 +35,15 @@ export class RoomSettings {
         message: 'Number of Minigames must be greater than 2!',
       };
 
-    let allMinigames = Object.keys(MINIGAME_REGISTRY);
-    const minigames: MinigameEntryType[] = [];
+    let allMinigames = Object.keys(MINIGAME_REGISTRY) as minigameIdType[];
+    const minigames: minigameIdType[] = [];
 
     for (let i = 0; i < this.numberOfMinigames; i++) {
       const index = Math.floor(Math.random() * allMinigames.length);
-      minigames.push({ name: allMinigames[index] });
+      minigames.push(allMinigames[index]);
 
       if (allMinigames.length === 1) {
-        allMinigames = Object.keys(MINIGAME_REGISTRY);
+        allMinigames = Object.keys(MINIGAME_REGISTRY) as minigameIdType[];
       } else {
         allMinigames.splice(index, 1);
       }

@@ -14,11 +14,11 @@ export const useTurnStore = create<TurnStoreProps>((set) => ({
   currentTurn: null,
   isMyTurn: false,
   endAt: 0,
-  setTurn: (turn: TurnType) => {
+  setTurn: (nextTurn: TurnType) => {
     const currentPlayer = usePlayersStore.getState().currentPlayer;
-    const isMyTurn = turn?.id === currentPlayer?.id;
+    const isMyTurn = nextTurn?.id === currentPlayer?.id;
 
-    set({ currentTurn: turn, isMyTurn: isMyTurn });
+    set({ currentTurn: nextTurn, isMyTurn: isMyTurn });
   },
   setTurnEndAt: (endAt: number) => set({ endAt }),
 }));

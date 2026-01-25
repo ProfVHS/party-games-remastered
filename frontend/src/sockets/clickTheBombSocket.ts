@@ -29,20 +29,26 @@ export const useClickTheBombSocket = () => {
   const setPlayers = usePlayersStore((state) => state.setPlayers);
 
   useEffect(() => {
-    socket.on('updated_click_count', handleUpdateGameState);
-    socket.on('player_exploded', bombExploded);
-    socket.on('end_game_click_the_bomb', bombExploded);
+    socket.on('ended_minigame', bombExploded);
     socket.on('show_score', handleShowScore);
     socket.on('turn_timeout', handleTurnTimeout);
+    socket.on('player_exploded', handlePlayerExplode);
+
+    return () => {
+      socket.off('ended_minigame', bombExploded);
+      socket.off('show_score', handleShowScore);
+      socket.off('turn_timeout', handleTurnTimeout);
+      socket.off('player_exploded', handlePlayerExplode);
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on('updated_click_count', handleUpdateGameState);
 
     return () => {
       socket.off('updated_click_count', handleUpdateGameState);
-      socket.off('player_exploded', bombExploded);
-      socket.off('end_game_click_the_bomb', bombExploded);
-      socket.off('show_score', handleShowScore);
-      socket.off('turn_timeout', handleTurnTimeout);
     };
-  }, []);
+  }, [isMyTurn]);
 
   const handleShowScore = (scoreDelta: number) => {
     setScoreData((prev) => ({ id: (prev?.id ?? 0) + 1, score: scoreDelta }));
@@ -63,6 +69,11 @@ export const useClickTheBombSocket = () => {
     setLoading(false);
     setGameState((prev) => ({ ...prev, prizePool: 0 }));
     setTurnEndAt(turnEndAt);
+  };
+
+  const handlePlayerExplode = (nextTurn: TurnType) => {
+    bombExploded();
+    setTurn(nextTurn);
   };
 
   const bombClick = () => {
