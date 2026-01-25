@@ -20,6 +20,6 @@ export const handleMinigames = (io: Server, socket: Socket) => {
     if (!room) return { success: false, message: 'Room not found!' };
 
     const game = room.currentMinigame as TurnBasedMinigame;
-    io.to(roomCode).emit('got_turn', game.currentTurn);
+    io.to(roomCode).emit('got_turn', game?.currentTurn || 0);
   });
 };

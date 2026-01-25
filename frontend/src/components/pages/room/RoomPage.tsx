@@ -8,7 +8,7 @@ import { EmptySlot } from '@components/features/emptySlot/EmptySlot.tsx';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
 import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
-import { MinigameDataType, MinigameNamesEnum, PlayerType, GameStateType } from '@shared/types';
+import { GameStateType, MinigameDataType, MinigameNamesEnum, PlayerType } from '@shared/types';
 import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
 import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { useToast } from '@hooks/useToast.ts';
@@ -22,7 +22,9 @@ export const RoomPage = () => {
   const [minigameId, setMinigameId] = useState<string>('');
   const [areRoomSettingsUpToDate, setAreRoomSettingsUpToDate] = useState<boolean>(true);
 
-  const { players, setPlayers } = usePlayersStore();
+  const players = usePlayersStore((state) => state.players);
+  const setPlayers = usePlayersStore((state) => state.setPlayers);
+
   const { sessionData } = useSocketConnection();
   const toast = useToast();
 
@@ -66,6 +68,7 @@ export const RoomPage = () => {
   }, [socket]);
 
   const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
+  console.log(players);
 
   return minigameName ? (
     <RoomLayout players={players}>{minigameName ? <Minigame minigameId={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
