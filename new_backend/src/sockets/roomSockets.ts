@@ -57,7 +57,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
 
       switch (state) {
         case 'NEXT_TURN':
-          io.to(roomCode).emit('got_turn', game.currentTurn);
+          io.to(roomCode).emit('got_turn', game.getCurrentTurnPlayer());
           io.to(roomCode).emit('got_players', room.getPlayers());
           break;
         case 'END_GAME':

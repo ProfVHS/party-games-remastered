@@ -14,7 +14,7 @@ import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { useToast } from '@hooks/useToast.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid4 } from 'uuid';
 
 export const RoomPage = () => {
   const { setRoomSettings, fetchRoomData } = useRoomStore();
@@ -46,7 +46,7 @@ export const RoomPage = () => {
 
     socket.on('started_minigame', (minigameData: MinigameDataType) => {
       setMinigameName(minigameData.minigameName);
-      setMinigameId(uuidv4());
+      setMinigameId(uuid4());
       fetchRoomData();
     });
 
@@ -68,7 +68,6 @@ export const RoomPage = () => {
   }, [socket]);
 
   const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
-  console.log(players);
 
   return minigameName ? (
     <RoomLayout players={players}>{minigameName ? <Minigame minigameId={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
