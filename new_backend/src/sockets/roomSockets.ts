@@ -51,7 +51,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
       player.setReady(false);
     });
 
-    const currentMinigameClass = getMinigame(room.settings.getCurrentMinigameId());
+    const currentMinigameClass = getMinigame('CLICK_THE_BOMB');
 
     room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
       const game = room.currentMinigame;

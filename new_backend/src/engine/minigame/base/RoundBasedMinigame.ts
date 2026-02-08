@@ -7,7 +7,7 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
   protected round: number = 1;
   private readonly maxRounds: number;
   private roundSummaryTimer: Timer;
-  private onTimeout: (state: RoundBaseTimeoutState) => void;
+  private readonly onTimeout: (state: RoundBaseTimeoutState) => void;
 
   protected constructor(
     players: Map<string, Player>,

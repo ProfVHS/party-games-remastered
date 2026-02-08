@@ -29,7 +29,7 @@ export abstract class BaseMinigame {
     return this.timer;
   }
 
-  protected start() {
+  public start() {
     this.beforeStart();
   }
 
