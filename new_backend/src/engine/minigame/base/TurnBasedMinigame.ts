@@ -11,11 +11,11 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
     });
   }
 
-  public getCurrentTurnPlayer = () => {
+  public getCurrentTurnPlayer() {
     return Array.from(this.players.values())[this.currentTurn];
-  };
+  }
 
-  public nextTurn = () => {
+  public nextTurn() {
     this.onNextTurn();
 
     for (let i = 1; i <= this.players.size; i++) {
@@ -29,15 +29,13 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
     }
 
     throw new Error('No suitable player found to change turn.');
-  };
+  }
 
-  beforeStart = () => {
+  protected beforeStart() {
     const playerCount = this.players.size;
     this.currentTurn = Math.floor(Math.random() * playerCount);
     this.timer.start();
-  };
+  }
 
-  onNextTurn = () => {
-    // Logic before skipping turn - implement in Minigame Class
-  };
+  protected abstract onNextTurn(): void;
 }

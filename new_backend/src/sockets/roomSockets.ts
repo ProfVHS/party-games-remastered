@@ -3,7 +3,7 @@ import { RoomManager } from '../engine/managers/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
 import { TurnBasedMinigame } from '../engine/minigame/base/TurnBasedMinigame';
 import { RoundBasedMinigame } from '../engine/minigame/base/RoundBasedMinigame';
-import { TurnBaseTimeoutState, RoundBaseTimeoutState } from '../types/MinigameTypes';
+import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '../types/MinigameTypes';
 import { getMinigame } from '../engine/managers/MinigameManager';
 
 export const handleRoom = (io: Server, socket: Socket) => {
@@ -51,7 +51,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
       player.setReady(false);
     });
 
-    const currentMinigameClass = getMinigame(room.settings.getCurrentMinigameId());
+    const currentMinigameClass = getMinigame('CLICK_THE_BOMB');
 
     room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
       const game = room.currentMinigame;

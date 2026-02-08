@@ -16,30 +16,30 @@ export class ClickTheBomb extends TurnBasedMinigame {
     super(players, MAX_MS_TO_CLICK, onTurnTimeout);
   }
 
-  private setupBomb = () => {
+  private setupBomb() {
     this.clickCount = 0;
     this.maxClicks = Math.floor(Math.random() * (this.alivePlayersCount() * 4)) + 1;
     this.streak = 0;
     this.prizePool = 0;
-  };
+  }
 
-  private incrementCounter = () => {
+  private incrementCounter() {
     this.clickCount++;
     this.streak++;
 
     const prizePoolDelta = this.streak > POINTS.length - 1 ? POINTS.at(-1) || 0 : POINTS[this.streak - 1];
     this.prizePool += prizePoolDelta;
-  };
+  }
 
-  private grantPrizePool = () => {
+  private grantPrizePool() {
     const currentPlayer = this.getCurrentTurnPlayer();
     currentPlayer.addScore(this.prizePool);
 
     this.prizePool = 0;
     this.streak = 0;
-  };
+  }
 
-  private explode = () => {
+  private explode() {
     const player = this.getCurrentTurnPlayer();
     player.kill();
     player.subtractScore(LOSS);
@@ -52,42 +52,43 @@ export class ClickTheBomb extends TurnBasedMinigame {
     this.nextTurn();
     this.setupBomb();
     return { success: true, state: 'PLAYER_EXPLODED' };
-  };
+  }
 
-  public click = () => {
+  public click() {
     this.timer.reset();
 
     if (this.maxClicks === this.clickCount) return this.explode();
     this.incrementCounter();
     return { success: true, state: 'INCREMENTED' };
-  };
+  }
 
-  public getState = () => {
+  public getState() {
     const { clickCount, streak, prizePool } = this;
     return { clickCount, streak, prizePool };
-  };
+  }
 
-  onNextTurn = () => {
+  onNextTurn() {
     this.grantPrizePool();
     this.timer.reset();
-  };
+  }
 
-  protected onTimerEnd = () => {
+  protected onTimerEnd() {
     const player = this.getCurrentTurnPlayer();
     player.subtractScore(LOSS);
 
     this.nextTurn();
-  };
+  }
 
-  onStart = () => {
+  protected beforeStart() {
+    super.beforeStart();
     this.setupBomb();
-  };
+  }
 
-  end = () => {
+  protected end() {
     this.players.forEach((player: Player) => {
       player.revive();
     });
 
     this.timer.clear();
-  };
+  }
 }
