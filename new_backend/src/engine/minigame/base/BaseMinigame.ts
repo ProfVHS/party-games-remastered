@@ -13,30 +13,27 @@ export abstract class BaseMinigame {
     });
   }
 
-  protected alivePlayersCount = () => {
+  protected alivePlayersCount() {
     return this.getPlayers().filter((player) => player.isAlive()).length;
-  };
-
-  protected getPlayers = () => {
-    return Array.from(this.players.values());
-  };
-
-  protected isLastPlayerStanding = () => {
-    return this.alivePlayersCount() === 1;
-  };
-
-  public getTimer = () => {
-    return this.timer;
-  };
-
-  start() {
-    this.beforeStart();
-    this.onStart();
   }
 
-  protected beforeStart = () => {};
+  protected getPlayers() {
+    return Array.from(this.players.values());
+  }
 
-  protected onStart = () => {};
+  protected isLastPlayerStanding() {
+    return this.alivePlayersCount() === 1;
+  }
+
+  public getTimer() {
+    return this.timer;
+  }
+
+  protected start() {
+    this.beforeStart();
+  }
+
+  protected abstract beforeStart(): void;
 
   protected abstract end(): void;
 

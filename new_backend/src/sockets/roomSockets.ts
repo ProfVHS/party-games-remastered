@@ -3,7 +3,7 @@ import { RoomManager } from '@engine/managers/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
 import { TurnBasedMinigame } from '@engine/minigame/base/TurnBasedMinigame';
 import { RoundBasedMinigame } from '@engine/minigame/base/RoundBasedMinigame';
-import { TurnBaseTimeoutState, RoundBaseTimeoutState } from '@backend-types';
+import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
 import { getMinigame } from '@engine/managers/MinigameManager';
 
 export const handleRoom = (io: Server, socket: Socket) => {

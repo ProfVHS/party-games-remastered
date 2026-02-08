@@ -28,12 +28,12 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     });
   }
 
-  protected onRoundEnd = () => {
+  protected onRoundEnd() {
     this.onTimeout('SHOW_RESULT');
     this.roundSummaryTimer.start();
-  };
+  }
 
-  private onRoundSummaryEnd = () => {
+  private onRoundSummaryEnd() {
     if (this.round >= this.maxRounds) {
       this.onTimeout('END_GAME');
       this.end();
@@ -42,8 +42,9 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
 
     this.round++;
     this.onTimeout('NEXT_ROUND');
-    this.timer.start();
-  };
+    this.timer.reset();
+    this.roundSummaryTimer.clear();
+  }
 
   public getRound() {
     return this.round;
@@ -51,7 +52,7 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
 
   abstract onNextRound(round: number): void;
 
-  beforeStart = () => {
+  protected beforeStart = () => {
     this.timer.start();
   };
 }
