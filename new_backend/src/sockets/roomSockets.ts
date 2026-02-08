@@ -2,7 +2,8 @@ import { Server, Socket } from 'socket.io';
 import { RoomManager } from '../engine/managers/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
 import { TurnBasedMinigame } from '../engine/minigame/base/TurnBasedMinigame';
-import { TurnBaseTimeoutState } from '../types/MinigameTypes';
+import { RoundBasedMinigame } from '../engine/minigame/base/RoundBasedMinigame';
+import { TurnBaseTimeoutState, RoundBaseTimeoutState } from '../types/MinigameTypes';
 import { getMinigame } from '../engine/managers/MinigameManager';
 
 export const handleRoom = (io: Server, socket: Socket) => {
@@ -52,17 +53,30 @@ export const handleRoom = (io: Server, socket: Socket) => {
 
     const currentMinigameClass = getMinigame(room.settings.getCurrentMinigameId());
 
-    room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState) => {
-      const game = room.currentMinigame as TurnBasedMinigame;
+    room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
+      const game = room.currentMinigame;
 
-      switch (state) {
-        case 'NEXT_TURN':
-          io.to(roomCode).emit('turn_timeout', game.getCurrentTurnPlayer(), room.getPlayers(), game.getTimer().getEndAt());
-          break;
-        case 'END_GAME':
-          io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer());
-          io.to(roomCode).emit('player_exploded');
-          break;
+      if (game instanceof TurnBasedMinigame) {
+        switch (state) {
+          case 'NEXT_TURN':
+            io.to(roomCode).emit('turn_timeout', game.getCurrentTurnPlayer(), room.getPlayers(), game.getTimer().getEndAt());
+            break;
+          case 'END_GAME':
+            io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer());
+            io.to(roomCode).emit('player_exploded');
+            break;
+        }
+      } else if (game instanceof RoundBasedMinigame) {
+        switch (state) {
+          case 'SHOW_RESULT':
+            io.to(roomCode).emit('round_summary');
+            break;
+          case 'NEXT_ROUND':
+            io.to(roomCode).emit('round_next');
+            break;
+          case 'END_GAME':
+            break;
+        }
       }
     });
 

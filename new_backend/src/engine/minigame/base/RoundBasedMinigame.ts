@@ -1,42 +1,48 @@
 import { BaseMinigame } from './BaseMinigame';
 import { Player } from '../../core/Player';
 import { Timer } from '../../core/Timer';
+import { RoundBaseTimeoutState } from '../../../types/MinigameTypes';
 
 export abstract class RoundBasedMinigame extends BaseMinigame {
   protected round: number = 1;
   private readonly maxRounds: number;
   private roundSummaryTimer: Timer;
+  private onTimeout: (state: RoundBaseTimeoutState) => void;
 
   protected constructor(
     players: Map<string, Player>,
-    roundDuration: number,
-    roundSummaryDuration: number,
+    roundDurationMs: number,
+    roundSummaryDurationMs: number,
     maxRounds: number,
-    onRoundEnd: () => void,
-    onRoundSummaryEnd: () => void,
+    onTimeout: (state: RoundBaseTimeoutState) => void,
   ) {
-    super(players, roundDuration, onRoundEnd);
+    super(players, roundDurationMs, () => {
+      this.onRoundEnd();
+    });
 
     this.maxRounds = maxRounds;
-    this.roundSummaryTimer = new Timer(roundSummaryDuration, () => {
-      onRoundSummaryEnd();
+    this.onTimeout = onTimeout;
+
+    this.roundSummaryTimer = new Timer(roundSummaryDurationMs, () => {
       this.onRoundSummaryEnd();
     });
   }
 
-  protected onTimerEnd = () => {
+  protected onRoundEnd = () => {
+    this.onTimeout('SHOW_RESULT');
     this.roundSummaryTimer.start();
   };
 
   private onRoundSummaryEnd = () => {
-    if (this.maxRounds === this.round) {
+    if (this.round >= this.maxRounds) {
+      this.onTimeout('END_GAME');
       this.end();
-      return { success: true, status: 'END_GAME' };
+      return;
     }
 
-    const newRound = this.round++;
-    this.onNextRound(newRound);
-    return newRound;
+    this.round++;
+    this.onTimeout('NEXT_ROUND');
+    this.timer.start();
   };
 
   public getRound() {
@@ -44,4 +50,8 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
   }
 
   abstract onNextRound(round: number): void;
+
+  beforeStart = () => {
+    this.timer.start();
+  };
 }

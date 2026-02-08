@@ -2,6 +2,7 @@ import { RoundBasedMinigame } from './base/RoundBasedMinigame';
 import { Player } from '../core/Player';
 import { CARDS_RULES } from '@shared/constants/gameRules';
 import _ from 'lodash';
+import { RoundBaseTimeoutState } from '../../types/MinigameTypes';
 
 const MAX_RULES = 3;
 
@@ -15,8 +16,14 @@ export class Cards extends RoundBasedMinigame {
   private cards: number[] | null = null;
   private playerChoices: Map<string, number> = new Map();
 
-  constructor(players: Map<string, Player>) {
-    super(players, MAX_RULES);
+  //TODO: Dodać jakiś czas opózneinia przed timera (np w kartach masz to intor ze jest 1 ruinda wiec jest opoznienie 2-3 sekundy)
+
+  constructor(players: Map<string, Player>, onTimeout: (state: RoundBaseTimeoutState) => void) {
+    super(players, 13000, 5000, 3, onTimeout);
+  }
+
+  public getCards() {
+    return this.cards;
   }
 
   public shuffleCards = (round: number) => {
@@ -27,11 +34,16 @@ export class Cards extends RoundBasedMinigame {
     this.playerChoices.set(playerId, cardId);
   };
 
+  protected onTimerEnd(): void {}
+
   onNextRound(round: number) {
     this.shuffleCards(round);
   }
 
-  start() {
+  override start() {
+    super.start();
     this.shuffleCards(this.round);
   }
+
+  end() {}
 }

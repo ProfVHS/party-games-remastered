@@ -1,11 +1,11 @@
 export class Timer {
-  private readonly duration: number;
+  private readonly durationMs: number;
   private readonly onEnd: () => void;
-  private timeout?: NodeJS.Timeout;
-  private endAt?: number;
+  private timeout?: NodeJS.Timeout | null;
+  private endAt?: number | null;
 
-  constructor(duration: number, onEnd: () => void) {
-    this.duration = duration;
+  constructor(durationMs: number, onEnd: () => void) {
+    this.durationMs = durationMs;
     this.onEnd = onEnd;
   }
 
@@ -21,21 +21,28 @@ export class Timer {
   };
 
   public start = () => {
-    this.endAt = Date.now() + this.duration;
-    this.timeout = setTimeout(this.onEnd, this.duration);
+    if (this.timeout) return;
+
+    this.endAt = Date.now() + this.durationMs;
+    this.timeout = setTimeout(() => {
+      this.clear();
+      this.onEnd();
+    }, this.durationMs);
   };
 
   public reset = () => {
     if (this.timeout) {
       clearTimeout(this.timeout);
-      this.endAt = Date.now() + this.duration;
-      this.timeout = setTimeout(this.onEnd, this.duration);
+      this.endAt = Date.now() + this.durationMs;
+      this.timeout = setTimeout(this.onEnd, this.durationMs);
     }
   };
 
   public clear = () => {
     if (this.timeout) {
       clearTimeout(this.timeout);
+      this.timeout = null;
+      this.endAt = null;
     }
   };
 }

@@ -5,9 +5,9 @@ export abstract class BaseMinigame {
   protected players: Map<string, Player>;
   protected timer: Timer;
 
-  protected constructor(players: Map<string, Player>, timerDuration: number, onTimerEnd: () => void) {
+  protected constructor(players: Map<string, Player>, timerDurationMs: number, onTimerEnd: () => void) {
     this.players = players;
-    this.timer = new Timer(timerDuration, () => {
+    this.timer = new Timer(timerDurationMs, () => {
       this.onTimerEnd();
       onTimerEnd();
     });
@@ -29,10 +29,10 @@ export abstract class BaseMinigame {
     return this.timer;
   };
 
-  start = () => {
+  start() {
     this.beforeStart();
     this.onStart();
-  };
+  }
 
   protected beforeStart = () => {};
 
