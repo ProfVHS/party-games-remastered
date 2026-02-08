@@ -1,6 +1,6 @@
 import { TurnBasedMinigame } from './base/TurnBasedMinigame';
-import { Player } from '../core/Player';
-import { TurnBaseTimeoutState } from '../../types/MinigameTypes';
+import { Player } from '@engine/core/Player';
+import { TurnBaseTimeoutState } from '@backend-types';
 
 const POINTS = [15, 17, 20, 23, 26, 30, 35];
 const LOSS = 50;

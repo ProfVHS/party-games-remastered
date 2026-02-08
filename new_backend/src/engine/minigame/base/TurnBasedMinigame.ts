@@ -1,6 +1,6 @@
 import { BaseMinigame } from './BaseMinigame';
-import { Player } from '../../core/Player';
-import { TurnBaseTimeoutState } from '../../../types/MinigameTypes';
+import { Player } from '@engine/core/Player';
+import { TurnBaseTimeoutState } from '@backend-types';
 
 export abstract class TurnBasedMinigame extends BaseMinigame {
   public currentTurn: number = 0;

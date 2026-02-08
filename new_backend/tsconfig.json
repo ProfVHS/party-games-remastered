@@ -9,22 +9,14 @@
     "forceConsistentCasingInFileNames": true,
     "exactOptionalPropertyTypes": true,
 
-    "baseUrl": "../new_backend/src",
+    "baseUrl": "./src",
     "paths": {
       "@shared/*": ["../../shared/*"],
-      "@config/*": ["config/*"],
-      "@errors": ["errors"],
-      "@roomRepository": ["repositories/roomRepository"],
-      "@roomService": ["services/roomService.ts"],
-      "@playerService": ["services/playerService.ts"],
-      "@minigameService": ["services/minigameService.ts"],
-      "@sockets": ["sockets"],
+      "@engine/*": ["engine/*"],
+      "@sockets/*": ["sockets/*"],
       "@backend-types": ["types"]
     }
   },
-  "include": [
-    "../new_backend/src"
-  ],
-  "exclude": [
-    "../new_backend/node_modules", "dist"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

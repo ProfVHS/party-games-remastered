@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
-import { Player } from '../engine/core/Player';
-import { RoomManager } from '../engine/managers/RoomManager';
+import { Player } from '@engine/core/Player';
+import { RoomManager } from '@engine/managers/RoomManager';
 
 export const handleConnection = (io: Server, socket: Socket) => {
   socket.on('create_room', (roomCode: string, nickname: string) => {

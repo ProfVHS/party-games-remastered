@@ -1,4 +1,4 @@
-import { Room } from '../core/room/Room';
+import { Room } from '@engine/core/room/Room';
 
 export class RoomManager {
   private static rooms = new Map<string, Room>();

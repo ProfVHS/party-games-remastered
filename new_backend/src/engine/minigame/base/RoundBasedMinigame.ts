@@ -1,7 +1,7 @@
 import { BaseMinigame } from './BaseMinigame';
-import { Player } from '../../core/Player';
-import { Timer } from '../../core/Timer';
-import { RoundBaseTimeoutState } from '../../../types/MinigameTypes';
+import { Player } from '@engine/core/Player';
+import { Timer } from '@engine/core/Timer';
+import { RoundBaseTimeoutState } from '@backend-types';
 
 export abstract class RoundBasedMinigame extends BaseMinigame {
   protected round: number = 1;

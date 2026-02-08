@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon -r tsconfig-paths/register --exec ts-node src/index.ts",
     "build": "tsc && tsc-alias",
-    "start": "node dist/backend/src/index.js",
+    "start": "node dist/new_backend/src/index.js",
     "test": "vitest",
     "debugging": "nodemon --exec node -r ts-node/register -r tsconfig-paths/register src/index.ts"
   },
@@ -20,7 +20,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "ioredis": "^5.5.0",
-    "lodash": "^4.17.21",
+    "lodash": "4.17.23",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {

@@ -1,8 +1,8 @@
 import { RoundBasedMinigame } from './base/RoundBasedMinigame';
-import { Player } from '../core/Player';
+import { Player } from '@engine/core/Player';
 import { CARDS_RULES } from '@shared/constants/gameRules';
 import _ from 'lodash';
-import { RoundBaseTimeoutState } from '../../types/MinigameTypes';
+import { RoundBaseTimeoutState } from '@backend-types';
 
 const MAX_RULES = 3;
 

@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
-import { RoomManager } from '../engine/managers/RoomManager';
-import { ClickTheBomb } from '../engine/minigame/ClickTheBomb';
+import { RoomManager } from '@engine/managers/RoomManager';
+import { ClickTheBomb } from '@engine/minigame/ClickTheBomb';
 
 export const handleClickTheBomb = (io: Server, socket: Socket) => {
   socket.on('bomb_click', async () => {
