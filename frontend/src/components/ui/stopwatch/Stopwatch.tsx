@@ -10,7 +10,7 @@ export const Stopwatch = ({ timeLeft, duration }: StopwatchProps) => {
   const circumference = 2 * Math.PI * radius;
 
   // Offset
-  const progress = timeLeft / duration / 1000;
+  const progress = timeLeft / duration;
   const strokeDashoffset = circumference * (1 - progress);
 
   return (

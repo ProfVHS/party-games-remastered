@@ -25,7 +25,7 @@ export const Cards = ({ startGame }: CardsProps) => {
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [newPlayersPoints, setNewPlayerPoints] = useState<PlayerType[]>([]);
 
-  const { animationTimeLeft, startCountdownAnimation } = useCountdownAnimation(CARDS_RULES.COUNTDOWN, () => endRound());
+  const { animationTimeLeft, startCountdownAnimation } = useCountdownAnimation(CARDS_RULES.COUNTDOWN_MS, () => endRound());
   const { currentPlayer } = usePlayersStore();
 
   const currentRound = useRef<number>(1);
@@ -79,6 +79,16 @@ export const Cards = ({ startGame }: CardsProps) => {
       setGameStatus('Cards reveal');
     });
 
+    socket.on('round_summary', (gameData) => {
+      setCards(gameData);
+      setIsFlipping(true);
+      setGameStatus('Cards reveal');
+    });
+
+    socket.on('round_next', (nextRound) => {
+      currentRound.current = nextRound;
+    });
+
     return () => {
       socket.off('cards_round_ended');
     };
@@ -93,7 +103,7 @@ export const Cards = ({ startGame }: CardsProps) => {
     <div className="cards">
       <div className={`cards__round ${isRoundIntroVisible ? 'visible' : ''}`}>Round {currentRound.current}</div>
       <div className="cards__countdown">
-        <Stopwatch timeLeft={animationTimeLeft} duration={CARDS_RULES.COUNTDOWN} />
+        <Stopwatch timeLeft={animationTimeLeft} duration={CARDS_RULES.COUNTDOWN_MS} />
       </div>
       <div className="cards__status">{gameStatus}</div>
       <div className="cards__content">

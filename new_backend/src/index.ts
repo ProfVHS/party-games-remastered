@@ -3,12 +3,12 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
-import { handleConnection } from './sockets/connectionSockets';
-import { handlePlayers } from './sockets/playersSockets';
-import { handleRoom } from './sockets/roomSockets';
-import { handleMinigames } from './sockets/minigamesSockets';
-import { handleClickTheBomb } from './sockets/clickTheBombSockets';
-import { validationMiddleware } from './sockets/middlewares/validationMiddleware';
+import { handleConnection } from '@sockets/connectionSockets';
+import { handlePlayers } from '@sockets/playersSockets';
+import { handleRoom } from '@sockets/roomSockets';
+import { handleMinigames } from '@sockets/minigamesSockets';
+import { handleClickTheBomb } from '@sockets/clickTheBombSockets';
+import { validationMiddleware } from '@sockets/middlewares/validationMiddleware';
 
 dotenv.config();
 

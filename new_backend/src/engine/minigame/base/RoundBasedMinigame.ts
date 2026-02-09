@@ -44,7 +44,10 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     this.onTimeout('NEXT_ROUND');
     this.timer.reset();
     this.roundSummaryTimer.clear();
+    this.onNextRound(this.round);
   }
+
+  public getGameData() {}
 
   public getRound() {
     return this.round;

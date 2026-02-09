@@ -4,8 +4,6 @@ import { CARDS_RULES } from '@shared/constants/gameRules';
 import _ from 'lodash';
 import { RoundBaseTimeoutState } from '@backend-types';
 
-const MAX_RULES = 3;
-
 const ROUND_CARDS: Record<number, number[]> = {
   1: CARDS_RULES.ROUND_1,
   2: CARDS_RULES.ROUND_2,
@@ -19,10 +17,10 @@ export class Cards extends RoundBasedMinigame {
   //TODO: Dodać jakiś czas opózneinia przed timera (np w kartach masz to intor ze jest 1 ruinda wiec jest opoznienie 2-3 sekundy)
 
   constructor(players: Map<string, Player>, onTimeout: (state: RoundBaseTimeoutState) => void) {
-    super(players, 13000, 5000, 3, onTimeout);
+    super(players, CARDS_RULES.COUNTDOWN_MS, CARDS_RULES.COUNTDOWN_SUMMARY_MS, CARDS_RULES.MAX_ROUNDS, onTimeout);
   }
 
-  public getCards() {
+  public getGameData() {
     return this.cards;
   }
 

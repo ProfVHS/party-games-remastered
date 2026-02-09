@@ -51,7 +51,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
       player.setReady(false);
     });
 
-    const currentMinigameClass = getMinigame('CLICK_THE_BOMB');
+    const currentMinigameClass = getMinigame('CARDS');
 
     room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
       const game = room.currentMinigame;
@@ -69,20 +69,21 @@ export const handleRoom = (io: Server, socket: Socket) => {
       } else if (game instanceof RoundBasedMinigame) {
         switch (state) {
           case 'SHOW_RESULT':
-            io.to(roomCode).emit('round_summary');
+            io.to(roomCode).emit('round_summary', game.getGameData());
             break;
           case 'NEXT_ROUND':
-            io.to(roomCode).emit('round_next');
+            io.to(roomCode).emit('round_next', game.getRound());
             break;
           case 'END_GAME':
+            console.log('END_GAME');
             break;
         }
       }
     });
 
-    const game = room.currentMinigame as TurnBasedMinigame;
+    const game = room.currentMinigame as RoundBasedMinigame;
     game.start();
-    io.to(roomCode).emit('started_minigame', 'Click the Bomb', game.getCurrentTurnPlayer(), game.getTimer().getEndAt());
+    io.to(roomCode).emit('started_minigame', 'Cards', "", game.getTimer().getEndAt());
   });
 
   socket.on('tutorial_player_ready', async () => {
