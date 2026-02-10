@@ -1,5 +1,5 @@
 import { MinigameNamesEnum, PlayerType } from '@shared/types';
-import { Cards } from '@components/minigames/cards/Cards';
+import { Cards } from '@components/minigames/cards2/Cards';
 import { ClickTheBomb } from '@components/minigames/clickthebomb/ClickTheBomb';
 import { TrickyDiamonds } from '@components/minigames/trickydiamonds/TrickyDiamonds.tsx';
 import { useEffect, useState } from 'react';
@@ -75,7 +75,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
       ) : (
         <>
           {minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}
-          {minigameName == MinigameNamesEnum.cards && <Cards startGame={startGame} />}
+          {minigameName == MinigameNamesEnum.cards && <Cards />}
           {minigameName == MinigameNamesEnum.colorsMemory && <div>Colors Memory</div>}
           {minigameName == MinigameNamesEnum.trickyDiamonds && <TrickyDiamonds />}
         </>

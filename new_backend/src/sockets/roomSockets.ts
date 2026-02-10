@@ -69,9 +69,11 @@ export const handleRoom = (io: Server, socket: Socket) => {
       } else if (game instanceof RoundBasedMinigame) {
         switch (state) {
           case 'SHOW_RESULT':
-            io.to(roomCode).emit('round_summary', game.getGameData());
+            console.log("SHOW_RESULT");
+            io.to(roomCode).emit('round_end', game.getGameData());
             break;
           case 'NEXT_ROUND':
+            console.log("NEXT_ROUND");
             io.to(roomCode).emit('round_next', game.getRound());
             break;
           case 'END_GAME':
