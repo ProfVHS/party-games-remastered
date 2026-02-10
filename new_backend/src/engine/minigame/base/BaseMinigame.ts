@@ -5,12 +5,16 @@ export abstract class BaseMinigame {
   protected players: Map<string, Player>;
   protected timer: Timer;
 
-  protected constructor(players: Map<string, Player>, timerDurationMs: number, onTimerEnd: () => void) {
+  protected constructor(players: Map<string, Player>, timerDurationMs: number, onTimerEnd: () => void, timerDelayMs?: number) {
     this.players = players;
-    this.timer = new Timer(timerDurationMs, () => {
-      this.onTimerEnd();
-      onTimerEnd();
-    });
+    this.timer = new Timer(
+      timerDurationMs,
+      () => {
+        this.onTimerEnd();
+        onTimerEnd();
+      },
+      timerDelayMs,
+    );
   }
 
   protected alivePlayersCount() {
@@ -31,6 +35,7 @@ export abstract class BaseMinigame {
 
   public start() {
     this.beforeStart();
+    this.timer.start();
   }
 
   protected abstract beforeStart(): void;

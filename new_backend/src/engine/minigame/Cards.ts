@@ -14,10 +14,8 @@ export class Cards extends RoundBasedMinigame {
   private cards: number[] | null = null;
   private playerChoices: Map<string, number> = new Map();
 
-  //TODO: Dodać jakiś czas opózneinia przed timera (np w kartach masz to intor ze jest 1 ruinda wiec jest opoznienie 2-3 sekundy)
-
   constructor(players: Map<string, Player>, onTimeout: (state: RoundBaseTimeoutState) => void) {
-    super(players, CARDS_RULES.COUNTDOWN_MS, CARDS_RULES.COUNTDOWN_SUMMARY_MS, CARDS_RULES.MAX_ROUNDS, onTimeout);
+    super(players, CARDS_RULES.COUNTDOWN_MS, CARDS_RULES.COUNTDOWN_SUMMARY_MS, CARDS_RULES.MAX_ROUNDS, onTimeout, 2000);
   }
 
   public getGameData() {
