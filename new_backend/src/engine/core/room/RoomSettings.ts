@@ -1,5 +1,5 @@
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
-import { MINIGAME_REGISTRY, minigameIdType } from '../../minigame';
+import { MINIGAME_REGISTRY, minigameIdType } from '@minigames/index';
 
 export class RoomSettings {
   private readonly isRandomMinigames: boolean;

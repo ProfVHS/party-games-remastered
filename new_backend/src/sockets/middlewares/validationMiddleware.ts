@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { RoomManager } from '@engine/managers/RoomManager';
+import { RoomManager } from '@engine-managers/RoomManager';
 
 export const validationMiddleware = (socket: Socket) => {
   socket.use((packet, next) => {

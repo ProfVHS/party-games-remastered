@@ -1,5 +1,5 @@
-import { Player } from '@engine/core/Player';
-import { Timer } from '@engine/core/Timer';
+import { Player } from '@engine-core/Player';
+import { Timer } from '@engine-core/Timer';
 
 export abstract class BaseMinigame {
   protected players: Map<string, Player>;

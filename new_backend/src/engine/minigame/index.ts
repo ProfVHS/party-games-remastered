@@ -1,5 +1,5 @@
-import { ClickTheBomb } from './ClickTheBomb';
-import { Cards } from './Cards';
+import { ClickTheBomb } from '@minigames/ClickTheBomb';
+import { Cards } from '@minigames/Cards';
 
 export const MINIGAME_REGISTRY = {
   CLICK_THE_BOMB: ClickTheBomb,

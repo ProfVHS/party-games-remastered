@@ -14,7 +14,12 @@
       "@shared/*": ["../../shared/*"],
       "@engine/*": ["engine/*"],
       "@sockets/*": ["sockets/*"],
-      "@backend-types": ["types"]
+      "@backend-types": ["types"],
+      "@engine-core/*": ["engine/core/*"],
+      "@engine-managers/*": ["engine/managers/*"],
+      "@minigames/*": ["engine/minigame/*"],
+      "@minigame-base/*": ["engine/minigame/base/*"],
+      "@socket-middlewares/*": ["sockets/middlewares/*"]
     }
   },
   "include": ["src"],

@@ -1,10 +1,10 @@
 import { Server, Socket } from 'socket.io';
-import { RoomManager } from '@engine/managers/RoomManager';
+import { RoomManager } from '@engine-managers/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
-import { TurnBasedMinigame } from '@engine/minigame/base/TurnBasedMinigame';
-import { RoundBasedMinigame } from '@engine/minigame/base/RoundBasedMinigame';
+import { TurnBasedMinigame } from '@minigame-base/TurnBasedMinigame';
+import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
-import { getMinigame } from '@engine/managers/MinigameManager';
+import { getMinigame } from '@engine-managers/MinigameManager';
 
 export const handleRoom = (io: Server, socket: Socket) => {
   socket.on('get_room_data', () => {

@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { RoomManager } from '@engine/managers/RoomManager';
+import { RoomManager } from '@engine-managers/RoomManager';
 import { GameStateType } from '@shared/types/GameStateType';
 
 export const handlePlayers = (io: Server, socket: Socket) => {

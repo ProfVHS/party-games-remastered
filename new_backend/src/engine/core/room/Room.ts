@@ -1,8 +1,8 @@
 import { GameStateType } from '@shared/types/GameStateType';
-import { Player } from '../Player';
+import { Player } from '@engine-core/Player';
 import { MAX_PLAYERS } from '@shared/constants/gameRules';
 import { RoomSettings } from './RoomSettings';
-import { BaseMinigame } from '../../minigame/base/BaseMinigame';
+import { BaseMinigame } from '@minigame-base/BaseMinigame';
 
 export class Room {
   public readonly roomCode: string;
