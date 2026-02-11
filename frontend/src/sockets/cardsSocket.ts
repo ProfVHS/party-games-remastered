@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { socket} from '@socket';
+import { PlayerType } from '@shared/types';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 const defaultCards: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -10,6 +12,7 @@ export const useCardsSocket = () => {
   const [showIntro, setShowIntro] = useState(false);
   const [flipCards, setFlipCards] = useState<boolean>(false);
   const [selectedCard, setSelectedCard] = useState<number>(-100);
+  const setPlayers = usePlayersStore((state) => state.setPlayers);
 
   useEffect(() => {
     socket.on('round_end', handleRoundEnd);
@@ -23,11 +26,12 @@ export const useCardsSocket = () => {
     }
   }, [])
 
-  const handleRoundEnd = (shuffledCards: number[]) => {
+  const handleRoundEnd = (shuffledCards: number[], players: PlayerType[]) => {
     setGameStatus("Cards Reveal");
     setFlipCards(true);
     setCards(shuffledCards);
     setSelectedCard(-100);
+    setPlayers(players);
   }
 
   const handleRoundNext = (nextRound: number) => {
@@ -50,7 +54,7 @@ export const useCardsSocket = () => {
     if (gameStatus === "Cards Reveal") return;
 
     setSelectedCard(cardId);
-    //TODO: Socket selected
+    socket.emit('player_selection', cardId);
   }
 
   return { gameStatus, cards, round, showIntro, flipCards, selectedCard, handleSelectCard };

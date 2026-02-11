@@ -1,5 +1,5 @@
 import { MinigameNamesEnum, PlayerType } from '@shared/types';
-import { Cards } from '@components/minigames/cards2/Cards';
+import { Cards } from '@components/minigames/cards/Cards';
 import { ClickTheBomb } from '@components/minigames/clickthebomb/ClickTheBomb';
 import { TrickyDiamonds } from '@components/minigames/trickydiamonds/TrickyDiamonds.tsx';
 import { useEffect, useState } from 'react';

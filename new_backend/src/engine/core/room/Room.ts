@@ -4,6 +4,11 @@ import { MAX_PLAYERS } from '@shared/constants/gameRules';
 import { RoomSettings } from './RoomSettings';
 import { BaseMinigame } from '@minigame-base/BaseMinigame';
 
+//TODO: załadowała ci się gra lub skonczyło sie summary ->
+// wysyłasz socketa start round queue ->
+// ceka 2 sekundy jezeli połowa graczy jest gotowa skraca do 0.5 sekundy
+// i wysyła zeby zaczać runde (endAt itd)
+
 export class Room {
   public readonly roomCode: string;
   public readonly settings: RoomSettings;

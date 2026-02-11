@@ -12,6 +12,7 @@ export class Player {
   private status: PlayerStatusEnum;
   private ready: boolean;
   private avatar: avatars;
+  private selectedItem: number;
 
   constructor(id: string, nickname: string, isHost: boolean = false) {
     this.id = id;
@@ -23,6 +24,7 @@ export class Player {
     this.avatar = avatars.skeleton;
     this.ready = false;
     this.host = isHost;
+    this.selectedItem = -100;
   }
 
   public isAlive = () => {
@@ -96,6 +98,15 @@ export class Player {
       isDisconnected: this.disconnected,
       ready: this.ready,
       isHost: this.isHost(),
+      selectedItem: this.selectedItem,
     };
   };
+
+  public setSelectedItem = (selectedItem: number) => {
+    this.selectedItem = selectedItem;
+  }
+
+  public getSelectedItem = () => {
+    return this.selectedItem;
+  }
 }

@@ -40,6 +40,10 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
   }
 
   private onRoundSummaryEnd() {
+    this.players.forEach((player: Player) => {
+      player.setSelectedItem(-100)
+    })
+
     if (this.round >= this.maxRounds) {
       this.onTimeout('END_GAME');
       this.end();

@@ -70,7 +70,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
         switch (state) {
           case 'SHOW_RESULT':
             console.log("SHOW_RESULT");
-            io.to(roomCode).emit('round_end', game.getGameData());
+            io.to(roomCode).emit('round_end', game.getGameData(), room.getPlayers());
             break;
           case 'NEXT_ROUND':
             console.log("NEXT_ROUND");
