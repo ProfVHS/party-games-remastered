@@ -1,5 +1,5 @@
-import "./Cards.scss"
-import { useCardsSocket } from '../../../sockets/cardsSocket.ts';
+import './Cards.scss';
+import { useCardsSocket } from '@sockets/cardsSocket.ts';
 import { Card } from '@components/minigames/cards/Card.tsx';
 import { ClassNames } from '@utils';
 import { Stopwatch } from '@components/ui/stopwatch/Stopwatch.tsx';

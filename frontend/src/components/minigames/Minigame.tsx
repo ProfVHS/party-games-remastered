@@ -3,7 +3,7 @@ import { Cards } from '@components/minigames/cards/Cards';
 import { ClickTheBomb } from '@components/minigames/clickthebomb/ClickTheBomb';
 import { Scoreboard } from '@components/features/leaderboard/Scoreboard.tsx';
 import { Tutorial } from '@components/features/tutorials/Tutorial.tsx';
-import { useMinigameSocket } from '../../sockets/minigameSocket.ts';
+import { useMinigameSocket } from '@sockets/minigameSocket.ts';
 
 type MinigameProps = {
   minigameName: MinigameNamesEnum;

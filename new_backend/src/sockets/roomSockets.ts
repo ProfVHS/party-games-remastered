@@ -89,7 +89,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
       }
     });
 
-    io.to(roomCode).emit('started_minigame', currentMinigame, room.getTutorialsSettings());
+    io.to(roomCode).emit('started_minigame', { name: currentMinigame, id: 'temp' }, room.getTutorialsSettings());
   });
 
   socket.on('start_minigame_queue', async () => {

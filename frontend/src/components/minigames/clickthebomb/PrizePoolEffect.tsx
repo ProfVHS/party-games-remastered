@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ClassNames } from '@utils';
-import { useClickTheBombSocket } from '../../../sockets/clickTheBombSocket.ts';
+import { useClickTheBombSocket } from '@sockets/clickTheBombSocket.ts';
 
 type PrizePoolEffectProps = {
   points: number;

@@ -6,7 +6,7 @@ import { TurnNotification } from '@components/features/turnNotification/TurnNoti
 import { PrizePoolEffect } from '@components/minigames/clickthebomb/PrizePoolEffect.tsx';
 import Explosion from '@components/minigames/clickthebomb/Explosion.tsx';
 import { Timer } from '@components/features/timer/Timer.tsx';
-import { useClickTheBombSocket } from '../../../sockets/clickTheBombSocket.ts';
+import { useClickTheBombSocket } from '@sockets/clickTheBombSocket.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useTurnStore } from '@stores/turnStore.ts';
 import { memo } from 'react';
