@@ -10,11 +10,10 @@ import { usePlayersStore } from '@stores/playersStore.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 
 type MinigameProps = {
-  minigameId: string;
   minigameName: MinigameNamesEnum;
 };
 
-export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
+export const Minigame = ({ minigameName }: MinigameProps) => {
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(false);
   const [scoreboardPlayers, setScoreboardPlayersPlayers] = useState<PlayerType[]>([]);
@@ -44,7 +43,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
       setTimeout(() => {
         setOldPlayers(newPlayers);
         if (currentPlayer?.isHost) {
-          socket.emit('start_minigame_queue');
+          socket.emit('set_minigame');
         }
       }, 8000);
     });
@@ -66,7 +65,7 @@ export const Minigame = ({ minigameId, minigameName }: MinigameProps) => {
 
     setShowLeaderboard(false);
     handleStartNewGame();
-  }, [minigameId]);
+  }, []);
 
   return (
     <div>

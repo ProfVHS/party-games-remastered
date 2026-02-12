@@ -12,17 +12,20 @@ export const useCardsSocket = () => {
   const [showIntro, setShowIntro] = useState(false);
   const [flipCards, setFlipCards] = useState<boolean>(false);
   const [selectedCard, setSelectedCard] = useState<number>(-100);
+  const [roundEndAt, setRoundEndAt] = useState(0);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
 
   useEffect(() => {
     socket.on('round_end', handleRoundEnd);
     socket.on('round_next', handleRoundNext);
+    socket.on('round_timeout', handleRoundTimeout)
 
     showIntroAnimation();
 
     return () => {
       socket.off('round_end', handleRoundEnd);
       socket.off('round_next', handleRoundNext);
+      socket.off('round_timeout', handleRoundTimeout);
     }
   }, [])
 
@@ -42,11 +45,17 @@ export const useCardsSocket = () => {
     showIntroAnimation();
   }
 
+  const handleRoundTimeout = (endAt: number) => {
+    setRoundEndAt(endAt);
+  };
+
   const showIntroAnimation = () => {
     setShowIntro(true);
 
     setTimeout(() => {
       setShowIntro(false);
+
+      socket.emit('start_minigame_queue');
     }, 2000)
   }
 
@@ -57,5 +66,5 @@ export const useCardsSocket = () => {
     socket.emit('player_selection', cardId);
   }
 
-  return { gameStatus, cards, round, showIntro, flipCards, selectedCard, handleSelectCard };
+  return { gameStatus, cards, round, showIntro, flipCards, selectedCard, roundEndAt, handleSelectCard };
 }

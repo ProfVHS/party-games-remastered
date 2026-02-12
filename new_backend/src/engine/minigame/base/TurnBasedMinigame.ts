@@ -5,14 +5,13 @@ import { TurnBaseTimeoutState } from '@backend-types';
 export abstract class TurnBasedMinigame extends BaseMinigame {
   public currentTurn: number = 0;
 
-  protected constructor(players: Map<string, Player>, roundDuration: number, onTurnTimeout: (state: TurnBaseTimeoutState) => void, timerDelayMs?: number) {
+  protected constructor(players: Map<string, Player>, roundDuration: number, onTurnTimeout: (state: TurnBaseTimeoutState) => void) {
     super(
       players,
       roundDuration,
       () => {
         onTurnTimeout(this.isLastPlayerStanding() ? 'END_GAME' : 'NEXT_TURN');
       },
-      timerDelayMs,
     );
   }
 

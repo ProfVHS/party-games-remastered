@@ -5,7 +5,7 @@ export abstract class BaseMinigame {
   protected players: Map<string, Player>;
   protected timer: Timer;
 
-  protected constructor(players: Map<string, Player>, timerDurationMs: number, onTimerEnd: () => void, timerDelayMs?: number) {
+  protected constructor(players: Map<string, Player>, timerDurationMs: number, onTimerEnd: () => void) {
     this.players = players;
     this.timer = new Timer(
       timerDurationMs,
@@ -13,7 +13,6 @@ export abstract class BaseMinigame {
         this.onTimerEnd();
         onTimerEnd();
       },
-      timerDelayMs,
     );
   }
 

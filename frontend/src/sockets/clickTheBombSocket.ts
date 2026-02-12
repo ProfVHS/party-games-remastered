@@ -34,6 +34,8 @@ export const useClickTheBombSocket = () => {
     socket.on('turn_timeout', handleTurnTimeout);
     socket.on('player_exploded', handlePlayerExplode);
 
+    socket.emit('start_minigame_queue');
+
     return () => {
       socket.off('ended_minigame', bombExploded);
       socket.off('show_score', handleShowScore);

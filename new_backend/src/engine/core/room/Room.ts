@@ -3,11 +3,7 @@ import { Player } from '@engine-core/Player';
 import { MAX_PLAYERS } from '@shared/constants/gameRules';
 import { RoomSettings } from './RoomSettings';
 import { BaseMinigame } from '@minigame-base/BaseMinigame';
-
-//TODO: załadowała ci się gra lub skonczyło sie summary ->
-// wysyłasz socketa start round queue ->
-// ceka 2 sekundy jezeli połowa graczy jest gotowa skraca do 0.5 sekundy
-// i wysyła zeby zaczać runde (endAt itd)
+import { Timer } from '@engine/core/Timer';
 
 export class Room {
   public readonly roomCode: string;
@@ -17,12 +13,42 @@ export class Room {
   public currentMinigame: BaseMinigame | null;
   private gameState: GameStateType;
 
+  private startTimer: Timer | null = null;
+  private minigameStarted = false;
+
   constructor(roomCode: string) {
     this.roomCode = roomCode;
     this.players = new Map();
     this.gameState = GameStateType.lobby;
     this.settings = new RoomSettings();
     this.currentMinigame = null;
+  }
+
+  public scheduleStart(duration: number, onStart: () => void) {
+    if (this.minigameStarted) return;
+
+    if (this.startTimer) {
+      this.startTimer.clear();
+    }
+
+    this.startTimer = new Timer(duration, () => {
+      if (this.minigameStarted) return;
+
+      this.minigameStarted = true;
+      this.startTimer = null;
+
+      onStart();
+    });
+
+    this.startTimer.start();
+  }
+
+  public setMinigameStarted(started: boolean) {
+    this.minigameStarted = started;
+  }
+
+  public getMinigameStarted(): boolean {
+    return this.minigameStarted;
   }
 
   public getGameState() {
@@ -64,6 +90,12 @@ export class Room {
       .filter((p) => p.isReady())
       .map((p) => p.id);
   };
+
+  public setAllReady(ready: boolean) {
+    this.players.forEach((player) => {
+      player.setReady(ready);
+    });
+  }
 
   public checkIfUserIsInRoom = (playerId: string) => {
     const playerData = this.players.get(playerId);

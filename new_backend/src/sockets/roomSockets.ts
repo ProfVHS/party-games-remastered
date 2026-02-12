@@ -37,7 +37,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
     io.to(socket.id).emit('got_room_settings', room.settings.getData());
   });
 
-  socket.on('start_minigame_queue', async () => {
+  socket.on('set_minigame', async () => {
     const roomCode = socket.data.roomCode;
     const room = RoomManager.getRoom(roomCode);
     if (!room) return { success: false, message: 'Room not found!' };
@@ -47,11 +47,9 @@ export const handleRoom = (io: Server, socket: Socket) => {
       room.settings.randomiseMinigames();
     }
 
-    room.players.forEach((player) => {
-      player.setReady(false);
-    });
+    room.setAllReady(false);
 
-    const currentMinigameClass = getMinigame('CARDS');
+    const currentMinigameClass = getMinigame('CLICK_THE_BOMB');
 
     room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
       const game = room.currentMinigame;
@@ -62,31 +60,63 @@ export const handleRoom = (io: Server, socket: Socket) => {
             io.to(roomCode).emit('turn_timeout', game.getCurrentTurnPlayer(), room.getPlayers(), game.getTimer().getEndAt());
             break;
           case 'END_GAME':
+            room.setMinigameStarted(false);
             io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer());
             io.to(roomCode).emit('player_exploded');
+            io.to(roomCode).emit('ended_minigame', room.getPlayers());
             break;
         }
       } else if (game instanceof RoundBasedMinigame) {
         switch (state) {
           case 'SHOW_RESULT':
-            console.log("SHOW_RESULT");
+            console.log('SHOW_RESULT');
             io.to(roomCode).emit('round_end', game.getGameData(), room.getPlayers());
             break;
           case 'NEXT_ROUND':
-            console.log("NEXT_ROUND");
+            console.log('NEXT_ROUND');
+            room.setMinigameStarted(false);
+            room.setAllReady(false);
             io.to(roomCode).emit('round_next', game.getRound());
             break;
           case 'END_GAME':
             console.log('END_GAME');
+            room.setMinigameStarted(false);
+            io.to(roomCode).emit('ended_minigame', room.getPlayers());
             break;
         }
       }
     });
 
-    const game = room.currentMinigame as RoundBasedMinigame;
-    game.start();
-    io.to(roomCode).emit('started_minigame', 'Cards', "", game.getTimer().getEndAt());
+    io.to(roomCode).emit('started_minigame', "Click the Bomb");
   });
+
+  socket.on('start_minigame_queue', async () => {
+    const roomCode = socket.data.roomCode;
+    const room = RoomManager.getRoom(roomCode);
+    if (!room) return { success: false, message: 'Room not found!' };
+
+    room.getPlayer(socket.id)?.setReady(true);
+
+    const readyPlayers = Array.from(room.players.values()).filter((player) => player.isReady());
+
+    if (room.getMinigameStarted()) return;
+
+    //TODO: it works, it can be better though (Too many timers are creating)
+    room.scheduleStart(readyPlayers.length >= room.players.size ? 500 : 2000, () => {
+      const game = room.currentMinigame;
+
+      if (!game) return;
+
+      game.start();
+
+      if (game instanceof RoundBasedMinigame) {
+        io.to(roomCode).emit('round_timeout', game.getTimer().getEndAt());
+      } else if (game instanceof TurnBasedMinigame) {
+        io.to(roomCode).emit('turn_timeout', game.getCurrentTurnPlayer(), room.getPlayers(), game.getTimer().getEndAt());
+      }
+    });
+
+  })
 
   socket.on('tutorial_player_ready', async () => {
     const room = RoomManager.getRoom(socket.data.roomCode);

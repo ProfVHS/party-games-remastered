@@ -8,14 +8,13 @@ import { EmptySlot } from '@components/features/emptySlot/EmptySlot.tsx';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
 import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
-import { GameStateType, MinigameNamesEnum, PlayerType, TurnType } from '@shared/types';
+import { GameStateType, MinigameNamesEnum, PlayerType } from '@shared/types';
 import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
 import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { useToast } from '@hooks/useToast.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 import { v4 as uuid4 } from 'uuid';
-import { useTurnStore } from '@stores/turnStore.ts';
 
 export const RoomPage = () => {
   const { setRoomSettings, fetchRoomData } = useRoomStore();
@@ -25,9 +24,6 @@ export const RoomPage = () => {
 
   const players = usePlayersStore((state) => state.players);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
-
-  const setTurn = useTurnStore((state) => state.setTurn);
-  const setTurnEndAt = useTurnStore((state) => state.setTurnEndAt);
 
   const { sessionData } = useSocketConnection();
   const toast = useToast();
@@ -48,12 +44,10 @@ export const RoomPage = () => {
       toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
     });
 
-    socket.on('started_minigame', (minigameName: MinigameNamesEnum, turn: TurnType, turnEndAt) => {
+    socket.on('started_minigame', (minigameName: MinigameNamesEnum) => {
       setMinigameName(minigameName);
       setMinigameId(uuid4());
       fetchRoomData();
-      setTurn(turn);
-      setTurnEndAt(turnEndAt);
     });
 
     socket.on('updated_room_settings', (roomSettings: RoomSettingsType) => {
@@ -76,7 +70,7 @@ export const RoomPage = () => {
   const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
 
   return minigameName ? (
-    <RoomLayout players={players}>{minigameName ? <Minigame minigameId={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
+    <RoomLayout players={players}>{minigameName ? <Minigame key={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
   ) : (
     <div className="lobby-page">
       <div className="lobby-page__content">

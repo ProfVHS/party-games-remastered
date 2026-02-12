@@ -25,7 +25,7 @@ export const useLobbyStart = ({ setReady }: useLobbyStartProps) => {
           if (prev === 1 && !hasStarted.current) {
             if (currentPlayer?.isHost) {
               socket.emit('verify_minigames');
-              socket.emit('start_minigame_queue');
+              socket.emit('set_minigame');
             }
             hasStarted.current = true;
             clearInterval(timer);
