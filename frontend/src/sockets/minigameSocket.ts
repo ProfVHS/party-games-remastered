@@ -3,12 +3,7 @@ import { useEffect, useState } from 'react';
 import { MinigameNamesEnum, PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore.ts';
 
-type MinigameSocketProps = {
-  minigameName: MinigameNamesEnum;
-  tutorialsEnabled: boolean;
-};
-
-export const useMinigameSocket = ({ minigameName, tutorialsEnabled }: MinigameSocketProps) => {
+export const useMinigameSocket = (minigameName: MinigameNamesEnum, tutorialsEnabled: boolean) => {
   const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(false);
   const [startGame, setStartGame] = useState<boolean>(false);

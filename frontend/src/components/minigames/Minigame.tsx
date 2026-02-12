@@ -11,7 +11,7 @@ type MinigameProps = {
 };
 
 export const Minigame = ({ minigameName, tutorialsEnabled }: MinigameProps) => {
-  const { startGame, showLeaderboard, showTutorial, scoreboardPlayers } = useMinigameSocket({ minigameName, tutorialsEnabled });
+  const { startGame, showLeaderboard, showTutorial, scoreboardPlayers } = useMinigameSocket(minigameName, tutorialsEnabled);
 
   return (
     <div>
