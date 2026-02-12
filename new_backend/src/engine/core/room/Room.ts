@@ -97,6 +97,10 @@ export class Room {
     });
   }
 
+  public getTutorialsSettings() {
+    return this.settings.getData().isTutorialsEnabled;
+  }
+
   public checkIfUserIsInRoom = (playerId: string) => {
     const playerData = this.players.get(playerId);
     const roomData = this.getData();

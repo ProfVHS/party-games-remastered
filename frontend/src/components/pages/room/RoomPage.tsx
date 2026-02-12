@@ -17,10 +17,11 @@ import { useRoomStore } from '@stores/roomStore.ts';
 import { v4 as uuid4 } from 'uuid';
 
 export const RoomPage = () => {
-  const { setRoomSettings, fetchRoomData } = useRoomStore();
+  const { setRoomSettings } = useRoomStore();
   const [minigameName, setMinigameName] = useState<MinigameNamesEnum | null>(null);
   const [minigameId, setMinigameId] = useState<string>('');
   const [areRoomSettingsUpToDate, setAreRoomSettingsUpToDate] = useState<boolean>(true);
+  const [tutorialsEnabled, setTutorialsEnabled] = useState<boolean>(false);
 
   const players = usePlayersStore((state) => state.players);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
@@ -44,10 +45,10 @@ export const RoomPage = () => {
       toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
     });
 
-    socket.on('started_minigame', (minigameName: MinigameNamesEnum) => {
+    socket.on('started_minigame', (minigameName: MinigameNamesEnum, tutorialsEnabled: boolean) => {
       setMinigameName(minigameName);
       setMinigameId(uuid4());
-      fetchRoomData();
+      setTutorialsEnabled(tutorialsEnabled);
     });
 
     socket.on('updated_room_settings', (roomSettings: RoomSettingsType) => {
@@ -70,7 +71,9 @@ export const RoomPage = () => {
   const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
 
   return minigameName ? (
-    <RoomLayout players={players}>{minigameName ? <Minigame key={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
+    <RoomLayout players={players}>
+      {minigameName ? <Minigame key={minigameId} minigameName={minigameName} tutorialsEnabled={tutorialsEnabled} /> : <></>}
+    </RoomLayout>
   ) : (
     <div className="lobby-page">
       <div className="lobby-page__content">
