@@ -1,5 +1,6 @@
-import { MINIGAME_REGISTRY, minigameIdType } from '@minigames/index';
+import { MINIGAME_REGISTRY } from '@minigames/index';
+import { MinigameNamesEnum } from '@shared/types';
 
-export const getMinigame = (id: minigameIdType) => {
-  return MINIGAME_REGISTRY[id];
+export const getMinigame = (name: MinigameNamesEnum) => {
+  return MINIGAME_REGISTRY[name];
 };

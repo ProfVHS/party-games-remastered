@@ -1,3 +1,5 @@
+import { MinigameNamesEnum } from "./MinigameType";
+
 export type RoomSettingsType = {
   isRandomMinigames: boolean;
   isTutorialsEnabled: boolean;
@@ -6,6 +8,6 @@ export type RoomSettingsType = {
 };
 
 export type MinigameEntryType = {
-  name: string;
+  name: MinigameNamesEnum;
   id?: string;
 };

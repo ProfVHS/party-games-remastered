@@ -1,9 +1,8 @@
 import { ClickTheBomb } from '@minigames/ClickTheBomb';
 import { Cards } from '@minigames/Cards';
+import { MinigameNamesEnum } from '@shared/types';
 
 export const MINIGAME_REGISTRY = {
-  CLICK_THE_BOMB: ClickTheBomb,
-  CARDS: Cards,
+  [MinigameNamesEnum.clickTheBomb]: ClickTheBomb,
+  [MinigameNamesEnum.cards]: Cards,
 };
-
-export type minigameIdType = keyof typeof MINIGAME_REGISTRY;

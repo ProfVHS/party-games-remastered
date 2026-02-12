@@ -5,6 +5,7 @@ import { TurnBasedMinigame } from '@minigame-base/TurnBasedMinigame';
 import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
 import { getMinigame } from '@engine-managers/MinigameManager';
+import { MinigameNamesEnum } from '@shared/types';
 
 export const handleRoom = (io: Server, socket: Socket) => {
   socket.on('get_room_data', () => {
@@ -49,7 +50,8 @@ export const handleRoom = (io: Server, socket: Socket) => {
 
     room.setAllReady(false);
 
-    const currentMinigameClass = getMinigame('CLICK_THE_BOMB');
+    const currentMinigame = MinigameNamesEnum.cards;
+    const currentMinigameClass = getMinigame(currentMinigame);
 
     room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
       const game = room.currentMinigame;
@@ -87,7 +89,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
       }
     });
 
-    io.to(roomCode).emit('started_minigame', "Click the Bomb");
+    io.to(roomCode).emit('started_minigame', currentMinigame);
   });
 
   socket.on('start_minigame_queue', async () => {
@@ -115,8 +117,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
         io.to(roomCode).emit('turn_timeout', game.getCurrentTurnPlayer(), room.getPlayers(), game.getTimer().getEndAt());
       }
     });
-
-  })
+  });
 
   socket.on('tutorial_player_ready', async () => {
     const room = RoomManager.getRoom(socket.data.roomCode);
