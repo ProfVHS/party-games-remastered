@@ -2,23 +2,12 @@ import './EndGame.scss';
 import { Podium } from '@components/ui/podium/Podium.tsx';
 import { sortPlayersByScore } from '@shared/utlis.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
-import { PlayerType } from '@shared/types';
-import { useEffect, useState } from 'react';
 
 export const EndGame = () => {
   const players = usePlayersStore((state) => state.players);
   const sortedPlayers = sortPlayersByScore(players);
-  const [firstRow, setFirstRow] = useState<PlayerType[]>([]);
-  const [secondRow, setSecondRow] = useState<PlayerType[]>([]);
-
-  useEffect(() => {
-    if (sortedPlayers.length > 5) {
-      setFirstRow(sortedPlayers.slice(0, 3));
-      setSecondRow(sortedPlayers.slice(3));
-    } else {
-      setFirstRow(sortedPlayers);
-    }
-  }, [sortedPlayers]);
+  const firstRow = sortedPlayers.length > 5 ? sortedPlayers.slice(0, 3) : sortedPlayers;
+  const secondRow = sortedPlayers.length > 5 ? sortedPlayers.slice(3) : [];
 
   return (
     <div className="end-game">
