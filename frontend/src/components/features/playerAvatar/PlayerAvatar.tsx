@@ -35,7 +35,7 @@ const PlayerAvatar = ({ player, style, inLobby = false, ready }: PlayerAvatarPro
       {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
       <h2 className="player-avatar__username">{player.nickname}</h2>
       <div className={ClassNames('player-avatar__avatar', { lobby: socket.id === player.id && inLobby })} onClick={handleChooseAvatar}>
-        {avatar ? <Avatar avatar={avatar} status={player.status} /> : <Default className="player-avatar__avatar__default" />}
+        {player.avatar !== 'default' ? <Avatar avatar={avatar} status={player.status} /> : <Default className="player-avatar__avatar__default" />}
       </div>
       {!inLobby && (
         <h2 className="player-avatar__score">

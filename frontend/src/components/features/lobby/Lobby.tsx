@@ -1,6 +1,6 @@
 import './Lobby.scss';
 import { Button } from '@components/ui/button/Button';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { socket } from '@socket';
 
 import { useToast } from '@hooks/useToast.ts';
