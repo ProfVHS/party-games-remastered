@@ -7,10 +7,13 @@ import { Minigame } from '@components/minigames/Minigame.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useRoomSocket } from '@sockets/roomSocket.ts';
+import { useState } from 'react';
+import { AvatarPicker } from '@components/features/avatarPicker/AvatarPicker.tsx';
 
 export const RoomPage = () => {
   const { minigame, tutorialsEnabled, slots, areRoomSettingsUpToDate, setAreRoomSettingsUpToDate } = useRoomSocket();
   const players = usePlayersStore((state) => state.players);
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
 
   return minigame ? (
     <RoomLayout players={players}>
@@ -24,9 +27,14 @@ export const RoomPage = () => {
       </div>
       <div className="lobby-page__players">
         {slots.map((player, index) =>
-          player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} ready={player.ready} /> : <EmptySlot key={index} />,
+          player !== null ? (
+            <PlayerAvatar onClick={() => setShowAvatarPicker(true)} key={index} player={player} inLobby={true} ready={player.ready} />
+          ) : (
+            <EmptySlot key={index} />
+          ),
         )}
       </div>
+      {showAvatarPicker && <AvatarPicker onClose={() => setShowAvatarPicker(false)} />}
     </div>
   );
 };

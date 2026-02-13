@@ -5,6 +5,8 @@ import React, { createElement, memo } from 'react';
 import { Counter } from '@components/ui/counter/Counter.tsx';
 import { ClassNames } from '@utils';
 import { useTurnStore } from '@stores/turnStore.ts';
+import Default from '@assets/avatars/default.svg?react';
+import { socket } from '@socket';
 
 type avatars = keyof typeof avatarList;
 
@@ -13,18 +15,21 @@ type PlayerAvatarProps = {
   style?: React.CSSProperties;
   inLobby?: boolean;
   ready?: boolean;
+  onClick?: () => void;
 };
 
-const PlayerAvatar = ({ player, style, inLobby = false, ready }: PlayerAvatarProps) => {
+const PlayerAvatar = ({ player, style, inLobby = false, ready, onClick }: PlayerAvatarProps) => {
   const avatar = player.avatar as avatars;
   const currentTurn = useTurnStore((state) => state.currentTurn);
+
+  const handleChooseAvatar = () => player.id === socket.id && onClick && onClick();
 
   return (
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.id === player.id })} style={style}>
       {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
       <h2 className="player-avatar__username">{player.nickname}</h2>
-      <div className="player-avatar__avatar">
-        <Avatar avatar={avatar} status={player.status} />
+      <div className={ClassNames('player-avatar__avatar', { lobby: socket.id === player.id && inLobby })} onClick={handleChooseAvatar}>
+        {player.avatar !== 'default' ? <Avatar avatar={avatar} status={player.status} /> : <Default className="player-avatar__avatar__default" />}
       </div>
       {!inLobby && (
         <h2 className="player-avatar__score">

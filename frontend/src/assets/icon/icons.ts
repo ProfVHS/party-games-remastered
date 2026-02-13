@@ -10,6 +10,8 @@ import Save from './svgs/save.svg?react';
 import Trash from './svgs/trash.svg?react';
 import Cross from './svgs/cross.svg?react';
 import Arrow from './svgs/arrow.svg?react';
+import Random from './svgs/random.svg?react';
+import Lock from './svgs/lock.svg?react';
 
 import ClickTheBomb from './svgs/clickTheBomb.svg?react';
 import Cards from './svgs/cards.svg?react';
@@ -33,4 +35,6 @@ export const icons = {
   Trash,
   Cross,
   Arrow,
+  Random,
+  Lock,
 };

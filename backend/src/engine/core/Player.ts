@@ -11,7 +11,7 @@ export class Player {
   private score: number;
   private status: PlayerStatusEnum;
   private ready: boolean;
-  private avatar: avatars;
+  public avatar: string;
   private selectedItem: number;
 
   constructor(id: string, nickname: string, isHost: boolean = false) {
@@ -21,7 +21,7 @@ export class Player {
     this.score = 0;
     this.disconnected = false;
     this.status = PlayerStatusEnum.idle;
-    this.avatar = avatars.skeleton;
+    this.avatar = 'default';
     this.ready = false;
     this.host = isHost;
     this.selectedItem = -100;
@@ -104,9 +104,9 @@ export class Player {
 
   public setSelectedItem = (selectedItem: number) => {
     this.selectedItem = selectedItem;
-  }
+  };
 
   public getSelectedItem = () => {
     return this.selectedItem;
-  }
+  };
 }
