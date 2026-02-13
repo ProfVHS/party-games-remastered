@@ -5,7 +5,6 @@ import { TurnBasedMinigame } from '@minigame-base/TurnBasedMinigame';
 import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
 import { getMinigame } from '@engine-managers/MinigameManager';
-import { MinigameNamesEnum } from '@shared/types';
 
 export const handleRoom = (io: Server, socket: Socket) => {
   socket.on('get_room_data', () => {
@@ -38,6 +37,16 @@ export const handleRoom = (io: Server, socket: Socket) => {
     io.to(socket.id).emit('got_room_settings', room.settings.getData());
   });
 
+  socket.on('verify_minigames', async () => {
+    const roomCode = socket.data.roomCode;
+    const room = RoomManager.getRoom(roomCode);
+    if (!room) return { success: false, message: 'Room not found!' };
+
+    if (room.settings.getMinigames().length <= 0) {
+      room.settings.randomiseMinigames();
+    }
+  });
+
   socket.on('set_minigame', async () => {
     const roomCode = socket.data.roomCode;
     const room = RoomManager.getRoom(roomCode);
@@ -46,8 +55,14 @@ export const handleRoom = (io: Server, socket: Socket) => {
 
     room.setAllReady(false);
 
-    const currentMinigame = MinigameNamesEnum.trickyDiamonds;
-    const currentMinigameClass = getMinigame(currentMinigame);
+    const currentMinigame = room.settings.getNextMinigame();
+
+    if (!currentMinigame) {
+      console.log('Pokaż podium');
+      return;
+    }
+
+    const currentMinigameClass = getMinigame(currentMinigame.name);
 
     room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
       const game = room.currentMinigame;
@@ -85,7 +100,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
       }
     });
 
-    io.to(roomCode).emit('started_minigame', { name: currentMinigame, id: Math.random().toString() }, room.getTutorialsSettings());
+    io.to(roomCode).emit('started_minigame', { name: currentMinigame.name, id: currentMinigame.id }, room.settings.getData().isTutorialsEnabled);
   });
 
   socket.on('start_minigame_queue', async () => {

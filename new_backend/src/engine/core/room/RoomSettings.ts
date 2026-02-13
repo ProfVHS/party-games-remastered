@@ -22,10 +22,10 @@ export class RoomSettings {
 
   public getMinigames = () => this.minigames;
 
-  public getCurrentMinigameId = () => {
-    const currentMinigameId = this.minigames[0].name;
+  public getNextMinigame = () => {
+    const nextMinigame = this.minigames[0];
     this.minigames = this.minigames.slice(1);
-    return currentMinigameId;
+    return nextMinigame;
   };
 
   public randomiseMinigames = () => {
@@ -36,7 +36,7 @@ export class RoomSettings {
         message: 'Number of Minigames must be greater than 2!',
       };
 
-    const allowDuplicates = true;
+    const allowDuplicates = false;
 
     const allMinigames = Object.values(MinigameNamesEnum);
     let selected: MinigameNamesEnum[];
