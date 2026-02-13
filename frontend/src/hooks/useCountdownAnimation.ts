@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 // Simple hook for smooth millisecond-based countdown animation (Progressbar, Timers with milliseconds)
-export const useCountdownAnimation = (initialTime: number, onComplete: () => void) => {
-  const initialTimeMs = initialTime * 1000;
+export const useCountdownAnimation = (initialTimeMs: number, onComplete: () => void) => {
   const [animationTimeLeft, setAnimationTimeLeft] = useState<number>(initialTimeMs);
   const startTimeRef = useRef<number>();
   const animationRef = useRef<number>();

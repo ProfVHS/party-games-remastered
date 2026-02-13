@@ -15,11 +15,10 @@ import { useRoomStore } from '@stores/roomStore.ts';
 import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
 
 type RoomSettingsProps = {
-  playerIdsReady: string[];
   setAreRoomSettingsUpToDate: Dispatch<SetStateAction<boolean>>;
 };
 
-export const RoomSettings = ({ playerIdsReady, setAreRoomSettingsUpToDate }: RoomSettingsProps) => {
+export const RoomSettings = ({ setAreRoomSettingsUpToDate }: RoomSettingsProps) => {
   const { roomSettings, setRoomSettings } = useRoomStore();
 
   const [minigamesModal, setMinigamesModal] = useState<boolean>(false);
@@ -33,7 +32,7 @@ export const RoomSettings = ({ playerIdsReady, setAreRoomSettingsUpToDate }: Roo
   const toast = useToast();
 
   const handleRoomSettingsChange = (field: string, value: unknown) => {
-    if (playerIdsReady.includes(currentPlayer!.id)) {
+    if (currentPlayer?.ready) {
       socket.emit('toggle_player_ready');
     }
 

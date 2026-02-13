@@ -6,27 +6,23 @@ import { Pagination } from '@components/features/tutorials/components/Pagination
 import { Text } from '@components/features/tutorials/components/Text.tsx';
 import { ClickTheBombTutorial } from '@components/features/tutorials/minigamesTutorials/clickTheBomb.tsx';
 import { socket } from '@socket';
-
-const maxPagesByGame: Record<MinigameNamesEnum, number> = {
-  [MinigameNamesEnum.clickTheBomb]: 3,
-  [MinigameNamesEnum.cards]: 3,
-  [MinigameNamesEnum.colorsMemory]: 2,
-  [MinigameNamesEnum.trickyDiamonds]: 2,
-};
+import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules.ts';
+import { MAX_PAGES_BY_GAME } from '@shared/constants/defaults.ts';
+import { CardsTutorial } from '@components/features/tutorials/minigamesTutorials/cards.tsx';
+import { usePlayersStore } from '@stores/playersStore.ts';
+import { TrickyDiamondsTutorial } from '@components/features/tutorials/minigamesTutorials/trickyDiamonds.tsx';
 
 type TutorialProps = {
   minigameName: MinigameNamesEnum;
 };
-
-import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules.ts';
-import { CardsTutorial } from '@components/features/tutorials/minigamesTutorials/cards.tsx';
 
 export const Tutorial = ({ minigameName }: TutorialProps) => {
   const [page, setPage] = useState<number>(1);
   const [ready, setReady] = useState<boolean>(false);
   const [readyPlayers, setReadyPlayers] = useState<number>(0);
   const [maxPlayers, setMaxPlayers] = useState<number>(MIN_PLAYERS_TO_START);
-  const maxPage = maxPagesByGame[minigameName];
+  const maxPage = MAX_PAGES_BY_GAME[minigameName];
+  const { players } = usePlayersStore();
 
   const handleChangePage = (delta: number) => {
     if (page + delta < 1 || page + delta > maxPage) return;
@@ -36,19 +32,22 @@ export const Tutorial = ({ minigameName }: TutorialProps) => {
 
   const handleReady = () => {
     setReady(true);
-    socket.emit('end_tutorial_queue');
+    socket.emit('tutorial_player_ready');
   };
 
   useEffect(() => {
-    socket.on('tutorial_queue_players', (playersReady: number, maxPlayers: number) => {
+    socket.on('tutorial_ready_status', (playersReady: number) => {
       setReadyPlayers(playersReady);
-      setMaxPlayers(maxPlayers);
     });
 
     return () => {
-      socket.off('tutorial_queue_players');
+      socket.off('tutorial_ready_status');
     };
   }, [readyPlayers, maxPlayers]);
+
+  useEffect(() => {
+    setMaxPlayers(players.filter((p) => !p.isDisconnected).length);
+  }, [players]);
 
   return (
     <div className="tutorial__overlay">
@@ -59,6 +58,7 @@ export const Tutorial = ({ minigameName }: TutorialProps) => {
             <div className="tutorial__content">
               {minigameName === MinigameNamesEnum.clickTheBomb && <ClickTheBombTutorial page={page} />}
               {minigameName === MinigameNamesEnum.cards && <CardsTutorial page={page} />}
+              {minigameName === MinigameNamesEnum.trickyDiamonds && <TrickyDiamondsTutorial page={page} />}
             </div>
             <Pagination page={page} maxPages={maxPage} onClick={handleChangePage} />
           </div>

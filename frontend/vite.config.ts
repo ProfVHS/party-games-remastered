@@ -18,6 +18,7 @@ export default defineConfig({
       '@stores': path.resolve(__dirname, 'src/stores'),
       '@frontend-types': path.resolve(__dirname, 'src/types'),
       '@socket': path.resolve(__dirname, 'src/socket.ts'),
+      '@sockets': path.resolve(__dirname, 'src/sockets'),
       '@utils': path.resolve(__dirname, 'src/utils.ts'),
     },
   },

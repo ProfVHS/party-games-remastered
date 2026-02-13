@@ -3,3 +3,4 @@ export * from "./PlayerType";
 export * from "./ReturnDataType";
 export * from "./RoomDataType";
 export * from "./TurnType";
+export * from "./GameStateType"
