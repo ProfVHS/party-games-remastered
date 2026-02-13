@@ -1,12 +1,11 @@
 import './PlayerAvatar.scss';
 import { PlayerStatusEnum, PlayerType } from '@shared/types';
 import { avatarList } from './avatarList';
-import React, { createElement, memo, useContext } from 'react';
+import React, { createElement, memo } from 'react';
 import { Counter } from '@components/ui/counter/Counter.tsx';
 import { ClassNames } from '@utils';
 import { useTurnStore } from '@stores/turnStore.ts';
 import Default from '@assets/avatars/default.svg?react';
-import { AvatarPickerContext } from '@context/avatarPicker/AvatarPickerContext.ts';
 import { socket } from '@socket';
 
 type avatars = keyof typeof avatarList;
@@ -16,19 +15,14 @@ type PlayerAvatarProps = {
   style?: React.CSSProperties;
   inLobby?: boolean;
   ready?: boolean;
+  onClick?: () => void;
 };
 
-const PlayerAvatar = ({ player, style, inLobby = false, ready }: PlayerAvatarProps) => {
+const PlayerAvatar = ({ player, style, inLobby = false, ready, onClick }: PlayerAvatarProps) => {
   const avatar = player.avatar as avatars;
   const currentTurn = useTurnStore((state) => state.currentTurn);
 
-  const { setShowAvatarPicker } = useContext(AvatarPickerContext);
-
-  const handleChooseAvatar = () => {
-    if (player.id === socket.id) {
-      setShowAvatarPicker(true);
-    }
-  };
+  const handleChooseAvatar = () => player.id === socket.id && onClick && onClick();
 
   return (
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.id === player.id })} style={style}>

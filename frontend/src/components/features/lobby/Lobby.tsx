@@ -1,15 +1,13 @@
 import './Lobby.scss';
 import { Button } from '@components/ui/button/Button';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { socket } from '@socket';
 
 import { useToast } from '@hooks/useToast.ts';
 import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
 import { useLobbyStart } from '@hooks/useLobbyStart.ts';
-import { AvatarPicker } from '@components/features/avatarPicker/AvatarPicker.tsx';
 
 import { usePlayersStore } from '@stores/playersStore.ts';
-import { AvatarPickerContext } from '@context/avatarPicker/AvatarPickerContext.ts';
 
 type LobbyProps = {
   areRoomSettingsUpToDate: boolean;
@@ -21,7 +19,6 @@ export const Lobby = ({ areRoomSettingsUpToDate }: LobbyProps) => {
   const roomCode = localStorage.getItem('roomCode');
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
   const players = usePlayersStore((state) => state.players);
-  const { showAvatarPicker } = useContext(AvatarPickerContext);
   const toast = useToast();
 
   useLobbyToggle({ setIsLoading });
@@ -53,7 +50,6 @@ export const Lobby = ({ areRoomSettingsUpToDate }: LobbyProps) => {
 
   return (
     <div className="lobby">
-      {showAvatarPicker && <AvatarPicker />}
       {countdown === null ? (
         <>
           <span className="lobby__title">

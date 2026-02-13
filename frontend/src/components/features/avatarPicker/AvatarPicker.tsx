@@ -1,5 +1,5 @@
 import './AvatarPicker.scss';
-import { createElement, useContext, useEffect, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { Button } from '@components/ui/button/Button.tsx';
 import { Avatar } from '@components/features/avatarPicker/Avatar.tsx';
 import { Icon } from '@assets/icon';
@@ -8,13 +8,15 @@ import { ReturnDataType } from '@shared/types';
 import { socket } from '@socket';
 import { avatarList } from '@components/features/playerAvatar/avatarList.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
-import { AvatarPickerContext } from '@context/avatarPicker/AvatarPickerContext.ts';
 import { Modal } from '@components/ui/modal/Modal.tsx';
 
-export const AvatarPicker = () => {
+type AvatarPickerProps = {
+  onClose: () => void;
+};
+
+export const AvatarPicker = ({ onClose }: AvatarPickerProps) => {
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [freeAvatars, setFreeAvatars] = useState<string[] | null>(null);
-  const { setShowAvatarPicker } = useContext(AvatarPickerContext);
   const { players } = usePlayersStore();
   const toast = useToast();
 
@@ -34,7 +36,7 @@ export const AvatarPicker = () => {
 
     socket.emit('choose_avatar', avatar, (response: ReturnDataType) => {
       if (response.success) {
-        setShowAvatarPicker(false);
+        onClose();
       } else {
         toast.error({ message: response.payload || 'Selection failed. Try again.', duration: 3 });
       }
@@ -48,7 +50,7 @@ export const AvatarPicker = () => {
   }, [players]);
 
   return (
-    <Modal onClose={() => setShowAvatarPicker(false)}>
+    <Modal onClose={() => onClose()}>
       <div className="avatar-picker">
         <div className="avatar-picker__avatars">
           <Avatar name="Random" selected={selectedAvatar === 'random'} onClick={() => setSelectedAvatar('random')}>
@@ -64,7 +66,7 @@ export const AvatarPicker = () => {
         </div>
         <div className="avatar-picker__buttons">
           <Button onClick={handleConfirmAvatar}>Confirm</Button>
-          <Button color="remove" onClick={() => setShowAvatarPicker(false)}>
+          <Button color="remove" onClick={() => onClose()}>
             Cancel
           </Button>
         </div>
