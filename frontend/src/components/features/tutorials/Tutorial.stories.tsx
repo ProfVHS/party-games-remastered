@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Tutorial } from './Tutorial';
 import { MinigameNamesEnum } from '@shared/types';
@@ -17,4 +17,8 @@ export const ClickTheBomb: Story = {
 
 export const Cards: Story = {
   args: { minigameName: MinigameNamesEnum.cards },
+};
+
+export const TrickyDiamonds: Story = {
+  args: { minigameName: MinigameNamesEnum.trickyDiamonds },
 };
