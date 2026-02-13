@@ -72,7 +72,7 @@
     }
   }
 
-  &.first {
+  &--first {
     .podium__top, .podium__base {
       background-color: #FFD000;
 
@@ -82,7 +82,7 @@
     }
   }
 
-  &.second {
+  &--second {
     .podium__top, .podium__base {
       background-color: #D9D5DD;
 
@@ -92,7 +92,7 @@
     }
   }
 
-  &.third {
+  &--third {
     .podium__top, .podium__base {
       background-color: #DD9444;
 
@@ -100,5 +100,30 @@
         opacity: 0.2;
       }
     }
+  }
+
+  &--1 {
+    order: 5;
+  }
+  &--2 {
+    order: 6;
+  }
+  &--3 {
+    order: 4;
+  }
+  &--4 {
+    order: 3;
+  }
+  &--5 {
+    order: 7;
+  }
+  &--6 {
+    order: 2;
+  }
+  &--7 {
+    order: 8;
+  }
+  &--8 {
+    order: 1;
   }
 }
