@@ -12,14 +12,14 @@
     "baseUrl": "./src",
     "paths": {
       "@shared/*": ["../../shared/*"],
-      "@config/*": ["config/*"],
-      "@errors": ["errors"],
-      "@roomRepository": ["repositories/roomRepository"],
-      "@roomService": ["services/roomService.ts"],
-      "@playerService": ["services/playerService.ts"],
-      "@minigameService": ["services/minigameService.ts"],
-      "@sockets": ["sockets"],
-      "@backend-types": ["types"]
+      "@engine/*": ["engine/*"],
+      "@sockets/*": ["sockets/*"],
+      "@backend-types": ["types"],
+      "@engine-core/*": ["engine/core/*"],
+      "@engine-managers/*": ["engine/managers/*"],
+      "@minigames/*": ["engine/minigame/*"],
+      "@minigame-base/*": ["engine/minigame/base/*"],
+      "@socket-middlewares/*": ["sockets/middlewares/*"]
     }
   },
   "include": ["src"],

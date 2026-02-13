@@ -8,7 +8,6 @@ interface PlayersStoreProps {
   players: PlayerType[];
   setOldPlayers: (data: PlayerType[]) => void;
   setPlayers: (data: PlayerType[]) => void;
-  fetchPlayers: () => void;
 }
 
 export const usePlayersStore = create<PlayersStoreProps>((set) => ({
@@ -21,13 +20,5 @@ export const usePlayersStore = create<PlayersStoreProps>((set) => ({
   setPlayers: (data: PlayerType[]) => {
     const currentPlayerData = data.find((player) => player.id === socket.id);
     set({ players: data, currentPlayer: currentPlayerData });
-  },
-  fetchPlayers: () => {
-    socket.emit('get_players');
-
-    socket.on('got_players', (data: PlayerType[]) => {
-      const currentPlayerData = data.find((player) => player.id === socket.id);
-      set({ players: data, currentPlayer: currentPlayerData });
-    });
   },
 }));

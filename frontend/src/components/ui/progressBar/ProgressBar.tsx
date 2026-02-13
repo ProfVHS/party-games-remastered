@@ -2,22 +2,31 @@ import './ProgressBar.scss';
 import { useEffect, useState } from 'react';
 
 type ProgressBarProps = {
-  timeLeft: number;
+  endAt: number;
   duration: number;
 };
 
-export const ProgressBar = ({ timeLeft, duration }: ProgressBarProps) => {
-  const [fillWidth, setFillWidth] = useState(50);
+export const ProgressBar = ({ endAt, duration }: ProgressBarProps) => {
+  const [fillWidth, setFillWidth] = useState(100);
 
   useEffect(() => {
-    let width = timeLeft / duration / 10;
+    if (!endAt || endAt == 0) return;
 
-    if (width < 0.5) {
-      width = 0;
-    }
+    const interval = setInterval(() => {
+      const timeLeft = endAt - Date.now();
 
-    setFillWidth(width);
-  }, [timeLeft]);
+      if (timeLeft <= 0) {
+        setFillWidth(0);
+        clearInterval(interval);
+        return;
+      }
+
+      const percent = (timeLeft / duration) * 100;
+      setFillWidth(percent);
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [endAt, duration]);
 
   return (
     <div className="progress__bar">

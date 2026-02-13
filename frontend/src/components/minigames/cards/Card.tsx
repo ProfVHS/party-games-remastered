@@ -1,112 +1,66 @@
-import './Cards.scss';
 import { useEffect, useState } from 'react';
-import { PlayerType } from '@shared/types';
-import { usePlayersStore } from '@stores/playersStore';
 import { Icon } from '@assets/icon';
 import { ClassNames } from '@utils';
-import './Card.scss';
+import "./Card.scss"
+import { usePlayersStore} from '@stores/playersStore.ts';
+import { PlayerNicknamesList } from '@components/ui/playerNicknamesList/PlayerNicknamesList.tsx';
+import { PlayerType } from '@shared/types';
 
 interface CardProps {
   id: number;
-  points: number; // number
-  isPositive: boolean;
-  isFlipping?: boolean;
-  selected?: boolean;
-  newPlayersPointsCard?: PlayerType[];
+  points: number;
+  isFlipping: boolean;
+  selected: boolean;
   onClick: (id: number) => void;
-  startNewRound?: () => void;
 }
 
-export const Card = ({ id, points, isPositive, isFlipping, selected, newPlayersPointsCard, onClick, startNewRound }: CardProps) => {
-  const visibleDuration: number = 2000; // How long the cards and selected players remain visible
-  const revealTime: number = 400 * (id + 1); // Time in milliseconds to reveal the card
+export const Card = ({ id, points, isFlipping, selected, onClick }: CardProps) => {
+  const revealTime: number = 400;
   const pointsToDisplay: string = points < 0 ? points.toString() : '+' + points.toString();
-  const [cardType, setCardType] = useState<'back' | 'positive' | 'negative'>('back'); // 'back', 'positive', 'negative'
-  const [flipping, setFlipping] = useState<boolean>(false);
-  const [playerNicknamesSelectedCard, setPlayerNicknamesSelectedCard] = useState<string[]>([]);
-  const { players, setPlayers } = usePlayersStore();
+  const [cardType, setCardType] = useState<'back' | 'positive' | 'negative'>('back');
+  const [flip, setFlip] = useState<boolean>(false);
+  const [playersWithThisCard, setPlayersWithThisCard] = useState<PlayerType[]>([]);
+  const players = usePlayersStore((state) => state.players);
 
-  const flipCardBack = () => {
-    setFlipping(true);
+  const showCardBack = () => {
+    setFlip(true);
 
     setTimeout(() => {
+      setFlip(false);
       setCardType('back');
-      setPlayerNicknamesSelectedCard(() => []);
-      setFlipping(false);
-    }, 400);
-  };
-
-  const revealCard = () => {
-    // First timeout to flip the card by 90 degrees, still with the back side visible
-    setTimeout(() => {
-      setFlipping(true);
-
-      // Second timeout to change the card type after the flip animation starts and reveal the card with new points and players
-      setTimeout(() => {
-        setCardType(isPositive ? 'positive' : 'negative');
-
-        if (!newPlayersPointsCard || newPlayersPointsCard.length < 0) return;
-
-        const pointsToAdd = Math.floor(points < 0 ? points * newPlayersPointsCard.length : points / newPlayersPointsCard.length);
-        let playerNicknames: string[] = [];
-
-        // Update the score for each affected player
-        newPlayersPointsCard.forEach((player) => {
-          players.forEach((p) => {
-            if (p.id === player.id) {
-              const newScore = p.score + pointsToAdd;
-              newScore < 0 ? (p.score = 0) : (p.score = newScore);
-              playerNicknames = [...playerNicknames, p.nickname];
-            }
-          });
-        });
-
-        setPlayers([...players]);
-        setFlipping(false);
-        setPlayerNicknamesSelectedCard(() => playerNicknames);
-
-        if (id === 8 && startNewRound) {
-          setTimeout(() => {
-            startNewRound();
-          }, visibleDuration);
-        }
-      }, 400);
     }, revealTime);
-  };
+  }
+
+  const showCardFront = () => {
+    setTimeout(() => {
+      setFlip(true);
+
+      setTimeout(() => {
+        setFlip(false);
+        setCardType(points > 0 ? 'positive' : 'negative');
+      }, revealTime);
+    }, revealTime * (id + 1));
+  }
 
   useEffect(() => {
-    if (isFlipping) {
-      revealCard();
+    if (!isFlipping){
+      showCardBack()
     } else {
-      flipCardBack();
+      showCardFront()
     }
   }, [isFlipping]);
 
+  useEffect(() => {
+    setPlayersWithThisCard(players.filter((player) => player.selectedItem === id));
+  }, [players]);
+
   return (
-    <div
-      className={ClassNames('card', [cardType], {
-        flipping: flipping,
-        selected: selected,
-        players: playerNicknamesSelectedCard.length > 0,
-      })}
-      onClick={cardType === 'back' ? () => onClick(id) : undefined}
-    >
-      {playerNicknamesSelectedCard.length > 0 && (
-        <div className="card__players">
-          {playerNicknamesSelectedCard.map((nickname, index) => (
-            <div className={ClassNames('card__player', [cardType])} key={index}>
-              {nickname}
-            </div>
-          ))}
-        </div>
+    <div className={ClassNames('card', [cardType], { flip: flip, selected: selected })} onClick={cardType === 'back' ? () => onClick(id) : undefined}>
+      {cardType !== 'back' && playersWithThisCard.length > 0 && (
+        <PlayerNicknamesList playerList={playersWithThisCard} playerBackground={points < 0 ? 'cards--negative' : 'cards--positive'} />
       )}
       {cardType !== 'back' && <div className="card__score card__score--top">{pointsToDisplay}</div>}
-      <div
-        className={ClassNames('card__content', {
-          positive: cardType === 'positive',
-          negative: cardType === 'negative',
-        })}
-      >
+      <div className={ClassNames('', { positive: cardType === 'positive', negative: cardType === 'negative' })}>
         {cardType === 'back' && <Icon icon="Logo" className="svg" />}
         {cardType === 'positive' && <div className="card__score card__score--mid">{pointsToDisplay}</div>}
         {cardType === 'negative' && <Icon icon="Mine" className="svg" />}
