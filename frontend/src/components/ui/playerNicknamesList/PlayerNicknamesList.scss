@@ -15,6 +15,7 @@
 
   pointer-events: none;
 
+  // TODO: Tricky diamonds need it to be 0.3
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 0.125rem;
   z-index: 10;
@@ -22,11 +23,15 @@
 
   &__item {
     font-size: 0.75rem;
+    font-weight: bold;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
 
-    max-width: 100%;
+    width: 100%;
+    max-width: 90%;
+
+    text-align: center;
     padding: 0 1rem;
     border-radius: 0.25rem;
     box-sizing: border-box;
@@ -39,5 +44,16 @@
       color: rgba(255, 255, 255, 0.8);
       background-color: var(--cards-player-negative-bg);
     }
+
+    &--tricky-diamonds--positive {
+      color: rgba(0, 0, 0, 0.8);
+      background-color: #FFE4AF;
+    }
+    &--tricky-diamonds--negative {
+      color: rgba(255, 255, 255, 0.9);
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+
   }
 }

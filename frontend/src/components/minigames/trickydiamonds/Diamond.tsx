@@ -1,8 +1,10 @@
+import './Diamond.scss';
 import { WinCard } from '@components/minigames/trickydiamonds/WinCard.tsx';
 import { LossCard } from '@components/minigames/trickydiamonds/LossCard.tsx';
 import HighDiamond from '@assets/textures/highDiamond.svg?react';
 import MediumDiamond from '@assets/textures/mediumDiamond.svg?react';
 import LowDiamond from '@assets/textures/lowDiamond.svg?react';
+import { PlayerNicknamesList } from '@components/ui/playerNicknamesList/PlayerNicknamesList.tsx';
 
 type DiamondPlayers = {
   id: number;
@@ -24,12 +26,7 @@ export const Diamond = ({ diamond, score, reveal, isSelected, won, onSelect }: D
       {reveal && (
         <div className={`tricky-diamonds__players__list ${won ? 'win' : 'lost'}`}>
           {won ? <WinCard score={score} /> : <LossCard />}
-          {diamond.players.map((nickname, i) => (
-            // TODO: Make it global (cards also need this, perhaps future games as well)
-            <div key={i} className="player">
-              {nickname}
-            </div>
-          ))}
+          <PlayerNicknamesList playerList={diamond.players} playerBackground={won ? 'tricky-diamonds--positive' : 'tricky-diamonds--negative'} />
         </div>
       )}
       <span className={`${!reveal && isSelected ? 'selected' : ''}`}>

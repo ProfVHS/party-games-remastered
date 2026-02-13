@@ -4,6 +4,7 @@ import { ClickTheBomb } from '@components/minigames/clickthebomb/ClickTheBomb';
 import { Scoreboard } from '@components/features/leaderboard/Scoreboard.tsx';
 import { Tutorial } from '@components/features/tutorials/Tutorial.tsx';
 import { useMinigameSocket } from '@sockets/minigameSocket.ts';
+import { TrickyDiamonds } from '@components/minigames/trickydiamonds/TrickyDiamonds.tsx';
 
 type MinigameProps = {
   minigameName: MinigameNamesEnum;
@@ -21,6 +22,7 @@ export const Minigame = ({ minigameName, tutorialsEnabled }: MinigameProps) => {
         <>
           {startGame && minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}
           {startGame && minigameName == MinigameNamesEnum.cards && <Cards />}
+          {startGame && minigameName == MinigameNamesEnum.trickyDiamonds && <TrickyDiamonds />}
         </>
       )}
       {showTutorial && <Tutorial minigameName={minigameName} />}

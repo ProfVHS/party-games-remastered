@@ -2,7 +2,7 @@ import { socket } from '@socket';
 import { useEffect, useState } from 'react';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useToast } from '@hooks/useToast.ts';
-import { PlayerType } from '@shared/types';
+import { GameStateType, PlayerType } from '@shared/types';
 import { MinigameEntryType, RoomSettingsType } from '@shared/types/RoomSettingsType.ts';
 import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
 import { useSocketConnection } from '@hooks/useSocketConnection.ts';
@@ -17,22 +17,19 @@ export const useRoomSocket = () => {
   const players = usePlayersStore((state) => state.players);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
 
-  useSocketConnection();
+  const { sessionData } = useSocketConnection();
 
   const toast = useToast();
 
   const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
 
-  // useEffect(() => {
-  //   if (!sessionData) return;
-  //
-  //   if (sessionData.gameState === GameStateType.lobby) {
-  //     setRoomSettings(sessionData.roomSettings);
-  //   } else if (sessionData.gameState === GameStateType.playing) {
-  //     setMinigameId(sessionData.minigameId);
-  //     setMinigameName(sessionData.minigameName);
-  //   }
-  // }, [sessionData]);
+  useEffect(() => {
+    if (!sessionData) return;
+
+    if (sessionData.gameState === GameStateType.lobby) {
+      setRoomSettings(sessionData.roomSettings);
+    }
+  }, [sessionData]);
 
   useEffect(() => {
     socket.on('player_join_toast', handlePlayerJoinToast);

@@ -119,4 +119,8 @@ html[data-theme='light'] {
   --tricky-diamonds-bg: #{$lightBgColor};
   --tricky-diamonds-title: #{$secondaryColor};
   --tricky-diamonds-value: #000;
+  --tricky-diamonds-cross: #A54159;
+  --tricky-diamonds-lost-bg: #{rgba(#8F112F, 0.9)};
+  --tricky-diamonds-win-bg: #{rgba(#FFCC6A, 0.9)};
+  --tricky-diamonds-win-trophy-bg: #FFE4AF;
 }

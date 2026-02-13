@@ -44,13 +44,9 @@ export const handleRoom = (io: Server, socket: Socket) => {
     if (!room) return { success: false, message: 'Room not found!' };
     if (!room.getPlayer(socket.id)?.isHost()) return { success: false, message: 'Player is not a host!' };
 
-    if (room.settings.getMinigames().length === 0) {
-      room.settings.randomiseMinigames();
-    }
-
     room.setAllReady(false);
 
-    const currentMinigame = MinigameNamesEnum.cards;
+    const currentMinigame = MinigameNamesEnum.trickyDiamonds;
     const currentMinigameClass = getMinigame(currentMinigame);
 
     room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
@@ -89,7 +85,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
       }
     });
 
-    io.to(roomCode).emit('started_minigame', { name: currentMinigame, id: 'temp' }, room.getTutorialsSettings());
+    io.to(roomCode).emit('started_minigame', { name: currentMinigame, id: Math.random().toString() }, room.getTutorialsSettings());
   });
 
   socket.on('start_minigame_queue', async () => {
