@@ -2,7 +2,7 @@ import './RoomSettings.scss';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Button } from '@components/ui/button/Button';
 import { AnimatePresence } from 'framer-motion';
-import { RoomSettingsType } from '@frontend-types/index';
+import { RoomSettingsType } from '@shared/types';
 import { Modal } from '@components/ui/modal/Modal.tsx';
 import { MinigamesList } from '@components/features/minigamesList/MinigamesList.tsx';
 import { useToast } from '@hooks/useToast.ts';
@@ -15,11 +15,12 @@ import { useRoomStore } from '@stores/roomStore.ts';
 import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
 
 type RoomSettingsProps = {
+  roomSettings: RoomSettingsType;
   setAreRoomSettingsUpToDate: Dispatch<SetStateAction<boolean>>;
 };
 
-export const RoomSettings = ({ setAreRoomSettingsUpToDate }: RoomSettingsProps) => {
-  const { roomSettings, setRoomSettings } = useRoomStore();
+export const RoomSettings = ({ roomSettings, setAreRoomSettingsUpToDate }: RoomSettingsProps) => {
+  const updateRoomSettings = useRoomStore((state) => state.updateRoomSettings);
 
   const [minigamesModal, setMinigamesModal] = useState<boolean>(false);
   const [newRoomSettings, setNewRoomSettings] = useState<RoomSettingsType>(roomSettings);
@@ -63,7 +64,7 @@ export const RoomSettings = ({ setAreRoomSettingsUpToDate }: RoomSettingsProps) 
         return;
       }
     }
-    setRoomSettings(newRoomSettings);
+    updateRoomSettings(newRoomSettings);
     socket.emit('update_room_settings', newRoomSettings, () => {
       toast.success({ message: 'Successfully updated room settings', duration: 3 });
     });

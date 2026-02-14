@@ -17,12 +17,12 @@ export const EndGame = () => {
       </div>
       <div className="podium__container">
         {firstRow.map((player, index) => (
-          <Podium place={index + 1} player={player} />
+          <Podium key={index + 1} place={index + 1} player={player} />
         ))}
       </div>
       <div className="podium__container">
         {secondRow.map((player, index) => (
-          <Podium place={index + 4} player={player} />
+          <Podium key={index + 4} place={index + 4} player={player} />
         ))}
       </div>
     </div>

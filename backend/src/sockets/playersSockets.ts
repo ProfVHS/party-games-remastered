@@ -16,21 +16,18 @@ export const handlePlayers = (io: Server, socket: Socket) => {
 
     io.to(room.roomCode).emit('got_players', players);
 
-    const roomGameState = room.getGameState();
+    const roomData = room.getData();
 
-    if (roomGameState === GameStateType.lobby) {
+    if (roomData.gameState === GameStateType.lobby) {
       return callback({
         success: true,
-        payload: {
-          gameState: roomGameState,
-          roomSettings: room.settings,
-        },
+        payload: roomData,
       });
-    } else if (roomGameState === GameStateType.playing) {
+    } else if (roomData.gameState === GameStateType.game) {
       return callback({
         success: true,
         payload: {
-          gameState: roomGameState,
+          gameState: GameStateType.game,
           minigameId: 'minigame-id',
           minigameName: 'minigame-name',
         },
@@ -65,5 +62,4 @@ export const handlePlayers = (io: Server, socket: Socket) => {
 
     callback({ success: true });
   });
-
 };

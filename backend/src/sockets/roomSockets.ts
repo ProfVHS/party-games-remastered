@@ -7,18 +7,14 @@ import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
 import { getMinigame } from '@engine-managers/MinigameManager';
 
 export const handleRoom = (io: Server, socket: Socket) => {
-  socket.on('get_room_data', () => {
+  socket.on('get_room_data', (callback) => {
     const roomCode = socket.data.roomCode;
     const room = RoomManager.getRoom(roomCode);
     if (!room) return { success: false, message: 'Room not found!' };
 
     const roomData = room.getData();
 
-    if (roomData) {
-      socket.nsp.to(socket.id).emit('got_room_data', roomData);
-    } else {
-      socket.nsp.to(socket.id).emit('failed_to_get_room_data');
-    }
+    callback(roomData);
   });
 
   socket.on('update_room_settings', async (roomSettings: RoomSettingsType, callback: () => void) => {
@@ -30,21 +26,12 @@ export const handleRoom = (io: Server, socket: Socket) => {
     callback();
   });
 
-  socket.on('get_room_settings', async () => {
-    const room = RoomManager.getRoom(socket.data.roomCode);
-    if (!room) return { success: false, message: 'Room not found!' };
-
-    io.to(socket.id).emit('got_room_settings', room.settings.getData());
-  });
-
   socket.on('verify_minigames', async () => {
     const roomCode = socket.data.roomCode;
     const room = RoomManager.getRoom(roomCode);
     if (!room) return { success: false, message: 'Room not found!' };
 
-    if (room.settings.getMinigames().length <= 0) {
-      room.settings.randomiseMinigames();
-    }
+    room.startRoom();
   });
 
   socket.on('set_minigame', async () => {
@@ -58,7 +45,8 @@ export const handleRoom = (io: Server, socket: Socket) => {
     const currentMinigame = room.settings.getNextMinigame();
 
     if (!currentMinigame) {
-      console.log('Pokaż podium');
+      room.endRoom();
+      io.to(roomCode).emit('end_game');
       return;
     }
 

@@ -3,17 +3,19 @@ import {MinigameNamesEnum} from "./MinigameType";
 
 export enum GameStateType {
   lobby = "lobby",
-  playing = "playing",
+  game = "game",
   finished = "finished",
 }
 
 export type LobbySessionDataType = {
+    roomCode: string;
     gameState: GameStateType.lobby;
-    roomSettings: RoomSettingsType;
+    settings: RoomSettingsType;
 };
 
 type GameSessionDataType = {
-    gameState: GameStateType.playing;
+    roomCode: string;
+    gameState: GameStateType.game;
     minigameId: string;
     minigameName: MinigameNamesEnum;
 };

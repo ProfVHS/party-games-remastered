@@ -9,10 +9,12 @@ import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 
 export const useRoomSocket = () => {
-  const { setRoomSettings } = useRoomStore();
   const [minigame, setMinigame] = useState<MinigameEntryType | null>(null);
   const [areRoomSettingsUpToDate, setAreRoomSettingsUpToDate] = useState<boolean>(true);
   const [tutorialsEnabled, setTutorialsEnabled] = useState<boolean>(false);
+  const setRoomData = useRoomStore((state) => state.setRoomData);
+  const updateRoomSettings = useRoomStore((state) => state.updateRoomSettings);
+  const updateRoomGameState = useRoomStore((state) => state.updateRoomGameState);
 
   const players = usePlayersStore((state) => state.players);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
@@ -27,7 +29,7 @@ export const useRoomSocket = () => {
     if (!sessionData) return;
 
     if (sessionData.gameState === GameStateType.lobby) {
-      setRoomSettings(sessionData.roomSettings);
+      setRoomData({ roomCode: sessionData.roomCode, gameState: GameStateType.lobby, settings: sessionData.settings });
     }
   }, [sessionData]);
 
@@ -36,12 +38,14 @@ export const useRoomSocket = () => {
     socket.on('started_minigame', handleStartedMinigame);
     socket.on('updated_room_settings', handleUpdateRoomSettings);
     socket.on('got_players', handleGotPlayers);
+    socket.on('end_game', handleEndGame);
 
     return () => {
       socket.off('player_join_toast', handlePlayerJoinToast);
       socket.off('started_minigame', handleStartedMinigame);
       socket.off('updated_room_settings', handleUpdateRoomSettings);
       socket.off('got_players', handleGotPlayers);
+      socket.off('end_game', handleEndGame);
     };
   }, []);
 
@@ -52,15 +56,20 @@ export const useRoomSocket = () => {
   const handleStartedMinigame = (minigame: MinigameEntryType, tutorialsEnabled: boolean) => {
     setMinigame(minigame);
     setTutorialsEnabled(tutorialsEnabled);
+    updateRoomGameState(GameStateType.game);
   };
 
-  const handleUpdateRoomSettings = (roomSettings: RoomSettingsType) => {
+  const handleUpdateRoomSettings = (settings: RoomSettingsType) => {
     toast.info({ message: 'Host changed room settings', duration: 3 });
-    setRoomSettings(roomSettings);
+    updateRoomSettings(settings);
   };
 
   const handleGotPlayers = (players: PlayerType[]) => {
     setPlayers(players);
+  };
+
+  const handleEndGame = () => {
+    updateRoomGameState(GameStateType.finished);
   };
 
   return { minigame, tutorialsEnabled, slots, areRoomSettingsUpToDate, setAreRoomSettingsUpToDate };

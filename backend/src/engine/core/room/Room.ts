@@ -24,6 +24,18 @@ export class Room {
     this.currentMinigame = null;
   }
 
+  public startRoom() {
+    this.gameState = GameStateType.game;
+
+    if (this.settings.getMinigames().length <= 0) {
+      this.settings.randomiseMinigames();
+    }
+  }
+
+  public endRoom() {
+    this.gameState = GameStateType.finished;
+  }
+
   public scheduleStart(duration: number, onStart: () => void) {
     if (this.minigameStarted) return;
 
@@ -72,7 +84,7 @@ export class Room {
   public getData = () => {
     return {
       roomCode: this.roomCode,
-      players: Array.from(this.players.values()).map((p) => p.getData()),
+      settings: this.settings,
       gameState: this.gameState,
     };
   };

@@ -11,5 +11,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Avatar_Picker: Story = {
-  args: {},
+  args: {
+    onClose: () => {},
+  },
 };

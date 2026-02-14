@@ -1,29 +1,48 @@
 import { create } from 'zustand';
-import { defaultRoomSettings } from '@shared/constants/defaults.ts';
-import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
 import { socket } from '@socket';
-import { RoomDataType } from '@shared/types';
+import { RoomDataType, GameStateType } from '@shared/types';
+import { RoomSettingsType } from '@shared/types/RoomSettingsType.ts';
 
 type RoomStoreProps = {
-  roomSettings: RoomSettingsType;
   roomData: RoomDataType | null;
-  setRoomSettings: (roomSettings: RoomSettingsType) => void;
-  fetchRoomSettings: () => void;
+  setRoomData: (newRoomData: RoomDataType) => void;
+  updateRoomSettings: (newSettings: RoomSettingsType) => void;
+  updateRoomGameState: (newGameState: GameStateType) => void;
   fetchRoomData: () => void;
 };
 
 export const useRoomStore = create<RoomStoreProps>((set) => ({
-  roomSettings: defaultRoomSettings,
   roomData: null,
-  setRoomSettings: (roomSettings: RoomSettingsType) => {
-    set({ roomSettings });
+  setRoomData: (newRoomData: RoomDataType) => {
+    set({ roomData: newRoomData });
   },
-  fetchRoomSettings: () => {
-    socket.emit('get_room_settings');
-    socket.on('got_room_settings', (roomSettings: RoomSettingsType) => set({ roomSettings }));
+  updateRoomSettings: (newSettings: RoomSettingsType) => {
+    set((state) => {
+      if (!state.roomData) return state;
+
+      return {
+        roomData: {
+          ...state.roomData,
+          settings: newSettings,
+        },
+      };
+    });
+  },
+  updateRoomGameState: (newGameState: GameStateType) => {
+    set((state) => {
+      if (!state.roomData) return state;
+
+      return {
+        roomData: {
+          ...state.roomData,
+          gameState: newGameState,
+        },
+      };
+    });
   },
   fetchRoomData: () => {
-    socket.emit('get_room_data');
-    socket.on('got_room_data', (roomData: RoomDataType) => set({ roomData }));
+    socket.emit('get_room_data', (newRoomData: RoomDataType) => {
+      set({ roomData: newRoomData });
+    });
   },
 }));
