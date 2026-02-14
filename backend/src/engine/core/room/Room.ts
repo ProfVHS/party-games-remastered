@@ -30,6 +30,12 @@ export class Room {
     if (this.settings.getMinigames().length <= 0) {
       this.settings.randomiseMinigames();
     }
+
+    Array.from(this.players.values()).forEach((player) => {
+      if (player.avatar === 'default') {
+        player.avatar = 'monkey';
+      }
+    });
   }
 
   public endRoom() {

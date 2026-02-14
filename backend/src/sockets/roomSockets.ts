@@ -32,6 +32,8 @@ export const handleRoom = (io: Server, socket: Socket) => {
     if (!room) return { success: false, message: 'Room not found!' };
 
     room.startRoom();
+
+    io.to(roomCode).emit('got_players', room.getPlayers());
   });
 
   socket.on('set_minigame', async () => {
