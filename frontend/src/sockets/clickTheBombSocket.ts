@@ -28,11 +28,14 @@ export const useClickTheBombSocket = () => {
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
 
+  const resetPrizePool = () => setGameState(prevState => ({...prevState, prizePool: 0}));
+
   useEffect(() => {
     socket.on('ended_minigame', bombExploded);
     socket.on('show_score', handleShowScore);
     socket.on('turn_timeout', handleTurnTimeout);
     socket.on('player_exploded', handlePlayerExplode);
+    socket.on('changed_turn', resetPrizePool);
 
     socket.emit('start_minigame_queue');
 
@@ -41,6 +44,7 @@ export const useClickTheBombSocket = () => {
       socket.off('show_score', handleShowScore);
       socket.off('turn_timeout', handleTurnTimeout);
       socket.off('player_exploded', handlePlayerExplode);
+      socket.off('changed_turn', resetPrizePool);
     };
   }, []);
 
