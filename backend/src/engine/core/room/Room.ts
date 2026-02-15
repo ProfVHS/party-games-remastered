@@ -4,6 +4,8 @@ import { MAX_PLAYERS } from '@shared/constants/gameRules';
 import { RoomSettings } from './RoomSettings';
 import { BaseMinigame } from '@minigame-base/BaseMinigame';
 import { Timer } from '@engine/core/Timer';
+import { avatars } from '@shared/constants/avatars';
+import _ from 'lodash';
 
 export class Room {
   public readonly roomCode: string;
@@ -31,9 +33,13 @@ export class Room {
       this.settings.randomiseMinigames();
     }
 
+    const availableAvatars = _.shuffle(Object.values(avatars).filter((avatar) => !Array.from(this.players.values()).some((p) => p.avatar == avatar)));
+
+    let i = 0;
+
     Array.from(this.players.values()).forEach((player) => {
       if (player.avatar === 'default') {
-        player.avatar = 'monkey';
+        player.avatar = availableAvatars[i++];
       }
     });
   }
