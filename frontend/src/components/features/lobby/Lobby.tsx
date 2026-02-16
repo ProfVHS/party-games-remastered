@@ -5,7 +5,6 @@ import { socket } from '@socket';
 
 import { useToast } from '@hooks/useToast.ts';
 import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
-import { useLobbyStart } from '@hooks/useLobbyStart.ts';
 
 import { usePlayersStore } from '@stores/playersStore.ts';
 
@@ -21,8 +20,7 @@ export const Lobby = ({ areRoomSettingsUpToDate }: LobbyProps) => {
   const players = usePlayersStore((state) => state.players);
   const toast = useToast();
 
-  useLobbyToggle({ setIsLoading });
-  const { countdown } = useLobbyStart({ setReady });
+  const { timeLeft } = useLobbyToggle({ setIsLoading });
 
   const toggleReady = () => {
     if (!areRoomSettingsUpToDate) return;
@@ -50,7 +48,7 @@ export const Lobby = ({ areRoomSettingsUpToDate }: LobbyProps) => {
 
   return (
     <div className="lobby">
-      {countdown === null ? (
+      {timeLeft === null ? (
         <>
           <span className="lobby__title">
             Room Code:
@@ -68,7 +66,7 @@ export const Lobby = ({ areRoomSettingsUpToDate }: LobbyProps) => {
         </>
       ) : (
         <>
-          <span className="lobby__countdown">{countdown}</span>
+          <span className="lobby__countdown">{timeLeft}</span>
           <span className="lobby__countdown-text">Get ready to rumble!</span>
         </>
       )}

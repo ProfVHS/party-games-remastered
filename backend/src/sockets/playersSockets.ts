@@ -43,7 +43,17 @@ export const handlePlayers = (io: Server, socket: Socket) => {
     if (!player) return { success: false, message: 'Player not found!' };
 
     player.toggleReady();
-    io.to(room.roomCode).emit('toggled_player_ready', room.getPlayers());
+
+    let endAt = null;
+
+    if (room.players.size === room.getReadyPlayers().length) {
+      console.log('Start countdown 3s');
+      endAt = Date.now() + 3000; // Countdown end
+    } else {
+      console.log('Clear countdown');
+    }
+
+    io.to(room.roomCode).emit('toggled_player_ready', room.getPlayers(), endAt);
   });
 
   socket.on('choose_avatar', (avatar, callback) => {
