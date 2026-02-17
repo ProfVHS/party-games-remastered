@@ -10,7 +10,6 @@ export const useMinigameSocket = (minigameName: MinigameNamesEnum, tutorialsEnab
   const [scoreboardPlayers, setScoreboardPlayersPlayers] = useState<PlayerType[]>([]);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
   const setOldPlayers = usePlayersStore((state) => state.setOldPlayers);
-  const currentPlayer = usePlayersStore((state) => state.currentPlayer);
 
   const handleStartNewGame = () => {
     if (tutorialsEnabled) {
@@ -42,9 +41,6 @@ export const useMinigameSocket = (minigameName: MinigameNamesEnum, tutorialsEnab
     // Start next game
     setTimeout(() => {
       setOldPlayers(newPlayers);
-      if (currentPlayer?.isHost) {
-        socket.emit('set_minigame');
-      }
     }, 8000);
   };
 

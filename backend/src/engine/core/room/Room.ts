@@ -3,7 +3,6 @@ import { Player } from '@engine-core/Player';
 import { MAX_PLAYERS } from '@shared/constants/gameRules';
 import { RoomSettings } from './RoomSettings';
 import { BaseMinigame } from '@minigame-base/BaseMinigame';
-import { Timer } from '@engine/core/Timer';
 import { avatars } from '@shared/constants/avatars';
 import _ from 'lodash';
 
@@ -15,20 +14,22 @@ export class Room {
   public currentMinigame: BaseMinigame | null;
   private gameState: GameStateType;
 
-  private startTimer: Timer | null = null;
-  private minigameStarted = false;
+  private timer: NodeJS.Timeout | null;
+  private endAt: number | null;
+  private timerOnEnd: (room: Room, state: GameStateType) => void;
 
-  constructor(roomCode: string) {
+  constructor(roomCode: string, timerOnEnd: (room: Room, state: GameStateType) => void) {
     this.roomCode = roomCode;
     this.players = new Map();
-    this.gameState = GameStateType.lobby;
+    this.gameState = GameStateType.Lobby;
     this.settings = new RoomSettings();
     this.currentMinigame = null;
+    this.timer = null;
+    this.endAt = null;
+    this.timerOnEnd = timerOnEnd;
   }
 
-  public startRoom() {
-    this.gameState = GameStateType.game;
-
+  private startRoom() {
     if (this.settings.getMinigames().length <= 0) {
       this.settings.randomiseMinigames();
     }
@@ -44,35 +45,41 @@ export class Room {
     });
   }
 
-  public endRoom() {
-    this.gameState = GameStateType.finished;
+  public startTimer(duration: number) {
+    this.clearTimer();
+    this.endAt = Date.now() + duration;
+
+    console.log('Start TIMER for - ', this.gameState);
+
+    this.timer = setTimeout(() => {
+      this.onStateFinished();
+      this.endAt = null;
+    }, duration);
   }
 
-  public scheduleStart(duration: number, onStart: () => void) {
-    if (this.minigameStarted) return;
+  public clearTimer() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
+  }
 
-    if (this.startTimer) {
-      this.startTimer.clear();
+  public setGameState(state: GameStateType) {
+    this.gameState = state;
+  }
+
+  private onStateFinished() {
+    switch (this.gameState) {
+      case GameStateType.Lobby:
+        this.startRoom();
+        break;
+      case GameStateType.Animation:
+        break;
+      case GameStateType.Leaderboard:
+        break;
     }
 
-    this.startTimer = new Timer(duration, () => {
-      if (this.minigameStarted) return;
-
-      this.minigameStarted = true;
-      this.startTimer = null;
-
-      onStart();
-    });
-
-    this.startTimer.start();
-  }
-
-  public setMinigameStarted(started: boolean) {
-    this.minigameStarted = started;
-  }
-
-  public getMinigameStarted(): boolean {
-    return this.minigameStarted;
+    this.timerOnEnd(this, this.gameState);
   }
 
   public getGameState() {
@@ -98,6 +105,7 @@ export class Room {
       roomCode: this.roomCode,
       settings: this.settings,
       gameState: this.gameState,
+      endAt: this.endAt,
     };
   };
 

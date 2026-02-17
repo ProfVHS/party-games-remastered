@@ -28,6 +28,10 @@ export class RoomSettings {
     return nextMinigame;
   };
 
+  public isLastMinigame = () => {
+    return this.minigames.length <= 0;
+  };
+
   public randomiseMinigames = () => {
     if (!this.isRandomMinigames) return { success: false, message: 'Random minigames is disabled!' };
     if (this.numberOfMinigames < 2)

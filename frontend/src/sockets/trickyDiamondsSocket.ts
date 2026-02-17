@@ -21,10 +21,6 @@ export const useTrickyDiamondsSocket = () => {
     socket.on('round_next', handleRoundNext);
     socket.on('round_timeout', handleRoundTimeout);
 
-    setTimeout(() => {
-      socket.emit('start_minigame_queue');
-    }, 2000);
-
     return () => {
       socket.off('round_end', handleRoundEnd);
       socket.off('round_next', handleRoundNext);
@@ -43,7 +39,6 @@ export const useTrickyDiamondsSocket = () => {
     setRound(nextRound);
     setReveal(false);
     setSelectedDiamond(-100);
-    socket.emit('start_minigame_queue');
   };
 
   const handleRoundTimeout = (endAt: number) => {

@@ -24,7 +24,7 @@ export const RoomPage = () => {
     <div>
       {roomData ? (
         <>
-          {roomData.gameState === GameStateType.lobby && (
+          {roomData.gameState === GameStateType.Lobby && (
             <div className="lobby-page">
               <div className="lobby-page__content">
                 <RoomSettings roomSettings={roomData.settings} setAreRoomSettingsUpToDate={setAreRoomSettingsUpToDate} />
@@ -42,12 +42,12 @@ export const RoomPage = () => {
               {showAvatarPicker && <AvatarPicker onClose={() => setShowAvatarPicker(false)} />}
             </div>
           )}
-          {roomData.gameState === GameStateType.game && minigame && (
+          {roomData.gameState === GameStateType.Minigame && minigame && (
             <RoomLayout players={players}>
               <Minigame key={minigame!.id} minigameName={minigame!.name} tutorialsEnabled={tutorialsEnabled} />
             </RoomLayout>
           )}
-          {roomData.gameState === GameStateType.finished && <EndGame />}
+          {roomData.gameState === GameStateType.Finished && <EndGame />}
         </>
       ) : (
         <Loading />

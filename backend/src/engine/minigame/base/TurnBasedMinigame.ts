@@ -4,15 +4,14 @@ import { TurnBaseTimeoutState } from '@backend-types';
 
 export abstract class TurnBasedMinigame extends BaseMinigame {
   public currentTurn: number = 0;
+  protected readonly onTimeout: (state: TurnBaseTimeoutState) => void;
 
-  protected constructor(players: Map<string, Player>, roundDuration: number, onTurnTimeout: (state: TurnBaseTimeoutState) => void) {
-    super(
-      players,
-      roundDuration,
-      () => {
-        onTurnTimeout(this.isLastPlayerStanding() ? 'END_GAME' : 'NEXT_TURN');
-      },
-    );
+  protected constructor(players: Map<string, Player>, roundDuration: number, onTimeout: (state: TurnBaseTimeoutState) => void) {
+    super(players, roundDuration, () => {
+      this.onTurnEnd();
+    });
+
+    this.onTimeout = onTimeout;
   }
 
   public getCurrentTurnPlayer() {
@@ -41,4 +40,6 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   }
 
   protected abstract onNextTurn(): void;
+
+  protected abstract onTurnEnd(): void;
 }

@@ -28,8 +28,8 @@ export const useRoomSocket = () => {
   useEffect(() => {
     if (!sessionData) return;
 
-    if (sessionData.gameState === GameStateType.lobby) {
-      setRoomData({ roomCode: sessionData.roomCode, gameState: GameStateType.lobby, settings: sessionData.settings });
+    if (sessionData.gameState === GameStateType.Lobby) {
+      setRoomData({ roomCode: sessionData.roomCode, gameState: GameStateType.Lobby, settings: sessionData.settings });
     }
   }, [sessionData]);
 
@@ -56,7 +56,7 @@ export const useRoomSocket = () => {
   const handleStartedMinigame = (minigame: MinigameEntryType, tutorialsEnabled: boolean) => {
     setMinigame(minigame);
     setTutorialsEnabled(tutorialsEnabled);
-    updateRoomGameState(GameStateType.game);
+    updateRoomGameState(GameStateType.Minigame);
   };
 
   const handleUpdateRoomSettings = (settings: RoomSettingsType) => {
@@ -69,7 +69,7 @@ export const useRoomSocket = () => {
   };
 
   const handleEndGame = () => {
-    updateRoomGameState(GameStateType.finished);
+    updateRoomGameState(GameStateType.Finished);
   };
 
   return { minigame, tutorialsEnabled, slots, areRoomSettingsUpToDate, setAreRoomSettingsUpToDate };

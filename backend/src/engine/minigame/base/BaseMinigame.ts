@@ -7,13 +7,10 @@ export abstract class BaseMinigame {
 
   protected constructor(players: Map<string, Player>, timerDurationMs: number, onTimerEnd: () => void) {
     this.players = players;
-    this.timer = new Timer(
-      timerDurationMs,
-      () => {
-        this.onTimerEnd();
-        onTimerEnd();
-      },
-    );
+    this.timer = new Timer(timerDurationMs, () => {
+      this.onTimerEnd();
+      onTimerEnd();
+    });
   }
 
   protected alivePlayersCount() {
@@ -25,7 +22,7 @@ export abstract class BaseMinigame {
   }
 
   protected isLastPlayerStanding() {
-    return this.alivePlayersCount() === 1;
+    return this.alivePlayersCount() <= 1;
   }
 
   public getTimer() {

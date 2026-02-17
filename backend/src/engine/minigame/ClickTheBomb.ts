@@ -69,14 +69,23 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
   onNextTurn() {
     this.grantPrizePool();
-    this.timer.reset();
   }
 
-  protected onTimerEnd() {
+  onTurnEnd() {
     const player = this.getCurrentTurnPlayer();
     player.subtractScore(LOSS);
+    player.kill();
 
-    this.nextTurn();
+    if (this.isLastPlayerStanding()) {
+      this.onTimeout('END_GAME');
+      return;
+    }
+
+    //TODO: Uncomment
+    //this.nextTurn();
+    this.setupBomb();
+    this.onTimeout('NEXT_TURN');
+    this.timer.reset();
   }
 
   protected beforeStart() {
@@ -91,4 +100,6 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
     this.timer.clear();
   }
+
+  protected onTimerEnd() {}
 }

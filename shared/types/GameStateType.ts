@@ -1,21 +1,23 @@
 import { RoomSettingsType } from "./RoomSettingsType";
-import {MinigameNamesEnum} from "./MinigameType";
+import { MinigameNamesEnum } from "./MinigameType";
 
 export enum GameStateType {
-  lobby = "lobby",
-  game = "game",
-  finished = "finished",
+    Lobby = "LOBBY",
+    Animation = "ANIMATION",
+    Minigame = "MINIGAME",
+    Leaderboard = "LEADERBOARD",
+    Finished = "FINISHED",
 }
 
 export type LobbySessionDataType = {
     roomCode: string;
-    gameState: GameStateType.lobby;
+    gameState: GameStateType.Lobby;
     settings: RoomSettingsType;
 };
 
 type GameSessionDataType = {
     roomCode: string;
-    gameState: GameStateType.game;
+    gameState: GameStateType.Minigame;
     minigameId: string;
     minigameName: MinigameNamesEnum;
 };

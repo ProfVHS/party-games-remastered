@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { RoomManager } from '@engine-managers/RoomManager';
 import { GameStateType } from '@shared/types/GameStateType';
+import { GAME_STATE_DURATION } from '@engine/core';
 
 export const handlePlayers = (io: Server, socket: Socket) => {
   socket.on('sync_player_session', (storageRoomCode: string, storagePlayerId: string, callback) => {
@@ -18,16 +19,16 @@ export const handlePlayers = (io: Server, socket: Socket) => {
 
     const roomData = room.getData();
 
-    if (roomData.gameState === GameStateType.lobby) {
+    if (roomData.gameState === GameStateType.Lobby) {
       return callback({
         success: true,
         payload: roomData,
       });
-    } else if (roomData.gameState === GameStateType.game) {
+    } else if (roomData.gameState === GameStateType.Minigame) {
       return callback({
         success: true,
         payload: {
-          gameState: GameStateType.game,
+          gameState: GameStateType.Minigame,
           minigameId: 'minigame-id',
           minigameName: 'minigame-name',
         },
@@ -47,10 +48,10 @@ export const handlePlayers = (io: Server, socket: Socket) => {
     let endAt = null;
 
     if (room.players.size === room.getReadyPlayers().length) {
-      console.log('Start countdown 3s');
-      endAt = Date.now() + 3000; // Countdown end
+      room.startTimer(GAME_STATE_DURATION.LOBBY);
+      endAt = room.getData().endAt;
     } else {
-      console.log('Clear countdown');
+      room.clearTimer();
     }
 
     io.to(room.roomCode).emit('toggled_player_ready', room.getPlayers(), endAt);

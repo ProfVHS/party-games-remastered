@@ -21,7 +21,6 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
           break;
         case 'END_GAME':
           io.to(roomCode).emit('ended_minigame', room.getPlayers());
-          room.setMinigameStarted(false);
           break;
       }
     }
