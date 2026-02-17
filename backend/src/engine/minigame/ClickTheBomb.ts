@@ -58,6 +58,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     this.timer.reset();
 
     if (this.maxClicks === this.clickCount) return this.explode();
+
     this.incrementCounter();
     return { success: true, state: 'INCREMENTED' };
   }
@@ -85,7 +86,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     //this.nextTurn();
     this.setupBomb();
     this.onTimeout('NEXT_TURN');
-    this.timer.reset();
+    this.introTimer.reset();
   }
 
   protected beforeStart() {

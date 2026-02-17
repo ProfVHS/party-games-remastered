@@ -5,6 +5,7 @@ import { RoomSettings } from './RoomSettings';
 import { BaseMinigame } from '@minigame-base/BaseMinigame';
 import { avatars } from '@shared/constants/avatars';
 import _ from 'lodash';
+import { Timer } from '@engine/core/Timer';
 
 export class Room {
   public readonly roomCode: string;
@@ -14,8 +15,7 @@ export class Room {
   public currentMinigame: BaseMinigame | null;
   private gameState: GameStateType;
 
-  private timer: NodeJS.Timeout | null;
-  private endAt: number | null;
+  private timer: Timer | null;
   private timerOnEnd: (room: Room, state: GameStateType) => void;
 
   constructor(roomCode: string, timerOnEnd: (room: Room, state: GameStateType) => void) {
@@ -25,7 +25,6 @@ export class Room {
     this.settings = new RoomSettings();
     this.currentMinigame = null;
     this.timer = null;
-    this.endAt = null;
     this.timerOnEnd = timerOnEnd;
   }
 
@@ -45,23 +44,19 @@ export class Room {
     });
   }
 
+  public getTimer() {
+    return this.timer;
+  }
+
   public startTimer(duration: number) {
-    this.clearTimer();
-    this.endAt = Date.now() + duration;
+    this.timer?.clear();
 
     console.log('Start TIMER for - ', this.gameState);
 
-    this.timer = setTimeout(() => {
+    this.timer = new Timer(duration, () => {
       this.onStateFinished();
-      this.endAt = null;
-    }, duration);
-  }
-
-  public clearTimer() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
+    });
+    this.timer.start();
   }
 
   public setGameState(state: GameStateType) {
@@ -105,7 +100,6 @@ export class Room {
       roomCode: this.roomCode,
       settings: this.settings,
       gameState: this.gameState,
-      endAt: this.endAt,
     };
   };
 

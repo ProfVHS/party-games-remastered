@@ -49,9 +49,9 @@ export const handlePlayers = (io: Server, socket: Socket) => {
 
     if (room.players.size === room.getReadyPlayers().length) {
       room.startTimer(GAME_STATE_DURATION.LOBBY);
-      endAt = room.getData().endAt;
+      endAt = room.getTimer()!.getEndAt();
     } else {
-      room.clearTimer();
+      room.getTimer()!.clear();
     }
 
     io.to(room.roomCode).emit('toggled_player_ready', room.getPlayers(), endAt);

@@ -1,15 +1,19 @@
 import { Player } from '@engine-core/Player';
 import { Timer } from '@engine-core/Timer';
+import { COUNTDOWN_INTRO_MS } from '@shared/constants/gameRules';
 
 export abstract class BaseMinigame {
   protected players: Map<string, Player>;
   protected timer: Timer;
+  protected introTimer: Timer;
 
-  protected constructor(players: Map<string, Player>, timerDurationMs: number, onTimerEnd: () => void) {
+  protected constructor(players: Map<string, Player>, timerDurationMs: number, onTimerEnd: () => void, onIntroEnd: () => void) {
     this.players = players;
     this.timer = new Timer(timerDurationMs, () => {
-      this.onTimerEnd();
       onTimerEnd();
+    });
+    this.introTimer = new Timer(COUNTDOWN_INTRO_MS, () => {
+      onIntroEnd();
     });
   }
 
@@ -39,4 +43,6 @@ export abstract class BaseMinigame {
   protected abstract end(): void;
 
   protected abstract onTimerEnd(): void;
+
+  protected abstract onIntroEnd(): void;
 }

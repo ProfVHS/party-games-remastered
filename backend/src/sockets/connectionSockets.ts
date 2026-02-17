@@ -9,8 +9,9 @@ import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { getMinigame } from '@engine/managers/MinigameManager';
 import { GAME_STATE_DURATION } from '@engine/core';
 
-const setMinigame = (room: Room) => {
+const setMinigame = (io: Server, room: Room) => {
   const currentMinigame = room.settings.getNextMinigame();
+  const roomCode = room.getData().roomCode;
 
   console.log('currentMinigame', currentMinigame);
 
@@ -28,12 +29,12 @@ const setMinigame = (room: Room) => {
     }
 
     if (game instanceof TurnBasedMinigame) {
-      console.log('state - ', state);
-
       switch (state) {
         case 'NEXT_TURN':
           console.log('NEXT_TURN');
-
+          break;
+        case 'INTRO_END':
+          console.log('INTRO_END');
           break;
         case 'END_GAME':
           console.log('END_GAME');
@@ -48,6 +49,9 @@ const setMinigame = (room: Room) => {
           break;
         case 'NEXT_ROUND':
           console.log('NEXT_ROUND');
+          break;
+        case 'INTRO_END':
+          console.log('INTRO_END');
           break;
         case 'END_GAME':
           console.log('END_GAME');
@@ -64,15 +68,19 @@ export const handleConnection = (io: Server, socket: Socket) => {
     let room = RoomManager.getRoom(roomCode);
     if (room) return { success: false, message: `Room ${roomCode} already exists!` };
 
+    //TODO: merge Lobby and Leaderboard
     room = RoomManager.createRoom(roomCode, (room: Room, state: GameStateType) => {
       switch (state) {
         case GameStateType.Lobby:
           console.log('Lobby END');
 
-          setMinigame(room);
+          setMinigame(io, room);
 
           room.setGameState(GameStateType.Animation);
           room.startTimer(GAME_STATE_DURATION.ANIMATION);
+
+          //TODO: gameState, endAt, minigame
+          io.to(roomCode).emit('temp', 'MINIGAME_INTRO');
           break;
 
         case GameStateType.Animation:
@@ -80,6 +88,8 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
           room.setGameState(GameStateType.Minigame);
           room.currentMinigame?.start();
+
+          //TODO: gameState, endAt from game,
           break;
 
         case GameStateType.Minigame:
@@ -87,20 +97,26 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
           room.setGameState(GameStateType.Leaderboard);
           room.startTimer(GAME_STATE_DURATION.LEADERBOARD);
+
+          //TODO: gameState, endAt, players
           break;
 
         case GameStateType.Leaderboard:
           if (room.settings.isLastMinigame()) {
-            console.log('FINISHED, pokazuje podium');
             room.setGameState(GameStateType.Finished);
             room.startTimer(GAME_STATE_DURATION.FINISHED);
+
+            //TODO: gameState, endAt, players
           } else {
             console.log('Leaderboard END');
 
-            setMinigame(room);
+            setMinigame(io, room);
 
             room.setGameState(GameStateType.Animation);
             room.startTimer(GAME_STATE_DURATION.ANIMATION);
+
+            //TODO: gameState, endAt, minigame
+            io.to(roomCode).emit('temp', 'MINIGAME_INTRO');
           }
 
           break;

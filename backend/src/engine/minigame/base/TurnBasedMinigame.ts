@@ -7,9 +7,16 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   protected readonly onTimeout: (state: TurnBaseTimeoutState) => void;
 
   protected constructor(players: Map<string, Player>, roundDuration: number, onTimeout: (state: TurnBaseTimeoutState) => void) {
-    super(players, roundDuration, () => {
-      this.onTurnEnd();
-    });
+    super(
+      players,
+      roundDuration,
+      () => {
+        this.onTurnEnd();
+      },
+      () => {
+        this.onIntroEnd();
+      },
+    );
 
     this.onTimeout = onTimeout;
   }
@@ -42,4 +49,9 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   protected abstract onNextTurn(): void;
 
   protected abstract onTurnEnd(): void;
+
+  protected onIntroEnd() {
+    this.onTimeout('INTRO_END');
+    this.timer.reset();
+  }
 }
