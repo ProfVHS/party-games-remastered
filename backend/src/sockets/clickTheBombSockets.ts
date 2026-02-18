@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { RoomManager } from '@engine-managers/RoomManager';
 import { ClickTheBomb } from '@minigames/ClickTheBomb';
+import { GAME_STATE_DURATION } from '@engine/core';
 
 export const handleClickTheBomb = (io: Server, socket: Socket) => {
   socket.on('bomb_click', async () => {
@@ -17,10 +18,13 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
           io.to(roomCode).emit('updated_click_count', clickCount, prizePool, game.getTimer().getEndAt());
           break;
         case 'PLAYER_EXPLODED':
+          console.log('PLAYER_EXPLODED');
           io.to(roomCode).emit('player_exploded', game.getCurrentTurnPlayer());
           break;
         case 'END_GAME':
           console.log('END_GAME');
+          io.to(roomCode).emit('player_exploded', game.getCurrentTurnPlayer());
+          room.startTimer(GAME_STATE_DURATION.MINIGAME);
           break;
       }
     }

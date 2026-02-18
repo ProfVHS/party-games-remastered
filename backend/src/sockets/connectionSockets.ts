@@ -46,7 +46,7 @@ const setMinigame = (io: Server, room: Room) => {
           break;
         case 'END_GAME':
           console.log('END_GAME');
-
+          io.to(roomCode).emit('player_exploded', game.getCurrentTurnPlayer());
           room.startTimer(GAME_STATE_DURATION.MINIGAME);
           break;
       }
