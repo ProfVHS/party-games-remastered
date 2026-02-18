@@ -1,15 +1,21 @@
 import { ClassNames } from '@utils';
 import { useEffect, useState } from 'react';
+import { useRoomStore } from '@stores/roomStore.ts';
+import { GameStateType } from '@shared/types';
 
 type TimerProps = {
   className?: string;
-  endAt: number;
 };
 
-export const Timer = ({ className, endAt }: TimerProps) => {
+export const Timer = ({ className }: TimerProps) => {
   const [remainingTime, setRemainingTime] = useState(0);
+  const roomData = useRoomStore((state) => state.roomData);
+
+  const gameState = roomData?.gameState;
+  const endAt = roomData?.endAt ?? 0;
+
   useEffect(() => {
-    if (!endAt) return;
+    if (!endAt || gameState !== GameStateType.Minigame) return;
 
     const interval = setInterval(() => setRemainingTime(Math.max(0, endAt - Date.now())), 10);
 

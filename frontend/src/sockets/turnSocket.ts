@@ -18,5 +18,4 @@ export const initializeTurnSocket = () => {
 
   socket.on('got_turn', handler);
   socket.on('changed_turn', handler);
-  socket.on('turn_timeout', handler);
 };

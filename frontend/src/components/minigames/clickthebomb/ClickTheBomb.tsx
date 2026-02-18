@@ -16,7 +16,6 @@ export const ClickTheBomb = () => {
   const { bombClick, nextTurn, gameState, canSkipTurn, exploded, scoreData } = useClickTheBombSocket();
   const currentTurn = useGameStore((state) => state.currentTurn);
   const isMyTurn = useGameStore((state) => state.isMyTurn);
-  const turnEndAt = useGameStore((state) => state.endAt);
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
 
   return (
@@ -37,7 +36,7 @@ export const ClickTheBomb = () => {
         >
           <Bomb />
           <span className="click-the-bomb__counter">{gameState.clickCount! >= 10 ? gameState.clickCount : '0' + gameState.clickCount}</span>
-          <Timer className="click-the-bomb__timer" endAt={turnEndAt} />
+          <Timer className="click-the-bomb__timer" />
         </div>
         <Button className="click-the-bomb__button" type="button" size="medium" isDisabled={!canSkipTurn} onClick={nextTurn}>
           Next

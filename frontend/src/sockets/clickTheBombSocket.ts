@@ -3,7 +3,7 @@ import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { socket } from '@socket';
 import { useGameStore } from '@stores/gameStore.ts';
-import { PlayerType, TurnType } from '@shared/types';
+import { TurnType } from '@shared/types';
 
 type GameState = {
   clickCount: number;
@@ -26,19 +26,16 @@ export const useClickTheBombSocket = () => {
   const setTurn = useGameStore((state) => state.setTurn);
   const setTurnEndAt = useGameStore((state) => state.setTurnEndAt);
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
-  const setPlayers = usePlayersStore((state) => state.setPlayers);
 
   const resetPrizePool = () => setGameState((prevState) => ({ ...prevState, prizePool: 0 }));
 
   useEffect(() => {
     socket.on('show_score', handleShowScore);
-    socket.on('turn_timeout', handleTurnTimeout);
     socket.on('player_exploded', handlePlayerExplode);
     socket.on('changed_turn', resetPrizePool);
 
     return () => {
       socket.off('show_score', handleShowScore);
-      socket.off('turn_timeout', handleTurnTimeout);
       socket.off('player_exploded', handlePlayerExplode);
       socket.off('changed_turn', resetPrizePool);
     };
@@ -63,14 +60,6 @@ export const useClickTheBombSocket = () => {
     if (isMyTurn) {
       setCanSkipTurn(true);
     }
-  };
-
-  const handleTurnTimeout = (turn: TurnType, players: PlayerType[], turnEndAt: number) => {
-    setTurn(turn);
-    setPlayers(players);
-    setLoading(false);
-    setGameState((prev) => ({ ...prev, prizePool: 0 }));
-    setTurnEndAt(turnEndAt);
   };
 
   const handlePlayerExplode = (nextTurn: TurnType) => {
