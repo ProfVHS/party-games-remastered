@@ -13,21 +13,23 @@ import { EndGame } from '@components/features/endGame/EndGame.tsx';
 import { useRoomStore } from '@stores/roomStore.ts';
 import { GameStateType } from '@shared/types';
 import { Loading } from '@components/ui/loading/Loading.tsx';
+import { Scoreboard } from '@components/features/leaderboard/Scoreboard.tsx';
 
 export const RoomPage = () => {
-  const { minigame, tutorialsEnabled, slots, areRoomSettingsUpToDate, setAreRoomSettingsUpToDate } = useRoomSocket();
+  const { minigame, slots, areRoomSettingsUpToDate, setAreRoomSettingsUpToDate } = useRoomSocket();
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const players = usePlayersStore((state) => state.players);
   const roomData = useRoomStore((state) => state.roomData);
+  const roomSettings = useRoomStore((state) => state.roomSettings);
 
   return (
     <div>
       {roomData ? (
         <>
-          {roomData.gameState === GameStateType.Lobby && (
+          {roomData.gameState === GameStateType.Lobby && roomSettings && (
             <div className="lobby-page">
               <div className="lobby-page__content">
-                <RoomSettings roomSettings={roomData.settings} setAreRoomSettingsUpToDate={setAreRoomSettingsUpToDate} />
+                <RoomSettings roomSettings={roomSettings} setAreRoomSettingsUpToDate={setAreRoomSettingsUpToDate} />
                 <Lobby areRoomSettingsUpToDate={areRoomSettingsUpToDate} />
               </div>
               <div className="lobby-page__players">
@@ -42,11 +44,12 @@ export const RoomPage = () => {
               {showAvatarPicker && <AvatarPicker onClose={() => setShowAvatarPicker(false)} />}
             </div>
           )}
-          {roomData.gameState === GameStateType.Minigame && minigame && (
+          {minigame && (roomData.gameState === GameStateType.Minigame || roomData.gameState === GameStateType.Animation) && (
             <RoomLayout players={players}>
-              <Minigame key={minigame!.id} minigameName={minigame!.name} tutorialsEnabled={tutorialsEnabled} />
+              <Minigame key={minigame!.id} minigameName={minigame!.name} />
             </RoomLayout>
           )}
+          {roomData.gameState === GameStateType.Leaderboard && <Scoreboard />}
           {roomData.gameState === GameStateType.Finished && <EndGame />}
         </>
       ) : (

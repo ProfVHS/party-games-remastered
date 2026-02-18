@@ -1,15 +1,11 @@
-import { PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { ScoreboardItem } from '@components/features/leaderboard/Scoreboard.tsx';
 
-type GameResultsProps = {
-  gameResultsPlayers: PlayerType[];
-};
+export const GameResults = () => {
+  const oldPlayers = usePlayersStore((state) => state.oldPlayers);
+  const players = usePlayersStore((state) => state.players);
 
-export const GameResults = ({ gameResultsPlayers }: GameResultsProps) => {
-  const { oldPlayers } = usePlayersStore();
-
-  const playersWithGains = gameResultsPlayers.map((player) => {
+  const playersWithGains = players.map((player) => {
     const oldPlayer = oldPlayers?.find((p) => p.id === player.id);
     const oldScore = oldPlayer ? oldPlayer.score : 0;
 

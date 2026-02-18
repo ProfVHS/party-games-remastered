@@ -20,7 +20,7 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
           io.to(roomCode).emit('player_exploded', game.getCurrentTurnPlayer());
           break;
         case 'END_GAME':
-          io.to(roomCode).emit('ended_minigame', room.getPlayers());
+          console.log('END_GAME');
           break;
       }
     }

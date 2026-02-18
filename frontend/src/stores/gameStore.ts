@@ -3,17 +3,25 @@ import { TurnType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore.ts';
 
 type TurnStoreProps = {
+  type: 'ROUND' | 'TURN' | null;
+  currentRound: number | null;
   currentTurn: TurnType | null;
   isMyTurn: boolean;
   endAt: number;
+  setType: (type: 'ROUND' | 'TURN' | null) => void;
+  setRound: (round: number) => void;
   setTurn: (turn: TurnType) => void;
   setTurnEndAt: (endAt: number) => void;
 };
 
-export const useTurnStore = create<TurnStoreProps>((set) => ({
+export const useGameStore = create<TurnStoreProps>((set) => ({
+  type: null,
+  currentRound: null,
   currentTurn: null,
   isMyTurn: false,
   endAt: 0,
+  setType: (type: 'ROUND' | 'TURN' | null) => set({ type }),
+  setRound: (round: number) => set({ currentRound: round }),
   setTurn: (nextTurn: TurnType) => {
     const currentPlayer = usePlayersStore.getState().currentPlayer;
     const isMyTurn = nextTurn?.id === currentPlayer?.id;

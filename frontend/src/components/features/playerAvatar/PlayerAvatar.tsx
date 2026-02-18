@@ -4,7 +4,7 @@ import { avatarList } from './avatarList';
 import React, { createElement, memo } from 'react';
 import { Counter } from '@components/ui/counter/Counter.tsx';
 import { ClassNames } from '@utils';
-import { useTurnStore } from '@stores/turnStore.ts';
+import { useGameStore } from '@stores/gameStore.ts';
 import Default from '@assets/avatars/default.svg?react';
 import { socket } from '@socket';
 
@@ -20,7 +20,7 @@ type PlayerAvatarProps = {
 
 const PlayerAvatar = ({ player, style, inLobby = false, ready, onClick }: PlayerAvatarProps) => {
   const avatar = player.avatar as avatars;
-  const currentTurn = useTurnStore((state) => state.currentTurn);
+  const currentTurn = useGameStore((state) => state.currentTurn);
 
   const handleChooseAvatar = () => player.id === socket.id && onClick && onClick();
 

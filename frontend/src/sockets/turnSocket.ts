@@ -1,4 +1,4 @@
-import { useTurnStore } from '@stores/turnStore.ts';
+import { useGameStore } from '@stores/gameStore.ts';
 import { socket } from '@socket';
 import { PlayerType, TurnType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore.ts';
@@ -9,10 +9,11 @@ export const initializeTurnSocket = () => {
   if (initialized) return;
   initialized = true;
 
+  //TODO: Remove unused endAt
   const handler = (turn: TurnType, players?: PlayerType[], endAt?: number) => {
-    useTurnStore.getState().setTurn(turn);
+    useGameStore.getState().setTurn(turn);
     players && usePlayersStore.getState().setPlayers(players);
-    endAt && useTurnStore.getState().setTurnEndAt(endAt);
+    endAt && useGameStore.getState().setTurnEndAt(endAt);
   };
 
   socket.on('got_turn', handler);

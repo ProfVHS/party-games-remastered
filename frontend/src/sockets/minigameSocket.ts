@@ -1,15 +1,10 @@
 import { socket } from '@socket';
 import { useEffect, useState } from 'react';
-import { MinigameNamesEnum, PlayerType } from '@shared/types';
-import { usePlayersStore } from '@stores/playersStore.ts';
+import { MinigameNamesEnum } from '@shared/types';
 
 export const useMinigameSocket = (minigameName: MinigameNamesEnum, tutorialsEnabled: boolean) => {
-  const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(false);
   const [startGame, setStartGame] = useState<boolean>(false);
-  const [scoreboardPlayers, setScoreboardPlayersPlayers] = useState<PlayerType[]>([]);
-  const setPlayers = usePlayersStore((state) => state.setPlayers);
-  const setOldPlayers = usePlayersStore((state) => state.setOldPlayers);
 
   const handleStartNewGame = () => {
     if (tutorialsEnabled) {
@@ -20,42 +15,23 @@ export const useMinigameSocket = (minigameName: MinigameNamesEnum, tutorialsEnab
   };
 
   useEffect(() => {
-    socket.on('ended_minigame', handleEndGame);
     socket.on('tutorial_completed', handleTutorialCompleted);
 
     return () => {
-      socket.off('ended_minigame');
       socket.off('tutorial_completed');
     };
   }, []);
 
-  const handleEndGame = (newPlayers: PlayerType[]) => {
-    // Show Leaderboard
-    setTimeout(() => {
-      setShowLeaderboard(true);
-      setScoreboardPlayersPlayers(newPlayers);
-      setStartGame(false);
-      setPlayers(newPlayers);
-    }, 2000);
-
-    // Start next game
-    setTimeout(() => {
-      setOldPlayers(newPlayers);
-    }, 8000);
-  };
-
   const handleTutorialCompleted = () => {
     setShowTutorial(false);
-    setShowLeaderboard(false);
     setStartGame(true);
   };
 
   useEffect(() => {
     if (!minigameName) return;
 
-    setShowLeaderboard(false);
     handleStartNewGame();
   }, []);
 
-  return { startGame, showLeaderboard, showTutorial, scoreboardPlayers };
+  return { startGame, showTutorial };
 };

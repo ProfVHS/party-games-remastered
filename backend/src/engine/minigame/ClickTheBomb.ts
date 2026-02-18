@@ -39,6 +39,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     this.streak = 0;
   }
 
+  //TODO: explode is almost like onTurnEnd
   private explode() {
     const player = this.getCurrentTurnPlayer();
     player.kill();
@@ -86,7 +87,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     //this.nextTurn();
     this.setupBomb();
     this.onTimeout('NEXT_TURN');
-    this.introTimer.reset();
+    this.timer.clear();
   }
 
   protected beforeStart() {

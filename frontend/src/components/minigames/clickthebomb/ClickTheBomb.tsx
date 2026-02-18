@@ -2,26 +2,26 @@ import './ClickTheBomb.scss';
 import { Button } from '@components/ui/button/Button.tsx';
 import C4 from '@assets/textures/C4.svg?react';
 import { RandomScoreBox } from './RandomScoreBox';
-import { TurnNotification } from '@components/features/turnNotification/TurnNotification.tsx';
+//import { TurnNotification } from '@components/features/turnNotification/TurnNotification.tsx';
 import { PrizePoolEffect } from '@components/minigames/clickthebomb/PrizePoolEffect.tsx';
 import Explosion from '@components/minigames/clickthebomb/Explosion.tsx';
 import { Timer } from '@components/features/timer/Timer.tsx';
 import { useClickTheBombSocket } from '@sockets/clickTheBombSocket.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
-import { useTurnStore } from '@stores/turnStore.ts';
+import { useGameStore } from '@stores/gameStore.ts';
 import { memo } from 'react';
 import { ClassNames } from '@utils';
 
 export const ClickTheBomb = () => {
   const { bombClick, nextTurn, gameState, canSkipTurn, exploded, scoreData } = useClickTheBombSocket();
-  const currentTurn = useTurnStore((state) => state.currentTurn);
-  const isMyTurn = useTurnStore((state) => state.isMyTurn);
-  const turnEndAt = useTurnStore((state) => state.endAt);
+  const currentTurn = useGameStore((state) => state.currentTurn);
+  const isMyTurn = useGameStore((state) => state.isMyTurn);
+  const turnEndAt = useGameStore((state) => state.endAt);
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
 
   return (
     <>
-      <TurnNotification />
+      {/*<TurnNotification />*/}
       <div className="click-the-bomb">
         <RandomScoreBox id={scoreData.id} score={scoreData.score} />
         <div className="click-the-bomb__info">

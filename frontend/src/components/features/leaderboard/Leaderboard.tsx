@@ -1,20 +1,15 @@
-import { PlayerType } from '@shared/types';
-import { useEffect, useState } from 'react';
 import { ScoreboardItem } from '@components/features/leaderboard/Scoreboard.tsx';
+import { usePlayersStore } from '@stores/playersStore.ts';
+import { useEffect } from 'react';
 
-type LeaderboardProps = {
-  leaderboardPlayers: PlayerType[];
-};
-
-export const Leaderboard = ({ leaderboardPlayers }: LeaderboardProps) => {
-  const [sortedPlayers, setSortedPlayers] = useState<PlayerType[]>([]);
+export const Leaderboard = () => {
+  const players = usePlayersStore((state) => state.players);
+  const setOldPlayers = usePlayersStore((state) => state.setOldPlayers);
+  const sortedPlayers = players.sort((a, b) => b.score - a.score);
 
   useEffect(() => {
-    if (!leaderboardPlayers) return;
-
-    const sorted = [...leaderboardPlayers].sort((a, b) => b.score - a.score);
-    setSortedPlayers(sorted);
-  }, [leaderboardPlayers]);
+    setOldPlayers(players);
+  }, []);
 
   return (
     <div className="leaderboard">

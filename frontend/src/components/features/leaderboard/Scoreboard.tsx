@@ -1,24 +1,38 @@
 import './Scoreboard.scss';
 import { ClassNames } from '@utils';
 import { useEffect, useState } from 'react';
-import { PlayerType } from '@shared/types';
 import { Leaderboard } from '@components/features/leaderboard/Leaderboard.tsx';
 import { GameResults } from '@components/features/leaderboard/GameResults.tsx';
+import { useRoomStore } from '@stores/roomStore.ts';
 
-type ScoreboardProps = {
-  scoreboardPlayers: PlayerType[];
-};
-
-export const Scoreboard = ({ scoreboardPlayers }: ScoreboardProps) => {
-  const [show, setShow] = useState(false);
+export const Scoreboard = () => {
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const roomData = useRoomStore((state) => state.roomData);
 
   useEffect(() => {
-    setTimeout(() => {
-      setShow(true);
-    }, 3000);
-  }, [scoreboardPlayers]);
+    if (!roomData?.endAt || roomData.gameState !== 'LEADERBOARD') {
+      setShowLeaderboard(false);
+      return;
+    }
 
-  return <>{show ? <Leaderboard leaderboardPlayers={scoreboardPlayers} /> : <GameResults gameResultsPlayers={scoreboardPlayers} />}</>;
+    const now = Date.now();
+    const totalTimeLeft = roomData.endAt - now;
+
+    if (totalTimeLeft <= 0) {
+      setShowLeaderboard(true);
+      return;
+    }
+
+    const halfTime = totalTimeLeft / 2;
+
+    const timer = setTimeout(() => {
+      setShowLeaderboard(true);
+    }, halfTime);
+
+    return () => clearTimeout(timer);
+  }, [roomData]);
+
+  return showLeaderboard ? <Leaderboard /> : <GameResults />;
 };
 
 type ScoreboardItemProps = {

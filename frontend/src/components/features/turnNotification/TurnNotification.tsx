@@ -1,10 +1,10 @@
 import { Indicator } from '@components/ui/indicator/Indicator.tsx';
 import './TurnNotification.scss';
 import { motion } from 'framer-motion';
-import { useTurnStore } from '@stores/turnStore.ts';
+import { useGameStore } from '@stores/gameStore.ts';
 
 export const TurnNotification = () => {
-  const isMyTurn = useTurnStore((state) => state.isMyTurn);
+  const isMyTurn = useGameStore((state) => state.isMyTurn);
 
   return (
     isMyTurn && (

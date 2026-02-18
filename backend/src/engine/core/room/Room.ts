@@ -98,7 +98,6 @@ export class Room {
   public getData = () => {
     return {
       roomCode: this.roomCode,
-      settings: this.settings,
       gameState: this.gameState,
     };
   };

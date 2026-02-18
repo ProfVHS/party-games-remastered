@@ -1,48 +1,34 @@
 import { create } from 'zustand';
-import { socket } from '@socket';
-import { RoomDataType, GameStateType } from '@shared/types';
+import { RoomDataType } from '@shared/types';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType.ts';
 
 type RoomStoreProps = {
   roomData: RoomDataType | null;
+  roomSettings: RoomSettingsType | null;
   setRoomData: (newRoomData: RoomDataType) => void;
-  updateRoomSettings: (newSettings: RoomSettingsType) => void;
-  updateRoomGameState: (newGameState: GameStateType) => void;
-  fetchRoomData: () => void;
+  updateEndAt: (newEndAt: number) => void;
+  setRoomSettings: (newSettings: RoomSettingsType) => void;
 };
 
 export const useRoomStore = create<RoomStoreProps>((set) => ({
   roomData: null,
+  roomSettings: null,
   setRoomData: (newRoomData: RoomDataType) => {
     set({ roomData: newRoomData });
   },
-  updateRoomSettings: (newSettings: RoomSettingsType) => {
+  updateEndAt: (newEndAt: number) => {
     set((state) => {
       if (!state.roomData) return state;
 
       return {
         roomData: {
           ...state.roomData,
-          settings: newSettings,
+          endAt: newEndAt,
         },
       };
     });
   },
-  updateRoomGameState: (newGameState: GameStateType) => {
-    set((state) => {
-      if (!state.roomData) return state;
-
-      return {
-        roomData: {
-          ...state.roomData,
-          gameState: newGameState,
-        },
-      };
-    });
-  },
-  fetchRoomData: () => {
-    socket.emit('get_room_data', (newRoomData: RoomDataType) => {
-      set({ roomData: newRoomData });
-    });
+  setRoomSettings: (newSettings: RoomSettingsType) => {
+    set({ roomSettings: newSettings });
   },
 }));

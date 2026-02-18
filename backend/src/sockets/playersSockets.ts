@@ -17,12 +17,15 @@ export const handlePlayers = (io: Server, socket: Socket) => {
 
     io.to(room.roomCode).emit('got_players', players);
 
-    const roomData = room.getData();
+    const roomData = {
+      ...room.getData(),
+      endAt: 0,
+    };
 
     if (roomData.gameState === GameStateType.Lobby) {
       return callback({
         success: true,
-        payload: roomData,
+        payload: { roomData: roomData, settings: room.settings },
       });
     } else if (roomData.gameState === GameStateType.Minigame) {
       return callback({

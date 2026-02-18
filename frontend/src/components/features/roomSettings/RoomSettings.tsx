@@ -20,7 +20,7 @@ type RoomSettingsProps = {
 };
 
 export const RoomSettings = ({ roomSettings, setAreRoomSettingsUpToDate }: RoomSettingsProps) => {
-  const updateRoomSettings = useRoomStore((state) => state.updateRoomSettings);
+  const setRoomSettings = useRoomStore((state) => state.setRoomSettings);
 
   const [minigamesModal, setMinigamesModal] = useState<boolean>(false);
   const [newRoomSettings, setNewRoomSettings] = useState<RoomSettingsType>(roomSettings);
@@ -64,7 +64,7 @@ export const RoomSettings = ({ roomSettings, setAreRoomSettingsUpToDate }: RoomS
         return;
       }
     }
-    updateRoomSettings(newRoomSettings);
+    setRoomSettings(newRoomSettings);
     socket.emit('update_room_settings', newRoomSettings, () => {
       toast.success({ message: 'Successfully updated room settings', duration: 3 });
     });

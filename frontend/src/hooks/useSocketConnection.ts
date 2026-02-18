@@ -5,11 +5,13 @@ import { setSessionVariables } from '@utils';
 import { useToast } from '@hooks/useToast';
 import { ReturnDataType } from '@shared/types';
 import { SessionDataType } from '@shared/types/GameStateType.ts';
+import { useRoomStore } from '@stores/roomStore.ts';
 
 export const useSocketConnection = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const [sessionData, setSessionData] = useState<SessionDataType | null>(null);
+  const setRoomSettings = useRoomStore((state) => state.setRoomSettings);
 
   useEffect(() => {
     const storageRoomCode = localStorage.getItem('roomCode');
@@ -24,7 +26,8 @@ export const useSocketConnection = () => {
     socket.emit('sync_player_session', storageRoomCode, storagePlayerId, (response: ReturnDataType) => {
       if (response.success && socket.id) {
         setSessionVariables(storageRoomCode, socket.id);
-        setSessionData(response.payload);
+        setSessionData(response.payload.roomData);
+        setRoomSettings(response.payload.settings);
       } else {
         toast.warning({ message: response.payload, duration: 3 });
         navigate('/');

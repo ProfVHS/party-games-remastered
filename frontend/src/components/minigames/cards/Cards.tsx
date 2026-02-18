@@ -6,13 +6,12 @@ import { Stopwatch } from '@components/ui/stopwatch/Stopwatch.tsx';
 import { CARDS_RULES } from '@shared/constants/gameRules.ts';
 
 export const Cards = () => {
-  const { gameStatus, cards, round, showIntro, flipCards, selectedCard, roundEndAt, handleSelectCard } = useCardsSocket();
+  const { gameStatus, cards, flipCards, selectedCard, handleSelectCard } = useCardsSocket();
 
   return (
     <div className="cards">
-      <div className={`cards__round ${showIntro ? 'visible' : ''}`}>Round {round}</div>
       <div className="cards__countdown">
-        <Stopwatch endAt={roundEndAt} durationMs={CARDS_RULES.COUNTDOWN_MS} />
+        <Stopwatch durationMs={CARDS_RULES.COUNTDOWN_MS} />
       </div>
       <div className="cards__status">{gameStatus}</div>
       <div className={ClassNames('cards__content', { lock: gameStatus === 'Cards Reveal' })}>

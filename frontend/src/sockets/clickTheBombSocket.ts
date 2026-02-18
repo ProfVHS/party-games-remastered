@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { socket } from '@socket';
-import { useTurnStore } from '@stores/turnStore.ts';
+import { useGameStore } from '@stores/gameStore.ts';
 import { PlayerType, TurnType } from '@shared/types';
 
 type GameState = {
@@ -22,23 +22,21 @@ export const useClickTheBombSocket = () => {
   const [scoreData, setScoreData] = useState<RandomScoreBoxType>({ id: 0, score: 0 });
   const [exploded, setExploded] = useState<boolean>(false);
 
-  const isMyTurn = useTurnStore((state) => state.isMyTurn);
-  const setTurn = useTurnStore((state) => state.setTurn);
-  const setTurnEndAt = useTurnStore((state) => state.setTurnEndAt);
+  const isMyTurn = useGameStore((state) => state.isMyTurn);
+  const setTurn = useGameStore((state) => state.setTurn);
+  const setTurnEndAt = useGameStore((state) => state.setTurnEndAt);
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
 
   const resetPrizePool = () => setGameState((prevState) => ({ ...prevState, prizePool: 0 }));
 
   useEffect(() => {
-    socket.on('ended_minigame', bombExploded);
     socket.on('show_score', handleShowScore);
     socket.on('turn_timeout', handleTurnTimeout);
     socket.on('player_exploded', handlePlayerExplode);
     socket.on('changed_turn', resetPrizePool);
 
     return () => {
-      socket.off('ended_minigame', bombExploded);
       socket.off('show_score', handleShowScore);
       socket.off('turn_timeout', handleTurnTimeout);
       socket.off('player_exploded', handlePlayerExplode);

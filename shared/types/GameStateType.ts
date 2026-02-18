@@ -1,4 +1,3 @@
-import { RoomSettingsType } from "./RoomSettingsType";
 import { MinigameNamesEnum } from "./MinigameType";
 
 export enum GameStateType {
@@ -12,7 +11,7 @@ export enum GameStateType {
 export type LobbySessionDataType = {
     roomCode: string;
     gameState: GameStateType.Lobby;
-    settings: RoomSettingsType;
+    endAt: number;
 };
 
 type GameSessionDataType = {
