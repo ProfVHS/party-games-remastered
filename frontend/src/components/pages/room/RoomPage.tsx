@@ -49,7 +49,11 @@ export const RoomPage = () => {
               <Minigame key={minigame!.id} minigameName={minigame!.name} />
             </RoomLayout>
           )}
-          {roomData.gameState === GameStateType.Leaderboard && <Scoreboard />}
+          {roomData.gameState === GameStateType.Leaderboard && (
+            <RoomLayout players={players}>
+              <Scoreboard />
+            </RoomLayout>
+          )}
           {roomData.gameState === GameStateType.Finished && <EndGame />}
         </>
       ) : (

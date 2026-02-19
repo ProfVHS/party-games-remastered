@@ -10,7 +10,7 @@ export const handleMinigames = (io: Server, socket: Socket) => {
 
     const game = room.currentMinigame as TurnBasedMinigame;
     game.nextTurn();
-    io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer(), room.getPlayers(), room.currentMinigame?.getTimer().getEndAt());
+    io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer(), room.getPlayers());
   });
 
   socket.on('get_turn', async () => {
@@ -22,7 +22,7 @@ export const handleMinigames = (io: Server, socket: Socket) => {
     io.to(roomCode).emit('got_turn', game.getCurrentTurnPlayer());
   });
 
-  socket.on("player_selection", (data) => {
+  socket.on('player_selection', (data) => {
     const roomCode = socket.data.roomCode;
     const room = RoomManager.getRoom(roomCode);
     if (!room) return { success: false, message: 'Room not found!' };

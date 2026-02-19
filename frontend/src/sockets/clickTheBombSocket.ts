@@ -69,9 +69,9 @@ export const useClickTheBombSocket = () => {
     }
   };
 
-  const handlePlayerExplode = (nextTurn: TurnType) => {
+  const handlePlayerExplode = (players: PlayerType[]) => {
     bombExploded();
-    setTurn(nextTurn);
+    setPlayers(players);
   };
 
   const bombClick = () => {
@@ -83,9 +83,13 @@ export const useClickTheBombSocket = () => {
 
   const bombExploded = () => {
     setLoading(false);
-    setExploded(true);
     setGameState(defaultGameState);
     updateEndAt(0);
+    setExploded(true);
+
+    setTimeout(() => {
+      setExploded(false);
+    }, 1000);
   };
 
   const nextTurn = () => {

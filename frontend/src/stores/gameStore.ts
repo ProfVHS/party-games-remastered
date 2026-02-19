@@ -7,11 +7,9 @@ type TurnStoreProps = {
   currentRound: number | null;
   currentTurn: TurnType | null;
   isMyTurn: boolean;
-  endAt: number;
   setType: (type: 'ROUND' | 'TURN' | null) => void;
   setRound: (round: number) => void;
   setTurn: (turn: TurnType) => void;
-  setTurnEndAt: (endAt: number) => void;
 };
 
 export const useGameStore = create<TurnStoreProps>((set) => ({
@@ -19,7 +17,6 @@ export const useGameStore = create<TurnStoreProps>((set) => ({
   currentRound: null,
   currentTurn: null,
   isMyTurn: false,
-  endAt: 0,
   setType: (type: 'ROUND' | 'TURN' | null) => set({ type }),
   setRound: (round: number) => set({ currentRound: round }),
   setTurn: (nextTurn: TurnType) => {
@@ -28,5 +25,4 @@ export const useGameStore = create<TurnStoreProps>((set) => ({
 
     set({ currentTurn: nextTurn, isMyTurn: isMyTurn });
   },
-  setTurnEndAt: (endAt: number) => set({ endAt }),
 }));

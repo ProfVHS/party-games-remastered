@@ -67,16 +67,16 @@ export const useRoomSocket = () => {
         setMinigame(response.payload.minigame);
         setGameType(response.payload.type);
 
-        if (response.payload.type === 'ROUND') {
+        if (response.payload.type === 'ROUND' && response.payload.value) {
           setRound(response.payload.value);
-        } else if (response.payload.type === 'TURN') {
+        } else if (response.payload.type === 'TURN' && response.payload.value) {
           setTurn(response.payload.value);
         }
         break;
       case 'ANIMATION_UPDATE':
-        if (response.payload.type === 'ROUND') {
+        if (response.payload.type === 'ROUND' && response.payload.value) {
           setRound(response.payload.value);
-        } else if (response.payload.type === 'TURN') {
+        } else if (response.payload.type === 'TURN' && response.payload.value) {
           setTurn(response.payload.value);
         }
         break;

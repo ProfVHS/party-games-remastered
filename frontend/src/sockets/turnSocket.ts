@@ -9,11 +9,9 @@ export const initializeTurnSocket = () => {
   if (initialized) return;
   initialized = true;
 
-  //TODO: Remove unused endAt
-  const handler = (turn: TurnType, players?: PlayerType[], endAt?: number) => {
+  const handler = (turn: TurnType, players?: PlayerType[]) => {
     useGameStore.getState().setTurn(turn);
     players && usePlayersStore.getState().setPlayers(players);
-    endAt && useGameStore.getState().setTurnEndAt(endAt);
   };
 
   socket.on('got_turn', handler);

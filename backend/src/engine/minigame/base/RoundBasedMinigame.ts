@@ -33,7 +33,7 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
   }
 
   protected onRoundEnd() {
-    this.onTimeout('SHOW_RESULT');
+    this.onTimeout({ success: true, state: 'SHOW_RESULT' });
     this.roundSummaryTimer.start();
   }
 
@@ -43,13 +43,14 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     });
 
     if (this.round >= this.maxRounds) {
-      this.onTimeout('END_GAME');
+      this.onTimeout({ success: true, state: 'END_GAME' });
+
       this.end();
       return;
     }
 
     this.round++;
-    this.onTimeout('NEXT_ROUND');
+    this.onTimeout({ success: true, state: 'NEXT_ROUND' });
     this.roundSummaryTimer.clear();
     this.timer.clear();
     this.onNextRound(this.round);

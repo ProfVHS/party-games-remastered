@@ -22,36 +22,31 @@ const setMinigame = (io: Server, room: Room) => {
   }
 
   const currentMinigameClass = getMinigame(currentMinigame.name);
-  room.currentMinigame = new currentMinigameClass(room.players, (state: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
+  room.currentMinigame = new currentMinigameClass(room.players, (response: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
     const game = room.currentMinigame;
 
-    if (!game) {
+    if (!game || !response.success) {
       return;
     }
 
     if (game instanceof TurnBasedMinigame) {
-      switch (state) {
+      switch (response.state) {
         case 'NEXT_TURN':
           console.log('NEXT_TURN');
           room.setGameState(GameStateType.Animation);
           room.startTimer(COUNTDOWN_INTRO_MS);
 
-          const { id, nickname } = game.getCurrentTurnPlayer();
-
-          io.to(roomCode).emit(
-            'update_game_state',
-            { ...room.getData(), endAt: room.getTimer()?.getEndAt() },
-            { type: 'ANIMATION_UPDATE', payload: { type: 'ROUND', value: { id, nickname } } },
-          );
+          io.to(roomCode).emit('player_exploded', room.getPlayers());
+          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt: room.getTimer()?.getEndAt() });
           break;
         case 'END_GAME':
           console.log('END_GAME');
-          io.to(roomCode).emit('player_exploded', game.getCurrentTurnPlayer());
+          io.to(roomCode).emit('player_exploded', room.getPlayers());
           room.startTimer(GAME_STATE_DURATION.MINIGAME);
           break;
       }
     } else if (game instanceof RoundBasedMinigame) {
-      switch (state) {
+      switch (response.state) {
         case 'SHOW_RESULT':
           console.log('SHOW_RESULT');
           io.to(roomCode).emit('round_end', game.getSummaryTimer().getEndAt(), room.getPlayers(), game.getGameData());
@@ -85,6 +80,9 @@ export const handleConnection = (io: Server, socket: Socket) => {
     if (room) return { success: false, message: `Room ${roomCode} already exists!` };
 
     //TODO: merge Lobby and Leaderboard
+    //TODO: W lobby, animation i leaderboard są dziwne if'y, ponieważ currentTurn można pobrać tylko po zaczęciu gry zeby był on aktualny
+    // można np. zmienić logike w kalsachl, np curretnTurn jest tworziony w konstruktorze a nastepnie zmieniany po rundzie?
+    // Teraz gracze otrzymuja turn jak zaczyna sie grać dlatego nie można w animacji pokazać kogo jest tura
     room = RoomManager.createRoom(roomCode, (room: Room, state: GameStateType) => {
       let endAt = 0;
       let type = null;
@@ -101,18 +99,15 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
           endAt = room.getTimer()?.getEndAt() ?? 0;
 
-          if (room.currentMinigame instanceof TurnBasedMinigame) {
-            const { id, nickname } = room.currentMinigame.getCurrentTurnPlayer();
-            value = { id, nickname };
-            type = 'TURN';
-          } else if (room.currentMinigame instanceof RoundBasedMinigame) {
+          if (room.currentMinigame instanceof RoundBasedMinigame) {
             value = room.currentMinigame.getRound();
             type = 'ROUND';
+          } else if (room.currentMinigame instanceof TurnBasedMinigame) {
+            value = null;
+            type = 'TURN';
           }
 
-          io.to(roomCode).emit('temp', 'MINIGAME_INTRO');
           io.to(roomCode).emit('got_players', room.getPlayers());
-
           io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
           break;
 
@@ -124,7 +119,20 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
           const gameEndAt = room.currentMinigame?.getTimer().getEndAt();
 
-          io.to(roomCode).emit('update_game_state', { roomCode: room.getData().roomCode, gameState: room.getData().gameState, endAt: gameEndAt });
+          if (room.currentMinigame instanceof RoundBasedMinigame) {
+            value = null;
+            type = 'ROUND';
+          } else if (room.currentMinigame instanceof TurnBasedMinigame) {
+            const { id, nickname } = room.currentMinigame.getCurrentTurnPlayer();
+            value = { id, nickname };
+            type = 'TURN';
+          }
+
+          io.to(roomCode).emit(
+            'update_game_state',
+            { roomCode: room.getData().roomCode, gameState: room.getData().gameState, endAt: gameEndAt },
+            { type: 'ANIMATION_UPDATE', payload: { type, value } },
+          );
           break;
 
         case GameStateType.Minigame:
@@ -156,16 +164,14 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
             endAt = room.getTimer()?.getEndAt() ?? 0;
 
-            if (room.currentMinigame instanceof TurnBasedMinigame) {
-              const { id, nickname } = room.currentMinigame.getCurrentTurnPlayer();
-              value = { id, nickname };
-              type = 'TURN';
-            } else if (room.currentMinigame instanceof RoundBasedMinigame) {
+            if (room.currentMinigame instanceof RoundBasedMinigame) {
               value = room.currentMinigame.getRound();
               type = 'ROUND';
+            } else if (room.currentMinigame instanceof TurnBasedMinigame) {
+              value = null;
+              type = 'TURN';
             }
 
-            io.to(roomCode).emit('temp', 'MINIGAME_INTRO');
             io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
           }
 

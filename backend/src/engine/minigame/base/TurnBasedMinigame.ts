@@ -3,8 +3,8 @@ import { Player } from '@engine/core/Player';
 import { TurnBaseTimeoutState } from '@backend-types';
 
 export abstract class TurnBasedMinigame extends BaseMinigame {
-  public currentTurn: number = 0;
-  protected readonly onTimeout: (state: TurnBaseTimeoutState) => void;
+  public currentTurn: number;
+  protected readonly onTimeout: (response: TurnBaseTimeoutState) => void;
 
   protected constructor(players: Map<string, Player>, roundDuration: number, onTimeout: (state: TurnBaseTimeoutState) => void) {
     super(players, roundDuration, () => {
@@ -12,6 +12,7 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
     });
 
     this.onTimeout = onTimeout;
+    this.currentTurn = 0;
   }
 
   public getCurrentTurnPlayer() {
@@ -22,7 +23,7 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
     this.onNextTurn();
 
     for (let i = 1; i <= this.players.size; i++) {
-      const nextTurn = (this.currentTurn + i) % this.players.size;
+      const nextTurn = ((this.currentTurn ?? 0) + i) % this.players.size;
       const potentialPlayer = this.getPlayers()[nextTurn];
 
       if (potentialPlayer.isAlive() && !potentialPlayer.isDisconnected()) {
@@ -35,7 +36,7 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   }
 
   protected beforeStart() {
-    const playerCount = this.players.size;
+    const playerCount = Array.from(this.players.values()).filter((p) => p.isAlive()).length;
     this.currentTurn = Math.floor(Math.random() * playerCount);
   }
 

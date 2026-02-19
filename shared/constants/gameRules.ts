@@ -2,12 +2,17 @@ export const MIN_PLAYERS_TO_START = 1;
 export const MAX_PLAYERS = 8;
 
 export const COUNTDOWN_INTRO_MS = 2000;
-export const COUNTDOWN_FINISHED_MS = 20000;
+
+export const COUNTDOWN_LOBBY_MS = 3000;
+export const COUNTDOWN_ANIMATION_MS = 3000;
+export const COUNTDOWN_MINIGAME_MS = 2000;
+export const COUNTDOWN_LEADERBOARD_MS = 8000;
+export const COUNTDOWN_FINISHED_MS = 90000;
 
 export const CLICK_THE_BOMB_RULES = {
+  COUNTDOWN_MS: 10000,
   LOSS: -50,
   POINTS: [15, 17, 20, 23, 26, 30, 35],
-  COUNTDOWN: 10, // Seconds
 };
 
 export const CARDS_RULES = {

@@ -1,10 +1,16 @@
 import { GameStateType } from '@shared/types';
-import { COUNTDOWN_FINISHED_MS } from '@shared/constants/gameRules';
+import {
+  COUNTDOWN_ANIMATION_MS,
+  COUNTDOWN_FINISHED_MS,
+  COUNTDOWN_LEADERBOARD_MS,
+  COUNTDOWN_LOBBY_MS,
+  COUNTDOWN_MINIGAME_MS,
+} from '@shared/constants/gameRules';
 
 export const GAME_STATE_DURATION: Record<GameStateType, number> = {
-  [GameStateType.Lobby]: 3000,
-  [GameStateType.Animation]: 3000,
-  [GameStateType.Minigame]: 3000,
-  [GameStateType.Leaderboard]: 8000,
+  [GameStateType.Lobby]: COUNTDOWN_LOBBY_MS,
+  [GameStateType.Animation]: COUNTDOWN_ANIMATION_MS,
+  [GameStateType.Minigame]: COUNTDOWN_MINIGAME_MS,
+  [GameStateType.Leaderboard]: COUNTDOWN_LEADERBOARD_MS,
   [GameStateType.Finished]: COUNTDOWN_FINISHED_MS,
 };
