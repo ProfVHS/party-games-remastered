@@ -2,7 +2,7 @@ import './ClickTheBomb.scss';
 import { Button } from '@components/ui/button/Button.tsx';
 import C4 from '@assets/textures/C4.svg?react';
 import { RandomScoreBox } from './RandomScoreBox';
-//import { TurnNotification } from '@components/features/turnNotification/TurnNotification.tsx';
+import { TurnNotification } from '@components/features/turnNotification/TurnNotification.tsx';
 import { PrizePoolEffect } from '@components/minigames/clickthebomb/PrizePoolEffect.tsx';
 import Explosion from '@components/minigames/clickthebomb/Explosion.tsx';
 import { Timer } from '@components/features/timer/Timer.tsx';
@@ -20,7 +20,7 @@ export const ClickTheBomb = () => {
 
   return (
     <>
-      {/*<TurnNotification />*/}
+      <TurnNotification />
       <div className="click-the-bomb">
         <RandomScoreBox id={scoreData.id} score={scoreData.score} />
         <div className="click-the-bomb__info">

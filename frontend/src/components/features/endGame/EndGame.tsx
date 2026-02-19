@@ -2,6 +2,8 @@ import './EndGame.scss';
 import { Podium } from '@components/ui/podium/Podium.tsx';
 import { sortPlayersByScore } from '@shared/utlis.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
+import { ProgressBar } from '@components/ui/progressBar/ProgressBar.tsx';
+import { COUNTDOWN_FINISHED_MS } from '@shared/constants/gameRules.ts';
 
 export const EndGame = () => {
   const players = usePlayersStore((state) => state.players);
@@ -24,6 +26,9 @@ export const EndGame = () => {
         {secondRow.map((player, index) => (
           <Podium key={index + 4} place={index + 4} player={player} />
         ))}
+      </div>
+      <div className="end-game__footer">
+        <ProgressBar durationMs={COUNTDOWN_FINISHED_MS} />
       </div>
     </div>
   );
