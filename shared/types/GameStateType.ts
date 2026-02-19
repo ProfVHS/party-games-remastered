@@ -2,6 +2,7 @@ import { MinigameNamesEnum } from "./MinigameType";
 
 export enum GameStateType {
     Lobby = "LOBBY",
+    Tutorial = "TUTORIAL",
     Animation = "ANIMATION",
     Minigame = "MINIGAME",
     Leaderboard = "LEADERBOARD",

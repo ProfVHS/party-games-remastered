@@ -10,13 +10,13 @@ type StopwatchProps = {
 export const Stopwatch = ({ durationMs }: StopwatchProps) => {
   const roomData = useRoomStore((state) => state.roomData);
   const endAt = roomData?.endAt ?? 0;
-  const [timeLeft, setTimeLeft] = useState(10000);
+  const [timeLeft, setTimeLeft] = useState(durationMs);
 
   const radius = 25;
   const circumference = 2 * Math.PI * radius;
 
   useEffect(() => {
-    if (!roomData || roomData.gameState !== GameStateType.Minigame) {
+    if (!roomData || (roomData.gameState !== GameStateType.Minigame && roomData.gameState !== GameStateType.Tutorial)) {
       return;
     }
 

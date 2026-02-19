@@ -92,7 +92,20 @@ export const handleConnection = (io: Server, socket: Socket) => {
         case GameStateType.Lobby:
           console.log('Lobby END');
 
+          room.setAllReady(false);
+
           const minigame = setMinigame(io, room);
+
+          if (room.settings.getData().isTutorialsEnabled) {
+            room.setGameState(GameStateType.Tutorial);
+            room.startTimer(GAME_STATE_DURATION.TUTORIAL);
+
+            endAt = room.getTimer()?.getEndAt() ?? 0;
+
+            io.to(roomCode).emit('got_players', room.getPlayers());
+            io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
+            return;
+          }
 
           room.setGameState(GameStateType.Animation);
           room.startTimer(GAME_STATE_DURATION.ANIMATION);
@@ -109,6 +122,16 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
           io.to(roomCode).emit('got_players', room.getPlayers());
           io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
+          break;
+
+        case GameStateType.Tutorial:
+          console.log('Tutorial END');
+          room.setGameState(GameStateType.Animation);
+          room.startTimer(GAME_STATE_DURATION.ANIMATION);
+
+          endAt = room.getTimer()?.getEndAt() ?? 0;
+
+          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt });
           break;
 
         case GameStateType.Animation:

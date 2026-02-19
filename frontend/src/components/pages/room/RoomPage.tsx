@@ -44,11 +44,14 @@ export const RoomPage = () => {
               {showAvatarPicker && <AvatarPicker onClose={() => setShowAvatarPicker(false)} />}
             </div>
           )}
-          {minigame && (roomData.gameState === GameStateType.Minigame || roomData.gameState === GameStateType.Animation) && (
-            <RoomLayout players={players}>
-              <Minigame key={minigame!.id} minigameName={minigame!.name} />
-            </RoomLayout>
-          )}
+          {minigame &&
+            (roomData.gameState === GameStateType.Minigame ||
+              roomData.gameState === GameStateType.Animation ||
+              roomData.gameState === GameStateType.Tutorial) && (
+              <RoomLayout players={players}>
+                <Minigame key={minigame!.id} minigameName={minigame!.name} />
+              </RoomLayout>
+            )}
           {roomData.gameState === GameStateType.Leaderboard && (
             <RoomLayout players={players}>
               <Scoreboard />

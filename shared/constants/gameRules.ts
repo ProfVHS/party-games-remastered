@@ -5,13 +5,14 @@ export const COUNTDOWN_INTRO_MS = 2000;
 
 export const COUNTDOWN_LOBBY_MS = 3000;
 export const COUNTDOWN_ANIMATION_MS = 3000;
+export const COUNTDOWN_TUTORIAL_MS = 45000;
 export const COUNTDOWN_MINIGAME_MS = 2000;
 export const COUNTDOWN_LEADERBOARD_MS = 8000;
 export const COUNTDOWN_FINISHED_MS = 90000;
 
 export const CLICK_THE_BOMB_RULES = {
   COUNTDOWN_MS: 10000,
-  LOSS: -50,
+  LOSS: 50,
   POINTS: [15, 17, 20, 23, 26, 30, 35],
 };
 

@@ -96,6 +96,20 @@
   }
 }
 
+.tutorial__header {
+  position: relative;
+  width: 100%;
+
+  text-align: center;
+
+  &__stopwatch {
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    width: 5rem;
+  }
+}
+
 .tutorial__content {
   flex: fit-content;
   display: flex;
