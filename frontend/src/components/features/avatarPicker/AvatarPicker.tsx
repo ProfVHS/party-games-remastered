@@ -17,7 +17,8 @@ type AvatarPickerProps = {
 export const AvatarPicker = ({ onClose }: AvatarPickerProps) => {
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [freeAvatars, setFreeAvatars] = useState<string[] | null>(null);
-  const { players } = usePlayersStore();
+  const players = usePlayersStore((state) => state.players);
+  const currentPlayer = usePlayersStore((state) => state.currentPlayer);
   const toast = useToast();
 
   const handleConfirmAvatar = () => {
@@ -58,7 +59,13 @@ export const AvatarPicker = ({ onClose }: AvatarPickerProps) => {
           </Avatar>
           {Object.entries(avatarList).map(([name, data]) =>
             name !== 'default' ? (
-              <Avatar key={name} name={name} selected={selectedAvatar === name} locked={!freeAvatars?.includes(name)} onClick={() => setSelectedAvatar(name)}>
+              <Avatar
+                key={name}
+                name={name}
+                selected={selectedAvatar === name || (currentPlayer?.avatar === name && !selectedAvatar)}
+                locked={!freeAvatars?.includes(name) && currentPlayer?.avatar !== name}
+                onClick={() => setSelectedAvatar(name)}
+              >
                 {createElement(data.idle)}
               </Avatar>
             ) : null,
