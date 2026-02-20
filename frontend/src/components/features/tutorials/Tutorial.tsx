@@ -6,7 +6,7 @@ import { Pagination } from '@components/features/tutorials/components/Pagination
 import { Text } from '@components/features/tutorials/components/Text.tsx';
 import { ClickTheBombTutorial } from '@components/features/tutorials/minigamesTutorials/clickTheBomb.tsx';
 import { socket } from '@socket';
-import { COUNTDOWN_TUTORIAL_MS, MIN_PLAYERS_TO_START } from '@shared/constants/gameRules.ts';
+import { COUNTDOWN, MIN_PLAYERS_TO_START } from '@shared/constants/gameRules.ts';
 import { MAX_PAGES_BY_GAME } from '@shared/constants/defaults.ts';
 import { CardsTutorial } from '@components/features/tutorials/minigamesTutorials/cards.tsx';
 import { usePlayersStore } from '@stores/playersStore.ts';
@@ -58,7 +58,7 @@ export const Tutorial = ({ minigameName }: TutorialProps) => {
             <div className="tutorial__header">
               <Text variant="title">How To Play?</Text>
               <div className="tutorial__header__stopwatch">
-                <Stopwatch durationMs={COUNTDOWN_TUTORIAL_MS} />
+                <Stopwatch durationMs={COUNTDOWN.TUTORIAL_MS} />
               </div>
             </div>
             <div className="tutorial__content">
