@@ -15,6 +15,11 @@ export class RoomManager {
   }
 
   static deleteRoom(roomCode: string) {
+    const room = this.getRoom(roomCode);
+
+    room?.getTimer()?.clear();
+    room?.currentMinigame?.getTimer().clear();
+
     this.rooms.delete(roomCode);
   }
 }
