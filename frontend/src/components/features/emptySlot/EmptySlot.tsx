@@ -1,7 +1,8 @@
 import './EmptySlot.scss';
 import { Icon } from '@assets/icon';
+import { memo } from 'react';
 
-export const EmptySlot = () => {
+export const EmptySlot = memo(() => {
   return (
     <div className="empty-slot">
       <div className="empty-slot__box">
@@ -9,4 +10,4 @@ export const EmptySlot = () => {
       </div>
     </div>
   );
-};
+});

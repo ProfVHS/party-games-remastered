@@ -1,16 +1,18 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ClassNames } from '@utils';
+import { useClickTheBombSocket } from '@sockets/clickTheBombSocket.ts';
 
 type PrizePoolEffectProps = {
   points: number;
   playerExploded: boolean;
-  setExploded: Dispatch<SetStateAction<boolean>>;
 };
 
-export const PrizePoolEffect = ({ points, playerExploded, setExploded }: PrizePoolEffectProps) => {
+export const PrizePoolEffect = ({ points, playerExploded }: PrizePoolEffectProps) => {
   const [displayedPoints, setDisplayedPoints] = useState(points);
   const [animation, setAnimation] = useState<'none' | 'disappear' | 'appear' | 'bump'>('none');
   const [initialRender, setInitialRender] = useState(true);
+
+  const { setExploded } = useClickTheBombSocket();
 
   useEffect(() => {
     // Skip animation on first render

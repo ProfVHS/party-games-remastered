@@ -1,31 +1,26 @@
 import './Lobby.scss';
 import { Button } from '@components/ui/button/Button';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { socket } from '@socket';
 
 import { useToast } from '@hooks/useToast.ts';
 import { useLobbyToggle } from '@hooks/useLobbyToggle.ts';
-import { useLobbyFetch } from '@hooks/useLobbyFetch.ts';
-import { useLobbyStart } from '@hooks/useLobbyStart.ts';
+
 import { usePlayersStore } from '@stores/playersStore.ts';
 
 type LobbyProps = {
-  playerIdsReady: string[];
-  setPlayerIdsReady: Dispatch<SetStateAction<string[]>>;
   areRoomSettingsUpToDate: boolean;
 };
 
-export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDate }: LobbyProps) => {
+export const Lobby = ({ areRoomSettingsUpToDate }: LobbyProps) => {
   const [ready, setReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const roomCode = localStorage.getItem('roomCode');
-  const { currentPlayer } = usePlayersStore();
-
-  useLobbyToggle({ setPlayerIdsReady, setIsLoading });
-  useLobbyFetch({ setPlayerIdsReady });
-  const { countdown } = useLobbyStart({ playerIdsReady, setReady });
-
+  const currentPlayer = usePlayersStore((state) => state.currentPlayer);
+  const players = usePlayersStore((state) => state.players);
   const toast = useToast();
+
+  const { timeLeft } = useLobbyToggle({ setIsLoading });
 
   const toggleReady = () => {
     if (!areRoomSettingsUpToDate) return;
@@ -47,12 +42,13 @@ export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDa
 
   useEffect(() => {
     if (!currentPlayer) return;
-    setReady(playerIdsReady.includes(currentPlayer.id));
-  }, [playerIdsReady]);
+
+    setReady(currentPlayer.ready);
+  }, [players]);
 
   return (
     <div className="lobby">
-      {countdown === null ? (
+      {timeLeft === null ? (
         <>
           <span className="lobby__title">
             Room Code:
@@ -61,7 +57,7 @@ export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDa
             </span>
           </span>
           <div className="lobby__info">
-            <span className="lobby__players">{playerIdsReady.length}</span>
+            <span className="lobby__players">{players.filter((p) => p.ready).length}</span>
             <span className="lobby__text">Players ready</span>
           </div>
           <Button isDisabled={isLoading || !areRoomSettingsUpToDate} style={{ width: '75%' }} onClick={toggleReady}>
@@ -70,7 +66,7 @@ export const Lobby = ({ playerIdsReady, setPlayerIdsReady, areRoomSettingsUpToDa
         </>
       ) : (
         <>
-          <span className="lobby__countdown">{countdown}</span>
+          <span className="lobby__countdown">{timeLeft}</span>
           <span className="lobby__countdown-text">Get ready to rumble!</span>
         </>
       )}

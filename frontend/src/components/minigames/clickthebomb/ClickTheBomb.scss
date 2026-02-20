@@ -1,4 +1,4 @@
-@use '../../../common/styles/variables' as *;
+@use '@common/styles/variables' as *;
 
 .click-the-bomb {
   position: relative;
@@ -47,15 +47,15 @@
     cursor: pointer;
     transition: 0.05s ease-in-out;
 
-    svg{
+    svg {
       height: 10rem;
     }
 
-    &.bomb__lock {
+    &--lock {
       cursor: not-allowed;
     }
 
-    &.bomb__active:active {
+    &--active:active {
       transform: scale(0.95);
     }
   }

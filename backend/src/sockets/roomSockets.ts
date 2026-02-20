@@ -1,72 +1,41 @@
-import { Socket } from 'socket.io';
-import * as roomService from '@roomService';
-import { getRoomData, getRoomSettings, setRoomData, setRoomSettings } from '@roomRepository';
-import { createRoomConfig } from '@config/minigames';
-import { RoomDataType, RoomStatusEnum } from '@shared/types';
-import { defaultRoomSettings } from '@shared/constants/defaults';
+import { Server, Socket } from 'socket.io';
+import { RoomManager } from '@engine-managers/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
+import { GameStateType } from '@shared/types';
+import { GAME_STATE_DURATION } from '@engine/core';
 
-export const roomSockets = (socket: Socket) => {
-  socket.on('create_room', async (roomCode: string, nickname: string) => {
-    const response = await roomService.createRoomService(roomCode, socket, nickname);
-
-    if (!response.success) {
-      socket.nsp.to(socket.id).emit('failed_to_create_room');
-      return;
-    }
-
-    // Initialize room configuration to help with diconnect and reconnect events
-    const roomConfig = createRoomConfig(1, RoomStatusEnum.lobby);
-
-    const roomData: RoomDataType = { roomCode, minigameIndex: 0, ...roomConfig };
-
-    await setRoomData(roomCode, roomData);
-    await setRoomSettings(roomCode, defaultRoomSettings);
-
-    socket.join(roomCode);
-    socket.nsp.to(socket.id).emit('created_room', { roomCode: roomCode, id: socket.id });
-  });
-
-  socket.on('join_room', async (roomCode: string, nickname: string, storageId: string) => {
-    const response = await roomService.joinRoomService(roomCode, socket, nickname, storageId);
-
-    // Payload: -1 = Room does not exist, -2 = Room is full, -3 = Room is in game, -100 = Room not joined
-    if (!response.success) {
-      socket.nsp.to(socket.id).emit('failed_to_join_room', response.payload);
-      return;
-    }
-
-    socket.join(roomCode);
-
-    socket.to(roomCode).emit('player_join_toast', nickname);
-    socket.nsp.to(socket.id).emit('joined_room', { roomCode: roomCode, id: socket.id });
-  });
-
-  socket.on('get_room_data', async () => {
-    const roomCode = socket.data.roomCode;
-    const gameData = await getRoomData(roomCode);
-
-    if (gameData) {
-      socket.nsp.to(socket.id).emit('got_room_data', gameData);
-    } else {
-      socket.nsp.to(socket.id).emit('failed_to_get_room_data');
-    }
-  });
-
+export const handleRoom = (io: Server, socket: Socket) => {
   socket.on('update_room_settings', async (roomSettings: RoomSettingsType, callback: () => void) => {
-    if (!roomSettings) return;
-    const roomCode = socket.data.roomCode;
+    const room = RoomManager.getRoom(socket.data.roomCode);
+    if (!room) return { success: false, message: 'Room not found!' };
 
-    await setRoomSettings(roomCode, roomSettings);
-    socket.to(roomCode).emit('updated_room_settings', roomSettings);
+    room.settings.update(roomSettings);
+    socket.to(room.roomCode).emit('updated_room_settings', roomSettings);
     callback();
   });
 
-  socket.on('get_room_settings', async () => {
-    const roomCode = socket.data.roomCode;
-    const response = await getRoomSettings(roomCode);
-    if (!response) return;
+  socket.on('tutorial_player_ready', async () => {
+    const room = RoomManager.getRoom(socket.data.roomCode);
+    const player = room?.getPlayer(socket.id);
+    player?.toggleReady();
 
-    socket.nsp.to(socket.id).emit('got_room_settings', response);
+    const readyPlayersLength = room?.getReadyPlayers().length;
+
+    if (room?.getPlayers().length === readyPlayersLength) {
+      console.log('Juz tak');
+      if (!room) return { success: false, message: 'Room not found!' };
+      room.getTimer()?.clear();
+
+      room.setGameState(GameStateType.Animation);
+      room.startTimer(GAME_STATE_DURATION.ANIMATION);
+
+      const endAt = room.getTimer()?.getEndAt();
+
+      io.to(socket.data.roomCode).emit('update_game_state', { ...room.getData(), endAt });
+    } else {
+      console.log('Jeszcze nie');
+
+      io.to(socket.data.roomCode).emit('tutorial_ready_status', readyPlayersLength);
+    }
   });
 };

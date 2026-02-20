@@ -21,8 +21,8 @@ export const MinigameItem = ({ minigame, type, onClick, onDrag, isHost }: Miniga
       <div className="minigame-item__icon" onPointerDown={(e) => onDrag && onDrag(e)}>
         {minigame.name === MinigameNamesEnum.clickTheBomb && <Icon icon="ClickTheBomb" />}
         {minigame.name === MinigameNamesEnum.cards && <Icon icon="Cards" />}
-        {minigame.name === MinigameNamesEnum.colorsMemory && <Icon icon="ColorsMemory" />}
         {minigame.name === MinigameNamesEnum.trickyDiamonds && <Icon icon="TrickyDiamonds" />}
+        {/*{minigame.name === MinigameNamesEnum.colorsMemory && <Icon icon="ColorsMemory" />}*/}
       </div>
       <div className="minigame-item__content">
         <span>{minigame.name}</span>

@@ -1,9 +1,12 @@
 import './PlayerAvatar.scss';
-import { PlayerType, TurnType } from '@shared/types';
+import { PlayerStatusEnum, PlayerType } from '@shared/types';
 import { avatarList } from './avatarList';
-import React, { createElement } from 'react';
+import React, { createElement, memo } from 'react';
 import { Counter } from '@components/ui/counter/Counter.tsx';
 import { ClassNames } from '@utils';
+import { useGameStore } from '@stores/gameStore.ts';
+import Default from '@assets/avatars/default.svg?react';
+import { socket } from '@socket';
 
 type avatars = keyof typeof avatarList;
 
@@ -11,17 +14,23 @@ type PlayerAvatarProps = {
   player: PlayerType;
   style?: React.CSSProperties;
   inLobby?: boolean;
-  currentTurn?: TurnType | null;
   ready?: boolean;
+  onClick?: () => void;
 };
 
-export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn, ready }: PlayerAvatarProps) => {
+const PlayerAvatar = ({ player, style, inLobby = false, ready, onClick }: PlayerAvatarProps) => {
   const avatar = player.avatar as avatars;
+  const currentTurn = useGameStore((state) => state.currentTurn);
+
+  const handleChooseAvatar = () => player.id === socket.id && onClick && onClick();
+
   return (
-    <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.player_id === player.id })} style={style}>
+    <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.id === player.id })} style={style}>
       {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
       <h2 className="player-avatar__username">{player.nickname}</h2>
-      <div className="player-avatar__avatar">{avatarList[avatar] && createElement(avatarList[avatar][player.status])}</div>
+      <div className={ClassNames('player-avatar__avatar', { lobby: socket.id === player.id && inLobby })} onClick={handleChooseAvatar}>
+        {player.avatar !== 'default' ? <Avatar avatar={avatar} status={player.status} /> : <Default className="player-avatar__avatar__default" />}
+      </div>
       {!inLobby && (
         <h2 className="player-avatar__score">
           Score: <Counter count={player.score} duration={1} />
@@ -30,3 +39,14 @@ export const PlayerAvatar = ({ player, style, inLobby = false, currentTurn, read
     </div>
   );
 };
+
+export default memo(PlayerAvatar);
+
+type renderAvatarProps = {
+  avatar: avatars;
+  status: PlayerStatusEnum;
+};
+
+const Avatar = memo(({ avatar, status }: renderAvatarProps) => {
+  return avatarList[avatar] && createElement(avatarList[avatar][status]);
+});

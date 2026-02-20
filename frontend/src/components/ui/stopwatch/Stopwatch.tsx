@@ -1,16 +1,38 @@
 import './Stopwatch.scss';
+import { useEffect, useState } from 'react';
+import { useRoomStore } from '@stores/roomStore.ts';
+import { GameStateType } from '@shared/types';
 
 type StopwatchProps = {
-  timeLeft: number;
-  duration: number;
+  durationMs: number;
 };
 
-export const Stopwatch = ({ timeLeft, duration }: StopwatchProps) => {
+export const Stopwatch = ({ durationMs }: StopwatchProps) => {
+  const roomData = useRoomStore((state) => state.roomData);
+  const endAt = roomData?.endAt ?? 0;
+  const [timeLeft, setTimeLeft] = useState(durationMs);
+
   const radius = 25;
   const circumference = 2 * Math.PI * radius;
 
-  // Offset
-  const progress = timeLeft / duration / 1000;
+  useEffect(() => {
+    if (!roomData || (roomData.gameState !== GameStateType.Minigame && roomData.gameState !== GameStateType.Tutorial)) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const remaining = Math.max(endAt - Date.now(), 0);
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [roomData]);
+
+  const progress = timeLeft / durationMs;
   const strokeDashoffset = circumference * (1 - progress);
 
   return (
@@ -32,7 +54,7 @@ export const Stopwatch = ({ timeLeft, duration }: StopwatchProps) => {
         <rect x="30.2627" width="15.3509" height="6.57895" fill="#5A189A" />
         <circle cx="38.1583" cy="42.1052" r="21.9298" fill="#B87DE8" />
       </svg>
-      <div className="countdown__text">{Math.floor(timeLeft / 1000)}</div>
+      <div className="countdown__text">{Math.ceil(timeLeft / 1000)}</div>
     </div>
   );
 };

@@ -1,0 +1,37 @@
+.loading {
+  display: flex;
+  flex-wrap: wrap;
+
+  color: var(--loading-color);
+
+  font-size: 4rem;
+  font-family: 'Spicy Rice', serif;
+
+  &__dot {
+    &:nth-child(2) {
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    &:nth-child(3) {
+      animation: bounce 2s ease-in-out 0.3s infinite;
+    }
+
+    &:nth-child(4) {
+      animation: bounce 2s ease-in-out 0.6s infinite;
+    }
+  }
+
+  @keyframes bounce {
+    0%,
+    60%,
+    100% {
+      transform: translateY(0);
+    }
+
+    30% {
+      transform: translateY(-1rem);
+    }
+  }
+
+
+}

@@ -1,0 +1,96 @@
+import { TurnBasedMinigame } from './base/TurnBasedMinigame';
+import { Player } from '@engine/core/Player';
+import { TurnBaseTimeoutState } from '@backend-types';
+import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
+
+const POINTS = CLICK_THE_BOMB_RULES.POINTS;
+
+export class ClickTheBomb extends TurnBasedMinigame {
+  private clickCount: number = 0;
+  private streak: number = 0;
+  private prizePool: number = 0;
+  private maxClicks: number = 0;
+
+  constructor(players: Map<string, Player>, onTurnTimeout: (state: TurnBaseTimeoutState) => void) {
+    super(players, CLICK_THE_BOMB_RULES.COUNTDOWN_MS, onTurnTimeout);
+  }
+
+  private setupBomb() {
+    this.clickCount = 0;
+    this.maxClicks = Math.floor(Math.random() * (this.alivePlayersCount() * 4)) + 1;
+    this.streak = 0;
+    this.prizePool = 0;
+  }
+
+  private incrementCounter() {
+    this.clickCount++;
+    this.streak++;
+
+    const prizePoolDelta = this.streak > POINTS.length - 1 ? POINTS.at(-1) || 0 : POINTS[this.streak - 1];
+    this.prizePool += prizePoolDelta;
+  }
+
+  private grantPrizePool() {
+    const currentPlayer = this.getCurrentTurnPlayer();
+    currentPlayer.addScore(this.prizePool);
+
+    this.prizePool = 0;
+    this.streak = 0;
+  }
+
+  private explode() {
+    const player = this.getCurrentTurnPlayer();
+    if (player) {
+      player.kill();
+      player.subtractScore(CLICK_THE_BOMB_RULES.LOSS);
+    }
+
+    if (this.isLastPlayerStanding()) {
+      this.end();
+      return { success: true, state: 'END_GAME' };
+    }
+
+    this.setupBomb();
+    this.timer.clear();
+    return { success: true, state: 'NEXT_TURN' };
+  }
+
+  public click() {
+    this.timer.reset();
+
+    if (this.maxClicks === this.clickCount) return this.explode();
+
+    this.incrementCounter();
+    return { success: true, state: 'INCREMENTED' };
+  }
+
+  public getState() {
+    const { clickCount, streak, prizePool } = this;
+    return { clickCount, streak, prizePool };
+  }
+
+  onNextTurn() {
+    this.grantPrizePool();
+  }
+
+  onTurnEnd() {
+    const response = this.explode();
+
+    this.onTimeout(response as TurnBaseTimeoutState);
+  }
+
+  protected beforeStart() {
+    super.beforeStart();
+    this.setupBomb();
+  }
+
+  protected end() {
+    this.players.forEach((player: Player) => {
+      player.revive();
+    });
+
+    this.timer.clear();
+  }
+
+  protected onTimerEnd() {}
+}
