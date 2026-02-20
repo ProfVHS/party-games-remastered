@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { Player } from '@engine-core/Player';
 import { RoomManager } from '@engine-managers/RoomManager';
-import { GameStateType } from '@shared/types';
+import { GameStateType, JOIN_ROOM_STATUS } from '@shared/types';
 import { Room } from '@engine/core/room/Room';
 import { TurnBasedMinigame } from '@minigame-base/TurnBasedMinigame';
 import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
@@ -218,10 +218,10 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
   socket.on('join_room', (roomCode: string, nickname: string, storageId: string, callback) => {
     let room = RoomManager.getRoom(roomCode);
-    if (!room) return callback(-1);
-    if (room.getPlayers().length === MAX_PLAYERS) return callback(-2);
-    if (room.getData().gameState !== GameStateType.Lobby) return callback(-3);
-    if (room.getData().gameState === GameStateType.Lobby && room.getTimer()?.getEndAt()) return callback(-4);
+    if (!room) return callback(JOIN_ROOM_STATUS.ROOM_NOT_FOUND);
+    if (room.getPlayers().length === MAX_PLAYERS) return callback(JOIN_ROOM_STATUS.ROOM_FULL);
+    if (room.getData().gameState !== GameStateType.Lobby || (room.getData().gameState === GameStateType.Lobby && room.getTimer()?.getEndAt()))
+      return callback(JOIN_ROOM_STATUS.ROOM_IN_GAME);
 
     const player = new Player(socket.id, nickname);
     const result = room.addPlayer(player);
@@ -230,7 +230,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
       socket.join(roomCode);
       socket.data.roomCode = roomCode;
       socket.to(roomCode).emit('player_join_toast', nickname);
-      callback(0);
+      callback(JOIN_ROOM_STATUS.SUCCESS);
     }
   });
 

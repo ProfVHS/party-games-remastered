@@ -8,6 +8,7 @@ import { useToast } from '@hooks/useToast.ts';
 import { Input } from '@components/ui/input/Input.tsx';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { JOIN_ROOM_STATUS, JoinRoomStatus } from '@shared/types';
 
 type FormInputs = {
   nickname: string;
@@ -29,31 +30,27 @@ export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
     const storageId = localStorage.getItem('id');
 
     if (socket.id && nickname) {
-      socket.emit('join_room', data.room, nickname, storageId, (response: number) => {
+      socket.emit('join_room', data.room, nickname, storageId, (response: JoinRoomStatus) => {
         switch (response) {
-          case 0:
+          case JOIN_ROOM_STATUS.SUCCESS:
             if (socket.id) {
               setSessionVariables(data.room, socket.id);
               navigate(`/room/${data.room}`);
             }
             break;
-          case -1: {
+          case JOIN_ROOM_STATUS.ROOM_NOT_FOUND: {
             toast.error({ message: 'Room does not exist', duration: 5 });
             break;
           }
-          case -2: {
+          case JOIN_ROOM_STATUS.ROOM_FULL: {
             toast.error({ message: 'Room is full', duration: 5 });
             break;
           }
-          case -3: {
+          case JOIN_ROOM_STATUS.ROOM_IN_GAME: {
             toast.error({ message: 'Room is in game', duration: 5 });
             break;
           }
-          case -4: {
-            toast.error({ message: 'Room is starting the game', duration: 5 });
-            break;
-          }
-          case -100: {
+          case JOIN_ROOM_STATUS.INTERNAL_ERROR: {
             toast.error({ message: 'Internal server error', duration: 5 });
             break;
           }
