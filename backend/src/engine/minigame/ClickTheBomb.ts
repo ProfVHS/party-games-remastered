@@ -1,9 +1,10 @@
 import { TurnBasedMinigame } from './base/TurnBasedMinigame';
 import { Player } from '@engine/core/Player';
 import { TurnBaseTimeoutState } from '@backend-types';
-import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 
-const POINTS = CLICK_THE_BOMB_RULES.POINTS;
+const COUNTDOWN_MS = 10000;
+const LOSS = 50;
+const POINTS = [15, 17, 20, 23, 26, 30, 35];
 
 export class ClickTheBomb extends TurnBasedMinigame {
   private clickCount: number = 0;
@@ -12,7 +13,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
   private maxClicks: number = 0;
 
   constructor(players: Map<string, Player>, onTurnTimeout: (state: TurnBaseTimeoutState) => void) {
-    super(players, CLICK_THE_BOMB_RULES.COUNTDOWN_MS, onTurnTimeout);
+    super(players, COUNTDOWN_MS, onTurnTimeout);
   }
 
   private setupBomb() {
@@ -42,7 +43,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     const player = this.getCurrentTurnPlayer();
     if (player) {
       player.kill();
-      player.subtractScore(CLICK_THE_BOMB_RULES.LOSS);
+      player.subtractScore(LOSS);
     }
 
     if (this.isLastPlayerStanding()) {

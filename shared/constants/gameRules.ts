@@ -11,12 +11,6 @@ export const COUNTDOWN = {
     FINISHED_MS: 90000,
 }
 
-export const CLICK_THE_BOMB_RULES = {
-  COUNTDOWN_MS: 10000,
-  LOSS: 50,
-  POINTS: [15, 17, 20, 23, 26, 30, 35],
-};
-
 export const CARDS_RULES = {
   COUNTDOWN_MS: 10000,
   COUNTDOWN_SUMMARY_MS: 8000,

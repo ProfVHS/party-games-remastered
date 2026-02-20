@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import packageJson from './package.json';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import path from 'path';
@@ -6,6 +7,7 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), svgr()],
+  define: { __APP_VERSION__: JSON.stringify(packageJson.version) },
   resolve: {
     alias: {
       '@shared': path.resolve(__dirname, '../shared'),
