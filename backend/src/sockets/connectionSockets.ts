@@ -8,7 +8,7 @@ import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
 import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { getMinigame } from '@engine/managers/MinigameManager';
 import { GAME_STATE_DURATION } from '@engine/core';
-import { COUNTDOWN_INTRO_MS } from '@shared/constants/gameRules';
+import { COUNTDOWN_INTRO_MS, MAX_PLAYERS } from '@shared/constants/gameRules';
 
 const setMinigame = (io: Server, room: Room) => {
   const currentMinigame = room.settings.getNextMinigame();
@@ -202,7 +202,8 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
         case GameStateType.Finished:
           console.log('Finished END');
-          console.log('Delete room');
+          RoomManager.deleteRoom(roomCode);
+          io.to(roomCode).emit('end_game');
           break;
       }
     });
@@ -216,9 +217,12 @@ export const handleConnection = (io: Server, socket: Socket) => {
     }
   });
 
-  socket.on('join_room', (roomCode: string, nickname: string) => {
+  socket.on('join_room', (roomCode: string, nickname: string, storageId: string, callback) => {
     let room = RoomManager.getRoom(roomCode);
-    if (!room) return { success: false, message: 'Room not found!' };
+    if (!room) return callback(-1);
+    if (room.getPlayers().length === MAX_PLAYERS) return callback(-2);
+    if (room.getData().gameState !== GameStateType.Lobby) return callback(-3);
+    if (room.getData().gameState === GameStateType.Lobby && room.getTimer()?.getEndAt()) return callback(-4);
 
     const player = new Player(socket.id, nickname);
     const result = room.addPlayer(player);
@@ -227,7 +231,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
       socket.join(roomCode);
       socket.data.roomCode = roomCode;
       socket.to(roomCode).emit('player_join_toast', nickname);
-      io.to(socket.id).emit('joined_room', { roomCode, id: socket.id });
+      callback(0);
     }
   });
 

@@ -8,6 +8,7 @@ import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
 import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 import { useGameStore } from '@stores/gameStore.ts';
+import { useNavigate } from 'react-router-dom';
 
 type MinigamePayload = { type: 'ROUND'; minigame: MinigameEntryType; value: number } | { type: 'TURN'; minigame: MinigameEntryType; value: TurnType };
 type AnimationPayload = { type: 'ROUND'; value: number } | { type: 'TURN'; value: TurnType };
@@ -25,6 +26,7 @@ export const useRoomSocket = () => {
   const setRound = useGameStore((state) => state.setRound);
   const setTurn = useGameStore((state) => state.setTurn);
   const setGameType = useGameStore((state) => state.setType);
+  const navigate = useNavigate();
 
   const players = usePlayersStore((state) => state.players);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
@@ -48,12 +50,14 @@ export const useRoomSocket = () => {
     socket.on('got_players', handleGotPlayers);
     socket.on('updated_room_settings', handleUpdateRoomSettings);
     socket.on('update_game_state', handleUpdateGameState);
+    socket.on('end_game', handleEndGame);
 
     return () => {
       socket.off('player_join_toast', handlePlayerJoinToast);
       socket.off('got_players', handleGotPlayers);
       socket.off('updated_room_settings', handleUpdateRoomSettings);
       socket.off('update_game_state', handleUpdateGameState);
+      socket.off('end_game', handleEndGame);
     };
   }, []);
 
@@ -99,6 +103,10 @@ export const useRoomSocket = () => {
 
   const handleGotPlayers = (players: PlayerType[]) => {
     setPlayers(players);
+  };
+
+  const handleEndGame = () => {
+    navigate('/');
   };
 
   return { minigame, slots, areRoomSettingsUpToDate, setAreRoomSettingsUpToDate };

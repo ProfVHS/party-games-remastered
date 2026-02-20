@@ -3,11 +3,11 @@ import './Form.scss';
 import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '@components/ui/button/Button.tsx';
 import { socket } from '@socket';
-import { generateRandomUserName } from '@utils';
+import { generateRandomUserName, setSessionVariables } from '@utils';
 import { useToast } from '@hooks/useToast.ts';
-import { useRoomJoin } from '@hooks/useRoomJoin.ts';
 import { Input } from '@components/ui/input/Input.tsx';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type FormInputs = {
   nickname: string;
@@ -21,7 +21,7 @@ type JoinFormProps = {
 
 export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
   const { register, handleSubmit, setValue } = useForm<FormInputs>();
-
+  const navigate = useNavigate();
   const toast = useToast();
 
   const handleJoin: SubmitHandler<FormInputs> = (data) => {
@@ -29,7 +29,40 @@ export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
     const storageId = localStorage.getItem('id');
 
     if (socket.id && nickname) {
-      socket.emit('join_room', data.room, nickname, storageId);
+      socket.emit('join_room', data.room, nickname, storageId, (response: number) => {
+        switch (response) {
+          case 0:
+            if (socket.id) {
+              setSessionVariables(data.room, socket.id);
+              navigate(`/room/${data.room}`);
+            }
+            break;
+          case -1: {
+            toast.error({ message: 'Room does not exist', duration: 5 });
+            break;
+          }
+          case -2: {
+            toast.error({ message: 'Room is full', duration: 5 });
+            break;
+          }
+          case -3: {
+            toast.error({ message: 'Room is in game', duration: 5 });
+            break;
+          }
+          case -4: {
+            toast.error({ message: 'Room is starting the game', duration: 5 });
+            break;
+          }
+          case -100: {
+            toast.error({ message: 'Internal server error', duration: 5 });
+            break;
+          }
+          default: {
+            toast.error({ message: 'Internal server error', duration: 5 });
+            break;
+          }
+        }
+      });
 
       setValue('room', '');
     } else {
@@ -42,8 +75,6 @@ export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
       toast.error({ message: error.room.message!, duration: 5 });
     }
   };
-
-  useRoomJoin();
 
   useEffect(() => {
     setValue('room', roomCode);
