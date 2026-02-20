@@ -1,9 +1,8 @@
 import { Server, Socket } from 'socket.io';
 import { RoomManager } from '@engine-managers/RoomManager';
 import { ClickTheBomb } from '@minigames/ClickTheBomb';
-import { GAME_STATE_DURATION } from '@engine/core';
 import { GameStateType } from '@shared/types';
-import { COUNTDOWN_INTRO_MS } from '@shared/constants/gameRules';
+import { COUNTDOWN } from '@shared/constants/gameRules';
 
 export const handleClickTheBomb = (io: Server, socket: Socket) => {
   socket.on('bomb_click', async () => {
@@ -22,7 +21,7 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
         case 'NEXT_TURN':
           console.log('NEXT_TURN');
           room.setGameState(GameStateType.Animation);
-          room.startTimer(COUNTDOWN_INTRO_MS);
+          room.startTimer(COUNTDOWN.INTRO_MS);
 
           io.to(roomCode).emit('player_exploded', room.getPlayers());
           io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt: room.getTimer()?.getEndAt() });
@@ -30,7 +29,7 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
         case 'END_GAME':
           console.log('END_GAME');
           io.to(roomCode).emit('player_exploded', game.getCurrentTurnPlayer());
-          room.startTimer(GAME_STATE_DURATION.MINIGAME);
+          room.startTimer(COUNTDOWN.MINIGAME_MS);
           break;
       }
     }

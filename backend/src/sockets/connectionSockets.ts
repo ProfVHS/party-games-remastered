@@ -7,8 +7,7 @@ import { TurnBasedMinigame } from '@minigame-base/TurnBasedMinigame';
 import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
 import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { getMinigame } from '@engine/managers/MinigameManager';
-import { GAME_STATE_DURATION } from '@engine/core';
-import { COUNTDOWN_INTRO_MS, MAX_PLAYERS } from '@shared/constants/gameRules';
+import { COUNTDOWN, MAX_PLAYERS } from '@shared/constants/gameRules';
 
 const setMinigame = (io: Server, room: Room) => {
   const currentMinigame = room.settings.getNextMinigame();
@@ -34,7 +33,7 @@ const setMinigame = (io: Server, room: Room) => {
         case 'NEXT_TURN':
           console.log('NEXT_TURN');
           room.setGameState(GameStateType.Animation);
-          room.startTimer(COUNTDOWN_INTRO_MS);
+          room.startTimer(COUNTDOWN.INTRO_MS);
 
           io.to(roomCode).emit('player_exploded', room.getPlayers());
           io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt: room.getTimer()?.getEndAt() });
@@ -42,7 +41,7 @@ const setMinigame = (io: Server, room: Room) => {
         case 'END_GAME':
           console.log('END_GAME');
           io.to(roomCode).emit('player_exploded', room.getPlayers());
-          room.startTimer(GAME_STATE_DURATION.MINIGAME);
+          room.startTimer(COUNTDOWN.MINIGAME_MS);
           break;
       }
     } else if (game instanceof RoundBasedMinigame) {
@@ -54,7 +53,7 @@ const setMinigame = (io: Server, room: Room) => {
         case 'NEXT_ROUND':
           console.log('NEXT_ROUND');
           room.setGameState(GameStateType.Animation);
-          room.startTimer(COUNTDOWN_INTRO_MS);
+          room.startTimer(COUNTDOWN.INTRO_MS);
 
           io.to(roomCode).emit(
             'update_game_state',
@@ -65,7 +64,7 @@ const setMinigame = (io: Server, room: Room) => {
         case 'END_GAME':
           console.log('END_GAME');
 
-          room.startTimer(GAME_STATE_DURATION.MINIGAME);
+          room.startTimer(COUNTDOWN.MINIGAME_MS);
           break;
       }
     }
@@ -98,7 +97,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
           if (room.settings.getData().isTutorialsEnabled) {
             room.setGameState(GameStateType.Tutorial);
-            room.startTimer(GAME_STATE_DURATION.TUTORIAL);
+            room.startTimer(COUNTDOWN.TUTORIAL_MS);
 
             endAt = room.getTimer()?.getEndAt() ?? 0;
 
@@ -108,7 +107,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
           }
 
           room.setGameState(GameStateType.Animation);
-          room.startTimer(GAME_STATE_DURATION.ANIMATION);
+          room.startTimer(COUNTDOWN.ANIMATION_MS);
 
           endAt = room.getTimer()?.getEndAt() ?? 0;
 
@@ -127,7 +126,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
         case GameStateType.Tutorial:
           console.log('Tutorial END');
           room.setGameState(GameStateType.Animation);
-          room.startTimer(GAME_STATE_DURATION.ANIMATION);
+          room.startTimer(COUNTDOWN.ANIMATION_MS);
 
           endAt = room.getTimer()?.getEndAt() ?? 0;
 
@@ -162,7 +161,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
           console.log('Minigame END');
 
           room.setGameState(GameStateType.Leaderboard);
-          room.startTimer(GAME_STATE_DURATION.LEADERBOARD);
+          room.startTimer(COUNTDOWN.LEADERBOARD_MS);
 
           endAt = room.getTimer()?.getEndAt() ?? 0;
 
@@ -172,7 +171,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
         case GameStateType.Leaderboard:
           if (room.settings.isLastMinigame()) {
             room.setGameState(GameStateType.Finished);
-            room.startTimer(GAME_STATE_DURATION.FINISHED);
+            room.startTimer(COUNTDOWN.FINISHED_MS);
 
             endAt = room.getTimer()?.getEndAt() ?? 0;
 
@@ -183,7 +182,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
             const minigame = setMinigame(io, room);
 
             room.setGameState(GameStateType.Animation);
-            room.startTimer(GAME_STATE_DURATION.ANIMATION);
+            room.startTimer(COUNTDOWN.ANIMATION_MS);
 
             endAt = room.getTimer()?.getEndAt() ?? 0;
 

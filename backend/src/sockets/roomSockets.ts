@@ -2,7 +2,7 @@ import { Server, Socket } from 'socket.io';
 import { RoomManager } from '@engine-managers/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
 import { GameStateType } from '@shared/types';
-import { GAME_STATE_DURATION } from '@engine/core';
+import { COUNTDOWN } from '@shared/constants/gameRules';
 
 export const handleRoom = (io: Server, socket: Socket) => {
   socket.on('update_room_settings', async (roomSettings: RoomSettingsType, callback: () => void) => {
@@ -27,7 +27,7 @@ export const handleRoom = (io: Server, socket: Socket) => {
       room.getTimer()?.clear();
 
       room.setGameState(GameStateType.Animation);
-      room.startTimer(GAME_STATE_DURATION.ANIMATION);
+      room.startTimer(COUNTDOWN.ANIMATION_MS);
 
       const endAt = room.getTimer()?.getEndAt();
 
