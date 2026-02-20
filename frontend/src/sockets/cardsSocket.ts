@@ -10,7 +10,7 @@ export const useCardsSocket = () => {
   const [gameStatus, setGameStatus] = useState<'Choose a card' | 'Cards Reveal'>('Choose a card');
   const [cards, setCards] = useState<number[]>(defaultCards);
   const [flipCards, setFlipCards] = useState<boolean>(false);
-  const [selectedCard, setSelectedCard] = useState<number>(-100);
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
   const updateEndAt = useRoomStore((state) => state.updateEndAt);
   const roomData = useRoomStore((state) => state.roomData);
@@ -45,7 +45,7 @@ export const useCardsSocket = () => {
     setGameStatus('Cards Reveal');
     setFlipCards(true);
     setCards(shuffledCards);
-    setSelectedCard(-100);
+    setSelectedCard(null);
     setPlayers(players);
     updateEndAt(endAt);
   };

@@ -6,7 +6,7 @@ export type PlayerType = {
   isHost: boolean;
   isDisconnected: boolean;
   status: PlayerStatusEnum;
-  selectedItem: number;
+  selectedItem: number | null;
   avatar: string;
   ready: boolean;
 };

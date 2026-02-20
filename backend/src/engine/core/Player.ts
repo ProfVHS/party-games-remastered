@@ -12,7 +12,7 @@ export class Player {
   private status: PlayerStatusEnum;
   private ready: boolean;
   public avatar: string;
-  private selectedItem: number;
+  private selectedItem: number | null;
 
   constructor(id: string, nickname: string, isHost: boolean = false) {
     this.id = id;
@@ -24,7 +24,7 @@ export class Player {
     this.avatar = 'default';
     this.ready = false;
     this.host = isHost;
-    this.selectedItem = -100;
+    this.selectedItem = null;
   }
 
   public isAlive() {
@@ -102,7 +102,7 @@ export class Player {
     };
   }
 
-  public setSelectedItem(selectedItem: number) {
+  public setSelectedItem(selectedItem: number | null) {
     this.selectedItem = selectedItem;
   }
 

@@ -1,6 +1,6 @@
 @use '@common/styles/_variables' as *;
 
-.scoreboard, .leaderboard, .game-results {
+.leaderboard, .game-results {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -33,56 +33,5 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  &__player {
-    width: 90%;
-    height: 2rem;
-
-    background-color: var(--leaderboard-player-bg);
-    color: rgba(0, 0, 0, var(--leaderboard-player-opacity));
-
-    position: relative;
-
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: center;
-
-    margin-top: 0.5rem;
-    font-size: 1.2rem;
-    border-radius: 0.4rem;
-
-    transform: rotateX(90deg);
-    transition: transform 0.5s ease, opacity 0.5s ease;
-
-    &--visible {
-      opacity: 1;
-      transform: rotateX(0deg);
-    }
-
-    &:nth-child(1) {
-      background-color: var(--leaderboard-first-place);
-    }
-
-    &:nth-child(2) {
-      background-color: var(--leaderboard-second-place);
-    }
-
-    &:nth-child(3) {
-      background-color: var(--leaderboard-third-place);
-    }
-
-    &__nickname {
-      margin-left: 1rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 65%;
-    }
-
-    &__score {
-      margin-right: 1rem;
-    }
   }
 }

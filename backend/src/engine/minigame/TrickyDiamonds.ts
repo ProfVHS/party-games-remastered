@@ -26,7 +26,7 @@ export class TrickyDiamonds extends RoundBasedMinigame {
     if (!this.diamonds) return;
 
     const players = this.getPlayers();
-    const playersWithoutCard = players.filter((player: Player) => player.getSelectedItem() === -100);
+    const playersWithoutCard = players.filter((player: Player) => !player.getSelectedItem());
 
     playersWithoutCard.forEach((player: Player) => {
       player.setSelectedItem(Math.floor(Math.random() * 3));

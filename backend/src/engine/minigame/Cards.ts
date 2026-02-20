@@ -24,7 +24,7 @@ export class Cards extends RoundBasedMinigame {
   private awardPoints() {
     if (!this.cards) return;
 
-    const playersWithoutCard = Array.from(this.players.values()).filter((player: Player) => player.getSelectedItem() === -100);
+    const playersWithoutCard = Array.from(this.players.values()).filter((player: Player) => !player.getSelectedItem());
 
     playersWithoutCard.forEach((player: Player) => {
       player.setSelectedItem(Math.floor(Math.random() * 9));

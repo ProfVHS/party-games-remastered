@@ -6,7 +6,7 @@ import { DiamondType } from '@shared/types';
 import { useRoomStore } from '@stores/roomStore.ts';
 
 export const useTrickyDiamondsSocket = () => {
-  const [selectedDiamond, setSelectedDiamond] = useState<number>(-100);
+  const [selectedDiamond, setSelectedDiamond] = useState<number | null>();
   const [diamonds, setDiamonds] = useState<DiamondType[]>([
     { id: 0, players: [], won: false },
     { id: 1, players: [], won: false },
@@ -47,7 +47,7 @@ export const useTrickyDiamondsSocket = () => {
   const handleRoundEnd = (endAt: number, players: PlayerType[], diamonds: DiamondType[]) => {
     setGameStatus('Judgment Time');
     setReveal(true);
-    setSelectedDiamond(-100);
+    setSelectedDiamond(null);
     setDiamonds(diamonds);
     setPlayers(players);
     updateEndAt(endAt);
@@ -56,7 +56,7 @@ export const useTrickyDiamondsSocket = () => {
   const handleRoundNext = () => {
     setGameStatus('Choose Wisely');
     setReveal(false);
-    setSelectedDiamond(-100);
+    setSelectedDiamond(null);
   };
 
   const handleSelectDiamond = (diamondId: number) => {

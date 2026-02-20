@@ -1,5 +1,4 @@
 import './Scoreboard.scss';
-import { ClassNames } from '@utils';
 import { useEffect, useState } from 'react';
 import { Leaderboard } from '@components/features/leaderboard/Leaderboard.tsx';
 import { GameResults } from '@components/features/leaderboard/GameResults.tsx';
@@ -33,27 +32,4 @@ export const Scoreboard = () => {
   }, [roomData]);
 
   return showLeaderboard ? <Leaderboard /> : <GameResults />;
-};
-
-type ScoreboardItemProps = {
-  index: number;
-  nickname: string;
-  score: number;
-  gameBoard: boolean;
-};
-
-export const ScoreboardItem = ({ index, nickname, score, gameBoard }: ScoreboardItemProps) => {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!gameBoard) setVisible(true);
-    else setTimeout(() => setVisible(true), index * 200);
-  }, [gameBoard]);
-
-  return (
-    <div className={ClassNames('scoreboard__player', { visible: visible })}>
-      <div className="scoreboard__player__nickname">{index + 1 + '. ' + nickname}</div>
-      <div className="scoreboard__player__score">{score >= 0 && gameBoard ? '+' + score : score}</div>
-    </div>
-  );
 };
