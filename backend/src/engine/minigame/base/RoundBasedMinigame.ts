@@ -17,7 +17,7 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     onTimeout: (state: RoundBaseTimeoutState) => void,
   ) {
     super(players, roundDurationMs, () => {
-      this.onRoundEnd();
+      this.onTimerEnd();
     });
 
     this.maxRounds = maxRounds;
@@ -32,7 +32,7 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     return this.roundSummaryTimer;
   }
 
-  protected onRoundEnd() {
+  protected onTimerEnd() {
     this.onTimeout({ success: true, state: 'SHOW_RESULT' });
     this.roundSummaryTimer.start();
   }
@@ -56,7 +56,7 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     this.onNextRound(this.round);
   }
 
-  public getGameData() {}
+  public abstract getGameData(): void;
 
   public getRound() {
     return this.round;

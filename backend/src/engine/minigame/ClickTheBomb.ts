@@ -74,7 +74,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     this.grantPrizePool();
   }
 
-  onTurnEnd() {
+  protected onTimerEnd() {
     const response = this.explode();
 
     this.onTimeout(response as TurnBaseTimeoutState);
@@ -92,6 +92,4 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
     this.timer.clear();
   }
-
-  protected onTimerEnd() {}
 }

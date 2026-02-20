@@ -81,40 +81,40 @@ export class Room {
     return this.gameState;
   }
 
-  public addPlayer = (player: Player) => {
+  public addPlayer(player: Player) {
     if (this.players.size >= MAX_PLAYERS) {
       return { success: false, message: 'Room is full!' };
     }
 
     this.players.set(player.id, player);
     return { success: true };
-  };
+  }
 
-  public removePlayer = (playerId: string) => {
+  public removePlayer(playerId: string) {
     this.players.delete(playerId);
     return { success: true };
-  };
+  }
 
-  public getData = () => {
+  public getData() {
     return {
       roomCode: this.roomCode,
       gameState: this.gameState,
     };
-  };
+  }
 
-  public getPlayers = () => {
+  public getPlayers() {
     return Array.from(this.players.values()).map((p) => p.getData());
-  };
+  }
 
-  public getPlayer = (id: string) => {
+  public getPlayer(id: string) {
     return this.players.get(id);
-  };
+  }
 
-  public getReadyPlayers = () => {
+  public getReadyPlayers() {
     return Array.from(this.players.values())
       .filter((p) => p.isReady())
       .map((p) => p.id);
-  };
+  }
 
   public setAllReady(ready: boolean) {
     this.players.forEach((player) => {
@@ -122,7 +122,7 @@ export class Room {
     });
   }
 
-  public checkIfUserIsInRoom = (playerId: string) => {
+  public checkIfUserIsInRoom(playerId: string) {
     const playerData = this.players.get(playerId);
     const roomData = this.getData();
 
@@ -131,5 +131,5 @@ export class Room {
     } else {
       return { success: true };
     }
-  };
+  }
 }

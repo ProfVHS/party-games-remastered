@@ -28,7 +28,7 @@ export class Cards extends RoundBasedMinigame {
 
     playersWithoutCard.forEach((player: Player) => {
       player.setSelectedItem(Math.floor(Math.random() * 9));
-    })
+    });
 
     this.cards.forEach((card, index) => {
       const playersWithThisCard = Array.from(this.players.values()).filter((player: Player) => player.getSelectedItem() === index);
@@ -36,15 +36,18 @@ export class Cards extends RoundBasedMinigame {
       playersWithThisCard.forEach((player: Player) => {
         const cardScore = card < 0 ? card * playersWithThisCard.length : card / playersWithThisCard.length;
         player.addScore(cardScore);
-      })
-    })
+      });
+    });
   }
 
-  public shuffleCards = (round: number) => {
+  public shuffleCards(round: number) {
     this.cards = _.shuffle(ROUND_CARDS[round]);
-  };
+  }
 
-  protected onTimerEnd(): void {}
+  protected onTimerEnd() {
+    this.awardPoints();
+    super.onTimerEnd();
+  }
 
   onNextRound(round: number) {
     this.shuffleCards(round);
@@ -53,11 +56,6 @@ export class Cards extends RoundBasedMinigame {
   override start() {
     super.start();
     this.shuffleCards(this.round);
-  }
-
-  protected onRoundEnd() {
-    this.awardPoints();
-    super.onRoundEnd();
   }
 
   end() {}

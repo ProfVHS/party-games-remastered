@@ -58,7 +58,10 @@ export class TrickyDiamonds extends RoundBasedMinigame {
     }
   }
 
-  protected onTimerEnd(): void {}
+  protected onTimerEnd() {
+    this.awardPoints();
+    super.onTimerEnd();
+  }
 
   onNextRound() {
     this.diamonds = ROUND_DIAMONDS[this.round];
@@ -67,11 +70,6 @@ export class TrickyDiamonds extends RoundBasedMinigame {
   override start() {
     super.start();
     this.diamonds = ROUND_DIAMONDS[this.round];
-  }
-
-  protected onRoundEnd() {
-    this.awardPoints();
-    super.onRoundEnd();
   }
 
   end() {}

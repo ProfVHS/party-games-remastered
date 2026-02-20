@@ -27,67 +27,67 @@ export class Player {
     this.selectedItem = -100;
   }
 
-  public isAlive = () => {
+  public isAlive() {
     return this.alive;
-  };
+  }
 
-  public kill = () => {
+  public kill() {
     this.alive = false;
-  };
+  }
 
-  public isDisconnected = () => {
+  public isDisconnected() {
     return this.disconnected;
-  };
+  }
 
-  public disconnect = () => {
+  public disconnect() {
     this.disconnected = true;
-  };
+  }
 
-  public reconnect = () => {
+  public reconnect() {
     this.disconnected = false;
-  };
+  }
 
-  public revive = () => {
+  public revive() {
     this.alive = true;
-  };
+  }
 
-  public getScore = () => {
+  public getScore() {
     return this.score;
-  };
+  }
 
   public changeStatus(status: PlayerStatusEnum) {
     this.status = status;
   }
 
-  public changeAvatar = (avatar: avatars) => {
+  public changeAvatar(avatar: avatars) {
     this.avatar = avatar;
-  };
+  }
 
-  public setReady = (ready: boolean) => {
+  public setReady(ready: boolean) {
     this.ready = ready;
-  };
+  }
 
-  public toggleReady = () => {
+  public toggleReady() {
     this.ready = !this.ready;
-  };
+  }
 
-  public isReady = () => {
+  public isReady() {
     return this.ready;
-  };
+  }
 
-  public isHost = () => {
+  public isHost() {
     return this.host;
-  };
+  }
 
-  public addScore = (score: number) => {
+  public addScore(score: number) {
     this.score = this.score + score < 0 ? 0 : this.score + score;
-  };
+  }
 
-  public subtractScore = (score: number) => {
+  public subtractScore(score: number) {
     this.score = this.score - score <= 0 ? 0 : this.score - score;
-  };
+  }
 
-  public getData = () => {
+  public getData() {
     return {
       id: this.id,
       nickname: this.nickname,
@@ -100,13 +100,13 @@ export class Player {
       isHost: this.isHost(),
       selectedItem: this.selectedItem,
     };
-  };
+  }
 
-  public setSelectedItem = (selectedItem: number) => {
+  public setSelectedItem(selectedItem: number) {
     this.selectedItem = selectedItem;
-  };
+  }
 
-  public getSelectedItem = () => {
+  public getSelectedItem() {
     return this.selectedItem;
-  };
+  }
 }

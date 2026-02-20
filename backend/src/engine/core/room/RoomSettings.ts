@@ -16,23 +16,25 @@ export class RoomSettings {
     this.numberOfMinigames = 2;
   }
 
-  public update = (newSettings: Partial<RoomSettingsType>) => {
+  public update(newSettings: Partial<RoomSettingsType>) {
     Object.assign(this, newSettings);
-  };
+  }
 
-  public getMinigames = () => this.minigames;
+  public getMinigames() {
+    return this.minigames;
+  }
 
-  public getNextMinigame = () => {
+  public getNextMinigame() {
     const nextMinigame = this.minigames[0];
     this.minigames = this.minigames.slice(1);
     return nextMinigame;
-  };
+  }
 
-  public isLastMinigame = () => {
+  public isLastMinigame() {
     return this.minigames.length <= 0;
-  };
+  }
 
-  public randomiseMinigames = () => {
+  public randomiseMinigames() {
     if (!this.isRandomMinigames) return { success: false, message: 'Random minigames is disabled!' };
     if (this.numberOfMinigames < 2)
       return {
@@ -55,14 +57,14 @@ export class RoomSettings {
       name,
       id: `${name}-${index}`,
     }));
-  };
+  }
 
-  public getData = () => {
+  public getData() {
     return {
       isRandomMinigames: this.isRandomMinigames,
       isTutorialsEnabled: this.isTutorialsEnabled,
       minigames: this.minigames,
       numberOfMinigames: this.numberOfMinigames,
     };
-  };
+  }
 }
