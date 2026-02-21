@@ -30,7 +30,7 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
           break;
         case 'END_GAME':
           console.log('END_GAME');
-          io.to(roomCode).emit('player_exploded', game.getCurrentTurnPlayer());
+          io.to(roomCode).emit('player_exploded', room.getPlayers());
           room.startTimer(COUNTDOWN.MINIGAME_MS);
           break;
       }
