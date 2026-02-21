@@ -6,7 +6,7 @@ type WinCardProps = {
 
 export const WinCard = ({ score }: WinCardProps) => {
   return (
-    <div className="win__background">
+    <div className="tricky-diamonds__players__list--won__background">
       <span className="score">+{score}</span>
       <Trophy />
     </div>
