@@ -27,14 +27,12 @@ export class Cards extends RoundBasedMinigame {
   private awardPoints() {
     if (!this.cards) return;
 
-    const playersWithoutCard = Array.from(this.players.values()).filter((player: Player) => !player.getSelectedItem());
-
-    playersWithoutCard.forEach((player: Player) => {
+    this.getPlayersWithoutSelectedItem().forEach((player: Player) => {
       player.setSelectedItem(Math.floor(Math.random() * 9));
     });
 
     this.cards.forEach((card, index) => {
-      const playersWithThisCard = Array.from(this.players.values()).filter((player: Player) => player.getSelectedItem() === index);
+      const playersWithThisCard = this.getPlayersWithSelectedItem(index);
 
       playersWithThisCard.forEach((player: Player) => {
         const cardScore = card < 0 ? card * playersWithThisCard.length : card / playersWithThisCard.length;

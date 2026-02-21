@@ -33,7 +33,7 @@ export class Room {
       this.settings.randomiseMinigames();
     }
 
-    const availableAvatars = _.shuffle(Object.values(avatars).filter((avatar) => !Array.from(this.players.values()).some((p) => p.avatar == avatar)));
+    const availableAvatars = _.shuffle(Object.values(avatars).filter((avatar) => !this.getPlayers().some((p) => p.avatar == avatar)));
 
     let i = 0;
 
@@ -108,6 +108,14 @@ export class Room {
 
   public getPlayer(id: string) {
     return this.players.get(id);
+  }
+
+  public getAlivePlayers() {
+    return Array.from(this.players.values()).map((p) => p.isAlive());
+  }
+
+  public getConnectedPlayers() {
+    return Array.from(this.players.values()).map((p) => !p.isDisconnected());
   }
 
   public getReadyPlayers() {

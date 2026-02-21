@@ -16,7 +16,7 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   }
 
   public getCurrentTurnPlayer() {
-    return Array.from(this.players.values())[this.currentTurn];
+    return this.getPlayers()[this.currentTurn];
   }
 
   public nextTurn() {
@@ -36,7 +36,7 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   }
 
   protected beforeStart() {
-    const playerCount = Array.from(this.players.values()).filter((p) => p.isAlive()).length;
+    const playerCount = this.getPlayers().filter((p) => p.isAlive()).length;
     this.currentTurn = Math.floor(Math.random() * playerCount);
   }
 
