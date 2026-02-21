@@ -10,12 +10,13 @@ const roundsDiamonds = [TRICKY_DIAMONDS_RULES.ROUND_1, TRICKY_DIAMONDS_RULES.ROU
 export const TrickyDiamonds = () => {
   const { diamonds, reveal, gameStatus, selectedDiamond, handleSelectDiamond } = useTrickyDiamondsSocket();
   const round = useGameStore((state) => state.currentRound);
+  const durationRoundOrTurn = useGameStore((state) => state.durationRoundOrTurn);
 
   return (
     <div className="tricky-diamonds">
       <div className="tricky-diamonds__title">{gameStatus}</div>
       <div className="tricky-diamonds__timer">
-        <ProgressBar durationMs={TRICKY_DIAMONDS_RULES.COUNTDOWN_MS} />
+        <ProgressBar durationMs={durationRoundOrTurn} />
       </div>
       <div className="tricky-diamonds__container tricky-diamonds__selected">
         {diamonds &&

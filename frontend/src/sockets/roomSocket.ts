@@ -10,7 +10,9 @@ import { useRoomStore } from '@stores/roomStore.ts';
 import { useGameStore } from '@stores/gameStore.ts';
 import { useNavigate } from 'react-router-dom';
 
-type MinigamePayload = { type: 'ROUND'; minigame: MinigameEntryType; value: number } | { type: 'TURN'; minigame: MinigameEntryType; value: TurnType };
+type MinigamePayload =
+  | { type: 'ROUND'; minigame: MinigameEntryType; value: number; duration: number }
+  | { type: 'TURN'; minigame: MinigameEntryType; value: TurnType; duration: number };
 type AnimationPayload = { type: 'ROUND'; value: number } | { type: 'TURN'; value: TurnType };
 
 type SocketResponse =
@@ -26,6 +28,7 @@ export const useRoomSocket = () => {
   const setRound = useGameStore((state) => state.setRound);
   const setTurn = useGameStore((state) => state.setTurn);
   const setGameType = useGameStore((state) => state.setType);
+  const setDurationRoundOrTurn = useGameStore((state) => state.setDurationRoundOrTurn);
   const navigate = useNavigate();
 
   const players = usePlayersStore((state) => state.players);
@@ -70,6 +73,7 @@ export const useRoomSocket = () => {
       case 'MINIGAME_UPDATE':
         setMinigame(response.payload.minigame);
         setGameType(response.payload.type);
+        setDurationRoundOrTurn(response.payload.duration);
 
         if (response.payload.type === 'ROUND' && response.payload.value) {
           setRound(response.payload.value);

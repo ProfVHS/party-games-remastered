@@ -4,11 +4,11 @@ import { Button } from '@components/ui/button/Button.tsx';
 import { Pagination } from '@components/features/tutorials/components/Pagination.tsx';
 import { Text } from '@components/features/tutorials/components/Text.tsx';
 import { ClickTheBombTutorial } from '@components/features/tutorials/minigamesTutorials/clickTheBomb.tsx';
-import { COUNTDOWN } from '@shared/constants/gameRules.ts';
 import { CardsTutorial } from '@components/features/tutorials/minigamesTutorials/cards.tsx';
 import { TrickyDiamondsTutorial } from '@components/features/tutorials/minigamesTutorials/trickyDiamonds.tsx';
 import { Stopwatch } from '@components/ui/stopwatch/Stopwatch.tsx';
 import { useTutorialSocket } from '@sockets/tutorialSocket.ts';
+import { COUNTDOWN } from '@shared/constants/gameRules.ts';
 
 type TutorialProps = {
   minigameName: MinigameNamesEnum;

@@ -1,5 +1,6 @@
 import { Room } from '@engine-core/room/Room';
 import { GameStateType } from '@shared/types';
+import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 
 export class RoomManager {
   private static rooms = new Map<string, Room>();
@@ -19,6 +20,9 @@ export class RoomManager {
 
     room?.getTimer()?.clear();
     room?.currentMinigame?.getTimer().clear();
+    if (room?.currentMinigame instanceof RoundBasedMinigame) {
+      room.currentMinigame?.getSummaryTimer()?.clear();
+    }
 
     this.rooms.delete(roomCode);
   }

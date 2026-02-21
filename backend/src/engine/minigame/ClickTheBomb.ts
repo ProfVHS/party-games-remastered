@@ -92,4 +92,8 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
     this.timer.clear();
   }
+
+  public getCountdownDuration(): number {
+    return COUNTDOWN_MS;
+  }
 }

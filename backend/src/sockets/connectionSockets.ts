@@ -86,6 +86,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
       let endAt = 0;
       let type = null;
       let value = null;
+      let duration = null;
 
       switch (state) {
         case GameStateType.Lobby:
@@ -100,9 +101,10 @@ export const handleConnection = (io: Server, socket: Socket) => {
             room.startTimer(COUNTDOWN.TUTORIAL_MS);
 
             endAt = room.getTimer()?.getEndAt() ?? 0;
+            duration = room.currentMinigame?.getCountdownDuration();
 
             io.to(roomCode).emit('got_players', room.getPlayers());
-            io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
+            io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value, duration } });
             return;
           }
 
@@ -110,6 +112,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
           room.startTimer(COUNTDOWN.ANIMATION_MS);
 
           endAt = room.getTimer()?.getEndAt() ?? 0;
+          duration = room.currentMinigame?.getCountdownDuration();
 
           if (room.currentMinigame instanceof RoundBasedMinigame) {
             value = room.currentMinigame.getRound();
@@ -120,7 +123,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
           }
 
           io.to(roomCode).emit('got_players', room.getPlayers());
-          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
+          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value, duration } });
           break;
 
         case GameStateType.Tutorial:
@@ -185,6 +188,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
             room.startTimer(COUNTDOWN.ANIMATION_MS);
 
             endAt = room.getTimer()?.getEndAt() ?? 0;
+            duration = room.currentMinigame?.getCountdownDuration();
 
             if (room.currentMinigame instanceof RoundBasedMinigame) {
               value = room.currentMinigame.getRound();
@@ -194,7 +198,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
               type = 'TURN';
             }
 
-            io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
+            io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value, duration } });
           }
 
           break;

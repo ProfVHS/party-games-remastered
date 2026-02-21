@@ -1,20 +1,23 @@
 import { RoundBasedMinigame } from './base/RoundBasedMinigame';
 import { Player } from '@engine/core/Player';
-import { CARDS_RULES } from '@shared/constants/gameRules';
 import _ from 'lodash';
 import { RoundBaseTimeoutState } from '@backend-types';
 
 const ROUND_CARDS: Record<number, number[]> = {
-  1: CARDS_RULES.ROUND_1,
-  2: CARDS_RULES.ROUND_2,
-  3: CARDS_RULES.ROUND_3,
+  1: [25, 25, 30, 50, 50, 60, -15, -15, -30],
+  2: [50, 50, 50, 70, 90, -15, -30, -30, -50],
+  3: [50, 90, 90, 120, -40, -40, -70, -70, -90],
 };
+
+const COUNTDOWN_MS = 10000;
+const COUNTDOWN_SUMMARY_MS = 8000;
+const MAX_ROUNDS = 3;
 
 export class Cards extends RoundBasedMinigame {
   private cards: number[] | null = null;
 
   constructor(players: Map<string, Player>, onTimeout: (state: RoundBaseTimeoutState) => void) {
-    super(players, CARDS_RULES.COUNTDOWN_MS, CARDS_RULES.COUNTDOWN_SUMMARY_MS, CARDS_RULES.MAX_ROUNDS, onTimeout);
+    super(players, COUNTDOWN_MS, COUNTDOWN_SUMMARY_MS, MAX_ROUNDS, onTimeout);
   }
 
   public getGameData() {
@@ -59,4 +62,8 @@ export class Cards extends RoundBasedMinigame {
   }
 
   end() {}
+
+  public getCountdownDuration(): number {
+    return COUNTDOWN_MS;
+  }
 }
