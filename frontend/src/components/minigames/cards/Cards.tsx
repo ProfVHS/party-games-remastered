@@ -4,6 +4,7 @@ import { Card } from '@components/minigames/cards/Card.tsx';
 import { ClassNames } from '@utils';
 import { Stopwatch } from '@components/ui/stopwatch/Stopwatch.tsx';
 import { useGameStore } from '@stores/gameStore.ts';
+import { CARDS_GAME_STATUS } from '@shared/types';
 
 export const Cards = () => {
   const { gameStatus, cards, flipCards, selectedCard, handleSelectCard } = useCardsSocket();
@@ -15,7 +16,7 @@ export const Cards = () => {
         <Stopwatch durationMs={durationRoundOrTurn} />
       </div>
       <div className="cards__status">{gameStatus}</div>
-      <div className={ClassNames('cards__content', { lock: gameStatus === 'Cards Reveal' })}>
+      <div className={ClassNames('cards__content', { lock: gameStatus === CARDS_GAME_STATUS.REVEAL })}>
         {cards.map((card, index) => (
           <Card key={index} id={index} points={card} isFlipping={flipCards} selected={selectedCard === index} onClick={handleSelectCard} />
         ))}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { socket } from '@socket';
-import { PlayerType } from '@shared/types';
+import { PlayerType, TRICKY_DIAMONDS_GAME_STATUS, TrickyDiamondsGameStatus } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { DiamondType } from '@shared/types';
 import { useRoomStore } from '@stores/roomStore.ts';
@@ -12,7 +12,7 @@ export const useTrickyDiamondsSocket = () => {
     { id: 1, players: [], won: false },
     { id: 2, players: [], won: false },
   ]);
-  const [gameStatus, setGameStatus] = useState<'Judgment Time' | 'Choose Wisely'>('Choose Wisely');
+  const [gameStatus, setGameStatus] = useState<TrickyDiamondsGameStatus>(TRICKY_DIAMONDS_GAME_STATUS.CHOOSE);
   const [reveal, setReveal] = useState<boolean>(false);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
   const updateEndAt = useRoomStore((state) => state.updateEndAt);
@@ -27,7 +27,7 @@ export const useTrickyDiamondsSocket = () => {
   }, []);
 
   useEffect(() => {
-    if (!roomData || !roomData.endAt || gameStatus === 'Choose Wisely') return;
+    if (!roomData || !roomData.endAt || gameStatus === TRICKY_DIAMONDS_GAME_STATUS.CHOOSE) return;
 
     const now = Date.now();
     const timeLeft = roomData.endAt - now;
@@ -45,7 +45,7 @@ export const useTrickyDiamondsSocket = () => {
   }, [roomData]);
 
   const handleRoundEnd = (endAt: number, players: PlayerType[], diamonds: DiamondType[]) => {
-    setGameStatus('Judgment Time');
+    setGameStatus(TRICKY_DIAMONDS_GAME_STATUS.REVEAL);
     setReveal(true);
     setSelectedDiamond(null);
     setDiamonds(diamonds);
@@ -54,7 +54,7 @@ export const useTrickyDiamondsSocket = () => {
   };
 
   const handleRoundNext = () => {
-    setGameStatus('Choose Wisely');
+    setGameStatus(TRICKY_DIAMONDS_GAME_STATUS.CHOOSE);
     setReveal(false);
     setSelectedDiamond(null);
   };

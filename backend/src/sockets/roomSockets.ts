@@ -22,7 +22,6 @@ export const handleRoom = (io: Server, socket: Socket) => {
     const readyPlayersLength = room?.getReadyPlayers().length;
 
     if (room?.getPlayers().length === readyPlayersLength) {
-      console.log('Juz tak');
       if (!room) return { success: false, message: 'Room not found!' };
       room.getTimer()?.clear();
 
@@ -33,8 +32,6 @@ export const handleRoom = (io: Server, socket: Socket) => {
 
       io.to(socket.data.roomCode).emit('update_game_state', { ...room.getData(), endAt });
     } else {
-      console.log('Jeszcze nie');
-
       io.to(socket.data.roomCode).emit('tutorial_ready_status', readyPlayersLength);
     }
   });
