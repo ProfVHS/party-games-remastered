@@ -4,14 +4,14 @@ import { ClassNames } from '@utils';
 
 type PlayerNicknamesListProps = {
   playerList: PlayerType[] | string[];
-  playerBackground: string;
+  className?: string;
 };
 
-export const PlayerNicknamesList = ({ playerList, playerBackground }: PlayerNicknamesListProps) => {
+export const PlayerNicknamesList = ({ playerList, className }: PlayerNicknamesListProps) => {
   return (
-    <div className="player-nicknames-list">
+    <div className={ClassNames('player-nicknames-list', className)}>
       {playerList.map((player, index) => (
-        <div key={index} className={ClassNames('player-nicknames-list__item', [playerBackground])} style={{ backgroundColor: playerBackground }}>
+        <div key={index} className="player-nicknames-list__item">
           {typeof player === 'string' ? player : player.nickname}
         </div>
       ))}
