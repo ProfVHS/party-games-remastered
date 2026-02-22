@@ -73,6 +73,16 @@ export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const clipboardText = e.clipboardData.getData('text');
+    const textToPaste = clipboardText.replace(`${window.location.origin}/`, '');
+    setValue("room", textToPaste, {
+      shouldValidate: true,
+      shouldDirty: true,
+    })
+  }
+
   useEffect(() => {
     setValue('room', roomCode);
   }, [roomCode]);
@@ -95,6 +105,7 @@ export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
             minLength: { value: 5, message: 'The room code must have 5 characters' },
             maxLength: { value: 5, message: 'The room code must have 5 characters' },
           })}
+          onPaste={handlePaste}
         />
       </div>
       <Button style={{ width: '100%' }} type="reset">
