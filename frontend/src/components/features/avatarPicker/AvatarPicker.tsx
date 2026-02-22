@@ -53,6 +53,7 @@ export const AvatarPicker = ({ onClose }: AvatarPickerProps) => {
   return (
     <Modal onClose={() => onClose()}>
       <div className="avatar-picker">
+        <div className="avatar-picker__header">Pick your Avatar</div>
         <div className="avatar-picker__avatars">
           <Avatar name="Random" selected={selectedAvatar === 'random'} onClick={() => setSelectedAvatar('random')}>
             <Icon icon={'Random'} className="avatar__random" />
@@ -72,8 +73,10 @@ export const AvatarPicker = ({ onClose }: AvatarPickerProps) => {
           )}
         </div>
         <div className="avatar-picker__buttons">
-          <Button onClick={handleConfirmAvatar}>Confirm</Button>
-          <Button color="remove" onClick={() => onClose()}>
+          <Button size="small" onClick={handleConfirmAvatar}>
+            Confirm
+          </Button>
+          <Button color="remove" size="small" onClick={() => onClose()}>
             Cancel
           </Button>
         </div>
