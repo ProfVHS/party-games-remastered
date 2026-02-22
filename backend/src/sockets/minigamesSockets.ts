@@ -10,7 +10,7 @@ export const handleMinigames = (io: Server, socket: Socket) => {
 
     const game = room.currentMinigame as TurnBasedMinigame;
     game.nextTurn();
-    io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer(), room.getPlayers());
+    io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer(), room.getPlayers(), game.getTimer().getEndAt());
   });
 
   socket.on('get_turn', async () => {

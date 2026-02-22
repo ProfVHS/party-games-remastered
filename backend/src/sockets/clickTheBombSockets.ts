@@ -9,6 +9,8 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
     const roomCode = socket.data.roomCode;
     const room = RoomManager.getRoom(roomCode)!;
 
+    if (room.getData().gameState !== GameStateType.Minigame) return;
+
     const game = room.currentMinigame as ClickTheBomb;
     const response = game.click();
 
@@ -25,8 +27,15 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
           room.setGameState(GameStateType.Animation);
           room.startTimer(COUNTDOWN.INTRO_MS);
 
+          const { id, nickname } = game.getCurrentTurnPlayer();
+          const value = { id, nickname };
+
           io.to(roomCode).emit('player_exploded', room.getPlayers());
-          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt: room.getTimer()?.getEndAt() });
+          io.to(roomCode).emit(
+            'update_game_state',
+            { ...room.getData(), endAt: room.getTimer()?.getEndAt() },
+            { type: 'ANIMATION_UPDATE', payload: { type: 'ROUND', value: value } },
+          );
           break;
         case 'END_GAME':
           console.log('END_GAME');

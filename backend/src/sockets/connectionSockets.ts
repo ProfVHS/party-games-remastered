@@ -35,8 +35,15 @@ const setMinigame = (io: Server, room: Room) => {
           room.setGameState(GameStateType.Animation);
           room.startTimer(COUNTDOWN.INTRO_MS);
 
+          const { id, nickname } = game.getCurrentTurnPlayer();
+          const value = { id, nickname };
+
           io.to(roomCode).emit('player_exploded', room.getPlayers());
-          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt: room.getTimer()?.getEndAt() });
+          io.to(roomCode).emit(
+            'update_game_state',
+            { ...room.getData(), endAt: room.getTimer()?.getEndAt() },
+            { type: 'ANIMATION_UPDATE', payload: { type: 'ROUND', value: value } },
+          );
           break;
         case 'END_GAME':
           console.log('END_GAME');
@@ -96,6 +103,15 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
           const minigame = setMinigame(io, room);
 
+          if (room.currentMinigame instanceof RoundBasedMinigame) {
+            type = 'ROUND';
+            value = room.currentMinigame.getRound();
+          } else if (room.currentMinigame instanceof TurnBasedMinigame) {
+            type = 'TURN';
+            const { id, nickname } = room.currentMinigame.getCurrentTurnPlayer();
+            value = { id, nickname };
+          }
+
           if (room.settings.getData().isTutorialsEnabled) {
             room.setGameState(GameStateType.Tutorial);
             room.startTimer(COUNTDOWN.TUTORIAL_MS);
@@ -113,14 +129,6 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
           endAt = room.getTimer()?.getEndAt() ?? 0;
           duration = room.currentMinigame?.getCountdownDuration();
-
-          if (room.currentMinigame instanceof RoundBasedMinigame) {
-            value = room.currentMinigame.getRound();
-            type = 'ROUND';
-          } else if (room.currentMinigame instanceof TurnBasedMinigame) {
-            value = null;
-            type = 'TURN';
-          }
 
           io.to(roomCode).emit('got_players', room.getPlayers());
           io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value, duration } });
@@ -144,20 +152,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
           const gameEndAt = room.currentMinigame?.getTimer().getEndAt();
 
-          if (room.currentMinigame instanceof RoundBasedMinigame) {
-            value = null;
-            type = 'ROUND';
-          } else if (room.currentMinigame instanceof TurnBasedMinigame) {
-            const { id, nickname } = room.currentMinigame.getCurrentTurnPlayer();
-            value = { id, nickname };
-            type = 'TURN';
-          }
-
-          io.to(roomCode).emit(
-            'update_game_state',
-            { roomCode: room.getData().roomCode, gameState: room.getData().gameState, endAt: gameEndAt },
-            { type: 'ANIMATION_UPDATE', payload: { type, value } },
-          );
+          io.to(roomCode).emit('update_game_state', { roomCode: room.getData().roomCode, gameState: room.getData().gameState, endAt: gameEndAt });
           break;
 
         case GameStateType.Minigame:
@@ -191,13 +186,13 @@ export const handleConnection = (io: Server, socket: Socket) => {
             duration = room.currentMinigame?.getCountdownDuration();
 
             if (room.currentMinigame instanceof RoundBasedMinigame) {
-              value = room.currentMinigame.getRound();
               type = 'ROUND';
+              value = room.currentMinigame.getRound();
             } else if (room.currentMinigame instanceof TurnBasedMinigame) {
-              value = null;
               type = 'TURN';
+              const { id, nickname } = room.currentMinigame.getCurrentTurnPlayer();
+              value = { id, nickname };
             }
-
             io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value, duration } });
           }
 

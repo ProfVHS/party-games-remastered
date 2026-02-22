@@ -16,7 +16,7 @@ export class Room {
   private gameState: GameStateType;
 
   private timer: Timer | null;
-  private timerOnEnd: (room: Room, state: GameStateType) => void;
+  private readonly timerOnEnd: (room: Room, state: GameStateType) => void;
 
   constructor(roomCode: string, timerOnEnd: (room: Room, state: GameStateType) => void) {
     this.roomCode = roomCode;

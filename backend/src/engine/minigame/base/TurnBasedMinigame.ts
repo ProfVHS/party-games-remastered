@@ -12,7 +12,9 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
     });
 
     this.onTimeout = onTimeout;
-    this.currentTurn = 0;
+
+    const playerCount = this.getPlayers().filter((p) => p.isAlive()).length;
+    this.currentTurn = Math.floor(Math.random() * playerCount);
   }
 
   public getCurrentTurnPlayer() {
@@ -28,6 +30,9 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
 
       if (potentialPlayer.isAlive() && !potentialPlayer.isDisconnected()) {
         this.currentTurn = nextTurn;
+
+        this.timer.reset();
+
         return { id: nextTurn, player_id: potentialPlayer.id, nickname: potentialPlayer.nickname };
       }
     }
@@ -35,10 +40,7 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
     throw new Error('No suitable player found to change turn.');
   }
 
-  protected beforeStart() {
-    const playerCount = this.getPlayers().filter((p) => p.isAlive()).length;
-    this.currentTurn = Math.floor(Math.random() * playerCount);
-  }
+  protected beforeStart() {}
 
   protected abstract onNextTurn(): void;
 

@@ -3,7 +3,7 @@ import { RandomScoreBoxType } from '@frontend-types/RandomScoreBoxType.ts';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { socket } from '@socket';
 import { useGameStore } from '@stores/gameStore.ts';
-import { PlayerType, TurnType } from '@shared/types';
+import { GameStateType, PlayerType, TurnType } from '@shared/types';
 import { useRoomStore } from '@stores/roomStore.ts';
 
 type GameState = {
@@ -23,6 +23,7 @@ export const useClickTheBombSocket = () => {
   const [scoreData, setScoreData] = useState<RandomScoreBoxType>({ id: 0, score: 0 });
   const [exploded, setExploded] = useState<boolean>(false);
 
+  const roomData = useRoomStore((state) => state.roomData);
   const isMyTurn = useGameStore((state) => state.isMyTurn);
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
   const setTurn = useGameStore((state) => state.setTurn);
@@ -75,7 +76,7 @@ export const useClickTheBombSocket = () => {
   };
 
   const bombClick = () => {
-    if (loading || !isMyTurn || !currentPlayer?.isAlive) return;
+    if (loading || !isMyTurn || !currentPlayer?.isAlive || !roomData || roomData.gameState !== GameStateType.Minigame) return;
 
     setLoading(true);
     socket.emit('bomb_click');
