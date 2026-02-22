@@ -26,6 +26,13 @@ export const validationMiddleware = (socket: Socket) => {
         return;
       }
 
+      const hostValidationEvents = ['update_room_settings'];
+
+      if (hostValidationEvents.includes(eventName) && !player.isHost()) {
+        console.log('Denied permission, you are not a host');
+        return;
+      }
+
       next();
     } catch (err: unknown) {
       next(err instanceof Error ? err : new Error('Unknown error'));

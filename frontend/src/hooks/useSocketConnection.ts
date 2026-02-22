@@ -14,18 +14,18 @@ export const useSocketConnection = () => {
   const setRoomSettings = useRoomStore((state) => state.setRoomSettings);
 
   useEffect(() => {
-    const storageRoomCode = localStorage.getItem('roomCode');
-    const storagePlayerId = localStorage.getItem('id');
+    const roomCode = localStorage.getItem('roomCode');
+    const playerId = localStorage.getItem('id');
 
-    if (!storageRoomCode || !storagePlayerId) {
+    if (!roomCode || !playerId) {
       toast.warning({ message: 'Error with storage variables', duration: 3 });
       navigate('/');
       return;
     }
 
-    socket.emit('sync_player_session', storageRoomCode, storagePlayerId, (response: ReturnDataType) => {
+    socket.emit('sync_player_session', roomCode, playerId, (response: ReturnDataType) => {
       if (response.success && socket.id) {
-        setSessionVariables(storageRoomCode, socket.id);
+        setSessionVariables(roomCode, socket.id);
         setSessionData(response.payload.roomData);
         setRoomSettings(response.payload.settings);
       } else {

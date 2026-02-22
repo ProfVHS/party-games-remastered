@@ -6,7 +6,7 @@ import { RoundBaseTimeoutState } from '@backend-types';
 export abstract class RoundBasedMinigame extends BaseMinigame {
   protected round: number = 1;
   private readonly maxRounds: number;
-  private roundSummaryTimer: Timer;
+  private readonly roundSummaryTimer: Timer;
   private readonly onTimeout: (state: RoundBaseTimeoutState) => void;
 
   protected constructor(
@@ -56,13 +56,21 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     this.onNextRound(this.round);
   }
 
-  public abstract getGameData(): void;
-
   public getRound() {
     return this.round;
   }
 
-  abstract onNextRound(round: number): void;
+  protected getPlayersWithSelectedItem(itemIndex: number) {
+    return this.getPlayers().filter((player: Player) => player.getSelectedItem() === itemIndex);
+  }
+
+  protected getPlayersWithoutSelectedItem() {
+    return this.getPlayers().filter((player: Player) => !player.getSelectedItem());
+  }
 
   protected beforeStart() {}
+
+  protected abstract onNextRound(round: number): void;
+
+  public abstract getGameData(): void;
 }

@@ -1,9 +1,10 @@
-.lobby-page{
+.lobby-page {
   width: 100vw;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  &__content{
+
+  &__content {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,7 +14,7 @@
     box-sizing: border-box;
   }
 
-  &__players{
+  &__players {
     display: grid;
     justify-items: start;
     align-items: center;
@@ -28,11 +29,11 @@
   @media (max-width: 1200px) {
     flex-direction: column;
 
-    &__content{
+    &__content {
       width: 100%;
     }
 
-    &__players{
+    &__players {
       justify-items: center;
       width: 100%;
       grid-template-columns: repeat(4, 1fr);

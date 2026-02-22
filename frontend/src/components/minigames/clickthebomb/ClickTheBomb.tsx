@@ -11,9 +11,12 @@ import { usePlayersStore } from '@stores/playersStore.ts';
 import { useGameStore } from '@stores/gameStore.ts';
 import { memo } from 'react';
 import { ClassNames } from '@utils';
+import { useRoomStore } from '@stores/roomStore.ts';
+import { GameStateType } from '@shared/types';
 
 export const ClickTheBomb = () => {
   const { bombClick, nextTurn, gameState, canSkipTurn, exploded, scoreData } = useClickTheBombSocket();
+  const roomData = useRoomStore((state) => state.roomData);
   const currentTurn = useGameStore((state) => state.currentTurn);
   const isMyTurn = useGameStore((state) => state.isMyTurn);
   const currentPlayer = usePlayersStore((state) => state.currentPlayer);
@@ -29,7 +32,7 @@ export const ClickTheBomb = () => {
         </div>
         <div
           className={ClassNames('click-the-bomb__bomb', {
-            lock: !isMyTurn || !currentPlayer?.isAlive,
+            lock: !isMyTurn || !currentPlayer?.isAlive || !roomData || roomData.gameState !== GameStateType.Minigame,
             active: isMyTurn && currentPlayer?.isAlive,
           })}
           onClick={bombClick}
