@@ -62,6 +62,10 @@ export const useRoomSocket = () => {
     updateGameState(response.gameState);
     updateEndAt(response.endAt);
 
+    if (response.gameState === GameStateType.Leaderboard) {
+      setTurn(null);
+    }
+
     switch (response.event) {
       case 'MINIGAME_UPDATE':
         setMinigame(response.payload.minigame);
