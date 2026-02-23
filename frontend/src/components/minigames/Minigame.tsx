@@ -20,7 +20,7 @@ export const Minigame = ({ minigameName }: MinigameProps) => {
         {minigameName == MinigameNamesEnum.CARDS && <Cards />}
         {minigameName == MinigameNamesEnum.TRICKY_DIAMONDS && <TrickyDiamonds />}
       </>
-      {roomData?.gameState === GameStateType.Animation && <AnimationOverlay />}
+      {roomData?.gameState === GameStateType.MinigameIntro && <AnimationOverlay />}
       {roomData?.gameState === GameStateType.Tutorial && <Tutorial minigameName={minigameName} />}
     </div>
   );

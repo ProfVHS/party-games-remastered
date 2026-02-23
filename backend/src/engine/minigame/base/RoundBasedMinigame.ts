@@ -65,7 +65,7 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
   }
 
   protected getPlayersWithoutSelectedItem() {
-    return this.getPlayers().filter((player: Player) => !player.getSelectedItem());
+    return this.getPlayers().filter((player: Player) => player.getSelectedItem() === null);
   }
 
   protected beforeStart() {}
@@ -73,4 +73,6 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
   protected abstract onNextRound(round: number): void;
 
   public abstract getGameData(): void;
+
+  public abstract getGameConfig(): number[];
 }

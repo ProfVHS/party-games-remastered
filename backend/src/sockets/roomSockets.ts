@@ -25,12 +25,10 @@ export const handleRoom = (io: Server, socket: Socket) => {
       if (!room) return { success: false, message: 'Room not found!' };
       room.getTimer()?.clear();
 
-      room.setGameState(GameStateType.Animation);
-      room.startTimer(COUNTDOWN.ANIMATION_MS);
+      room.setGameState(GameStateType.MinigameIntro);
+      room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
 
-      const endAt = room.getTimer()?.getEndAt();
-
-      io.to(socket.data.roomCode).emit('update_game_state', { ...room.getData(), endAt });
+      io.to(socket.data.roomCode).emit('update_game_state', { gameState: room.getGameState(), endAt: room.getTimer()?.getEndAt() });
     } else {
       io.to(socket.data.roomCode).emit('tutorial_ready_status', readyPlayersLength);
     }

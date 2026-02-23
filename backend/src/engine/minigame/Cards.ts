@@ -64,4 +64,8 @@ export class Cards extends RoundBasedMinigame {
   public getCountdownDuration(): number {
     return COUNTDOWN_MS;
   }
+
+  public getGameConfig(): number[] {
+    return [];
+  }
 }

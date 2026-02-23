@@ -6,6 +6,7 @@ import { Button } from '@components/ui/button/Button.tsx';
 
 import './MinigameItem.scss';
 import { MinigameEntryType } from '@shared/types/RoomSettingsType.ts';
+import { MinigameItemNames } from '@frontend-types/MinigameItemNames.ts';
 
 type MinigameItemProps = {
   minigame: MinigameEntryType;
@@ -24,7 +25,7 @@ export const MinigameItem = ({ minigame, type, onClick, onDrag, isHost }: Miniga
         {minigame.name === MinigameNamesEnum.TRICKY_DIAMONDS && <Icon icon="TrickyDiamonds" />}
       </div>
       <div className="minigame-item__content">
-        <span>{minigame.name}</span>
+        <span>{MinigameItemNames[minigame.name]}</span>
         {isHost && (
           <Button onClick={() => onClick && onClick(minigame)} variant="round" color={{ remove: type === 'remove' }} size="small">
             {type}

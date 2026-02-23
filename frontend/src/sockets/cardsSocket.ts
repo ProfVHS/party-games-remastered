@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { socket } from '@socket';
-import { CARDS_GAME_STATUS, CardsGameStatus, PlayerType } from '@shared/types';
+import { CARDS_GAME_STATUS, CardsGameStatus, GameStateType, PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 
@@ -12,6 +12,7 @@ export const useCardsSocket = () => {
   const [flipCards, setFlipCards] = useState<boolean>(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
+  const updateGameState = useRoomStore((state) => state.updateGameState);
   const updateEndAt = useRoomStore((state) => state.updateEndAt);
   const roomData = useRoomStore((state) => state.roomData);
 
@@ -41,7 +42,8 @@ export const useCardsSocket = () => {
     return () => clearTimeout(timer);
   }, [roomData]);
 
-  const handleRoundEnd = (endAt: number, players: PlayerType[], shuffledCards: number[]) => {
+  const handleRoundEnd = (gameState: GameStateType, endAt: number, players: PlayerType[], shuffledCards: number[]) => {
+    updateGameState(gameState);
     setGameStatus(CARDS_GAME_STATUS.REVEAL);
     setFlipCards(true);
     setCards(shuffledCards);

@@ -8,9 +8,11 @@ type TurnStoreProps = {
   currentTurn: TurnType | null;
   durationRoundOrTurn: number;
   isMyTurn: boolean;
+  config: number[] | null;
+  setConfig: (config: number[] | null) => void;
   setType: (type: 'ROUND' | 'TURN' | null) => void;
   setRound: (round: number) => void;
-  setTurn: (turn: TurnType) => void;
+  setTurn: (turn: TurnType | null) => void;
   setDurationRoundOrTurn: (newDuration: number) => void;
 };
 
@@ -19,10 +21,12 @@ export const useGameStore = create<TurnStoreProps>((set) => ({
   currentRound: null,
   currentTurn: null,
   durationRoundOrTurn: 0,
+  config: [],
   isMyTurn: false,
+  setConfig: (config: number[] | null) => set({ config }),
   setType: (type: 'ROUND' | 'TURN' | null) => set({ type }),
   setRound: (round: number) => set({ currentRound: round }),
-  setTurn: (nextTurn: TurnType) => {
+  setTurn: (nextTurn: TurnType | null) => {
     const currentPlayer = usePlayersStore.getState().currentPlayer;
     const isMyTurn = nextTurn?.id === currentPlayer?.id;
 

@@ -22,8 +22,6 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
   }
 
   public nextTurn() {
-    this.onNextTurn();
-
     for (let i = 1; i <= this.players.size; i++) {
       const nextTurn = ((this.currentTurn ?? 0) + i) % this.players.size;
       const potentialPlayer = this.getPlayers()[nextTurn];
@@ -42,7 +40,7 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
 
   protected beforeStart() {}
 
-  protected abstract onNextTurn(): void;
+  public abstract onNextTurn(): void;
 
   protected abstract onTimerEnd(): void;
 }

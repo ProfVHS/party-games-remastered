@@ -24,23 +24,26 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
           break;
         case 'NEXT_TURN':
           console.log('NEXT_TURN');
-          room.setGameState(GameStateType.Animation);
+          room.setGameState(GameStateType.MinigameIntro);
           room.startTimer(COUNTDOWN.INTRO_MS);
 
           const { id, nickname } = game.getCurrentTurnPlayer();
           const value = { id, nickname };
 
           io.to(roomCode).emit('player_exploded', room.getPlayers());
-          io.to(roomCode).emit(
-            'update_game_state',
-            { ...room.getData(), endAt: room.getTimer()?.getEndAt() },
-            { type: 'ANIMATION_UPDATE', payload: { type: 'ROUND', value: value } },
-          );
+          io.to(roomCode).emit('update_game_state', {
+            gameState: room.getGameState(),
+            endAt: room.getTimer()?.getEndAt(),
+            event: 'ANIMATION_UPDATE',
+            payload: { type: 'TURN', value: value },
+          });
           break;
         case 'END_GAME':
           console.log('END_GAME');
+          room.setGameState(GameStateType.MinigameOutro);
+          room.startTimer(COUNTDOWN.MINIGAME_CLOSE_DELAY_MS);
+
           io.to(roomCode).emit('player_exploded', room.getPlayers());
-          room.startTimer(COUNTDOWN.MINIGAME_MS);
           break;
       }
     }
