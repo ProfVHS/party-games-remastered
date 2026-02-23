@@ -17,7 +17,7 @@ export const AnimationOverlay = () => {
   const endAt = roomData?.endAt ?? null;
 
   useEffect(() => {
-    if (!endAt || gameState !== GameStateType.Animation) {
+    if (!endAt || gameState !== GameStateType.MinigameIntro) {
       setVisible(false);
       return;
     }

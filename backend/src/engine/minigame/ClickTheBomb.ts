@@ -71,7 +71,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     return { clickCount, streak, prizePool, prizePoolIncrease: POINTS[streak - 1] ?? POINTS[POINTS.length - 1] };
   }
 
-  onNextTurn() {
+  public onNextTurn() {
     this.grantPrizePool();
   }
 

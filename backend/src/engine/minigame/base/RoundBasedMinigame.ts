@@ -65,7 +65,7 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
   }
 
   protected getPlayersWithoutSelectedItem() {
-    return this.getPlayers().filter((player: Player) => !player.getSelectedItem());
+    return this.getPlayers().filter((player: Player) => player.getSelectedItem() === null);
   }
 
   protected beforeStart() {}

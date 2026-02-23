@@ -19,7 +19,10 @@ export const RoomPage = () => {
   const isMinigame =
     roomData &&
     minigame &&
-    (roomData.gameState === GameStateType.Minigame || roomData.gameState === GameStateType.Animation || roomData.gameState === GameStateType.Tutorial);
+    (roomData.gameState === GameStateType.Minigame ||
+      roomData.gameState === GameStateType.MinigameIntro ||
+      roomData.gameState === GameStateType.MinigameOutro ||
+      roomData.gameState === GameStateType.Tutorial);
 
   const isLeaderboard = roomData && roomData.gameState === GameStateType.Leaderboard;
   const isEndGame = roomData && roomData.gameState === GameStateType.Finished;
@@ -31,7 +34,7 @@ export const RoomPage = () => {
       {roomData.gameState === GameStateType.Lobby && <LobbyPage />}
       {isStarted && (
         <RoomLayout players={players}>
-          {isMinigame && <Minigame key={minigame!.id} minigameName={minigame!.name} />}
+          {isMinigame && <Minigame key={minigame.id} minigameName={minigame.name} />}
           {isLeaderboard && <Scoreboard />}
         </RoomLayout>
       )}
