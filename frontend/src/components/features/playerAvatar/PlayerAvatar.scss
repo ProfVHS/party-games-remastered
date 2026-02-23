@@ -54,16 +54,19 @@
 
   &__avatar {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
+    justify-content: center;
+
     background: url('@assets/textures/character-bg.svg');
     background-size: cover;
+
     width: 175px;
     height: 125px;
 
+    overflow: hidden;
+
     svg {
-      overflow: hidden;
-      padding-top: 20px;
-      box-sizing: border-box;
+      scale: 0.9;
     }
 
     &--lobby {
