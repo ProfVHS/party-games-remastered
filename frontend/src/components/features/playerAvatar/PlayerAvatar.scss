@@ -60,6 +60,12 @@
     width: 175px;
     height: 125px;
 
+    svg {
+      overflow: hidden;
+      padding-top: 20px;
+      box-sizing: border-box;
+    }
+
     &--lobby {
       cursor: pointer;
     }

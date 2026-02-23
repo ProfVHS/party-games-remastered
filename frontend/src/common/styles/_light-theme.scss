@@ -9,6 +9,7 @@ html[data-theme='light'] {
   --header-color: #{$darkerPrimaryColor};
   --party-games-fill: #fff;
   --cartoon-shadow: 0 4px rgba(0, 0, 0, 0.3);
+  --horizontal-line-color: rgba($darkerPrimaryColor, 0.2);
 
   //== Loading ==//
   --loading-color: #{$darkerPrimaryColor};

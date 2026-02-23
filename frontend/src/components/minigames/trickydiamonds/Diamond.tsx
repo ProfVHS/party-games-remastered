@@ -1,11 +1,11 @@
 import './Diamond.scss';
-import { WinCard } from '@components/minigames/trickydiamonds/WinCard.tsx';
-import { LossCard } from '@components/minigames/trickydiamonds/LossCard.tsx';
 import HighDiamond from '@assets/textures/highDiamond.svg?react';
 import MediumDiamond from '@assets/textures/mediumDiamond.svg?react';
 import LowDiamond from '@assets/textures/lowDiamond.svg?react';
 import { PlayerNicknamesList } from '@components/ui/playerNicknamesList/PlayerNicknamesList.tsx';
 import { ClassNames } from '@utils';
+import { Icon } from '@assets/icon';
+import Trophy from '@assets/textures/trophy.svg?react';
 
 type DiamondPlayers = {
   id: number;
@@ -23,19 +23,26 @@ type DiamondProps = {
 
 export const Diamond = ({ diamond, score, reveal, isSelected, won, onSelect }: DiamondProps) => {
   return (
-    <div className="tricky-diamonds__diamond" onClick={() => onSelect(diamond.id)}>
+    <div className="diamond" onClick={() => onSelect(diamond.id)}>
       {reveal && (
-        <div className={ClassNames('tricky-diamonds__players__list', { won: won, lost: !won })}>
-          {won ? <WinCard score={score} /> : <LossCard />}
-          <PlayerNicknamesList playerList={diamond.players} playerBackground={won ? 'tricky-diamonds--positive' : 'tricky-diamonds--negative'} />
+        <div className={ClassNames('diamond__players', { won: won, lost: !won })}>
+          {won ? (
+            <div className="diamond__trophy">
+              <span className="score">+{score}</span>
+              <Trophy />
+            </div>
+          ) : (
+            <Icon icon="Cross" className="diamond__cross" />
+          )}
+          <PlayerNicknamesList playerList={diamond.players} className={ClassNames('diamond__players-nicknames', { positive: won, negative: !won })} />
         </div>
       )}
-      <span className={ClassNames('tricky-diamonds__diamond__svg', { selected: !reveal && isSelected })}>
+      <span className={ClassNames('diamond__svg', { selected: !reveal && isSelected })}>
         {diamond.id === 0 && <HighDiamond />}
         {diamond.id === 1 && <MediumDiamond />}
         {diamond.id === 2 && <LowDiamond />}
       </span>
-      <span className="tricky-diamonds__diamond__value">+{score}</span>
+      <span className="diamond__value">+{score}</span>
     </div>
   );
 };

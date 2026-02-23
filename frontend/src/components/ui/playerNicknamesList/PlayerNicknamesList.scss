@@ -36,24 +36,21 @@
     border-radius: 0.25rem;
     box-sizing: border-box;
 
-    &--cards--positive {
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.2);
+
+    &--cards-positive {
       color: rgba(255, 255, 255, 0.8);
       background-color: var(--cards-player-positive-bg);
     }
-    &--cards--negative {
+    &--cards-negative {
       color: rgba(255, 255, 255, 0.8);
       background-color: var(--cards-player-negative-bg);
     }
 
-    &--tricky-diamonds--positive {
-      color: rgba(0, 0, 0, 0.8);
-      background-color: #FFE4AF;
-    }
-    &--tricky-diamonds--negative {
+    &--tricky-diamonds-negative {
       color: rgba(255, 255, 255, 0.9);
       background-color: rgba(0, 0, 0, 0.2);
     }
-
-
   }
 }

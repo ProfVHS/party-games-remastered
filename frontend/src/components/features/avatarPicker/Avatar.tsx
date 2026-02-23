@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Icon } from '@assets/icon';
 import HandDrawnCircle from '@assets/textures/hand-drawn-circle.svg?react';
 import { ClassNames } from '@utils';
+import './Avatar.scss';
 
 type AvatarProps = {
   children?: ReactNode;
