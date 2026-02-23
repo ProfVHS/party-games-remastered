@@ -83,7 +83,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
                   gameState: room.getGameState(),
                   endAt: room.getTimer()?.getEndAt(),
                   event: 'ANIMATION_UPDATE',
-                  payload: { type: 'ROUND', value: game.getRound() },
+                  payload: { type: 'ROUND', value: game.getRound(), config: game.getGameConfig() },
                 });
                 break;
               case 'END_GAME':

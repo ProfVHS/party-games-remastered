@@ -73,4 +73,6 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
   protected abstract onNextRound(round: number): void;
 
   public abstract getGameData(): void;
+
+  public abstract getGameConfig(): number[];
 }

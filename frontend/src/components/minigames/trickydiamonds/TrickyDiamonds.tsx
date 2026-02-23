@@ -1,16 +1,13 @@
 import './TrickyDiamonds.scss';
-import { TRICKY_DIAMONDS_RULES } from '@shared/constants/gameRules.ts';
 import { ProgressBar } from '@components/ui/progressBar/ProgressBar.tsx';
 import { Diamond } from '@components/minigames/trickydiamonds/Diamond.tsx';
 import { useTrickyDiamondsSocket } from '@sockets/trickyDiamondsSocket.ts';
 import { useGameStore } from '@stores/gameStore.ts';
 
-const roundsDiamonds = [TRICKY_DIAMONDS_RULES.ROUND_1, TRICKY_DIAMONDS_RULES.ROUND_2, TRICKY_DIAMONDS_RULES.ROUND_3];
-
 export const TrickyDiamonds = () => {
   const { diamonds, reveal, gameStatus, selectedDiamond, handleSelectDiamond } = useTrickyDiamondsSocket();
-  const round = useGameStore((state) => state.currentRound);
   const durationRoundOrTurn = useGameStore((state) => state.durationRoundOrTurn);
+  const config = useGameStore((state) => state.config);
 
   return (
     <div className="tricky-diamonds">
@@ -25,7 +22,7 @@ export const TrickyDiamonds = () => {
               key={index}
               diamond={diamond}
               reveal={reveal}
-              score={roundsDiamonds[round ? round - 1 : 0][diamond.id]}
+              score={config![index]}
               won={diamond.won}
               isSelected={diamond.id === selectedDiamond}
               onSelect={handleSelectDiamond}

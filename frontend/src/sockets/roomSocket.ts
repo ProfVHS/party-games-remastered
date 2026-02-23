@@ -19,6 +19,7 @@ export const useRoomSocket = () => {
   const setRoomSettings = useRoomStore((state) => state.setRoomSettings);
   const setRound = useGameStore((state) => state.setRound);
   const setTurn = useGameStore((state) => state.setTurn);
+  const setConfig = useGameStore((state) => state.setConfig);
   const setGameType = useGameStore((state) => state.setType);
   const setDurationRoundOrTurn = useGameStore((state) => state.setDurationRoundOrTurn);
   const navigate = useNavigate();
@@ -74,6 +75,7 @@ export const useRoomSocket = () => {
 
         if (response.payload.type === 'ROUND' && response.payload.value) {
           setRound(response.payload.value);
+          setConfig(response.payload.config);
         } else if (response.payload.type === 'TURN' && response.payload.value) {
           setTurn(response.payload.value);
         }
@@ -81,6 +83,7 @@ export const useRoomSocket = () => {
       case 'ANIMATION_UPDATE':
         if (response.payload.type === 'ROUND' && response.payload.value) {
           setRound(response.payload.value);
+          setConfig(response.payload.config);
         } else if (response.payload.type === 'TURN' && response.payload.value) {
           setTurn(response.payload.value);
         }

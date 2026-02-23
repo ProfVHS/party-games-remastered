@@ -35,9 +35,9 @@ export type GameEvent =
     | { event: 'ANIMATION_UPDATE'; payload: AnimationPayload}
 
 export type MinigamePayload =
-    | { type: 'ROUND'; minigame: MinigameEntryType; value: number; durationMs: number }
+    | { type: 'ROUND'; minigame: MinigameEntryType; value: number; durationMs: number, config: number[] }
     | { type: 'TURN'; minigame: MinigameEntryType; value: TurnType; durationMs: number };
 
 type AnimationPayload =
-    | { type: 'ROUND'; value: number; }
+    | { type: 'ROUND'; value: number; config: number[] }
     | { type: 'TURN'; value: TurnType;};

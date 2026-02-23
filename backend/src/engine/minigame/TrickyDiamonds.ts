@@ -80,4 +80,8 @@ export class TrickyDiamonds extends RoundBasedMinigame {
   public getCountdownDuration(): number {
     return COUNTDOWN_MS;
   }
+
+  public getGameConfig(): number[] {
+    return ROUND_DIAMONDS[this.round];
+  }
 }

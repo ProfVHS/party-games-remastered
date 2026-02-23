@@ -82,6 +82,7 @@ class Room {
         minigame,
         value: this.currentMinigame.getRound(),
         durationMs,
+        config: this.currentMinigame.getGameConfig(),
       };
     }
 
