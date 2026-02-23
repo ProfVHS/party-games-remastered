@@ -45,7 +45,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
               case 'NEXT_TURN':
                 console.log('NEXT_TURN');
                 room.setGameState(GameStateType.MinigameIntro);
-                room.startTimer(COUNTDOWN.INTRO_MS);
+                room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
 
                 const { id, nickname } = game.getCurrentTurnPlayer();
 
@@ -77,7 +77,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
               case 'NEXT_ROUND':
                 console.log('NEXT_ROUND');
                 room.setGameState(GameStateType.MinigameIntro);
-                room.startTimer(COUNTDOWN.INTRO_MS);
+                room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
 
                 io.to(roomCode).emit('update_game_state', {
                   gameState: room.getGameState(),

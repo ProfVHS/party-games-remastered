@@ -20,9 +20,9 @@ export const ScoreboardItem = ({ index, nickname, score, gameBoard }: Scoreboard
   }, [gameBoard]);
 
   return (
-    <div className={ClassNames('scoreboard__player', { visible: visible })}>
-      <div className="scoreboard__player__nickname">{displayNickname}</div>
-      <div className="scoreboard__player__score">{displayScore}</div>
+    <div className={ClassNames('scoreboard-item', { visible: visible })}>
+      <div className="scoreboard-item__nickname">{displayNickname}</div>
+      <div className="scoreboard-item__score">{displayScore}</div>
     </div>
   );
 };

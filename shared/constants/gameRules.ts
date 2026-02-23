@@ -2,7 +2,6 @@ export const MIN_PLAYERS_TO_START = 1;
 export const MAX_PLAYERS = 8;
 
 export const COUNTDOWN = {
-    INTRO_MS: 2000,
     LOBBY_MS: 3000,
     MINIGAME_INTRO_MS: 3000,
     TUTORIAL_MS: 45000,

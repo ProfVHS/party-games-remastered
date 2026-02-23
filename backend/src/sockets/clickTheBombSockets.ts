@@ -25,7 +25,7 @@ export const handleClickTheBomb = (io: Server, socket: Socket) => {
         case 'NEXT_TURN':
           console.log('NEXT_TURN');
           room.setGameState(GameStateType.MinigameIntro);
-          room.startTimer(COUNTDOWN.INTRO_MS);
+          room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
 
           const { id, nickname } = game.getCurrentTurnPlayer();
           const value = { id, nickname };
