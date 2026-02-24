@@ -1,212 +1,106 @@
 import { Server, Socket } from 'socket.io';
 import { Player } from '@engine-core/Player';
 import { RoomManager } from '@engine-managers/RoomManager';
-import { GameStateType } from '@shared/types';
-import { Room } from '@engine/core/room/Room';
+import { GameStateResponse, GameStateType, JOIN_ROOM_STATUS } from '@shared/types';
+import Room from '@engine/core/room/Room';
 import { TurnBasedMinigame } from '@minigame-base/TurnBasedMinigame';
 import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
 import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { getMinigame } from '@engine/managers/MinigameManager';
-import { GAME_STATE_DURATION } from '@engine/core';
-import { COUNTDOWN_INTRO_MS, MAX_PLAYERS } from '@shared/constants/gameRules';
-
-const setMinigame = (io: Server, room: Room) => {
-  const currentMinigame = room.settings.getNextMinigame();
-  const roomCode = room.getData().roomCode;
-
-  console.log('currentMinigame', currentMinigame);
-
-  if (!currentMinigame) {
-    console.log('Undefined minigame');
-    return;
-  }
-
-  const currentMinigameClass = getMinigame(currentMinigame.name);
-  room.currentMinigame = new currentMinigameClass(room.players, (response: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
-    const game = room.currentMinigame;
-
-    if (!game || !response.success) {
-      return;
-    }
-
-    if (game instanceof TurnBasedMinigame) {
-      switch (response.state) {
-        case 'NEXT_TURN':
-          console.log('NEXT_TURN');
-          room.setGameState(GameStateType.Animation);
-          room.startTimer(COUNTDOWN_INTRO_MS);
-
-          io.to(roomCode).emit('player_exploded', room.getPlayers());
-          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt: room.getTimer()?.getEndAt() });
-          break;
-        case 'END_GAME':
-          console.log('END_GAME');
-          io.to(roomCode).emit('player_exploded', room.getPlayers());
-          room.startTimer(GAME_STATE_DURATION.MINIGAME);
-          break;
-      }
-    } else if (game instanceof RoundBasedMinigame) {
-      switch (response.state) {
-        case 'SHOW_RESULT':
-          console.log('SHOW_RESULT');
-          io.to(roomCode).emit('round_end', game.getSummaryTimer().getEndAt(), room.getPlayers(), game.getGameData());
-          break;
-        case 'NEXT_ROUND':
-          console.log('NEXT_ROUND');
-          room.setGameState(GameStateType.Animation);
-          room.startTimer(COUNTDOWN_INTRO_MS);
-
-          io.to(roomCode).emit(
-            'update_game_state',
-            { ...room.getData(), endAt: room.getTimer()?.getEndAt() },
-            { type: 'ANIMATION_UPDATE', payload: { type: 'ROUND', value: game.getRound() } },
-          );
-          break;
-        case 'END_GAME':
-          console.log('END_GAME');
-
-          room.startTimer(GAME_STATE_DURATION.MINIGAME);
-          break;
-      }
-    }
-  });
-
-  return currentMinigame;
-};
+import { COUNTDOWN, MAX_PLAYERS } from '@shared/constants/gameRules';
 
 export const handleConnection = (io: Server, socket: Socket) => {
   socket.on('create_room', (roomCode: string, nickname: string) => {
     let room = RoomManager.getRoom(roomCode);
     if (room) return { success: false, message: `Room ${roomCode} already exists!` };
 
-    //TODO: merge Lobby and Leaderboard
-    //TODO: W lobby, animation i leaderboard są dziwne if'y, ponieważ currentTurn można pobrać tylko po zaczęciu gry zeby był on aktualny
-    // można np. zmienić logike w kalsachl, np curretnTurn jest tworziony w konstruktorze a nastepnie zmieniany po rundzie?
-    // Teraz gracze otrzymuja turn jak zaczyna sie grać dlatego nie można w animacji pokazać kogo jest tura
-    room = RoomManager.createRoom(roomCode, (room: Room, state: GameStateType) => {
-      let endAt = 0;
-      let type = null;
-      let value = null;
-
-      switch (state) {
-        case GameStateType.Lobby:
-          console.log('Lobby END');
-
-          room.setAllReady(false);
-
-          const minigame = setMinigame(io, room);
-
-          if (room.settings.getData().isTutorialsEnabled) {
-            room.setGameState(GameStateType.Tutorial);
-            room.startTimer(GAME_STATE_DURATION.TUTORIAL);
-
-            endAt = room.getTimer()?.getEndAt() ?? 0;
-
-            io.to(roomCode).emit('got_players', room.getPlayers());
-            io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
-            return;
-          }
-
-          room.setGameState(GameStateType.Animation);
-          room.startTimer(GAME_STATE_DURATION.ANIMATION);
-
-          endAt = room.getTimer()?.getEndAt() ?? 0;
-
-          if (room.currentMinigame instanceof RoundBasedMinigame) {
-            value = room.currentMinigame.getRound();
-            type = 'ROUND';
-          } else if (room.currentMinigame instanceof TurnBasedMinigame) {
-            value = null;
-            type = 'TURN';
-          }
-
-          io.to(roomCode).emit('got_players', room.getPlayers());
-          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
-          break;
-
-        case GameStateType.Tutorial:
-          console.log('Tutorial END');
-          room.setGameState(GameStateType.Animation);
-          room.startTimer(GAME_STATE_DURATION.ANIMATION);
-
-          endAt = room.getTimer()?.getEndAt() ?? 0;
-
-          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt });
-          break;
-
-        case GameStateType.Animation:
-          console.log('Animation END');
-
-          room.setGameState(GameStateType.Minigame);
-          room.currentMinigame?.start();
-
-          const gameEndAt = room.currentMinigame?.getTimer().getEndAt();
-
-          if (room.currentMinigame instanceof RoundBasedMinigame) {
-            value = null;
-            type = 'ROUND';
-          } else if (room.currentMinigame instanceof TurnBasedMinigame) {
-            const { id, nickname } = room.currentMinigame.getCurrentTurnPlayer();
-            value = { id, nickname };
-            type = 'TURN';
-          }
-
-          io.to(roomCode).emit(
-            'update_game_state',
-            { roomCode: room.getData().roomCode, gameState: room.getData().gameState, endAt: gameEndAt },
-            { type: 'ANIMATION_UPDATE', payload: { type, value } },
-          );
-          break;
-
-        case GameStateType.Minigame:
-          console.log('Minigame END');
-
-          room.setGameState(GameStateType.Leaderboard);
-          room.startTimer(GAME_STATE_DURATION.LEADERBOARD);
-
-          endAt = room.getTimer()?.getEndAt() ?? 0;
-
-          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'PLAYERS_UPDATE', payload: room.getPlayers() });
-          break;
-
-        case GameStateType.Leaderboard:
-          if (room.settings.isLastMinigame()) {
-            room.setGameState(GameStateType.Finished);
-            room.startTimer(GAME_STATE_DURATION.FINISHED);
-
-            endAt = room.getTimer()?.getEndAt() ?? 0;
-
-            io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'PLAYERS_UPDATE', payload: room.getPlayers() });
-          } else {
-            console.log('Leaderboard END');
-
-            const minigame = setMinigame(io, room);
-
-            room.setGameState(GameStateType.Animation);
-            room.startTimer(GAME_STATE_DURATION.ANIMATION);
-
-            endAt = room.getTimer()?.getEndAt() ?? 0;
-
-            if (room.currentMinigame instanceof RoundBasedMinigame) {
-              value = room.currentMinigame.getRound();
-              type = 'ROUND';
-            } else if (room.currentMinigame instanceof TurnBasedMinigame) {
-              value = null;
-              type = 'TURN';
-            }
-
-            io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt }, { type: 'MINIGAME_UPDATE', payload: { type, minigame, value } });
-          }
-
-          break;
-
-        case GameStateType.Finished:
-          console.log('Finished END');
-          RoomManager.deleteRoom(roomCode);
+    room = RoomManager.createRoom(
+      roomCode,
+      (room: Room, finishedGameState: GameStateType, response: GameStateResponse) => {
+        if (finishedGameState === GameStateType.Finished) {
           io.to(roomCode).emit('end_game');
-          break;
-      }
-    });
+          return;
+        }
+
+        if (finishedGameState === GameStateType.Lobby) io.to(roomCode).emit('got_players', room.getPlayers());
+
+        io.to(roomCode).emit('update_game_state', response);
+      },
+      (room: Room) => {
+        const currentMinigame = room.settings.getNextMinigame();
+        const roomCode = room.getData().roomCode;
+
+        if (!currentMinigame) {
+          throw new Error('Missing currentMinigame');
+        }
+
+        const currentMinigameClass = getMinigame(currentMinigame.name);
+        room.currentMinigame = new currentMinigameClass(room.players, (response: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
+          const game = room.currentMinigame;
+
+          if (!game || !response.success) return;
+
+          if (game instanceof TurnBasedMinigame) {
+            switch (response.state) {
+              case 'NEXT_TURN':
+                console.log('NEXT_TURN');
+                room.setGameState(GameStateType.MinigameIntro);
+                room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
+
+                const { id, nickname } = game.getCurrentTurnPlayer();
+
+                io.to(roomCode).emit('player_exploded', room.getPlayers());
+                io.to(roomCode).emit('update_game_state', {
+                  gameState: room.getGameState(),
+                  endAt: room.getTimer()?.getEndAt(),
+                  event: 'ANIMATION_UPDATE',
+                  payload: { type: 'TURN', value: { id, nickname } },
+                });
+                break;
+              case 'END_GAME':
+                console.log('END_GAME');
+                room.setGameState(GameStateType.MinigameOutro);
+                room.startTimer(COUNTDOWN.MINIGAME_CLOSE_DELAY_MS);
+
+                io.to(roomCode).emit('player_exploded', room.getPlayers());
+                io.to(roomCode).emit('update_game_state', { gameState: room.getGameState(), endAt: room.getTimer()?.getEndAt() });
+                break;
+            }
+          } else if (game instanceof RoundBasedMinigame) {
+            switch (response.state) {
+              case 'SHOW_RESULT':
+                console.log('SHOW_RESULT');
+                room.setGameState(GameStateType.MinigameOutro);
+
+                io.to(roomCode).emit('round_end', room.getGameState(), game.getSummaryTimer().getEndAt(), room.getPlayers(), game.getGameData());
+                break;
+              case 'NEXT_ROUND':
+                console.log('NEXT_ROUND');
+                room.setGameState(GameStateType.MinigameIntro);
+                room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
+
+                io.to(roomCode).emit('update_game_state', {
+                  gameState: room.getGameState(),
+                  endAt: room.getTimer()?.getEndAt(),
+                  event: 'ANIMATION_UPDATE',
+                  payload: { type: 'ROUND', value: game.getRound(), config: game.getGameConfig() },
+                });
+                break;
+              case 'END_GAME':
+                console.log('END_GAME');
+                room.setGameState(GameStateType.MinigameOutro);
+                room.startTimer(COUNTDOWN.MINIGAME_CLOSE_DELAY_MS);
+
+                io.to(roomCode).emit('update_game_state', { gameState: room.getGameState(), endAt: room.getTimer()?.getEndAt() });
+                break;
+            }
+          }
+        });
+
+        return currentMinigame;
+      },
+    );
+
     const player = new Player(socket.id, nickname, true);
     const result = room.addPlayer(player);
 
@@ -219,10 +113,10 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
   socket.on('join_room', (roomCode: string, nickname: string, storageId: string, callback) => {
     let room = RoomManager.getRoom(roomCode);
-    if (!room) return callback(-1);
-    if (room.getPlayers().length === MAX_PLAYERS) return callback(-2);
-    if (room.getData().gameState !== GameStateType.Lobby) return callback(-3);
-    if (room.getData().gameState === GameStateType.Lobby && room.getTimer()?.getEndAt()) return callback(-4);
+    if (!room) return callback(JOIN_ROOM_STATUS.ROOM_NOT_FOUND);
+    if (room.getPlayers().length === MAX_PLAYERS) return callback(JOIN_ROOM_STATUS.ROOM_FULL);
+    if (room.getData().gameState !== GameStateType.Lobby || (room.getData().gameState === GameStateType.Lobby && room.getTimer()?.getEndAt()))
+      return callback(JOIN_ROOM_STATUS.ROOM_IN_GAME);
 
     const player = new Player(socket.id, nickname);
     const result = room.addPlayer(player);
@@ -231,7 +125,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
       socket.join(roomCode);
       socket.data.roomCode = roomCode;
       socket.to(roomCode).emit('player_join_toast', nickname);
-      callback(0);
+      callback(JOIN_ROOM_STATUS.SUCCESS);
     }
   });
 

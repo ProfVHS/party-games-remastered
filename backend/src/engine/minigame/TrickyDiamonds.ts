@@ -1,21 +1,24 @@
 import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { Player } from '@engine/core/Player';
 import { RoundBaseTimeoutState } from '@backend-types';
-import { TRICKY_DIAMONDS_RULES } from '@shared/constants/gameRules';
 import { DiamondType } from '@shared/types';
 
 const ROUND_DIAMONDS: Record<number, number[]> = {
-  1: TRICKY_DIAMONDS_RULES.ROUND_1,
-  2: TRICKY_DIAMONDS_RULES.ROUND_2,
-  3: TRICKY_DIAMONDS_RULES.ROUND_3,
+  1: [150, 100, 35],
+  2: [200, 125, 50],
+  3: [250, 150, 75],
 };
+
+const COUNTDOWN_MS = 10000;
+const COUNTDOWN_SUMMARY_MS = 5000;
+const MAX_ROUNDS = 3;
 
 export class TrickyDiamonds extends RoundBasedMinigame {
   private diamonds: number[] | null = null;
   private diamondStats: DiamondType[] | null = null;
 
   constructor(players: Map<string, Player>, onTimeout: (state: RoundBaseTimeoutState) => void) {
-    super(players, TRICKY_DIAMONDS_RULES.COUNTDOWN_MS, TRICKY_DIAMONDS_RULES.COUNTDOWN_SUMMARY_MS, TRICKY_DIAMONDS_RULES.MAX_ROUNDS, onTimeout);
+    super(players, COUNTDOWN_MS, COUNTDOWN_SUMMARY_MS, MAX_ROUNDS, onTimeout);
   }
 
   public getGameData() {
@@ -26,7 +29,7 @@ export class TrickyDiamonds extends RoundBasedMinigame {
     if (!this.diamonds) return;
 
     const players = this.getPlayers();
-    const playersWithoutCard = players.filter((player: Player) => player.getSelectedItem() === -100);
+    const playersWithoutCard = this.getPlayersWithoutSelectedItem();
 
     playersWithoutCard.forEach((player: Player) => {
       player.setSelectedItem(Math.floor(Math.random() * 3));
@@ -58,7 +61,10 @@ export class TrickyDiamonds extends RoundBasedMinigame {
     }
   }
 
-  protected onTimerEnd(): void {}
+  protected onTimerEnd() {
+    this.awardPoints();
+    super.onTimerEnd();
+  }
 
   onNextRound() {
     this.diamonds = ROUND_DIAMONDS[this.round];
@@ -69,10 +75,13 @@ export class TrickyDiamonds extends RoundBasedMinigame {
     this.diamonds = ROUND_DIAMONDS[this.round];
   }
 
-  protected onRoundEnd() {
-    this.awardPoints();
-    super.onRoundEnd();
+  end() {}
+
+  public getCountdownDuration(): number {
+    return COUNTDOWN_MS;
   }
 
-  end() {}
+  public getGameConfig(): number[] {
+    return ROUND_DIAMONDS[this.round];
+  }
 }

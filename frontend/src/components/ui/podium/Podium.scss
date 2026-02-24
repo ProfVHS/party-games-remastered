@@ -11,11 +11,15 @@
   position: relative;
 
   &__avatar {
-    width: 10rem;
-
     position: absolute;
-    top: -7rem;
-    left: -0.5rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    top: -75%;
+    scale: 0.8;
+    width: 10rem;
   }
 
   &__top {

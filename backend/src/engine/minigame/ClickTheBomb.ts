@@ -1,9 +1,10 @@
 import { TurnBasedMinigame } from './base/TurnBasedMinigame';
 import { Player } from '@engine/core/Player';
 import { TurnBaseTimeoutState } from '@backend-types';
-import { CLICK_THE_BOMB_RULES } from '@shared/constants/gameRules';
 
-const POINTS = CLICK_THE_BOMB_RULES.POINTS;
+const COUNTDOWN_MS = 10000;
+const LOSS = 50;
+const POINTS = [15, 17, 20, 23, 26, 30, 35];
 
 export class ClickTheBomb extends TurnBasedMinigame {
   private clickCount: number = 0;
@@ -12,7 +13,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
   private maxClicks: number = 0;
 
   constructor(players: Map<string, Player>, onTurnTimeout: (state: TurnBaseTimeoutState) => void) {
-    super(players, CLICK_THE_BOMB_RULES.COUNTDOWN_MS, onTurnTimeout);
+    super(players, COUNTDOWN_MS, onTurnTimeout);
   }
 
   private setupBomb() {
@@ -42,7 +43,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     const player = this.getCurrentTurnPlayer();
     if (player) {
       player.kill();
-      player.subtractScore(CLICK_THE_BOMB_RULES.LOSS);
+      player.subtractScore(LOSS);
     }
 
     if (this.isLastPlayerStanding()) {
@@ -50,6 +51,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
       return { success: true, state: 'END_GAME' };
     }
 
+    this.nextTurn();
     this.setupBomb();
     this.timer.clear();
     return { success: true, state: 'NEXT_TURN' };
@@ -58,7 +60,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
   public click() {
     this.timer.reset();
 
-    if (this.maxClicks === this.clickCount) return this.explode();
+    if (this.maxClicks <= this.clickCount + 1) return this.explode();
 
     this.incrementCounter();
     return { success: true, state: 'INCREMENTED' };
@@ -66,14 +68,14 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
   public getState() {
     const { clickCount, streak, prizePool } = this;
-    return { clickCount, streak, prizePool };
+    return { clickCount, streak, prizePool, prizePoolIncrease: POINTS[streak - 1] ?? POINTS[POINTS.length - 1] };
   }
 
-  onNextTurn() {
+  public onNextTurn() {
     this.grantPrizePool();
   }
 
-  onTurnEnd() {
+  protected onTimerEnd() {
     const response = this.explode();
 
     this.onTimeout(response as TurnBaseTimeoutState);
@@ -92,5 +94,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
     this.timer.clear();
   }
 
-  protected onTimerEnd() {}
+  public getCountdownDuration(): number {
+    return COUNTDOWN_MS;
+  }
 }

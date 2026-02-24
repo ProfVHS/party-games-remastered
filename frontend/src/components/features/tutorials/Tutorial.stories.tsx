@@ -12,13 +12,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const ClickTheBomb: Story = {
-  args: { minigameName: MinigameNamesEnum.clickTheBomb },
+  args: { minigameName: MinigameNamesEnum.CLICK_THE_BOMB },
 };
 
 export const Cards: Story = {
-  args: { minigameName: MinigameNamesEnum.cards },
+  args: { minigameName: MinigameNamesEnum.CARDS },
 };
 
 export const TrickyDiamonds: Story = {
-  args: { minigameName: MinigameNamesEnum.trickyDiamonds },
+  args: { minigameName: MinigameNamesEnum.TRICKY_DIAMONDS },
 };

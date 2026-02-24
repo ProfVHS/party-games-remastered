@@ -1,5 +1,5 @@
 import { usePlayersStore } from '@stores/playersStore.ts';
-import { ScoreboardItem } from '@components/features/leaderboard/Scoreboard.tsx';
+import { ScoreboardItem } from '@components/features/leaderboard/ScoreboardItem.tsx';
 
 export const GameResults = () => {
   const oldPlayers = usePlayersStore((state) => state.oldPlayers);

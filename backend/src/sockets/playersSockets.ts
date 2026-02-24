@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { RoomManager } from '@engine-managers/RoomManager';
 import { GameStateType } from '@shared/types/GameStateType';
-import { GAME_STATE_DURATION } from '@engine/core';
+import { COUNTDOWN } from '@shared/constants/gameRules';
 
 export const handlePlayers = (io: Server, socket: Socket) => {
   socket.on('sync_player_session', (storageRoomCode: string, storagePlayerId: string, callback) => {
@@ -51,7 +51,7 @@ export const handlePlayers = (io: Server, socket: Socket) => {
     let endAt = null;
 
     if (room.players.size === room.getReadyPlayers().length) {
-      room.startTimer(GAME_STATE_DURATION.LOBBY);
+      room.startTimer(COUNTDOWN.LOBBY_MS);
       endAt = room.getTimer()!.getEndAt();
     } else {
       if (room.getTimer()) {

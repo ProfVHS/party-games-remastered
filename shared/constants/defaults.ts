@@ -9,8 +9,8 @@ export const defaultRoomSettings = {
 
 export const MIN_SCREEN_WIDTH = 1000;
 
-export const MAX_PAGES_BY_GAME: Record<MinigameNamesEnum, number> = {
-    [MinigameNamesEnum.clickTheBomb]: 3,
-    [MinigameNamesEnum.cards]: 3,
-    [MinigameNamesEnum.trickyDiamonds]: 2,
+export const TUTORIAL_PAGES_BY_GAME: Record<MinigameNamesEnum, number> = {
+    [MinigameNamesEnum.CLICK_THE_BOMB]: 3,
+    [MinigameNamesEnum.CARDS]: 3,
+    [MinigameNamesEnum.TRICKY_DIAMONDS]: 2,
 };

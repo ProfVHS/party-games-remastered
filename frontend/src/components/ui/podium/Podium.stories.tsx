@@ -22,7 +22,7 @@ export const PodiumStory: Story = {
       ready: true,
       isDisconnected: false,
       status: PlayerStatusEnum.idle,
-      selectedItem: -100,
+      selectedItem: null,
       avatar: 'clown',
     },
   },

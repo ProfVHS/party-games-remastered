@@ -54,11 +54,20 @@
 
   &__avatar {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
+    justify-content: center;
+
     background: url('@assets/textures/character-bg.svg');
     background-size: cover;
+
     width: 175px;
     height: 125px;
+
+    overflow: hidden;
+
+    svg {
+      scale: 0.9;
+    }
 
     &--lobby {
       cursor: pointer;

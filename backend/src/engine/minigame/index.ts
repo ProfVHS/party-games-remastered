@@ -4,7 +4,7 @@ import { Cards } from '@minigames/Cards';
 import { TrickyDiamonds } from '@minigames/TrickyDiamonds';
 
 export const MINIGAME_REGISTRY = {
-  [MinigameNamesEnum.clickTheBomb]: ClickTheBomb,
-  [MinigameNamesEnum.cards]: Cards,
-  [MinigameNamesEnum.trickyDiamonds]: TrickyDiamonds,
+  [MinigameNamesEnum.CLICK_THE_BOMB]: ClickTheBomb,
+  [MinigameNamesEnum.CARDS]: Cards,
+  [MinigameNamesEnum.TRICKY_DIAMONDS]: TrickyDiamonds,
 };

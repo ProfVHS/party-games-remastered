@@ -9,6 +9,7 @@ export const AnimationOverlay = () => {
   const roomData = useRoomStore((state) => state.roomData);
   const GameType = useGameStore((state) => state.type);
   const round = useGameStore((state) => state.currentRound);
+  const turn = useGameStore((state) => state.currentTurn);
 
   const [visible, setVisible] = useState(false);
 
@@ -16,7 +17,7 @@ export const AnimationOverlay = () => {
   const endAt = roomData?.endAt ?? null;
 
   useEffect(() => {
-    if (!endAt || gameState !== GameStateType.Animation) {
+    if (!endAt || gameState !== GameStateType.MinigameIntro) {
       setVisible(false);
       return;
     }
@@ -43,7 +44,12 @@ export const AnimationOverlay = () => {
     <div className={ClassNames('animation-overlay', [GameType === 'TURN' && 'turn'])}>
       {GameType === 'ROUND' && <span>Round: {round}</span>}
 
-      {GameType === 'TURN' && <span>Next Queue</span>}
+      {GameType === 'TURN' && (
+        <>
+          <span>Turn:</span>
+          <span>{turn!.nickname}</span>
+        </>
+      )}
     </div>
   );
 };

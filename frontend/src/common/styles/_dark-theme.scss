@@ -9,6 +9,7 @@ html[data-theme='dark'] {
   --header-color: #{$darkerPrimaryColor};
   --party-games-fill: #{$darkerPrimaryColor};
   --cartoon-shadow: 0 4px rgba(0, 0, 0, 0.3);
+  --horizontal-line-color: rgba($darkerPrimaryColor, 0.2);
 
   //== Loading ==//
   --loading-color: #{$darkerPrimaryColor};
@@ -97,7 +98,7 @@ html[data-theme='dark'] {
   --tutorial-text-warning: #DE0505;
   --tutorial-text-reward: #CCA600;
   --tutorial-indicator: #C287F1;
-  
+
   //== Click The Bomb ==//
   --click-the-bomb-bg: #{$darkBgColor};
   --click-the-bomb-turn: #fff;

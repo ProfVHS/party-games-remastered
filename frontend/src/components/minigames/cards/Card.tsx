@@ -1,8 +1,8 @@
+import './Card.scss';
 import { useEffect, useState } from 'react';
 import { Icon } from '@assets/icon';
 import { ClassNames } from '@utils';
-import "./Card.scss"
-import { usePlayersStore} from '@stores/playersStore.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
 import { PlayerNicknamesList } from '@components/ui/playerNicknamesList/PlayerNicknamesList.tsx';
 import { PlayerType } from '@shared/types';
 
@@ -29,24 +29,27 @@ export const Card = ({ id, points, isFlipping, selected, onClick }: CardProps) =
       setFlip(false);
       setCardType('back');
     }, revealTime);
-  }
+  };
 
   const showCardFront = () => {
-    setTimeout(() => {
-      setFlip(true);
+    setTimeout(
+      () => {
+        setFlip(true);
 
-      setTimeout(() => {
-        setFlip(false);
-        setCardType(points > 0 ? 'positive' : 'negative');
-      }, revealTime);
-    }, revealTime * (id + 1));
-  }
+        setTimeout(() => {
+          setFlip(false);
+          setCardType(points > 0 ? 'positive' : 'negative');
+        }, revealTime);
+      },
+      revealTime * (id + 1),
+    );
+  };
 
   useEffect(() => {
-    if (!isFlipping){
-      showCardBack()
+    if (!isFlipping) {
+      showCardBack();
     } else {
-      showCardFront()
+      showCardFront();
     }
   }, [isFlipping]);
 
@@ -57,7 +60,10 @@ export const Card = ({ id, points, isFlipping, selected, onClick }: CardProps) =
   return (
     <div className={ClassNames('card', [cardType], { flip: flip, selected: selected })} onClick={cardType === 'back' ? () => onClick(id) : undefined}>
       {cardType !== 'back' && playersWithThisCard.length > 0 && (
-        <PlayerNicknamesList playerList={playersWithThisCard} playerBackground={points < 0 ? 'cards--negative' : 'cards--positive'} />
+        <PlayerNicknamesList
+          playerList={playersWithThisCard}
+          className={ClassNames('card__players-nicknames', { positive: points > 0, negative: points < 0 })}
+        />
       )}
       {cardType !== 'back' && <div className="card__score card__score--top">{pointsToDisplay}</div>}
       <div className={ClassNames('', { positive: cardType === 'positive', negative: cardType === 'negative' })}>

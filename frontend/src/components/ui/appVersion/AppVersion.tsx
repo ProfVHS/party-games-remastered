@@ -1,5 +1,5 @@
 import './AppVersion.scss';
 
 export const AppVersion = () => {
-  return <div className="app-version">v0.0.0</div>;
+  return <div className="app-version">v{__APP_VERSION__}</div>;
 };

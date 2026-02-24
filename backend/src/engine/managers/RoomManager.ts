@@ -1,11 +1,16 @@
-import { Room } from '@engine-core/room/Room';
-import { GameStateType } from '@shared/types';
+import Room from '@engine-core/room/Room';
+import { GameStateResponse, GameStateType, MinigameEntryType } from '@shared/types';
+import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 
 export class RoomManager {
   private static rooms = new Map<string, Room>();
 
-  static createRoom(roomCode: string, onGameStateEnd: (room: Room, state: GameStateType) => void) {
-    const room = new Room(roomCode, onGameStateEnd);
+  static createRoom(
+    roomCode: string,
+    onGameStateEnd: (room: Room, finishedGameState: GameStateType, response: GameStateResponse) => void,
+    setMinigame: (room: Room) => MinigameEntryType,
+  ) {
+    const room = new Room(roomCode, onGameStateEnd, setMinigame);
     this.rooms.set(roomCode, room);
     return room;
   }
@@ -19,6 +24,9 @@ export class RoomManager {
 
     room?.getTimer()?.clear();
     room?.currentMinigame?.getTimer().clear();
+    if (room?.currentMinigame instanceof RoundBasedMinigame) {
+      room.currentMinigame?.getSummaryTimer()?.clear();
+    }
 
     this.rooms.delete(roomCode);
   }

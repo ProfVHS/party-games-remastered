@@ -17,7 +17,8 @@ type AvatarPickerProps = {
 export const AvatarPicker = ({ onClose }: AvatarPickerProps) => {
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [freeAvatars, setFreeAvatars] = useState<string[] | null>(null);
-  const { players } = usePlayersStore();
+  const players = usePlayersStore((state) => state.players);
+  const currentPlayer = usePlayersStore((state) => state.currentPlayer);
   const toast = useToast();
 
   const handleConfirmAvatar = () => {
@@ -52,21 +53,30 @@ export const AvatarPicker = ({ onClose }: AvatarPickerProps) => {
   return (
     <Modal onClose={() => onClose()}>
       <div className="avatar-picker">
+        <div className="avatar-picker__header">Pick your Avatar</div>
         <div className="avatar-picker__avatars">
           <Avatar name="Random" selected={selectedAvatar === 'random'} onClick={() => setSelectedAvatar('random')}>
             <Icon icon={'Random'} className="avatar__random" />
           </Avatar>
           {Object.entries(avatarList).map(([name, data]) =>
             name !== 'default' ? (
-              <Avatar key={name} name={name} selected={selectedAvatar === name} locked={!freeAvatars?.includes(name)} onClick={() => setSelectedAvatar(name)}>
+              <Avatar
+                key={name}
+                name={name}
+                selected={selectedAvatar === name || (currentPlayer?.avatar === name && !selectedAvatar)}
+                locked={!freeAvatars?.includes(name) && currentPlayer?.avatar !== name}
+                onClick={() => setSelectedAvatar(name)}
+              >
                 {createElement(data.idle)}
               </Avatar>
             ) : null,
           )}
         </div>
         <div className="avatar-picker__buttons">
-          <Button onClick={handleConfirmAvatar}>Confirm</Button>
-          <Button color="remove" onClick={() => onClose()}>
+          <Button size="small" onClick={handleConfirmAvatar}>
+            Confirm
+          </Button>
+          <Button color="remove" size="small" onClick={() => onClose()}>
             Cancel
           </Button>
         </div>

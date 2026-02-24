@@ -8,26 +8,29 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
 
   protected constructor(players: Map<string, Player>, roundDuration: number, onTimeout: (state: TurnBaseTimeoutState) => void) {
     super(players, roundDuration, () => {
-      this.onTurnEnd();
+      this.onTimerEnd();
     });
 
     this.onTimeout = onTimeout;
-    this.currentTurn = 0;
+
+    const playerCount = this.getPlayers().filter((p) => p.isAlive()).length;
+    this.currentTurn = Math.floor(Math.random() * playerCount);
   }
 
   public getCurrentTurnPlayer() {
-    return Array.from(this.players.values())[this.currentTurn];
+    return this.getPlayers()[this.currentTurn];
   }
 
   public nextTurn() {
-    this.onNextTurn();
-
     for (let i = 1; i <= this.players.size; i++) {
       const nextTurn = ((this.currentTurn ?? 0) + i) % this.players.size;
       const potentialPlayer = this.getPlayers()[nextTurn];
 
       if (potentialPlayer.isAlive() && !potentialPlayer.isDisconnected()) {
         this.currentTurn = nextTurn;
+
+        this.timer.reset();
+
         return { id: nextTurn, player_id: potentialPlayer.id, nickname: potentialPlayer.nickname };
       }
     }
@@ -35,12 +38,9 @@ export abstract class TurnBasedMinigame extends BaseMinigame {
     throw new Error('No suitable player found to change turn.');
   }
 
-  protected beforeStart() {
-    const playerCount = Array.from(this.players.values()).filter((p) => p.isAlive()).length;
-    this.currentTurn = Math.floor(Math.random() * playerCount);
-  }
+  protected beforeStart() {}
 
-  protected abstract onNextTurn(): void;
+  public abstract onNextTurn(): void;
 
-  protected abstract onTurnEnd(): void;
+  protected abstract onTimerEnd(): void;
 }

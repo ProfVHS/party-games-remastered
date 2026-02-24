@@ -29,31 +29,14 @@
     overflow: hidden;
 
     width: 100%;
-    max-width: 90%;
+    max-width: 100%;
 
     text-align: center;
     padding: 0 1rem;
     border-radius: 0.25rem;
     box-sizing: border-box;
 
-    &--cards--positive {
-      color: rgba(255, 255, 255, 0.8);
-      background-color: var(--cards-player-positive-bg);
-    }
-    &--cards--negative {
-      color: rgba(255, 255, 255, 0.8);
-      background-color: var(--cards-player-negative-bg);
-    }
-
-    &--tricky-diamonds--positive {
-      color: rgba(0, 0, 0, 0.8);
-      background-color: #FFE4AF;
-    }
-    &--tricky-diamonds--negative {
-      color: rgba(255, 255, 255, 0.9);
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-
-
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.2);
   }
 }

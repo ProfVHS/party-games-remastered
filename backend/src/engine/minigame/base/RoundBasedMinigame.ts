@@ -6,7 +6,7 @@ import { RoundBaseTimeoutState } from '@backend-types';
 export abstract class RoundBasedMinigame extends BaseMinigame {
   protected round: number = 1;
   private readonly maxRounds: number;
-  private roundSummaryTimer: Timer;
+  private readonly roundSummaryTimer: Timer;
   private readonly onTimeout: (state: RoundBaseTimeoutState) => void;
 
   protected constructor(
@@ -17,7 +17,7 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     onTimeout: (state: RoundBaseTimeoutState) => void,
   ) {
     super(players, roundDurationMs, () => {
-      this.onRoundEnd();
+      this.onTimerEnd();
     });
 
     this.maxRounds = maxRounds;
@@ -32,14 +32,14 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     return this.roundSummaryTimer;
   }
 
-  protected onRoundEnd() {
+  protected onTimerEnd() {
     this.onTimeout({ success: true, state: 'SHOW_RESULT' });
     this.roundSummaryTimer.start();
   }
 
   private onRoundSummaryEnd() {
     this.players.forEach((player: Player) => {
-      player.setSelectedItem(-100);
+      player.setSelectedItem(null);
     });
 
     if (this.round >= this.maxRounds) {
@@ -56,13 +56,23 @@ export abstract class RoundBasedMinigame extends BaseMinigame {
     this.onNextRound(this.round);
   }
 
-  public getGameData() {}
-
   public getRound() {
     return this.round;
   }
 
-  abstract onNextRound(round: number): void;
+  protected getPlayersWithSelectedItem(itemIndex: number) {
+    return this.getPlayers().filter((player: Player) => player.getSelectedItem() === itemIndex);
+  }
+
+  protected getPlayersWithoutSelectedItem() {
+    return this.getPlayers().filter((player: Player) => player.getSelectedItem() === null);
+  }
 
   protected beforeStart() {}
+
+  protected abstract onNextRound(round: number): void;
+
+  public abstract getGameData(): void;
+
+  public abstract getGameConfig(): number[];
 }

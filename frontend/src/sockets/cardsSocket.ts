@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
 import { socket } from '@socket';
-import { PlayerType } from '@shared/types';
+import { CARDS_GAME_STATUS, CardsGameStatus, GameStateType, PlayerType } from '@shared/types';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 
 const defaultCards: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 export const useCardsSocket = () => {
-  const [gameStatus, setGameStatus] = useState<'Choose a card' | 'Cards Reveal'>('Choose a card');
+  const [gameStatus, setGameStatus] = useState<CardsGameStatus>(CARDS_GAME_STATUS.CHOOSE);
   const [cards, setCards] = useState<number[]>(defaultCards);
   const [flipCards, setFlipCards] = useState<boolean>(false);
-  const [selectedCard, setSelectedCard] = useState<number>(-100);
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
+  const updateGameState = useRoomStore((state) => state.updateGameState);
   const updateEndAt = useRoomStore((state) => state.updateEndAt);
   const roomData = useRoomStore((state) => state.roomData);
 
@@ -24,7 +25,7 @@ export const useCardsSocket = () => {
   }, []);
 
   useEffect(() => {
-    if (!roomData || !roomData.endAt || gameStatus === 'Choose a card') return;
+    if (!roomData || !roomData.endAt || gameStatus === CARDS_GAME_STATUS.CHOOSE) return;
 
     const now = Date.now();
     const timeLeft = roomData.endAt - now;
@@ -41,23 +42,24 @@ export const useCardsSocket = () => {
     return () => clearTimeout(timer);
   }, [roomData]);
 
-  const handleRoundEnd = (endAt: number, players: PlayerType[], shuffledCards: number[]) => {
-    setGameStatus('Cards Reveal');
+  const handleRoundEnd = (gameState: GameStateType, endAt: number, players: PlayerType[], shuffledCards: number[]) => {
+    updateGameState(gameState);
+    setGameStatus(CARDS_GAME_STATUS.REVEAL);
     setFlipCards(true);
     setCards(shuffledCards);
-    setSelectedCard(-100);
+    setSelectedCard(null);
     setPlayers(players);
     updateEndAt(endAt);
   };
 
   const handleRoundNext = () => {
-    setGameStatus('Choose a card');
+    setGameStatus(CARDS_GAME_STATUS.CHOOSE);
     setFlipCards(false);
     setTimeout(() => setCards(defaultCards), 400);
   };
 
   const handleSelectCard = (cardId: number) => {
-    if (gameStatus === 'Cards Reveal') return;
+    if (gameStatus === CARDS_GAME_STATUS.REVEAL) return;
 
     setSelectedCard(cardId);
     socket.emit('player_selection', cardId);

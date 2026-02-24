@@ -9,8 +9,9 @@ export const handleMinigames = (io: Server, socket: Socket) => {
     if (!room) return { success: false, message: 'Room not found!' };
 
     const game = room.currentMinigame as TurnBasedMinigame;
+    game.onNextTurn();
     game.nextTurn();
-    io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer(), room.getPlayers());
+    io.to(roomCode).emit('changed_turn', game.getCurrentTurnPlayer(), room.getPlayers(), game.getTimer().getEndAt());
   });
 
   socket.on('get_turn', async () => {

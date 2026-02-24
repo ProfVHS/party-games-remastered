@@ -2,7 +2,7 @@ import { Server, Socket } from 'socket.io';
 import { RoomManager } from '@engine-managers/RoomManager';
 import { RoomSettingsType } from '@shared/types/RoomSettingsType';
 import { GameStateType } from '@shared/types';
-import { GAME_STATE_DURATION } from '@engine/core';
+import { COUNTDOWN } from '@shared/constants/gameRules';
 
 export const handleRoom = (io: Server, socket: Socket) => {
   socket.on('update_room_settings', async (roomSettings: RoomSettingsType, callback: () => void) => {
@@ -22,19 +22,14 @@ export const handleRoom = (io: Server, socket: Socket) => {
     const readyPlayersLength = room?.getReadyPlayers().length;
 
     if (room?.getPlayers().length === readyPlayersLength) {
-      console.log('Juz tak');
       if (!room) return { success: false, message: 'Room not found!' };
       room.getTimer()?.clear();
 
-      room.setGameState(GameStateType.Animation);
-      room.startTimer(GAME_STATE_DURATION.ANIMATION);
+      room.setGameState(GameStateType.MinigameIntro);
+      room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
 
-      const endAt = room.getTimer()?.getEndAt();
-
-      io.to(socket.data.roomCode).emit('update_game_state', { ...room.getData(), endAt });
+      io.to(socket.data.roomCode).emit('update_game_state', { gameState: room.getGameState(), endAt: room.getTimer()?.getEndAt() });
     } else {
-      console.log('Jeszcze nie');
-
       io.to(socket.data.roomCode).emit('tutorial_ready_status', readyPlayersLength);
     }
   });

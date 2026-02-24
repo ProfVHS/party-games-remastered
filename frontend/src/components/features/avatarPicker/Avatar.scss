@@ -1,0 +1,96 @@
+.avatar {
+  position: relative;
+  height: 10rem;
+  width: 12rem;
+
+  border-radius: 0.7rem;
+  overflow: hidden;
+
+  cursor: pointer;
+
+  &__random {
+    height: 6rem;
+    position: absolute;
+    top: 1rem;
+    left: 3rem;
+  }
+
+  &__svg {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    position: relative;
+    height: 8rem;
+    background-image: var(--avatar-picker-avatar-bg);
+    background-size: 60%;
+
+    overflow: hidden;
+    box-sizing: border-box;
+
+    svg {
+      scale: 0.9;
+    }
+  }
+
+  &__locked {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+
+    background-color: rgba(0, 0, 0, 0.8);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: not-allowed;
+
+    color: var(--avatar-picker-lock-color);
+  }
+
+  &__selected {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      margin-top: 0.5rem;
+
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: drawLine 1s ease-out forwards;
+    }
+
+    @keyframes drawLine {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+  }
+
+  &__name {
+    height: 2rem;
+    width: 100%;
+
+    background-color: var(--avatar-picker-avatar-text-bg);
+    color: var(--avatar-picker-avatar-text);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-transform: capitalize;
+    font-size: 1.4rem;
+    font-family: 'Spicy Rice', sans-serif;
+
+    &--locked {
+      cursor: not-allowed;
+    }
+  }
+}

@@ -3,8 +3,9 @@ import { MinigameNamesEnum } from "./MinigameType";
 export enum GameStateType {
     Lobby = "LOBBY",
     Tutorial = "TUTORIAL",
-    Animation = "ANIMATION",
+    MinigameIntro = "MINIGAME_INTRO",
     Minigame = "MINIGAME",
+    MinigameOutro = "MINIGAME_OUTRO",
     Leaderboard = "LEADERBOARD",
     Finished = "FINISHED",
 }

@@ -16,11 +16,11 @@ export const Minigame = ({ minigameName }: MinigameProps) => {
   return (
     <div>
       <>
-        {minigameName == MinigameNamesEnum.clickTheBomb && <ClickTheBomb />}
-        {minigameName == MinigameNamesEnum.cards && <Cards />}
-        {minigameName == MinigameNamesEnum.trickyDiamonds && <TrickyDiamonds />}
+        {minigameName == MinigameNamesEnum.CLICK_THE_BOMB && <ClickTheBomb />}
+        {minigameName == MinigameNamesEnum.CARDS && <Cards />}
+        {minigameName == MinigameNamesEnum.TRICKY_DIAMONDS && <TrickyDiamonds />}
       </>
-      {roomData?.gameState === GameStateType.Animation && <AnimationOverlay />}
+      {roomData?.gameState === GameStateType.MinigameIntro && <AnimationOverlay />}
       {roomData?.gameState === GameStateType.Tutorial && <Tutorial minigameName={minigameName} />}
     </div>
   );

@@ -38,4 +38,6 @@ export abstract class BaseMinigame {
   protected abstract end(): void;
 
   protected abstract onTimerEnd(): void;
+
+  public abstract getCountdownDuration(): number;
 }

@@ -1,4 +1,4 @@
-import { ScoreboardItem } from '@components/features/leaderboard/Scoreboard.tsx';
+import { ScoreboardItem } from '@components/features/leaderboard/ScoreboardItem.tsx';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useEffect } from 'react';
 

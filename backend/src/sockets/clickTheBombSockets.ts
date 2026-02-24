@@ -1,36 +1,49 @@
 import { Server, Socket } from 'socket.io';
 import { RoomManager } from '@engine-managers/RoomManager';
 import { ClickTheBomb } from '@minigames/ClickTheBomb';
-import { GAME_STATE_DURATION } from '@engine/core';
 import { GameStateType } from '@shared/types';
-import { COUNTDOWN_INTRO_MS } from '@shared/constants/gameRules';
+import { COUNTDOWN } from '@shared/constants/gameRules';
 
 export const handleClickTheBomb = (io: Server, socket: Socket) => {
   socket.on('bomb_click', async () => {
     const roomCode = socket.data.roomCode;
     const room = RoomManager.getRoom(roomCode)!;
 
+    if (room.getData().gameState !== GameStateType.Minigame) return;
+
     const game = room.currentMinigame as ClickTheBomb;
     const response = game.click();
 
     if (response && response.success) {
+      const { clickCount, prizePool, prizePoolIncrease } = game.getState();
+
       switch (response.state) {
         case 'INCREMENTED':
-          const { clickCount, prizePool } = game.getState();
+          io.to(roomCode).emit('show_score', prizePoolIncrease);
           io.to(roomCode).emit('updated_click_count', clickCount, prizePool, game.getTimer().getEndAt());
           break;
         case 'NEXT_TURN':
           console.log('NEXT_TURN');
-          room.setGameState(GameStateType.Animation);
-          room.startTimer(COUNTDOWN_INTRO_MS);
+          room.setGameState(GameStateType.MinigameIntro);
+          room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
+
+          const { id, nickname } = game.getCurrentTurnPlayer();
+          const value = { id, nickname };
 
           io.to(roomCode).emit('player_exploded', room.getPlayers());
-          io.to(roomCode).emit('update_game_state', { ...room.getData(), endAt: room.getTimer()?.getEndAt() });
+          io.to(roomCode).emit('update_game_state', {
+            gameState: room.getGameState(),
+            endAt: room.getTimer()?.getEndAt(),
+            event: 'ANIMATION_UPDATE',
+            payload: { type: 'TURN', value: value },
+          });
           break;
         case 'END_GAME':
           console.log('END_GAME');
-          io.to(roomCode).emit('player_exploded', game.getCurrentTurnPlayer());
-          room.startTimer(GAME_STATE_DURATION.MINIGAME);
+          room.setGameState(GameStateType.MinigameOutro);
+          room.startTimer(COUNTDOWN.MINIGAME_CLOSE_DELAY_MS);
+
+          io.to(roomCode).emit('player_exploded', room.getPlayers());
           break;
       }
     }
