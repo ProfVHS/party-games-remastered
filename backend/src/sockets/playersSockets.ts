@@ -41,11 +41,10 @@ export const handlePlayers = (io: Server, socket: Socket) => {
 
   socket.on('toggle_player_ready', async () => {
     const room = RoomManager.getRoom(socket.data.roomCode);
-    if (!room) return { success: false, message: 'Room not found!' };
+    if (!room) return io.to(socket.id).emit('failed_to_toggle');
 
     const player = room?.players.get(socket.id);
-    if (!player) return { success: false, message: 'Player not found!' };
-
+    if (!player) return io.to(socket.id).emit('failed_to_toggle');
     player.toggleReady();
 
     let endAt = null;
