@@ -10,6 +10,7 @@ import { GameStateResponse, MinigameEntryType, MinigamePayload } from '@shared/t
 import { RoomManager } from '@engine/managers/RoomManager';
 import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { TurnBasedMinigame } from '@minigame-base/TurnBasedMinigame';
+import { formatTime } from '@shared/utlis';
 
 class Room {
   public readonly roomCode: string;
@@ -61,7 +62,7 @@ class Room {
   public startTimer(duration: number) {
     this.timer?.clear();
 
-    console.log('Start TIMER for - ', this.gameState);
+    console.log('Start TIMER for - ', this.gameState, formatTime(Date.now()));
 
     this.timer = new Timer(duration, () => {
       this.onStateFinished();
