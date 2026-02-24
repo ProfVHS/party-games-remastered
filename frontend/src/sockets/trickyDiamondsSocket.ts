@@ -27,35 +27,24 @@ export const useTrickyDiamondsSocket = () => {
   }, []);
 
   useEffect(() => {
-    if (!roomData || !roomData.endAt || gameStatus === TRICKY_DIAMONDS_GAME_STATUS.CHOOSE) return;
-
-    const now = Date.now();
-    const timeLeft = roomData.endAt - now;
-
-    if (timeLeft <= 0) {
-      handleRoundNext();
-      return;
+    if (roomData?.gameState === GameStateType.Minigame) {
+      setGameStatus(TRICKY_DIAMONDS_GAME_STATUS.CHOOSE);
     }
-
-    const timer = setTimeout(() => {
-      handleRoundNext();
-    }, timeLeft);
-
-    return () => clearTimeout(timer);
+    if (roomData?.gameState === GameStateType.MinigameOutro) {
+      setGameStatus(TRICKY_DIAMONDS_GAME_STATUS.REVEAL);
+    }
+    if (roomData?.gameState === GameStateType.MinigameIntro) {
+      setGameStatus(TRICKY_DIAMONDS_GAME_STATUS.CHOOSE);
+      setSelectedDiamond(null);
+    }
   }, [roomData]);
 
   const handleRoundEnd = (gameState: GameStateType, endAt: number, players: PlayerType[], diamonds: DiamondType[]) => {
     updateGameState(gameState);
     updateEndAt(endAt);
-    setGameStatus(TRICKY_DIAMONDS_GAME_STATUS.REVEAL);
     setSelectedDiamond(null);
     setDiamonds(diamonds);
     setPlayers(players);
-  };
-
-  const handleRoundNext = () => {
-    setGameStatus(TRICKY_DIAMONDS_GAME_STATUS.CHOOSE);
-    setSelectedDiamond(null);
   };
 
   const handleSelectDiamond = (diamondId: number) => {

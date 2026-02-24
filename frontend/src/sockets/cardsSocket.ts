@@ -38,7 +38,6 @@ export const useCardsSocket = () => {
 
   const handleRoundEnd = (gameState: GameStateType, endAt: number, players: PlayerType[], shuffledCards: number[]) => {
     updateGameState(gameState);
-    setGameStatus(CARDS_GAME_STATUS.REVEAL);
     setCards(shuffledCards);
     setSelectedCard(null);
     setPlayers(players);
