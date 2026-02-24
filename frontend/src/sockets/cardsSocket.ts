@@ -24,22 +24,17 @@ export const useCardsSocket = () => {
   }, []);
 
   useEffect(() => {
-    if (!roomData || !roomData.endAt || gameStatus === CARDS_GAME_STATUS.CHOOSE) return;
-
-    const now = Date.now();
-    const timeLeft = roomData.endAt - now;
-
-    if (timeLeft <= 0) {
-      handleRoundNext();
-      return;
+    if (roomData?.gameState === GameStateType.Minigame) {
+      setGameStatus(CARDS_GAME_STATUS.CHOOSE);
     }
-
-    const timer = setTimeout(() => {
-      handleRoundNext();
-    }, timeLeft);
-
-    return () => clearTimeout(timer);
-  }, [roomData, gameStatus]);
+    if (roomData?.gameState === GameStateType.MinigameOutro) {
+      setGameStatus(CARDS_GAME_STATUS.REVEAL);
+    }
+    if (roomData?.gameState === GameStateType.MinigameIntro) {
+      setGameStatus(CARDS_GAME_STATUS.CHOOSE);
+      setCards(defaultCards);
+    }
+  }, [roomData]);
 
   const handleRoundEnd = (gameState: GameStateType, endAt: number, players: PlayerType[], shuffledCards: number[]) => {
     updateGameState(gameState);
@@ -48,11 +43,6 @@ export const useCardsSocket = () => {
     setSelectedCard(null);
     setPlayers(players);
     updateEndAt(endAt);
-  };
-
-  const handleRoundNext = () => {
-    setGameStatus(CARDS_GAME_STATUS.CHOOSE);
-    setTimeout(() => setCards(defaultCards), 400);
   };
 
   const handleSelectCard = (cardId: number) => {
