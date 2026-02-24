@@ -1,4 +1,4 @@
-export const MIN_PLAYERS_TO_START = 1;
+export const MIN_PLAYERS_TO_START = 4;
 export const MAX_PLAYERS = 8;
 
 export const COUNTDOWN = {
