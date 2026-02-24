@@ -33,6 +33,7 @@ export class Player {
 
   public kill() {
     this.alive = false;
+    this.status = PlayerStatusEnum.dead;
   }
 
   public isDisconnected() {
@@ -49,6 +50,7 @@ export class Player {
 
   public revive() {
     this.alive = true;
+    this.status = PlayerStatusEnum.idle;
   }
 
   public getScore() {
