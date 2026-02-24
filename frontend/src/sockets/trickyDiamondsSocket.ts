@@ -13,7 +13,6 @@ export const useTrickyDiamondsSocket = () => {
     { id: 2, players: [], won: false },
   ]);
   const [gameStatus, setGameStatus] = useState<TrickyDiamondsGameStatus>(TRICKY_DIAMONDS_GAME_STATUS.CHOOSE);
-  const [reveal, setReveal] = useState<boolean>(false);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
   const updateGameState = useRoomStore((state) => state.updateGameState);
   const updateEndAt = useRoomStore((state) => state.updateEndAt);
@@ -49,7 +48,6 @@ export const useTrickyDiamondsSocket = () => {
     updateGameState(gameState);
     updateEndAt(endAt);
     setGameStatus(TRICKY_DIAMONDS_GAME_STATUS.REVEAL);
-    setReveal(true);
     setSelectedDiamond(null);
     setDiamonds(diamonds);
     setPlayers(players);
@@ -57,16 +55,15 @@ export const useTrickyDiamondsSocket = () => {
 
   const handleRoundNext = () => {
     setGameStatus(TRICKY_DIAMONDS_GAME_STATUS.CHOOSE);
-    setReveal(false);
     setSelectedDiamond(null);
   };
 
   const handleSelectDiamond = (diamondId: number) => {
-    if (reveal) return;
+    if (gameStatus !== TRICKY_DIAMONDS_GAME_STATUS.CHOOSE) return;
 
     setSelectedDiamond(diamondId);
     socket.emit('player_selection', diamondId);
   };
 
-  return { diamonds, reveal, gameStatus, selectedDiamond, handleSelectDiamond };
+  return { diamonds, gameStatus, selectedDiamond, handleSelectDiamond };
 };

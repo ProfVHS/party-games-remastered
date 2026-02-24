@@ -6,6 +6,7 @@ import { PlayerNicknamesList } from '@components/ui/playerNicknamesList/PlayerNi
 import { ClassNames } from '@utils';
 import { Icon } from '@assets/icon';
 import Trophy from '@assets/textures/trophy.svg?react';
+import { TRICKY_DIAMONDS_GAME_STATUS, TrickyDiamondsGameStatus } from '@shared/types';
 
 type DiamondPlayers = {
   id: number;
@@ -14,17 +15,17 @@ type DiamondPlayers = {
 
 type DiamondProps = {
   diamond: DiamondPlayers;
-  reveal: boolean;
+  gameStatus: TrickyDiamondsGameStatus;
   isSelected: boolean;
   won: boolean;
   score: number;
   onSelect: (id: number) => void;
 };
 
-export const Diamond = ({ diamond, score, reveal, isSelected, won, onSelect }: DiamondProps) => {
+export const Diamond = ({ diamond, score, gameStatus, isSelected, won, onSelect }: DiamondProps) => {
   return (
     <div className="diamond" onClick={() => onSelect(diamond.id)}>
-      {reveal && (
+      {gameStatus === TRICKY_DIAMONDS_GAME_STATUS.REVEAL && (
         <div className={ClassNames('diamond__players', { won: won, lost: !won })}>
           {won ? (
             <div className="diamond__trophy">
@@ -37,7 +38,7 @@ export const Diamond = ({ diamond, score, reveal, isSelected, won, onSelect }: D
           <PlayerNicknamesList playerList={diamond.players} className={ClassNames('diamond__players-nicknames', { positive: won, negative: !won })} />
         </div>
       )}
-      <span className={ClassNames('diamond__svg', { selected: !reveal && isSelected })}>
+      <span className={ClassNames('diamond__svg', { selected: isSelected && gameStatus === TRICKY_DIAMONDS_GAME_STATUS.CHOOSE })}>
         {diamond.id === 0 && <HighDiamond />}
         {diamond.id === 1 && <MediumDiamond />}
         {diamond.id === 2 && <LowDiamond />}

@@ -9,7 +9,6 @@ const defaultCards: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 export const useCardsSocket = () => {
   const [gameStatus, setGameStatus] = useState<CardsGameStatus>(CARDS_GAME_STATUS.CHOOSE);
   const [cards, setCards] = useState<number[]>(defaultCards);
-  const [flipCards, setFlipCards] = useState<boolean>(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
   const updateGameState = useRoomStore((state) => state.updateGameState);
@@ -40,12 +39,11 @@ export const useCardsSocket = () => {
     }, timeLeft);
 
     return () => clearTimeout(timer);
-  }, [roomData]);
+  }, [roomData, gameStatus]);
 
   const handleRoundEnd = (gameState: GameStateType, endAt: number, players: PlayerType[], shuffledCards: number[]) => {
     updateGameState(gameState);
     setGameStatus(CARDS_GAME_STATUS.REVEAL);
-    setFlipCards(true);
     setCards(shuffledCards);
     setSelectedCard(null);
     setPlayers(players);
@@ -54,7 +52,6 @@ export const useCardsSocket = () => {
 
   const handleRoundNext = () => {
     setGameStatus(CARDS_GAME_STATUS.CHOOSE);
-    setFlipCards(false);
     setTimeout(() => setCards(defaultCards), 400);
   };
 
@@ -65,5 +62,5 @@ export const useCardsSocket = () => {
     socket.emit('player_selection', cardId);
   };
 
-  return { gameStatus, cards, flipCards, selectedCard, handleSelectCard };
+  return { gameStatus, cards, selectedCard, handleSelectCard };
 };
