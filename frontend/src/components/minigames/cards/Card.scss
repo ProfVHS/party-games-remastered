@@ -21,6 +21,35 @@
   font-style: normal;
   color: var(--cards-text);
 
+  &__players-nicknames {
+    background-color:  rgba(0, 0, 0, 0.5) !important;
+
+    &--positive {
+      position: absolute !important;
+      justify-content: start !important;
+      border-radius: 0 !important;
+
+      & > div {
+        color: rgba(#FFF, 0.8);
+        background-color: var(--cards-player-positive-bg);
+        font-weight: normal !important;
+      }
+    }
+
+    &--negative {
+      position: absolute !important;
+      justify-content: start !important;
+      padding: 16px 0 !important;
+      border-radius: 0 !important;
+
+      & > div {
+        color: rgba(255, 255, 255, 0.9);
+        background-color: var(--cards-player-negative-bg);
+        font-weight: normal !important;
+      }
+    }
+  }
+
   .svg {
     width: 4rem;
     height: 4rem;

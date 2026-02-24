@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { PlayerNicknamesList } from './PlayerNicknamesList';
+import { ClassNames } from '@utils';
 
 const meta = {
   component: PlayerNicknamesList,
@@ -12,24 +13,24 @@ type Story = StoryObj<typeof meta>;
 export const CardsPositive: Story = {
   args: {
     playerList: ['Player 1', 'Ultra Mango Guy'],
-    playerBackground: 'cards--positive',
+    className: ClassNames('card__players-nicknames', { positive: true, negative: false }),
   },
 };
 export const CardsNegative: Story = {
   args: {
     playerList: ['Player 1', 'Ultra Mango Guy'],
-    playerBackground: 'cards--negative',
+    className: ClassNames('card__players-nicknames', { positive: false, negative: true }),
   },
 };
 export const TrickyDiamondsPositive: Story = {
   args: {
     playerList: ['Player 1', 'Ultra Mango Guy'],
-    playerBackground: 'tricky-diamonds--positive',
+    className: ClassNames('diamond__players-nicknames', { positive: true, negative: false }),
   },
 };
 export const TrickyDiamondsNegative: Story = {
   args: {
     playerList: ['Player 1', 'Ultra Mango Guy'],
-    playerBackground: 'tricky-diamonds--negative',
+    className: ClassNames('diamond__players-nicknames', { positive: false, negative: true }),
   },
 };
