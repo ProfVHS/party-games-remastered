@@ -7,7 +7,7 @@ import { useGameStore } from '@stores/gameStore.ts';
 import { CARDS_GAME_STATUS } from '@shared/types';
 
 export const Cards = () => {
-  const { gameStatus, cards, flipCards, selectedCard, handleSelectCard } = useCardsSocket();
+  const { gameStatus, cards, selectedCard, handleSelectCard } = useCardsSocket();
   const durationRoundOrTurn = useGameStore((state) => state.durationRoundOrTurn);
 
   return (
@@ -18,7 +18,7 @@ export const Cards = () => {
       <div className="cards__status">{gameStatus}</div>
       <div className={ClassNames('cards__content', { lock: gameStatus === CARDS_GAME_STATUS.REVEAL })}>
         {cards.map((card, index) => (
-          <Card key={index} id={index} points={card} isFlipping={flipCards} selected={selectedCard === index} onClick={handleSelectCard} />
+          <Card key={index} id={index} points={card} gameStatus={gameStatus} selected={selectedCard === index} onClick={handleSelectCard} />
         ))}
       </div>
     </div>

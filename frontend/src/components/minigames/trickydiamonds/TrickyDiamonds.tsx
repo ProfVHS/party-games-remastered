@@ -5,7 +5,7 @@ import { useTrickyDiamondsSocket } from '@sockets/trickyDiamondsSocket.ts';
 import { useGameStore } from '@stores/gameStore.ts';
 
 export const TrickyDiamonds = () => {
-  const { diamonds, reveal, gameStatus, selectedDiamond, handleSelectDiamond } = useTrickyDiamondsSocket();
+  const { diamonds, gameStatus, selectedDiamond, handleSelectDiamond } = useTrickyDiamondsSocket();
   const durationRoundOrTurn = useGameStore((state) => state.durationRoundOrTurn);
   const config = useGameStore((state) => state.config);
 
@@ -21,7 +21,7 @@ export const TrickyDiamonds = () => {
             <Diamond
               key={index}
               diamond={diamond}
-              reveal={reveal}
+              gameStatus={gameStatus}
               score={config![index]}
               won={diamond.won}
               isSelected={diamond.id === selectedDiamond}

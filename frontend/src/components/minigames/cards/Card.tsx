@@ -4,17 +4,17 @@ import { Icon } from '@assets/icon';
 import { ClassNames } from '@utils';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { PlayerNicknamesList } from '@components/ui/playerNicknamesList/PlayerNicknamesList.tsx';
-import { PlayerType } from '@shared/types';
+import { CARDS_GAME_STATUS, CardsGameStatus, PlayerType } from '@shared/types';
 
 interface CardProps {
   id: number;
   points: number;
-  isFlipping: boolean;
+  gameStatus: CardsGameStatus;
   selected: boolean;
   onClick: (id: number) => void;
 }
 
-export const Card = ({ id, points, isFlipping, selected, onClick }: CardProps) => {
+export const Card = ({ id, points, gameStatus, selected, onClick }: CardProps) => {
   const revealTime: number = 400;
   const pointsToDisplay: string = points < 0 ? points.toString() : '+' + points.toString();
   const [cardType, setCardType] = useState<'back' | 'positive' | 'negative'>('back');
@@ -46,12 +46,13 @@ export const Card = ({ id, points, isFlipping, selected, onClick }: CardProps) =
   };
 
   useEffect(() => {
-    if (!isFlipping) {
+    if (gameStatus === CARDS_GAME_STATUS.CHOOSE) {
       showCardBack();
-    } else {
+    }
+    if (gameStatus === CARDS_GAME_STATUS.REVEAL) {
       showCardFront();
     }
-  }, [isFlipping]);
+  }, [gameStatus]);
 
   useEffect(() => {
     setPlayersWithThisCard(players.filter((player) => player.selectedItem === id));
