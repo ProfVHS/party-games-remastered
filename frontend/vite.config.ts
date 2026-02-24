@@ -8,6 +8,12 @@ import path from 'path';
 export default defineConfig({
   plugins: [react(), svgr()],
   define: { __APP_VERSION__: JSON.stringify(packageJson.version) },
+  server: {
+    port: 5173,
+  },
+  preview: {
+    port: 5173,
+  },
   resolve: {
     alias: {
       '@shared': path.resolve(__dirname, '../shared'),
