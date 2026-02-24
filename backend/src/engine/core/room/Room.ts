@@ -146,12 +146,18 @@ class Room {
 
           response = { gameState: this.gameState, endAt: this.getTimer()!.getEndAt(), event: 'PLAYERS_UPDATE', payload: this.getPlayers() };
         } else {
+          this.setAllReady(false);
+
           const minigame = this.setMinigame(this);
-
-          this.setGameState(GameStateType.MinigameIntro);
-          this.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
-
           const payload = this.getMinigamePayload(minigame);
+
+          if (this.settings.getData().isTutorialsEnabled) {
+            this.setGameState(GameStateType.Tutorial);
+            this.startTimer(COUNTDOWN.TUTORIAL_MS);
+          } else {
+            this.setGameState(GameStateType.MinigameIntro);
+            this.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
+          }
 
           response = {
             gameState: this.gameState,
