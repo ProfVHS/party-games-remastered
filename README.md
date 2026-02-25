@@ -1,6 +1,8 @@
 # Party Games -  Real Time Multiplayer Web Application
 **PartyGames** is a full-featured real-time multiplayer web application designed for 4–8 players, offering a set of competitive mini-games with dynamic session management.
 
+[Live Demo](https://party-games.up.railway.app)
+
 ## Core Features:
 - Advanced lobby system with:
    - Configurable game modes (random mini-games or predefined list)
