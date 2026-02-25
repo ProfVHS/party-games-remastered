@@ -13,6 +13,11 @@ export const ProgressBar = ({ durationMs }: ProgressBarProps) => {
   const endAt = roomData?.endAt ?? 0;
 
   useEffect(() => {
+    if (!roomData || roomData.gameState === GameStateType.MinigameOutro) {
+      setFillWidth(0);
+      return;
+    }
+
     if (!roomData || (roomData.gameState !== GameStateType.Minigame && roomData.gameState !== GameStateType.Finished)) {
       return;
     }

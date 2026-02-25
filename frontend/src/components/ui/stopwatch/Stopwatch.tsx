@@ -16,7 +16,12 @@ export const Stopwatch = ({ durationMs }: StopwatchProps) => {
   const circumference = 2 * Math.PI * radius;
 
   useEffect(() => {
-    if (!roomData || (roomData.gameState !== GameStateType.Minigame && roomData.gameState !== GameStateType.Tutorial)) {
+    if (!roomData || roomData.gameState === GameStateType.MinigameOutro) {
+      setTimeLeft(0);
+      return;
+    }
+
+    if (roomData.gameState !== GameStateType.Minigame && roomData.gameState !== GameStateType.Tutorial) {
       return;
     }
 
@@ -30,7 +35,7 @@ export const Stopwatch = ({ durationMs }: StopwatchProps) => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [roomData]);
+  }, [endAt]);
 
   const progress = timeLeft / durationMs;
   const strokeDashoffset = circumference * (1 - progress);
