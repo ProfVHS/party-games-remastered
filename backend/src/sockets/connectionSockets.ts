@@ -139,7 +139,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
     if (result.success) {
       socket.join(roomCode);
       socket.data.roomCode = roomCode;
-      socket.to(roomCode).emit('player_join_toast', nickname);
+      io.to(roomCode).emit('player_join_toast', nickname);
       callback(JOIN_ROOM_STATUS.SUCCESS);
     }
   });

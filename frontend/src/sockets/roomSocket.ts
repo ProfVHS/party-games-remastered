@@ -9,6 +9,7 @@ import { useSocketConnection } from '@hooks/useSocketConnection.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 import { useGameStore } from '@stores/gameStore.ts';
 import { useNavigate } from 'react-router-dom';
+import { SlotType } from '@frontend-types/SlotType.ts';
 
 export const useRoomSocket = () => {
   const [minigame, setMinigame] = useState<MinigameEntryType | null>(null);
@@ -31,7 +32,7 @@ export const useRoomSocket = () => {
 
   const toast = useToast();
 
-  const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
+  const slots: SlotType = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
 
   useEffect(() => {
     if (!sessionData) return;
@@ -97,6 +98,7 @@ export const useRoomSocket = () => {
   };
 
   const handlePlayerJoinToast = (nickname: string) => {
+    console.log('Toast');
     toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
   };
 
