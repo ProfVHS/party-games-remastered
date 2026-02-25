@@ -4,16 +4,16 @@ import { CARDS_GAME_STATUS, CardsGameStatus, GameStateType, PlayerType } from '@
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useRoomStore } from '@stores/roomStore.ts';
 
-const defaultCards: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-
 export const useCardsSocket = () => {
-  const [gameStatus, setGameStatus] = useState<CardsGameStatus>(CARDS_GAME_STATUS.CHOOSE);
-  const [cards, setCards] = useState<number[]>(defaultCards);
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const setPlayers = usePlayersStore((state) => state.setPlayers);
+  const players = usePlayersStore((state) => state.players);
   const updateGameState = useRoomStore((state) => state.updateGameState);
   const updateEndAt = useRoomStore((state) => state.updateEndAt);
   const roomData = useRoomStore((state) => state.roomData);
+
+  const [gameStatus, setGameStatus] = useState<CardsGameStatus>(CARDS_GAME_STATUS.CHOOSE);
+  const [cards, setCards] = useState<number[]>([]);
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   useEffect(() => {
     socket.on('round_end', handleRoundEnd);
@@ -32,7 +32,7 @@ export const useCardsSocket = () => {
     }
     if (roomData?.gameState === GameStateType.MinigameIntro) {
       setGameStatus(CARDS_GAME_STATUS.CHOOSE);
-      setCards(defaultCards);
+      setCards(Array(Math.max(3, players.length)).fill(0));
     }
   }, [roomData]);
 
