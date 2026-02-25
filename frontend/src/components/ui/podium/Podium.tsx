@@ -18,9 +18,21 @@ export const Podium = ({ place, player }: PodiumProps) => {
   const heights = [13, 12, 11.5, 10, 9, 9, 8, 8];
   const height = heights[place - 1] || 10;
 
+  const getAvatarStatus = () => {
+    switch (place) {
+      case 1:
+        return 'happy';
+      case 2:
+      case 3:
+        return 'idle';
+      default:
+        return 'dead';
+    }
+  };
+
   return (
     <div className={ClassNames('podium', [placeClass, place.toString()])} style={{ height: `${height}rem` }}>
-      <div className="podium__avatar">{avatarList[avatar] && createElement(avatarList[avatar][place === 1 ? 'happy' : 'idle'])}</div>
+      <div className="podium__avatar">{avatarList[avatar] && createElement(avatarList[avatar][getAvatarStatus()])}</div>
       <div className="podium__top"></div>
       <div className="podium__base">
         <span className="place">#{place}</span>
