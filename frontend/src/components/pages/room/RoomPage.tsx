@@ -12,7 +12,6 @@ import { LobbyPage } from '@components/pages/room/LobbyPage.tsx';
 
 export const RoomPage = () => {
   const { minigame } = useRoomSocket();
-
   const players = usePlayersStore((state) => state.players);
   const roomData = useRoomStore((state) => state.roomData);
 
