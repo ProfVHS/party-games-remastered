@@ -6,6 +6,7 @@ export class RoomSettings {
   private readonly isRandomMinigames: boolean;
   private readonly isTutorialsEnabled: boolean;
   private readonly numberOfMinigames: number;
+  private readonly shownTutorials: MinigameNamesEnum[];
 
   private minigames: MinigameEntryType[];
 
@@ -14,6 +15,7 @@ export class RoomSettings {
     this.isTutorialsEnabled = true;
     this.minigames = [];
     this.numberOfMinigames = 2;
+    this.shownTutorials = [];
   }
 
   public update(newSettings: Partial<RoomSettingsType>) {
@@ -32,6 +34,14 @@ export class RoomSettings {
 
   public isLastMinigame() {
     return this.minigames.length <= 0;
+  }
+
+  public addShownTutorials(minigame: MinigameNamesEnum) {
+    this.shownTutorials.push(minigame);
+  }
+
+  public getShownTutorials() {
+    return this.shownTutorials;
   }
 
   public randomiseMinigames() {

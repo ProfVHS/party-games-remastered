@@ -41,7 +41,7 @@ export const ClickTheBomb = () => {
           <span className="click-the-bomb__counter">{gameState.clickCount! >= 10 ? gameState.clickCount : '0' + gameState.clickCount}</span>
           <Timer className="click-the-bomb__timer" />
         </div>
-        <Button className="click-the-bomb__button" type="button" size="medium" isDisabled={!canSkipTurn} onClick={nextTurn}>
+        <Button className="click-the-bomb__button" type="button" size="medium" isDisabled={!canSkipTurn || !currentPlayer?.isAlive} onClick={nextTurn}>
           Next
         </Button>
         <div className="click-the-bomb__prize">
