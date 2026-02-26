@@ -22,7 +22,7 @@ export class TrickyDiamonds extends RoundBasedMinigame {
   }
 
   public getGameData() {
-    return this.diamondStats;
+    return { diamonds: this.diamondStats, players: this.getPlayers() };
   }
 
   private awardPoints() {

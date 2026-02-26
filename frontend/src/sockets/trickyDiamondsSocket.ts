@@ -39,12 +39,12 @@ export const useTrickyDiamondsSocket = () => {
     }
   }, [roomData]);
 
-  const handleRoundEnd = (gameState: GameStateType, endAt: number, players: PlayerType[], diamonds: DiamondType[]) => {
+  const handleRoundEnd = (gameState: GameStateType, endAt: number, gameData: { diamonds: DiamondType[]; players: PlayerType[] }) => {
     updateGameState(gameState);
     updateEndAt(endAt);
     setSelectedDiamond(null);
-    setDiamonds(diamonds);
-    setPlayers(players);
+    setDiamonds(gameData.diamonds);
+    setPlayers(gameData.players);
   };
 
   const handleSelectDiamond = (diamondId: number) => {
