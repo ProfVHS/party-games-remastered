@@ -1,13 +1,12 @@
 import { ScoreboardItem } from '@components/features/leaderboard/ScoreboardItem.tsx';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { useEffect } from 'react';
-import {sortBy} from 'lodash';
+import { orderBy } from 'lodash';
 
 export const Leaderboard = () => {
   const players = usePlayersStore((state) => state.players);
   const setOldPlayers = usePlayersStore((state) => state.setOldPlayers);
-  const sortedPlayers = sortBy(players, 'score');
-
+  const sortedPlayers = orderBy(players, 'score', 'desc');
   useEffect(() => {
     setOldPlayers(players);
   }, []);
