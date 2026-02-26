@@ -5,15 +5,17 @@ import { ClassNames } from '@utils';
 import { Stopwatch } from '@components/ui/stopwatch/Stopwatch.tsx';
 import { useGameStore } from '@stores/gameStore.ts';
 import { CARDS_GAME_STATUS } from '@shared/types';
+import { useRoomStore } from '@stores/roomStore.ts';
 
 export const Cards = () => {
   const { gameStatus, cards, selectedCard, cardPlayersMap, handleSelectCard } = useCardsSocket();
   const durationRoundOrTurn = useGameStore((state) => state.durationRoundOrTurn);
+  const roomData = useRoomStore((state) => state.roomData);
 
   return (
     <div className="cards">
       <div className="cards__countdown">
-        <Stopwatch durationMs={durationRoundOrTurn} />
+        {roomData && <Stopwatch durationMs={durationRoundOrTurn} endAt={roomData.endAt} startCountdown={roomData.gameState === 'MINIGAME'} />}
       </div>
       <div className="cards__status">{gameStatus}</div>
       <div className={ClassNames('cards__content', { lock: gameStatus === CARDS_GAME_STATUS.REVEAL })}>

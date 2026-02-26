@@ -1,27 +1,21 @@
 import './Stopwatch.scss';
 import { useEffect, useState } from 'react';
-import { useRoomStore } from '@stores/roomStore.ts';
-import { GameStateType } from '@shared/types';
 
 type StopwatchProps = {
   durationMs: number;
+  endAt: number;
+  startCountdown?: boolean;
 };
 
-export const Stopwatch = ({ durationMs }: StopwatchProps) => {
-  const roomData = useRoomStore((state) => state.roomData);
-  const endAt = roomData?.endAt ?? 0;
+export const Stopwatch = ({ durationMs, endAt, startCountdown = true }: StopwatchProps) => {
   const [timeLeft, setTimeLeft] = useState(durationMs);
 
   const radius = 25;
   const circumference = 2 * Math.PI * radius;
 
   useEffect(() => {
-    if (!roomData || roomData.gameState === GameStateType.MinigameOutro) {
-      setTimeLeft(0);
-      return;
-    }
-
-    if (roomData.gameState !== GameStateType.Minigame && roomData.gameState !== GameStateType.Tutorial) {
+    if (!startCountdown) {
+      setTimeLeft(durationMs);
       return;
     }
 
@@ -35,7 +29,7 @@ export const Stopwatch = ({ durationMs }: StopwatchProps) => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [endAt]);
+  }, [endAt, durationMs]);
 
   const progress = timeLeft / durationMs;
   const strokeDashoffset = circumference * (1 - progress);

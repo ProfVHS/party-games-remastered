@@ -9,6 +9,7 @@ import { TrickyDiamondsTutorial } from '@components/features/tutorials/minigames
 import { Stopwatch } from '@components/ui/stopwatch/Stopwatch.tsx';
 import { useTutorialSocket } from '@sockets/tutorialSocket.ts';
 import { COUNTDOWN } from '@shared/constants/gameRules.ts';
+import { useRoomStore } from '@stores/roomStore.ts';
 
 type TutorialProps = {
   minigameName: MinigameNamesEnum;
@@ -16,6 +17,7 @@ type TutorialProps = {
 
 export const Tutorial = ({ minigameName }: TutorialProps) => {
   const { ready, readyPlayers, maxPlayers, page, maxPage, handleChangePage, handleReady } = useTutorialSocket(minigameName);
+  const roomData = useRoomStore((state) => state.roomData);
 
   return (
     <div className="tutorial__overlay">
@@ -24,9 +26,7 @@ export const Tutorial = ({ minigameName }: TutorialProps) => {
           <div className="tutorial">
             <div className="tutorial__header">
               <Text variant="title">How To Play?</Text>
-              <div className="tutorial__header__stopwatch">
-                <Stopwatch durationMs={COUNTDOWN.TUTORIAL_MS} />
-              </div>
+              <div className="tutorial__header__stopwatch">{roomData && <Stopwatch durationMs={COUNTDOWN.TUTORIAL_MS} endAt={roomData.endAt} />}</div>
             </div>
             <div className="tutorial__content">
               {minigameName === MinigameNamesEnum.CLICK_THE_BOMB && <ClickTheBombTutorial page={page} />}
