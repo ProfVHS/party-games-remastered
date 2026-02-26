@@ -31,7 +31,7 @@ export const useCardsSocket = () => {
     }
     if (roomData?.gameState === GameStateType.MinigameIntro) {
       setGameStatus(CARDS_GAME_STATUS.CHOOSE);
-      setTimeout(() => setCards(Array(Math.max(3, players.length)).fill(0)), 400);
+      setTimeout(() => setCards(Array(Math.max(3, players.length - 1)).fill(0)), 400);
     }
   }, [roomData]);
 
