@@ -56,7 +56,6 @@ export class Cards extends RoundBasedMinigame {
       result.push(roundCards[index]);
     }
 
-    // Enforce minimum positive cards per round
     let i = 0;
     let positivesCardCount = result.filter((card) => card > 0).length;
 
