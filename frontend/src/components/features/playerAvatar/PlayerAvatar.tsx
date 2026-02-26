@@ -28,9 +28,15 @@ const PlayerAvatar = ({ player, style, inLobby = false, ready, onClick }: Player
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.id === player.id })} style={style}>
       {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
       <h2 className="player-avatar__username">{player.nickname}</h2>
-      <div className={ClassNames('player-avatar__avatar', { lobby: socket.id === player.id && inLobby })} onClick={handleChooseAvatar}>
-        {player.avatar !== 'default' ? <Avatar avatar={avatar} status={player.status} /> : <Default className="player-avatar__avatar__default" />}
-      </div>
+      {player.avatar !== 'default' ? (
+        <div className={ClassNames('player-avatar__avatar', { lobby: socket.id === player.id && inLobby })} onClick={handleChooseAvatar}>
+          <Avatar avatar={avatar} status={player.status} />
+        </div>
+      ) : (
+        <div className="player-avatar__choose-button">
+          <Default />
+        </div>
+      )}
       {!inLobby && (
         <h2 className="player-avatar__score">
           Score: <Counter count={player.score} duration={1} />
