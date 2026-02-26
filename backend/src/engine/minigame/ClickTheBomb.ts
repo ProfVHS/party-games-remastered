@@ -4,7 +4,7 @@ import { TurnBaseTimeoutState } from '@backend-types';
 
 const COUNTDOWN_MS = 10000;
 const LOSS = 50;
-const POINTS = [15, 17, 20, 23, 26, 30, 35];
+const POINTS = [8, 10, 12, 14, 14, 16];
 
 export class ClickTheBomb extends TurnBasedMinigame {
   private clickCount: number = 0;
@@ -18,7 +18,7 @@ export class ClickTheBomb extends TurnBasedMinigame {
 
   private setupBomb() {
     this.clickCount = 0;
-    this.maxClicks = Math.floor(Math.random() * (this.alivePlayersCount() * 4)) + 1;
+    this.maxClicks = Math.floor(Math.random() * (this.alivePlayersCount() * 3)) + 1;
     this.streak = 0;
     this.prizePool = 0;
   }

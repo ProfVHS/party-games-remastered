@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import { socket } from '@socket';
 import { CardPlayersMapType, CARDS_GAME_STATUS, CardsGameStatus, GameStateType } from '@shared/types';
 import { useRoomStore } from '@stores/roomStore.ts';
-
-const defaultCards: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 export const useCardsSocket = () => {
   const [gameStatus, setGameStatus] = useState<CardsGameStatus>(CARDS_GAME_STATUS.CHOOSE);
-  const [cards, setCards] = useState<number[]>(defaultCards);
+  const [cards, setCards] = useState<number[]>([]);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [cardPlayersMap, setCardPlayersMap] = useState<CardPlayersMapType>({});
+  const players = usePlayersStore((state) => state.players);
   const updateGameState = useRoomStore((state) => state.updateGameState);
   const updateEndAt = useRoomStore((state) => state.updateEndAt);
   const roomData = useRoomStore((state) => state.roomData);
@@ -31,7 +31,7 @@ export const useCardsSocket = () => {
     }
     if (roomData?.gameState === GameStateType.MinigameIntro) {
       setGameStatus(CARDS_GAME_STATUS.CHOOSE);
-      setTimeout(() => setCards(defaultCards), 400);
+      setTimeout(() => setCards(Array(Math.max(3, players.length)).fill(0)), 400);
     }
   }, [roomData]);
 
