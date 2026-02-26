@@ -10,6 +10,8 @@ export type DiamondType = {
     won: boolean;
 };
 
+export type CardPlayersMapType = Record<number, {id: string, nickname: string}[]>;
+
 export const CARDS_GAME_STATUS = {
     CHOOSE: 'Choose a card',
     REVEAL: 'Cards Reveal',
