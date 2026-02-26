@@ -4,4 +4,8 @@ export enum avatars {
   robot = "robot",
   carton = "carton",
   skeleton = "skeleton",
+  agent = "agent",
+  king = "king",
+  alien = "alien",
+  panda = "panda",
 }
