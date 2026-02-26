@@ -70,6 +70,8 @@ export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
   const handleShowToast = (error: FieldErrors<FormInputs>) => {
     if (error.room) {
       toast.error({ message: error.room.message!, duration: 5 });
+    } else if (error.nickname) {
+      toast.error({ message: error.nickname.message!, duration: 5 });
     }
   };
 
@@ -77,11 +79,11 @@ export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
     e.preventDefault();
     const clipboardText = e.clipboardData.getData('text');
     const textToPaste = clipboardText.replace(`${window.location.origin}/`, '');
-    setValue("room", textToPaste, {
+    setValue('room', textToPaste, {
       shouldValidate: true,
       shouldDirty: true,
-    })
-  }
+    });
+  };
 
   useEffect(() => {
     setValue('room', roomCode);
@@ -89,7 +91,15 @@ export const JoinForm = ({ roomCode, onCancel }: JoinFormProps) => {
 
   return (
     <form className="form" onSubmit={handleSubmit(handleJoin, handleShowToast)} onReset={onCancel}>
-      <Input style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" register={register('nickname')} />
+      <Input
+        style={{ width: '100%' }}
+        type="text"
+        id="name"
+        placeholder="Nickname"
+        register={register('nickname', {
+          maxLength: { value: 20, message: "Nickname can't be longer than 20 characters" },
+        })}
+      />
 
       <div className="form__row">
         <Button style={{ width: '50%' }} type="submit">

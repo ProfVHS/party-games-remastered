@@ -47,7 +47,7 @@ export const AnimationOverlay = () => {
       {GameType === 'TURN' && (
         <>
           <span>Turn:</span>
-          <span>{turn!.nickname}</span>
+          <span className="animation-overlay__nickname">{turn!.nickname}</span>
         </>
       )}
     </div>

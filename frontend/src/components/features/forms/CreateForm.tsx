@@ -1,6 +1,6 @@
 import './Form.scss';
 
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '@components/ui/button/Button.tsx';
 import { socket } from '@socket';
 import { generateRandomUserName } from '@utils';
@@ -42,11 +42,26 @@ export const CreateForm = ({ onCancel }: CreateFormProps) => {
     }
   };
 
+  const handleShowToast = (error: FieldErrors<FormInputs>) => {
+    if (error.nickname) {
+      toast.error({ message: error.nickname.message!, duration: 5 });
+    }
+  };
+
   useRoomCreate();
 
   return (
-    <form className="form" onSubmit={handleSubmit(handleCreateRoom)} onReset={onCancel}>
-      <Input className="form-input" style={{ width: '100%' }} type="text" id="name" placeholder="Nickname" register={register('nickname')} />
+    <form className="form" onSubmit={handleSubmit(handleCreateRoom, handleShowToast)} onReset={onCancel}>
+      <Input
+        className="form-input"
+        style={{ width: '100%' }}
+        type="text"
+        id="name"
+        placeholder="Nickname"
+        register={register('nickname', {
+          maxLength: { value: 20, message: "Nickname can't be longer than 20 characters" },
+        })}
+      />
 
       <Button style={{ width: '100%' }} type="submit">
         Create
