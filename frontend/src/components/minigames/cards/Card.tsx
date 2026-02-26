@@ -4,23 +4,23 @@ import { Icon } from '@assets/icon';
 import { ClassNames } from '@utils';
 import { usePlayersStore } from '@stores/playersStore.ts';
 import { PlayerNicknamesList } from '@components/ui/playerNicknamesList/PlayerNicknamesList.tsx';
-import { CARDS_GAME_STATUS, CardsGameStatus, PlayerType } from '@shared/types';
+import { CARDS_GAME_STATUS, CardsGameStatus } from '@shared/types';
 
 interface CardProps {
   id: number;
   points: number;
   gameStatus: CardsGameStatus;
   selected: boolean;
+  playersMap?: { id: string; nickname: string }[];
   onClick: (id: number) => void;
 }
 
-export const Card = ({ id, points, gameStatus, selected, onClick }: CardProps) => {
+export const Card = ({ id, points, gameStatus, selected, playersMap, onClick }: CardProps) => {
   const revealTime: number = 400;
   const pointsToDisplay: string = points < 0 ? points.toString() : '+' + points.toString();
   const [cardType, setCardType] = useState<'back' | 'positive' | 'negative'>('back');
   const [flip, setFlip] = useState<boolean>(false);
-  const [playersWithThisCard, setPlayersWithThisCard] = useState<PlayerType[]>([]);
-  const players = usePlayersStore((state) => state.players);
+  const updatePlayerScore = usePlayersStore((state) => state.updatePlayerScore);
 
   const showCardBack = () => {
     setFlip(true);
@@ -39,6 +39,14 @@ export const Card = ({ id, points, gameStatus, selected, onClick }: CardProps) =
         setTimeout(() => {
           setFlip(false);
           setCardType(points > 0 ? 'positive' : 'negative');
+
+          if (playersMap && playersMap.length > 0) {
+            const score = points > 0 ? points / playersMap.length : points * playersMap.length;
+
+            playersMap.forEach((player) => {
+              updatePlayerScore(player.id, score);
+            });
+          }
         }, revealTime);
       },
       revealTime * (id + 1),
@@ -54,15 +62,11 @@ export const Card = ({ id, points, gameStatus, selected, onClick }: CardProps) =
     }
   }, [gameStatus]);
 
-  useEffect(() => {
-    setPlayersWithThisCard(players.filter((player) => player.selectedItem === id));
-  }, [players]);
-
   return (
     <div className={ClassNames('card', [cardType], { flip: flip, selected: selected })} onClick={cardType === 'back' ? () => onClick(id) : undefined}>
-      {cardType !== 'back' && playersWithThisCard.length > 0 && (
+      {cardType !== 'back' && playersMap && playersMap.length > 0 && (
         <PlayerNicknamesList
-          playerList={playersWithThisCard}
+          playerList={playersMap.map((player) => player.nickname)}
           className={ClassNames('card__players-nicknames', { positive: points > 0, negative: points < 0 })}
         />
       )}

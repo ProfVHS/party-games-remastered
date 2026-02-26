@@ -22,14 +22,29 @@ export class Cards extends RoundBasedMinigame {
   }
 
   public getGameData() {
-    return this.cards;
+    let playersMap: Record<number, { id: string; nickname: string }[]> = {};
+    const shuffledCards = this.cards;
+
+    this.getPlayers().map((player) => {
+      const cardIndex = player.getSelectedItem();
+
+      if (cardIndex !== null) {
+        if (!playersMap[cardIndex]) {
+          playersMap[cardIndex] = [];
+        }
+
+        playersMap[cardIndex].push({ id: player.id, nickname: player.nickname });
+      }
+    });
+
+    return { shuffledCards, playersMap };
   }
 
   private awardPoints() {
     if (!this.cards) return;
 
     this.getPlayersWithoutSelectedItem().forEach((player: Player) => {
-      player.setSelectedItem(Math.floor(Math.random() * this.cards!.length - 1));
+      player.setSelectedItem(Math.floor(Math.random() * this.cards!.length));
     });
 
     this.cards.forEach((card, index) => {

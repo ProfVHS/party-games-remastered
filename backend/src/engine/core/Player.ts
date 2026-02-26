@@ -82,11 +82,11 @@ export class Player {
   }
 
   public addScore(score: number) {
-    this.score = this.score + score < 0 ? 0 : this.score + score;
+    this.score = this.score + score < 0 ? 0 : Math.floor(this.score + score);
   }
 
   public subtractScore(score: number) {
-    this.score = this.score - score <= 0 ? 0 : this.score - score;
+    this.score = this.score - score <= 0 ? 0 : Math.floor(this.score - score);
   }
 
   public getData() {

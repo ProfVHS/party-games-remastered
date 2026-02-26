@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
 import { socket } from '@socket';
-import { CARDS_GAME_STATUS, CardsGameStatus, GameStateType, PlayerType } from '@shared/types';
-import { usePlayersStore } from '@stores/playersStore.ts';
+import { CardPlayersMapType, CARDS_GAME_STATUS, CardsGameStatus, GameStateType } from '@shared/types';
 import { useRoomStore } from '@stores/roomStore.ts';
+import { usePlayersStore } from '@stores/playersStore.ts';
 
 export const useCardsSocket = () => {
-  const setPlayers = usePlayersStore((state) => state.setPlayers);
+  const [gameStatus, setGameStatus] = useState<CardsGameStatus>(CARDS_GAME_STATUS.CHOOSE);
+  const [cards, setCards] = useState<number[]>([]);
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [cardPlayersMap, setCardPlayersMap] = useState<CardPlayersMapType>({});
   const players = usePlayersStore((state) => state.players);
   const updateGameState = useRoomStore((state) => state.updateGameState);
   const updateEndAt = useRoomStore((state) => state.updateEndAt);
   const roomData = useRoomStore((state) => state.roomData);
-
-  const [gameStatus, setGameStatus] = useState<CardsGameStatus>(CARDS_GAME_STATUS.CHOOSE);
-  const [cards, setCards] = useState<number[]>([]);
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   useEffect(() => {
     socket.on('round_end', handleRoundEnd);
@@ -32,16 +31,16 @@ export const useCardsSocket = () => {
     }
     if (roomData?.gameState === GameStateType.MinigameIntro) {
       setGameStatus(CARDS_GAME_STATUS.CHOOSE);
-      setCards(Array(Math.max(3, players.length)).fill(0));
+      setTimeout(() => setCards(Array(Math.max(3, players.length)).fill(0)), 400);
     }
   }, [roomData]);
 
-  const handleRoundEnd = (gameState: GameStateType, endAt: number, players: PlayerType[], shuffledCards: number[]) => {
+  const handleRoundEnd = (gameState: GameStateType, endAt: number, gameData: { shuffledCards: number[]; playersMap: CardPlayersMapType }) => {
     updateGameState(gameState);
-    setCards(shuffledCards);
+    setCards(gameData.shuffledCards);
     setSelectedCard(null);
-    setPlayers(players);
     updateEndAt(endAt);
+    setCardPlayersMap(gameData.playersMap);
   };
 
   const handleSelectCard = (cardId: number) => {
@@ -51,5 +50,5 @@ export const useCardsSocket = () => {
     socket.emit('player_selection', cardId);
   };
 
-  return { gameStatus, cards, selectedCard, handleSelectCard };
+  return { gameStatus, cards, selectedCard, cardPlayersMap, handleSelectCard };
 };

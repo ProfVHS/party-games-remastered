@@ -8,7 +8,6 @@ import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
 import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
 import { getMinigame } from '@engine/managers/MinigameManager';
 import { COUNTDOWN, MAX_PLAYERS } from '@shared/constants/gameRules';
-import { formatTime } from '@shared/utlis';
 
 export const handleConnection = (io: Server, socket: Socket) => {
   socket.on('create_room', (roomCode: string, nickname: string) => {
@@ -26,8 +25,6 @@ export const handleConnection = (io: Server, socket: Socket) => {
         if (finishedGameState === GameStateType.Lobby) {
           io.to(roomCode).emit('got_players', room.getPlayers());
         }
-
-        console.log('Response time - ', response!.gameState, formatTime(response!.endAt));
 
         io.to(roomCode).emit('update_game_state', response);
       },
@@ -48,13 +45,10 @@ export const handleConnection = (io: Server, socket: Socket) => {
           if (game instanceof TurnBasedMinigame) {
             switch (response.state) {
               case 'NEXT_TURN':
-                console.log('NEXT_TURN');
                 room.setGameState(GameStateType.MinigameIntro);
                 room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
 
                 const { id, nickname } = game.getCurrentTurnPlayer();
-
-                console.log('Response time - ', room.getGameState(), formatTime(room.getTimer()?.getEndAt()));
 
                 io.to(roomCode).emit('player_exploded', room.getPlayers());
                 io.to(roomCode).emit('update_game_state', {
@@ -65,11 +59,8 @@ export const handleConnection = (io: Server, socket: Socket) => {
                 });
                 break;
               case 'END_GAME':
-                console.log('END_GAME');
                 room.setGameState(GameStateType.MinigameOutro);
                 room.startTimer(COUNTDOWN.MINIGAME_CLOSE_DELAY_MS);
-
-                console.log('Response time - ', room.getGameState(), formatTime(room.getTimer()?.getEndAt()));
 
                 io.to(roomCode).emit('player_exploded', room.getPlayers());
                 io.to(roomCode).emit('update_game_state', { gameState: room.getGameState(), endAt: room.getTimer()?.getEndAt() });
@@ -78,19 +69,13 @@ export const handleConnection = (io: Server, socket: Socket) => {
           } else if (game instanceof RoundBasedMinigame) {
             switch (response.state) {
               case 'SHOW_RESULT':
-                console.log('SHOW_RESULT');
                 room.setGameState(GameStateType.MinigameOutro);
 
-                console.log('Response time - ', room.getGameState(), formatTime(room.getTimer()?.getEndAt()));
-
-                io.to(roomCode).emit('round_end', room.getGameState(), game.getSummaryTimer().getEndAt(), room.getPlayers(), game.getGameData());
+                io.to(roomCode).emit('round_end', room.getGameState(), game.getSummaryTimer().getEndAt(), game.getGameData());
                 break;
               case 'NEXT_ROUND':
-                console.log('NEXT_ROUND');
                 room.setGameState(GameStateType.MinigameIntro);
                 room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
-
-                console.log('Response time - ', room.getGameState(), formatTime(room.getTimer()?.getEndAt()));
 
                 io.to(roomCode).emit('update_game_state', {
                   gameState: room.getGameState(),
@@ -100,11 +85,8 @@ export const handleConnection = (io: Server, socket: Socket) => {
                 });
                 break;
               case 'END_GAME':
-                console.log('END_GAME');
                 room.setGameState(GameStateType.MinigameOutro);
                 room.startTimer(COUNTDOWN.MINIGAME_CLOSE_DELAY_MS);
-
-                console.log('Response time - ', room.getGameState(), formatTime(room.getTimer()?.getEndAt()));
 
                 io.to(roomCode).emit('update_game_state', { gameState: room.getGameState(), endAt: room.getTimer()?.getEndAt() });
                 break;
@@ -139,7 +121,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
     if (result.success) {
       socket.join(roomCode);
       socket.data.roomCode = roomCode;
-      socket.to(roomCode).emit('player_join_toast', nickname);
+      io.to(roomCode).emit('player_join_toast', nickname);
       callback(JOIN_ROOM_STATUS.SUCCESS);
     }
   });

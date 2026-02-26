@@ -11,7 +11,8 @@ import { Scoreboard } from '@components/features/leaderboard/Scoreboard.tsx';
 import { LobbyPage } from '@components/pages/room/LobbyPage.tsx';
 
 export const RoomPage = () => {
-  const { minigame } = useRoomSocket();
+  const { minigame, slots, areRoomSettingsUpToDate, setAreRoomSettingsUpToDate } = useRoomSocket();
+
   const players = usePlayersStore((state) => state.players);
   const roomData = useRoomStore((state) => state.roomData);
 
@@ -30,7 +31,9 @@ export const RoomPage = () => {
 
   return roomData ? (
     <>
-      {roomData.gameState === GameStateType.Lobby && <LobbyPage />}
+      {roomData.gameState === GameStateType.Lobby && (
+        <LobbyPage slots={slots} areRoomSettingsUpToDate={areRoomSettingsUpToDate} setAreRoomSettingsUpToDate={setAreRoomSettingsUpToDate} />
+      )}
       {isStarted && (
         <RoomLayout players={players}>
           {isMinigame && <Minigame key={minigame.id} minigameName={minigame.name} />}
