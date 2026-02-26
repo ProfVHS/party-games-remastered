@@ -44,13 +44,28 @@ export class Cards extends RoundBasedMinigame {
 
   public shuffleCards(round: number) {
     const targetCardsCount = Math.max(MIN_CARDS, this.players.size - 1);
+
     const roundCards = ROUND_CARDS[round];
+    const positivesCards = roundCards.filter((card) => card > 0);
+    const minPositiveCards = round > 1 ? 1 : 2;
 
     const result = [];
 
     for (let i = 0; i < targetCardsCount; i++) {
-      const index = Math.floor(i * roundCards.length / targetCardsCount);
+      const index = Math.floor((i * roundCards.length) / targetCardsCount);
       result.push(roundCards[index]);
+    }
+
+    // Enforce minimum positive cards per round
+    let i = 0;
+    let positivesCardCount = result.filter((card) => card > 0).length;
+
+    while (positivesCardCount < minPositiveCards) {
+      if (result[i] <= 0) {
+        result[i] = positivesCards[0];
+        positivesCardCount++;
+      }
+      i++;
     }
 
     this.cards = _.shuffle(result);
