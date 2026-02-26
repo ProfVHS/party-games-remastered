@@ -18,10 +18,8 @@
     align-items: center;
 
     top: -155px;
-
-    width: clamp(175px, 10vw, 265px);
-    height: auto;
-    aspect-ratio: 175/230;
+    scale: 0.8;
+    width: 10rem;
   }
 
   &__top {
