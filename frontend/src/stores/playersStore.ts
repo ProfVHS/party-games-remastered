@@ -24,7 +24,9 @@ export const usePlayersStore = create<PlayersStoreProps>((set) => ({
   },
   updatePlayerScore: (id: string, score: number) => {
     set((state) => ({
-      players: state.players.map((player) => (player.id === id ? { ...player, score: player.score + score } : player)),
+      players: state.players.map((player) =>
+        player.id === id ? { ...player, score: player.score + score < 0 ? 0 : Math.floor(player.score + score) } : player,
+      ),
     }));
   },
 }));
