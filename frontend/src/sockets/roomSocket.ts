@@ -98,7 +98,6 @@ export const useRoomSocket = () => {
   };
 
   const handlePlayerJoinToast = (nickname: string) => {
-    console.log('Toast');
     toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
   };
 
