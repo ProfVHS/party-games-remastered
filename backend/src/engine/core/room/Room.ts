@@ -112,9 +112,12 @@ class Room {
         const minigame = this.setMinigame(this);
         const payload = this.getMinigamePayload(minigame);
 
-        if (this.settings.getData().isTutorialsEnabled) {
+        const shownTutorials = this.settings.getShownTutorials();
+
+        if (this.settings.getData().isTutorialsEnabled && !shownTutorials.includes(minigame.name)) {
           this.setGameState(GameStateType.Tutorial);
           this.startTimer(COUNTDOWN.TUTORIAL_MS);
+          this.settings.addShownTutorials(minigame.name);
         } else {
           this.setGameState(GameStateType.MinigameIntro);
           this.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
@@ -152,9 +155,12 @@ class Room {
           const minigame = this.setMinigame(this);
           const payload = this.getMinigamePayload(minigame);
 
-          if (this.settings.getData().isTutorialsEnabled) {
+          const shownTutorials = this.settings.getShownTutorials();
+
+          if (this.settings.getData().isTutorialsEnabled && !shownTutorials.includes(minigame.name)) {
             this.setGameState(GameStateType.Tutorial);
             this.startTimer(COUNTDOWN.TUTORIAL_MS);
+            this.settings.addShownTutorials(minigame.name);
           } else {
             this.setGameState(GameStateType.MinigameIntro);
             this.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
