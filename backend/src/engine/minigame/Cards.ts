@@ -44,7 +44,7 @@ export class Cards extends RoundBasedMinigame {
     if (!this.cards) return;
 
     this.getPlayersWithoutSelectedItem().forEach((player: Player) => {
-      player.setSelectedItem(Math.floor(Math.random() * this.cards!.length - 1));
+      player.setSelectedItem(Math.floor(Math.random() * this.cards!.length));
     });
 
     this.cards.forEach((card, index) => {

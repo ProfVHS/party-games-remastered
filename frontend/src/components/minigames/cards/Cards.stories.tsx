@@ -46,3 +46,29 @@ export const CardNegative: Story = {
     onClick: () => {},
   },
 };
+export const CardPositiveWithPlayers: Story = {
+  args: {
+    id: 0,
+    points: 100,
+    gameStatus: CARDS_GAME_STATUS.REVEAL,
+    selected: false,
+    playersMap: [
+      { id: 'Id-UltraMangoGuy', nickname: 'Ultra Mango Guy' },
+      { id: 'Id-FastGuy', nickname: 'Fast Guy' },
+    ],
+    onClick: () => {},
+  },
+};
+export const CardNegativeWithPlayers: Story = {
+  args: {
+    id: 0,
+    points: -100,
+    gameStatus: CARDS_GAME_STATUS.REVEAL,
+    selected: false,
+    playersMap: [
+      { id: 'Id-UltraMangoGuy', nickname: 'Ultra Mango Guy' },
+      { id: 'Id-FastGuy', nickname: 'Fast Guy' },
+    ],
+    onClick: () => {},
+  },
+};

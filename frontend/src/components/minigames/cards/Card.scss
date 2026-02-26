@@ -32,7 +32,6 @@
       & > div {
         color: rgba(#FFF, 0.8);
         background-color: var(--cards-player-positive-bg);
-        font-weight: normal !important;
         max-width: 95% !important;
       }
     }
@@ -40,13 +39,11 @@
     &--negative {
       position: absolute !important;
       justify-content: start !important;
-      padding: 16px 0 !important;
       border-radius: 0 !important;
 
       & > div {
         color: rgba(255, 255, 255, 0.9);
         background-color: var(--cards-player-negative-bg);
-        font-weight: normal !important;
         max-width: 95% !important;
       }
     }
