@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { GameStateType } from '@shared/types';
 import { useGameStore } from '@stores/gameStore.ts';
 import { ClassNames } from '@utils';
+import { motion } from 'framer-motion';
 
 export const AnimationOverlay = () => {
   const roomData = useRoomStore((state) => state.roomData);
@@ -41,15 +42,17 @@ export const AnimationOverlay = () => {
   if (!visible) return null;
 
   return (
-    <div className={ClassNames('animation-overlay', [GameType === 'TURN' && 'turn'])}>
-      {GameType === 'ROUND' && <span>Round: {round}</span>}
-
-      {GameType === 'TURN' && (
-        <>
-          <span>Turn:</span>
-          <span className="animation-overlay__nickname">{turn!.nickname}</span>
-        </>
-      )}
+    <div className={ClassNames('animation-wrapper')}>
+      <div className={ClassNames('animation-overlay', [GameType === 'TURN' && 'turn'])}>
+        {GameType === 'ROUND' && <span>Round: {round}</span>}
+        {GameType === 'TURN' && (
+          <>
+            <span>Turn:</span>
+            <span className="animation-overlay__nickname">{turn!.nickname}</span>
+          </>
+        )}
+        <motion.div className="animation-overlay__progress" initial={{ width: '100%' }} animate={{ width: '0%' }} transition={{duration: 1, ease: 'linear' }} />
+      </div>
     </div>
   );
 };
