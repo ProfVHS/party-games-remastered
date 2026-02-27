@@ -1,72 +1,48 @@
-import './RoomPage.scss';
-import { RoomSettings } from '@components/features/roomSettings/RoomSettings.tsx';
-import { Lobby } from '@components/features/lobby/Lobby.tsx';
-import { useEffect, useState } from 'react';
-import { socket } from '@socket';
-import { RoomSettingsType } from '@frontend-types/RoomSettingsType.ts';
-import { useToast } from '@hooks/useToast.ts';
-import { usePlayersStore } from '@stores/playersStore.ts';
-import { PlayerAvatar } from '@components/features/playerAvatar/PlayerAvatar.tsx';
-import { EmptySlot } from '@components/features/emptySlot/EmptySlot.tsx';
-import { MAX_PLAYERS } from '@shared/constants/gameRules.ts';
-import { MinigameDataType, MinigameNamesEnum } from '@shared/types';
+import './LobbyPage.scss';
 import { Minigame } from '@components/minigames/Minigame.tsx';
 import { RoomLayout } from '@components/features/roomLayout/RoomLayout.tsx';
+import { usePlayersStore } from '@stores/playersStore.ts';
+import { useRoomSocket } from '@sockets/roomSocket.ts';
+import { EndGame } from '@components/features/endGame/EndGame.tsx';
 import { useRoomStore } from '@stores/roomStore.ts';
-import { useSocketConnection } from '@hooks/useSocketConnection.ts';
-import { v4 as uuidv4 } from 'uuid';
+import { GameStateType } from '@shared/types';
+import { Loading } from '@components/ui/loading/Loading.tsx';
+import { Scoreboard } from '@components/features/leaderboard/Scoreboard.tsx';
+import { LobbyPage } from '@components/pages/room/LobbyPage.tsx';
 
 export const RoomPage = () => {
-  const { setRoomSettings, fetchRoomData } = useRoomStore();
-  const [minigameName, setMinigameName] = useState<MinigameNamesEnum | null>(null);
-  const [minigameId, setMinigameId] = useState<string>('');
-  const [playerIdsReady, setPlayerIdsReady] = useState<string[]>([]);
-  const [areRoomSettingsUpToDate, setAreRoomSettingsUpToDate] = useState<boolean>(true);
+  const { minigame, slots, areRoomSettingsUpToDate, setAreRoomSettingsUpToDate } = useRoomSocket();
 
-  const toast = useToast();
+  const players = usePlayersStore((state) => state.players);
+  const roomData = useRoomStore((state) => state.roomData);
 
-  useSocketConnection();
+  const isMinigame =
+    roomData &&
+    minigame &&
+    (roomData.gameState === GameStateType.Minigame ||
+      roomData.gameState === GameStateType.MinigameIntro ||
+      roomData.gameState === GameStateType.MinigameOutro ||
+      roomData.gameState === GameStateType.Tutorial);
 
-  useEffect(() => {
-    socket.on('player_join_toast', (nickname: string) => {
-      toast.info({ message: `Player ${nickname} joined the room!`, duration: 3 });
-    });
+  const isLeaderboard = roomData && roomData.gameState === GameStateType.Leaderboard;
+  const isEndGame = roomData && roomData.gameState === GameStateType.Finished;
 
-    socket.on('started_minigame', (data: { minigameData: MinigameDataType }) => {
-      setMinigameName(data.minigameData.minigameName);
-      setMinigameId(uuidv4());
-      fetchRoomData();
-    });
+  const isStarted = isLeaderboard || isMinigame;
 
-    socket.on('updated_room_settings', (roomSettings: RoomSettingsType) => {
-      toast.info({ message: 'Host changed room settings', duration: 3 });
-      setRoomSettings(roomSettings);
-    });
-
-    return () => {
-      socket.off('player_join_toast');
-      socket.off('started_minigame');
-      socket.off('updated_room_settings');
-    };
-  }, [socket]);
-
-  const { players } = usePlayersStore();
-
-  const slots = [...players, ...Array(MAX_PLAYERS - players.length).fill(null)];
-
-  return minigameName ? (
-    <RoomLayout players={players}>{minigameName ? <Minigame minigameId={minigameId} minigameName={minigameName} /> : <></>}</RoomLayout>
+  return roomData ? (
+    <>
+      {roomData.gameState === GameStateType.Lobby && (
+        <LobbyPage slots={slots} areRoomSettingsUpToDate={areRoomSettingsUpToDate} setAreRoomSettingsUpToDate={setAreRoomSettingsUpToDate} />
+      )}
+      {isStarted && (
+        <RoomLayout players={players}>
+          {isMinigame && <Minigame key={minigame.id} minigameName={minigame.name} />}
+          {isLeaderboard && <Scoreboard />}
+        </RoomLayout>
+      )}
+      {isEndGame && <EndGame />}
+    </>
   ) : (
-    <div className="lobby-page">
-      <div className="lobby-page__content">
-        <RoomSettings playerIdsReady={playerIdsReady} setAreRoomSettingsUpToDate={setAreRoomSettingsUpToDate} />
-        <Lobby playerIdsReady={playerIdsReady} setPlayerIdsReady={setPlayerIdsReady} areRoomSettingsUpToDate={areRoomSettingsUpToDate} />
-      </div>
-      <div className="lobby-page__players">
-        {slots.map((player, index) =>
-          player !== null ? <PlayerAvatar key={index} player={player} inLobby={true} ready={playerIdsReady.includes(player.id)} /> : <EmptySlot key={index} />,
-        )}
-      </div>
-    </div>
+    <Loading />
   );
 };

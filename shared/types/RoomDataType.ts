@@ -1,14 +1,7 @@
+import {GameStateType} from "./GameStateType";
+
 export type RoomDataType = {
   roomCode: string;
-  maxRounds: number;
-  currentRound: number;
-  currentTurn: number;
-  status: RoomStatusEnum;
-  minigameIndex: number;
+  gameState: GameStateType;
+  endAt: number;
 };
-
-export enum RoomStatusEnum {
-  lobby = 'lobby',
-  game = 'game',
-  leaderboard = 'leaderboard',
-}

@@ -1,6 +1,6 @@
 @use 'sass:color';
-@use '../../../common/styles/_variables.scss' as *;
-@use '../../../common/styles/themes' as *;
+@use '@common/styles/_variables.scss' as *;
+@use '@common/styles/themes' as *;
 
 .button {
   display: flex;

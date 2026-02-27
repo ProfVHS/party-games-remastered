@@ -1,5 +1,4 @@
 export type TurnType = {
-  id: number;
-  player_id: string;
+  id: string;
   nickname: string;
 };

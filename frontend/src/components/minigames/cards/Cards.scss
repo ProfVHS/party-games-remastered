@@ -1,4 +1,4 @@
-@use '../../../common/styles/variables' as *;
+@use '@common/styles/variables' as *;
 
 .cards {
   position: relative;
@@ -6,12 +6,15 @@
   flex-direction: column;
   align-items: center;
 
+  padding: 8px;
+  box-sizing: border-box;
+
   height: 100%;
-  min-height: 24rem;
+  min-height: 18rem;
 
   width: 100%;
   max-width: 36rem;
-  min-width: 20rem;
+  min-width: 30rem;
 
   background-color: var(--cards-bg);
   border-radius: 0.25rem;
@@ -19,34 +22,6 @@
   box-shadow: 0 0.25rem 0 0 rgba(0, 0, 0, 0.2);
 
   user-select: none;
-
-  &__round {
-    position: absolute;
-    width: 17rem;
-    height: 6rem;
-    background-color: var(--cards-round-bg);
-    box-shadow: 0 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, 0.2);
-
-    color: var(--cards-title);
-    top: 8rem;
-    font-family: 'Spicy Rice', serif;
-    font-weight: 400;
-    font-style: normal;
-    font-size: 3.75rem;
-    border-radius: 0.25rem;
-    display: none;
-    z-index: -100;
-
-    &.visible {
-      z-index: 100;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      animation:
-        fadeIn 0.5s ease-out forwards,
-        fadeOut 0.5s ease-out 1.5s forwards;
-    }
-  }
 
   &__countdown {
     width: 4rem;
@@ -76,6 +51,9 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-  }
 
+    &--lock {
+      pointer-events: none;
+    }
+  }
 }

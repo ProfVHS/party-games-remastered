@@ -1,112 +1,77 @@
-import './Cards.scss';
+import './Card.scss';
 import { useEffect, useState } from 'react';
-import { PlayerType } from '@shared/types';
-import { usePlayersStore } from '@stores/playersStore';
 import { Icon } from '@assets/icon';
 import { ClassNames } from '@utils';
-import './Card.scss';
+import { usePlayersStore } from '@stores/playersStore.ts';
+import { PlayerNicknamesList } from '@components/ui/playerNicknamesList/PlayerNicknamesList.tsx';
+import { CARDS_GAME_STATUS, CardsGameStatus } from '@shared/types';
 
 interface CardProps {
   id: number;
-  points: number; // number
-  isPositive: boolean;
-  isFlipping?: boolean;
-  selected?: boolean;
-  newPlayersPointsCard?: PlayerType[];
+  points: number;
+  gameStatus: CardsGameStatus;
+  selected: boolean;
+  playersMap?: { id: string; nickname: string }[];
   onClick: (id: number) => void;
-  startNewRound?: () => void;
 }
 
-export const Card = ({ id, points, isPositive, isFlipping, selected, newPlayersPointsCard, onClick, startNewRound }: CardProps) => {
-  const visibleDuration: number = 2000; // How long the cards and selected players remain visible
-  const revealTime: number = 400 * (id + 1); // Time in milliseconds to reveal the card
+export const Card = ({ id, points, gameStatus, selected, playersMap, onClick }: CardProps) => {
+  const revealTime: number = 400;
   const pointsToDisplay: string = points < 0 ? points.toString() : '+' + points.toString();
-  const [cardType, setCardType] = useState<'back' | 'positive' | 'negative'>('back'); // 'back', 'positive', 'negative'
-  const [flipping, setFlipping] = useState<boolean>(false);
-  const [playerNicknamesSelectedCard, setPlayerNicknamesSelectedCard] = useState<string[]>([]);
-  const { players, setPlayers } = usePlayersStore();
+  const [cardType, setCardType] = useState<'back' | 'positive' | 'negative'>('back');
+  const [flip, setFlip] = useState<boolean>(false);
+  const updatePlayerScore = usePlayersStore((state) => state.updatePlayerScore);
 
-  const flipCardBack = () => {
-    setFlipping(true);
+  const showCardBack = () => {
+    setFlip(true);
 
     setTimeout(() => {
+      setFlip(false);
       setCardType('back');
-      setPlayerNicknamesSelectedCard(() => []);
-      setFlipping(false);
-    }, 400);
-  };
-
-  const revealCard = () => {
-    // First timeout to flip the card by 90 degrees, still with the back side visible
-    setTimeout(() => {
-      setFlipping(true);
-
-      // Second timeout to change the card type after the flip animation starts and reveal the card with new points and players
-      setTimeout(() => {
-        setCardType(isPositive ? 'positive' : 'negative');
-
-        if (!newPlayersPointsCard || newPlayersPointsCard.length < 0) return;
-
-        const pointsToAdd = Math.floor(points < 0 ? points * newPlayersPointsCard.length : points / newPlayersPointsCard.length);
-        let playerNicknames: string[] = [];
-
-        // Update the score for each affected player
-        newPlayersPointsCard.forEach((player) => {
-          players.forEach((p) => {
-            if (p.id === player.id) {
-              const newScore = p.score + pointsToAdd;
-              newScore < 0 ? (p.score = 0) : (p.score = newScore);
-              playerNicknames = [...playerNicknames, p.nickname];
-            }
-          });
-        });
-
-        setPlayers([...players]);
-        setFlipping(false);
-        setPlayerNicknamesSelectedCard(() => playerNicknames);
-
-        if (id === 8 && startNewRound) {
-          setTimeout(() => {
-            startNewRound();
-          }, visibleDuration);
-        }
-      }, 400);
     }, revealTime);
   };
 
+  const showCardFront = () => {
+    setTimeout(
+      () => {
+        setFlip(true);
+
+        setTimeout(() => {
+          setFlip(false);
+          setCardType(points > 0 ? 'positive' : 'negative');
+
+          if (playersMap && playersMap.length > 0) {
+            const score = points > 0 ? points / playersMap.length : points * playersMap.length;
+
+            playersMap.forEach((player) => {
+              updatePlayerScore(player.id, score);
+            });
+          }
+        }, revealTime);
+      },
+      revealTime * (id + 1),
+    );
+  };
+
   useEffect(() => {
-    if (isFlipping) {
-      revealCard();
-    } else {
-      flipCardBack();
+    if (gameStatus === CARDS_GAME_STATUS.CHOOSE) {
+      showCardBack();
     }
-  }, [isFlipping]);
+    if (gameStatus === CARDS_GAME_STATUS.REVEAL) {
+      showCardFront();
+    }
+  }, [gameStatus]);
 
   return (
-    <div
-      className={ClassNames('card', [cardType], {
-        flipping: flipping,
-        selected: selected,
-        players: playerNicknamesSelectedCard.length > 0,
-      })}
-      onClick={cardType === 'back' ? () => onClick(id) : undefined}
-    >
-      {playerNicknamesSelectedCard.length > 0 && (
-        <div className="card__players">
-          {playerNicknamesSelectedCard.map((nickname, index) => (
-            <div className={ClassNames('card__player', [cardType])} key={index}>
-              {nickname}
-            </div>
-          ))}
-        </div>
+    <div className={ClassNames('card', [cardType], { flip: flip, selected: selected })} onClick={cardType === 'back' ? () => onClick(id) : undefined}>
+      {cardType !== 'back' && playersMap && playersMap.length > 0 && (
+        <PlayerNicknamesList
+          playerList={playersMap.map((player) => player.nickname)}
+          className={ClassNames('card__players-nicknames', { positive: points > 0, negative: points < 0 })}
+        />
       )}
       {cardType !== 'back' && <div className="card__score card__score--top">{pointsToDisplay}</div>}
-      <div
-        className={ClassNames('card__content', {
-          positive: cardType === 'positive',
-          negative: cardType === 'negative',
-        })}
-      >
+      <div className={ClassNames('', { positive: cardType === 'positive', negative: cardType === 'negative' })}>
         {cardType === 'back' && <Icon icon="Logo" className="svg" />}
         {cardType === 'positive' && <div className="card__score card__score--mid">{pointsToDisplay}</div>}
         {cardType === 'negative' && <Icon icon="Mine" className="svg" />}

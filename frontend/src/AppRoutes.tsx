@@ -8,9 +8,12 @@ import { Icon } from '@assets/icon';
 import { RoomPage } from '@components/pages/room/RoomPage.tsx';
 import { SmallScreenOverlay } from '@components/features/smallScreenOverlay/SmallScreenOverlay.tsx';
 import { AppVersion } from '@components/ui/appVersion/AppVersion.tsx';
+import { initializeTurnSocket } from './sockets/turnSocket.ts';
 
 export const AppRoutes = () => {
   const [showUserSettings, setShowUserSettings] = useState(false);
+  initializeTurnSocket();
+
   return (
     <BrowserRouter>
       <SmallScreenOverlay />

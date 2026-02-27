@@ -1,25 +1,27 @@
 export enum MinigameNamesEnum {
-  clickTheBomb = "Click the Bomb",
-  colorsMemory = "Colors Memory",
-  cards = "Cards",
-  trickyDiamonds = "Tricky Diamonds",
+  CLICK_THE_BOMB = "CLICK_THE_BOMB",
+  CARDS = "CARDS",
+  TRICKY_DIAMONDS = "TRICKY_DIAMONDS",
 }
 
-export type MinigameDataType = ClickTheBombDataType | ColorsMemoryDataType | CardsDataType | TrickyDiamondsDataType;
-
-export type ClickTheBombDataType = {
-  minigameName: MinigameNamesEnum.clickTheBomb;
-  clickCount: number;
-  maxClicks: number;
-  streak: number;
-  prizePool: number;
+export type DiamondType = {
+    id: number;
+    players: string[];
+    won: boolean;
 };
 
-export type ColorsMemoryDataType = {
-  minigameName: MinigameNamesEnum.colorsMemory;
-  sequence: string[];
+export type CardPlayersMapType = Record<number, {id: string, nickname: string}[]>;
+
+export const CARDS_GAME_STATUS = {
+    CHOOSE: 'Choose a card',
+    REVEAL: 'Cards Reveal',
 };
 
-export type CardsDataType = { minigameName: MinigameNamesEnum.cards };
+export type CardsGameStatus = (typeof CARDS_GAME_STATUS)[keyof typeof CARDS_GAME_STATUS];
 
-export type TrickyDiamondsDataType = { minigameName: MinigameNamesEnum.trickyDiamonds };
+export const TRICKY_DIAMONDS_GAME_STATUS = {
+    CHOOSE: 'Choose Wisely',
+    REVEAL: 'Judgment Time',
+};
+
+export type TrickyDiamondsGameStatus = (typeof TRICKY_DIAMONDS_GAME_STATUS)[keyof typeof TRICKY_DIAMONDS_GAME_STATUS];

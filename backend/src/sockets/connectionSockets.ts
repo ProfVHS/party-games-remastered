@@ -1,63 +1,144 @@
-import { Socket } from 'socket.io';
-import * as roomService from '@roomService';
-import * as playerService from '@playerService';
-import * as roomRepository from '@roomRepository';
-import { RoomStatusEnum } from '@shared/types';
-import { MIN_PLAYERS_TO_START } from '@shared/constants/gameRules';
-import { ReadyNameEnum } from '@backend-types';
+import { Server, Socket } from 'socket.io';
+import { Player } from '@engine-core/Player';
+import { RoomManager } from '@engine-managers/RoomManager';
+import { GameStateResponse, GameStateType, JOIN_ROOM_STATUS } from '@shared/types';
+import Room from '@engine/core/room/Room';
+import { TurnBasedMinigame } from '@minigame-base/TurnBasedMinigame';
+import { RoundBaseTimeoutState, TurnBaseTimeoutState } from '@backend-types';
+import { RoundBasedMinigame } from '@minigame-base/RoundBasedMinigame';
+import { getMinigame } from '@engine/managers/MinigameManager';
+import { COUNTDOWN, MAX_PLAYERS } from '@shared/constants/gameRules';
 
-export const connectionSockets = (socket: Socket) => {
-  console.log(`New connection: ${socket.id}`);
+export const handleConnection = (io: Server, socket: Socket) => {
+  socket.on('create_room', (roomCode: string, nickname: string) => {
+    let room = RoomManager.getRoom(roomCode);
+    if (room) return { success: false, message: `Room ${roomCode} already exists!` };
 
-  socket.on('disconnect', async (reason) => {
-    const roomCode = socket.data.roomCode;
-    const roomData = await roomRepository.getRoomData(roomCode);
+    room = RoomManager.createRoom(
+      roomCode,
+      (room: Room, finishedGameState: GameStateType, response: GameStateResponse) => {
+        if (finishedGameState === GameStateType.Finished) {
+          io.to(roomCode).emit('end_game');
+          return;
+        }
 
-    socket.leave(roomCode);
-    console.log(`Disconnected: ${socket.id} (Reason: ${reason})`);
+        if (finishedGameState === GameStateType.Lobby) {
+          io.to(roomCode).emit('got_players', room.getPlayers());
+        }
 
-    const response = await playerService.deletePlayerService(socket);
-    if (!response.success) return;
+        io.to(roomCode).emit('update_game_state', response);
+      },
+      (room: Room) => {
+        const currentMinigame = room.settings.getNextMinigame();
+        const roomCode = room.getData().roomCode;
 
-    // Payload: 1 - You are the last player in the room
-    if (response.payload == 1) {
-      await roomService.deleteRoomService(socket);
-      return;
+        if (!currentMinigame) {
+          throw new Error('Missing currentMinigame');
+        }
+
+        const currentMinigameClass = getMinigame(currentMinigame.name);
+        room.currentMinigame = new currentMinigameClass(room.players, (response: TurnBaseTimeoutState | RoundBaseTimeoutState) => {
+          const game = room.currentMinigame;
+
+          if (!game || !response.success) return;
+
+          if (game instanceof TurnBasedMinigame) {
+            switch (response.state) {
+              case 'NEXT_TURN':
+                room.setGameState(GameStateType.MinigameIntro);
+                room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
+
+                const { id, nickname } = game.getCurrentTurnPlayer();
+
+                io.to(roomCode).emit('player_exploded', room.getPlayers());
+                io.to(roomCode).emit('update_game_state', {
+                  gameState: room.getGameState(),
+                  endAt: room.getTimer()?.getEndAt(),
+                  event: 'ANIMATION_UPDATE',
+                  payload: { type: 'TURN', value: { id, nickname } },
+                });
+                break;
+              case 'END_GAME':
+                room.setGameState(GameStateType.MinigameOutro);
+                room.startTimer(COUNTDOWN.MINIGAME_CLOSE_DELAY_MS);
+
+                io.to(roomCode).emit('player_exploded', room.getPlayers());
+                io.to(roomCode).emit('update_game_state', { gameState: room.getGameState(), endAt: room.getTimer()?.getEndAt() });
+                break;
+            }
+          } else if (game instanceof RoundBasedMinigame) {
+            switch (response.state) {
+              case 'SHOW_RESULT':
+                room.setGameState(GameStateType.MinigameOutro);
+
+                io.to(roomCode).emit('round_end', room.getGameState(), game.getSummaryTimer().getEndAt(), game.getGameData());
+                break;
+              case 'NEXT_ROUND':
+                room.setGameState(GameStateType.MinigameIntro);
+                room.startTimer(COUNTDOWN.MINIGAME_INTRO_MS);
+
+                io.to(roomCode).emit('update_game_state', {
+                  gameState: room.getGameState(),
+                  endAt: room.getTimer()?.getEndAt(),
+                  event: 'ANIMATION_UPDATE',
+                  payload: { type: 'ROUND', value: game.getRound(), config: game.getGameConfig() },
+                });
+                break;
+              case 'END_GAME':
+                room.setGameState(GameStateType.MinigameOutro);
+                room.startTimer(COUNTDOWN.MINIGAME_CLOSE_DELAY_MS);
+
+                io.to(roomCode).emit('update_game_state', { gameState: room.getGameState(), endAt: room.getTimer()?.getEndAt() });
+                break;
+            }
+          }
+        });
+
+        return currentMinigame;
+      },
+    );
+
+    const player = new Player(socket.id, nickname, true);
+    const result = room.addPlayer(player);
+
+    if (result.success) {
+      socket.join(roomCode);
+      socket.data.roomCode = roomCode;
+      io.to(socket.id).emit('created_room', { roomCode, id: socket.id });
     }
-
-    // Lobby
-    if (roomData?.status === RoomStatusEnum.lobby) {
-      let playersReady = await roomRepository.getReadyPlayersCount(roomCode, ReadyNameEnum.minigame);
-      const playerIds = await roomRepository.getAllPlayerIds(roomCode);
-
-      // Prevents the minigame from starting if a player disconnects
-      // but the required number of players to start still appears ready
-      if (playersReady === playerIds.length && playersReady >= MIN_PLAYERS_TO_START) {
-        await roomRepository.deleteReadyTable(roomCode, ReadyNameEnum.minigame);
-        socket.to(roomCode).emit('failed_to_start_minigame');
-        playersReady = 0;
-      }
-
-      socket.to(roomCode).emit('fetched_ready_players', playersReady);
-    }
-
-    const players = await roomRepository.getAllPlayers(roomCode);
-    socket.to(roomCode).emit('got_players', players);
   });
 
-  socket.on('check_if_user_in_room', async (roomCode: string, storageId: string, callback) => {
-    if (!roomCode || !storageId) {
-      console.error('Room code or ID is missing');
-      return callback({ success: false });
+  socket.on('join_room', (roomCode: string, nickname: string, storageId: string, callback) => {
+    let room = RoomManager.getRoom(roomCode);
+    if (!room) return callback(JOIN_ROOM_STATUS.ROOM_NOT_FOUND);
+    if (room.getPlayers().length === MAX_PLAYERS) return callback(JOIN_ROOM_STATUS.ROOM_FULL);
+    if (room.getData().gameState !== GameStateType.Lobby || (room.getData().gameState === GameStateType.Lobby && room.getTimer()?.getEndAt()))
+      return callback(JOIN_ROOM_STATUS.ROOM_IN_GAME);
+
+    const player = new Player(socket.id, nickname);
+    const result = room.addPlayer(player);
+
+    if (result.success) {
+      socket.join(roomCode);
+      socket.data.roomCode = roomCode;
+      io.to(roomCode).emit('player_join_toast', nickname);
+      callback(JOIN_ROOM_STATUS.SUCCESS);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    let room = RoomManager.getRoom(socket.data.roomCode);
+
+    console.log('Socket disconnected: ', room?.getGameState(), socket.id);
+
+    room?.removePlayer(socket.id);
+
+    if (room?.getPlayers().length === 0) {
+      RoomManager.deleteRoom(room.roomCode);
     }
 
-    const playerData = await roomRepository.getPlayer(roomCode, socket.id);
-    const roomData = await roomRepository.getRoomData(roomCode);
+    io.to(socket.data.roomCode).emit('got_players', room?.getPlayers());
 
-    if (!playerData || !roomData) {
-      return callback({ success: false, payload: 'Your session has expired or the room no longer exists' });
-    }
-
-    return callback({ success: true });
+    socket.leave(socket.data.roomCode);
   });
 };

@@ -1,0 +1,133 @@
+.diamond {
+  position: relative;
+  width: 30%;
+  height: 90%;
+  background-color: var(--tricky-diamonds-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.5rem;
+  cursor: pointer;
+
+  min-width: 150px;
+  min-height: 200px;
+
+  box-shadow: 0 0.25rem 0 0 rgba(0, 0, 0, 0.25);
+
+  &__svg--selected {
+    svg {
+      animation: float 2s infinite ease-in-out;
+    }
+  }
+
+  &__value {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 1.8rem;
+    color: var(--tricky-diamonds-value);
+    font-family: "Poppins", sans-serif;
+    font-weight: bold;
+  }
+
+  &__players {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    color: #fff;
+    border-radius: 0.75rem;
+    height: 100%;
+    width: 100%;
+
+    &--won {
+      background-color: var(--tricky-diamonds-win-bg);
+    }
+
+    &--lost {
+      background-color: var(--tricky-diamonds-lost-bg);
+    }
+  }
+
+  &__players-nicknames {
+    &--positive {
+      position: relative !important;
+      background: none !important;
+      justify-content: start !important;
+
+      & > div {
+        color: rgba(0, 0, 0, 0.8);
+        background-color: #FFE4AF;
+        max-width: 90% !important;
+      }
+    }
+
+    &--negative {
+      position: relative !important;
+      background: none !important;
+      justify-content: start !important;
+      padding: 16px 0 !important;
+
+      & > div {
+        color: rgba(255, 255, 255, 0.9);
+        background-color: rgba(0, 0, 0, 0.2);
+        max-width: 90% !important;
+      }
+    }
+  }
+
+  &__cross {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    color: var(--tricky-diamonds-cross);
+    width: 80%;
+    height: auto;
+  }
+
+
+  &__trophy {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    background-color: var(--tricky-diamonds-win-trophy-bg);
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+
+    border-radius: 0.5rem;
+
+    svg {
+      height: 90%;
+      width: 90%;
+
+      margin: auto;
+    }
+
+    .score {
+      font-family: 'Spicy Rice', serif;
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.25rem;
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(10px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}
+
+

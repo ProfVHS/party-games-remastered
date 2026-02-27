@@ -1,0 +1,58 @@
+.avatar-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 60rem;
+  height: 40rem;
+
+  &__header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.75rem;
+    font-family: 'Spicy Rice', serif;
+    color: var(--header-color);
+    width: 95%;
+
+    padding-bottom: 1rem;
+    box-sizing: border-box;
+
+    border-bottom: 0.15rem solid rgba(0, 0, 0, 0.2);
+  }
+
+  &__avatars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+
+    width: 100%;
+    height: calc(3 * 10rem + 3 * 1rem);
+
+    padding: 0.5rem 2rem;
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 1rem;
+
+    padding-top: 1rem;
+
+    width: 100%;
+    border-top: 0.15rem solid rgba(0, 0, 0, 0.2);
+  }
+}

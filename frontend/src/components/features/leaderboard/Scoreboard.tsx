@@ -1,45 +1,35 @@
 import './Scoreboard.scss';
-import { ClassNames } from '@utils';
 import { useEffect, useState } from 'react';
-import { PlayerType } from '@shared/types';
 import { Leaderboard } from '@components/features/leaderboard/Leaderboard.tsx';
 import { GameResults } from '@components/features/leaderboard/GameResults.tsx';
+import { useRoomStore } from '@stores/roomStore.ts';
 
-type ScoreboardProps = {
-  scoreboardPlayers: PlayerType[];
-};
-
-export const Scoreboard = ({ scoreboardPlayers }: ScoreboardProps) => {
-  const [show, setShow] = useState(false);
+export const Scoreboard = () => {
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const roomData = useRoomStore((state) => state.roomData);
 
   useEffect(() => {
-    setTimeout(() => {
-      setShow(true);
-    }, 3000);
-  }, [scoreboardPlayers]);
+    if (!roomData?.endAt || roomData.gameState !== 'LEADERBOARD') {
+      setShowLeaderboard(false);
+      return;
+    }
 
-  return <>{show ? <Leaderboard leaderboardPlayers={scoreboardPlayers} /> : <GameResults gameResultsPlayers={scoreboardPlayers} />}</>;
-};
+    const now = Date.now();
+    const totalTimeLeft = roomData.endAt - now;
 
-type ScoreboardItemProps = {
-  index: number;
-  nickname: string;
-  score: number;
-  gameBoard: boolean;
-};
+    if (totalTimeLeft <= 0) {
+      setShowLeaderboard(true);
+      return;
+    }
 
-export const ScoreboardItem = ({ index, nickname, score, gameBoard }: ScoreboardItemProps) => {
-  const [visible, setVisible] = useState(false);
+    const halfTime = totalTimeLeft / 2;
 
-  useEffect(() => {
-    if (!gameBoard) setVisible(true);
-    else setTimeout(() => setVisible(true), index * 200);
-  }, [gameBoard]);
+    const timer = setTimeout(() => {
+      setShowLeaderboard(true);
+    }, halfTime);
 
-  return (
-    <div className={ClassNames('scoreboard__player', { visible: visible })}>
-      <div className="scoreboard__player__nickname">{index + 1 + '. ' + nickname}</div>
-      <div className="scoreboard__player__score">{score >= 0 && gameBoard ? '+' + score : score}</div>
-    </div>
-  );
+    return () => clearTimeout(timer);
+  }, [roomData]);
+
+  return showLeaderboard ? <Leaderboard /> : <GameResults />;
 };

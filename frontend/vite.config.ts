@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import packageJson from './package.json';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import path from 'path';
@@ -6,6 +7,13 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), svgr()],
+  define: { __APP_VERSION__: JSON.stringify(packageJson.version) },
+  server: {
+    port: 5173,
+  },
+  preview: {
+    port: 5173,
+  },
   resolve: {
     alias: {
       '@shared': path.resolve(__dirname, '../shared'),
@@ -18,6 +26,7 @@ export default defineConfig({
       '@stores': path.resolve(__dirname, 'src/stores'),
       '@frontend-types': path.resolve(__dirname, 'src/types'),
       '@socket': path.resolve(__dirname, 'src/socket.ts'),
+      '@sockets': path.resolve(__dirname, 'src/sockets'),
       '@utils': path.resolve(__dirname, 'src/utils.ts'),
     },
   },

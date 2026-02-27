@@ -1,50 +1,40 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-// Simple hook for second-based countdowns (10, 9, 8, ...)
-export const useCountdown = (initialTime: number, intervalSeconds: number, onComplete: () => void) => {
-  const intervalMs = intervalSeconds * 1000;
-  const [timeLeft, setTimeLeft] = useState<number>(initialTime);
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const callbackRef = useRef(onComplete); // Keep the latest version of the callback in a ref
-
-  const startCountdown = useCallback(() => {
-    setTimeLeft(initialTime);
-    setIsActive(true);
-  }, [initialTime]);
-
-  const stopCountdown = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-    setIsActive(false);
-  }, []);
+export function useCountdown() {
+  const countdown = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [endAt, setEndAt] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!isActive) return;
+    if (endAt === null) {
+      setTimeLeft(null);
+      return;
+    }
 
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        const next = prev - intervalMs / 1000;
-        if (next <= 0) {
-          clearInterval(timerRef.current!);
-          setIsActive(false);
-          callbackRef.current();
-          return 0;
-        }
-        return next;
-      });
-    }, intervalMs);
+    const calculateTimeLeft = () => {
+      const diff = Math.max(endAt - Date.now(), 0);
+      return Math.ceil(diff / 1000);
+    };
+
+    setTimeLeft(calculateTimeLeft());
+
+    countdown.current = setInterval(() => {
+      const newTimeLeft = calculateTimeLeft();
+      setTimeLeft(newTimeLeft);
+
+      if (newTimeLeft <= 0 && countdown.current) {
+        clearInterval(countdown.current);
+        countdown.current = null;
+      }
+    }, 100);
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (countdown.current) {
+        clearInterval(countdown.current);
+        countdown.current = null;
+      }
     };
-  }, [isActive]);
+  }, [endAt]);
 
-  useEffect(() => {
-    callbackRef.current = onComplete; // Always call the most recent callback
-  }, [onComplete]);
-
-  return { timeLeft, startCountdown, stopCountdown };
-};
+  return { timeLeft, setEndAt };
+}

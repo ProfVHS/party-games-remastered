@@ -9,6 +9,10 @@ html[data-theme='dark'] {
   --header-color: #{$darkerPrimaryColor};
   --party-games-fill: #{$darkerPrimaryColor};
   --cartoon-shadow: 0 4px rgba(0, 0, 0, 0.3);
+  --horizontal-line-color: rgba($darkerPrimaryColor, 0.2);
+
+  //== Loading ==//
+  --loading-color: #{$darkerPrimaryColor};
 
   //== Player Avatar ==//
   --player-avatar-username: #{$darkerPrimaryColor};
@@ -17,6 +21,12 @@ html[data-theme='dark'] {
   --player-avatar-turn-indicator: #994CE4;
   --player-avatar-status: #c81414;
   --player-avatar-status-ready: #99DD44;
+
+  //== Avatar Picker ==//
+  --avatar-picker-avatar-bg: url('@assets/textures/background-loading-black.svg');
+  --avatar-picker-avatar-text: rgba(#fff, 0.8);
+  --avatar-picker-avatar-text-bg: #171717;
+  --avatar-picker-lock-color: #4D4D4D;
 
   //== Button ==//
   --button-primary-bg: #6f359e;
@@ -39,7 +49,7 @@ html[data-theme='dark'] {
 
   //== Progress Bar ==//
   --progress-bg: #BD8CF8;
-  --progress-bg-fill: url('@assets/textures/background-loading-dark.svg');
+  --progress-bg-fill: #5a189a;
 
   //== Badge ==//
   --badge-red-bg: #971010;
@@ -88,7 +98,7 @@ html[data-theme='dark'] {
   --tutorial-text-warning: #DE0505;
   --tutorial-text-reward: #CCA600;
   --tutorial-indicator: #C287F1;
-  
+
   //== Click The Bomb ==//
   --click-the-bomb-bg: #{$darkBgColor};
   --click-the-bomb-turn: #fff;
@@ -118,4 +128,8 @@ html[data-theme='dark'] {
   --tricky-diamonds-bg: #{$darkBgColor};
   --tricky-diamonds-title: #{$darkerPrimaryColor};
   --tricky-diamonds-value: #C287F1;
+  --tricky-diamonds-cross: #A54159;
+  --tricky-diamonds-lost-bg: #{rgba(#8F112F, 0.9)};
+  --tricky-diamonds-win-bg: #{rgba(#FFCC6A, 0.9)};
+  --tricky-diamonds-win-trophy-bg: #FFE4AF;
 }

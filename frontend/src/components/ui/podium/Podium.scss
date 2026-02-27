@@ -1,0 +1,133 @@
+@use "@common/styles/mixins" as *;
+
+.podium {
+  width: 8rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+
+  &__avatar {
+    position: absolute;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    top: -155px;
+    scale: 0.8;
+    width: 10rem;
+  }
+
+  &__top {
+    width: 100%;
+    height: 1.5rem;
+    background-color: #B87DE8;
+    box-shadow: 0 0.5rem 0 0 rgba(0, 0, 0, 0.2);
+
+    z-index: 1;
+  }
+
+  &__base {
+    width: 90%;
+    height: 100%;
+
+    color: #fff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    @include background-opacity(#9D4EDD, 150%, 0.1, '@assets/textures/background-loading.svg');
+
+    .place {
+      font-size: 2.5rem;
+      font-family: 'Spicy Rice', serif;
+    }
+
+    .nickname {
+      width: 90%;
+
+      font-size: 1rem;
+      font-weight: bold;
+      font-family: "Poppins", sans-serif;
+
+      text-align: center;
+      white-space: wrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .score {
+      font-size: 1rem;
+      font-family: "Poppins", sans-serif;
+
+      &__number {
+        font-weight: bold;
+      }
+
+      &__text {
+        opacity: 0.7;
+        font-weight: bold;
+      }
+    }
+  }
+
+  &--first {
+    .podium__top, .podium__base {
+      background-color: #FFD000;
+
+      &::after {
+        opacity: 0.3;
+      }
+    }
+  }
+
+  &--second {
+    .podium__top, .podium__base {
+      background-color: #D9D5DD;
+
+      &::after {
+        opacity: 0.3;
+      }
+    }
+  }
+
+  &--third {
+    .podium__top, .podium__base {
+      background-color: #DD9444;
+
+      &::after {
+        opacity: 0.2;
+      }
+    }
+  }
+
+  &--1 {
+    order: 5;
+  }
+  &--2 {
+    order: 4;
+  }
+  &--3 {
+    order: 6;
+  }
+  &--4 {
+    order: 3;
+  }
+  &--5 {
+    order: 7;
+  }
+  &--6 {
+    order: 2;
+  }
+  &--7 {
+    order: 8;
+  }
+  &--8 {
+    order: 1;
+  }
+}
