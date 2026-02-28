@@ -34,7 +34,7 @@ export const ClassNames = (block: string, ...args: (Modifier[] | ConditionalModi
   return classNames(block, ...formattedModifiers, ...conditionalClasses, className);
 };
 
-export const generateRandomUserName = () => {
+export const generateRandomNickname = () => {
   const adjectives = [
     'Ultra',
     'Super',

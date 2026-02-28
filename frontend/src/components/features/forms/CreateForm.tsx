@@ -3,7 +3,7 @@ import './Form.scss';
 import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '@components/ui/button/Button.tsx';
 import { socket } from '@socket';
-import { generateRandomUserName } from '@utils';
+import { generateRandomNickname } from '@utils';
 import { useRoomCreate } from '@hooks/useRoomCreate.ts';
 import { useToast } from '@hooks/useToast.ts';
 import { Input } from '@components/ui/input/Input.tsx';
@@ -33,7 +33,7 @@ export const CreateForm = ({ onCancel }: CreateFormProps) => {
 
   const handleCreateRoom: SubmitHandler<FormInputs> = (data) => {
     const randomCode = randomRoomCode();
-    const nickname = data.nickname || generateRandomUserName();
+    const nickname = data.nickname || generateRandomNickname();
 
     if (socket.id && nickname && randomCode) {
       socket.emit('create_room', randomCode, nickname);
