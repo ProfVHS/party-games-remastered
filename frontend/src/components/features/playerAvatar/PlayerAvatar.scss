@@ -36,18 +36,24 @@
     margin: 0;
   }
 
-  &__username {
+  &__nickname {
     max-width: 16rch;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
-    color: var(--player-avatar-username);
+    color: var(--player-avatar-nickname);
     font-size: 1rem;
 
     &--lobby {
       max-width: 12rch;
+    }
+
+    &--tooltip {
+      background-color: var(--player-avatar-nickname-tooltip-bg) !important;
+      color: var(--player-avatar-nickname-tooltip-color) !important;
+      font-weight: bold !important;
     }
   }
 

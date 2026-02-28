@@ -15,12 +15,14 @@ html[data-theme='dark'] {
   --loading-color: #{$darkerPrimaryColor};
 
   //== Player Avatar ==//
-  --player-avatar-username: #{$darkerPrimaryColor};
+  --player-avatar-nickname: #{$darkerPrimaryColor};
   --player-avatar-score: #{$darkerPrimaryColor};
   --player-avatar-bg: #{$darkBgColor};
   --player-avatar-turn-indicator: #994CE4;
   --player-avatar-status: #c81414;
   --player-avatar-status-ready: #99DD44;
+  --player-avatar-nickname-tooltip-bg: #222222;
+  --player-avatar-nickname-tooltip-color: #fff;
 
   //== Avatar Picker ==//
   --avatar-picker-avatar-bg: url('@assets/textures/background-loading-black.svg');

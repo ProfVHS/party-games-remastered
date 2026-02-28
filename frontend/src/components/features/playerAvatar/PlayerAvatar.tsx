@@ -7,6 +7,7 @@ import { ClassNames } from '@utils';
 import { useGameStore } from '@stores/gameStore.ts';
 import Default from '@assets/avatars/default.svg?react';
 import { socket } from '@socket';
+import { Tooltip } from 'react-tooltip';
 
 type avatars = keyof typeof avatarList;
 
@@ -27,7 +28,10 @@ const PlayerAvatar = ({ player, style, inLobby = false, ready, onClick }: Player
   return (
     <div className={ClassNames('player-avatar', { 'has-turn': currentTurn?.id === player.id })} style={style}>
       {inLobby && <span className={ClassNames('player-avatar__status', { ready: ready })}>{ready}</span>}
-      <h2 className={ClassNames('player-avatar__username', { lobby: inLobby })}>{player.nickname}</h2>
+      <Tooltip id="nickname-tooltip" className="player-avatar__nickname--tooltip" />
+      <h2 className={ClassNames('player-avatar__nickname', { lobby: inLobby })} data-tooltip-id="nickname-tooltip" data-tooltip-content={player.nickname}>
+        {player.nickname}
+      </h2>
       {player.avatar !== 'default' ? (
         <div className={ClassNames('player-avatar__avatar', { clickable: socket.id === player.id && inLobby })} onClick={handleChooseAvatar}>
           <Avatar avatar={avatar} status={player.status} />
