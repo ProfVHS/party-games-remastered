@@ -28,7 +28,10 @@ export const ClickTheBomb = () => {
         <RandomScoreBox id={scoreData.id} score={scoreData.score} />
         <div className="click-the-bomb__info">
           <span className="click-the-bomb__title">Click The Bomb</span>
-          <span className="click-the-bomb__turn">{currentTurn?.nickname} Turn</span>
+          <span className="click-the-bomb__turn">
+            <div className="click-the-bomb__turn--nickname">{currentTurn?.nickname}</div>
+            <div>Turn</div>
+          </span>
         </div>
         <div
           className={ClassNames('click-the-bomb__bomb', {
